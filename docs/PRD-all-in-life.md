@@ -1,18 +1,20 @@
 # ALL in life — Product Requirements Document（PRD）
 
 - 文件狀態：Hackathon MVP build spec
-- 版本：v0.1
+- 版本：v0.2
 - 日期：2026-09-04
 - 產品名稱：**ALL in life**
 - Pilot area：**圓山區**
 - 平台：Mobile-first responsive Web
-- 使用方式：匿名、固定區域 Demo；不要求註冊
+- 使用方式：匿名可用、可選註冊登入、固定區域 Demo
 - 對齊活動：BUILDMODE 2026，Track 02「AI for Everyday Life」
 - 對齊來源：[FUTUREMODE BUILDMODE Hackathon 官方頁面](https://www.futuremode.xyz/hackathon)（2026-09-04 查閱）
 
 ## 1. 一頁摘要
 
 ALL in life 協助使用者在固定的圓山區生活圈內，依照預算、份量／人數、距離／時間與其他限制，快速找到可執行的生活選項。系統的核心不是把網路內容重新摘要，而是先套用硬限制，再以可比的成本排序，並讓每個結論都能回到來源與證據。
+
+使用者不登入也能完成搜尋；註冊／登入是為了保存清單、收藏與設定，以及參與需要共享狀態的回報與揪團功能。帳號資料與搜尋輸入分離，音檔、逐字稿、需求與限制及搜尋歷史不保存。
 
 MVP 以兩個並行的 AI Agent 搜尋資料：
 
@@ -49,6 +51,7 @@ MVP 以兩個並行的 AI Agent 搜尋資料：
 4. 以五類 Dashboard 呈現 7–10 筆有來源、有時間戳、有條件的結果。
 5. 讓使用者在結果卡片內看見證據、限制條件、可執行連結與節省比較。
 6. 在 60–90 秒 Demo 內清楚展示 AI 執行、資料可信度與實際生活價值。
+7. 提供可選的 username／password 帳號，讓使用者保存清單、收藏與設定，不破壞匿名入口。
 
 ### 2.3 不變的產品原則
 
@@ -56,7 +59,7 @@ MVP 以兩個並行的 AI Agent 搜尋資料：
 - **Evidence before ranking**：關鍵欄位沒有證據，就不能進入主要排序。
 - **Lowest cost, like-for-like**：只有在可比基準一致時，才能宣稱更便宜。
 - **Free is conditional**：直接費用為零不代表無登記、無會員或無資格條件。
-- **Narrow but honest**：固定圓山區、匿名 Demo，不假裝已覆蓋所有地區或即時庫存。
+- **Narrow but honest**：固定圓山區、匿名可用並提供可選帳號，不假裝已覆蓋所有地區或即時庫存。
 - **Actionable, not autonomous**：提供外部連結與下一步，不代替使用者完成付款或承諾結果。
 
 ## 3. 範圍與非範圍
@@ -65,7 +68,7 @@ MVP 以兩個並行的 AI Agent 搜尋資料：
 
 - 圓山區固定生活圈資料。
 - Mobile-first responsive Web。
-- 匿名使用；不要求帳號、登入或精確住址。
+- 匿名使用；搜尋不要求登入，也提供 username／password 註冊、登入、登出與修改密碼。
 - 語音輸入為主要入口；自然語言文字輸入為 fallback；結構化欄位只作為確認畫面的可編輯呈現。詳見 [SPEC-voice-input.md](./SPEC-voice-input.md)。
 - 需求解析、限制摘要與可編輯確認。
 - 兩個並行 Agent 的搜尋狀態與結果。
@@ -76,6 +79,7 @@ MVP 以兩個並行的 AI Agent 搜尋資料：
 - 在資料足夠時顯示在地常見方案、使用者原方案或 Costco 基準的節省比較；Costco 只有在使用者選擇可用時才納入。
 - 建立清單、收藏、分享與回報資料問題的最小互動。
 - 外部優惠／購買／報名連結。
+- 已登入帳號保存清單、收藏與設定；匿名使用者的相同資料只保留在目前瀏覽工作階段。
 
 ### 3.2 MVP 不包含
 
@@ -83,7 +87,7 @@ MVP 以兩個並行的 AI Agent 搜尋資料：
 - 健康、營養、醫療判斷、飲食建議或未查證營養推估。
 - 即時庫存、即時名額或店家營業狀態的保證。
 - 付款、下單、票券核銷或完整交易整合。
-- 個人帳戶、長期個人檔案、精確位置保存。
+- 跨裝置需求歷史、完整個人檔案、精確位置保存。
 - 全台地區覆蓋或任意地點搜尋。
 - 以搜尋摘要、模型常識或猜測補出價格、資格、時間或營養資料。
 
@@ -97,7 +101,7 @@ MVP 以兩個並行的 AI Agent 搜尋資料：
 - **Technical execution**：展示兩個 Agent 同時工作、資料正規化、來源與時間戳、缺欄位／衝突／逾時處理，以及 mobile-first UI。
 - **Product vision**：先用一個固定生活圈完成可驗證閉環，再以相同資料契約擴展到其他地區與個人化需求。
 - **Real-world impact**：讓預算有限、時間有限或不熟悉當地資源的人少做重複查找，並提高免費／公益資源的可見性。
-- **User experience**：匿名、固定範圍、少量輸入、五類 Dashboard、卡片內直接看證據與下一步；不要求使用者先註冊。
+- **User experience**：匿名可用、固定範圍、少量輸入、五類 Dashboard、卡片內直接看證據與下一步；註冊登入只在保存資料或共享功能時需要。
 - **Sponsor technology**：官方 FAQ 表示非指定 sponsor challenge 時可自由選擇工具。若團隊實際使用 sponsor technology，需在 Demo 說明其位置與效果；沒有使用就不宣稱使用。
 
 本產品的 Hackathon 主張應保持可驗證：**ALL in life 不承諾「找到全網最便宜」；它承諾在固定區域、明確限制與可讀證據範圍內，優先找出最低可比成本的選項。**
@@ -155,6 +159,10 @@ MVP 以兩個並行的 AI Agent 搜尋資料：
 - **資料狀態（Data status）**：已驗證、部分驗證／待確認、過期、衝突或無法納入比較。
 - **固定區域（Fixed area）**：本 MVP 唯一展示範圍「圓山區」；不是使用者的精確住址。
 - **Agent**：負責一種搜尋任務的 AI 執行單元；本產品只定義兩個並行 Agent，不以「Agent」掩飾後續的資料品質規則。
+- **使用者（User）**：使用 ALL in life 的人，可以是匿名使用者或已登入使用者。
+- **帳號（Account）**：可用 username／password 登入，並保存帳號所屬清單、收藏與設定的持久身份。
+- **工作階段（Session）**：一次匿名或已登入的瀏覽器使用期間；已登入 session 以 30 分鐘固定期限的 opaque token 識別。
+- **支援式帳號恢復（Support-assisted account recovery）**：忘記密碼時只顯示平台支援 Email，不在 App 內自動重設 password。
 
 ### 6.2 五類生活選項
 
@@ -172,11 +180,12 @@ MVP 以兩個並行的 AI Agent 搜尋資料：
 
 1. 使用者在手機頁面按下錄音，說出需求、預算、份量／人數、可接受距離／時間與選填偏好；無法使用語音時改為輸入自然語言文字。
 2. 系統將輸入解析為結構化需求，顯示「目前理解」摘要；使用者可修改，不需要帳號。
-3. 系統將固定區域圓山區、需求與限制同時交給兩個 Agent。
-4. 兩個 Agent **並行** 搜尋各自負責的資料來源，回傳候選紀錄與逐欄證據。
-5. 正規化流程統一價格、單位、日期、區域、資格與資料狀態；品質閘門移除關鍵欄位無證據的資料。
-6. 先套用硬限制，再依可比成本與透明的次要條件排序。
-7. Dashboard 顯示五類結果。使用者可開啟卡片查看證據、外部連結、收藏、建立清單、分享或回報問題。
+3. 使用者可選擇註冊／登入；匿名使用者直接繼續搜尋，已登入使用者的清單、收藏與設定保存到帳號。
+4. 系統將固定區域圓山區、需求與限制同時交給兩個 Agent。
+5. 兩個 Agent **並行** 搜尋各自負責的資料來源，回傳候選紀錄與逐欄證據。
+6. 正規化流程統一價格、單位、日期、區域、資格與資料狀態；品質閘門移除關鍵欄位無證據的資料。
+7. 先套用硬限制，再依可比成本與透明的次要條件排序。
+8. Dashboard 顯示五類結果。使用者可開啟卡片查看證據、外部連結、收藏、建立清單、分享或回報問題。
 
 ### 7.2 兩個並行 Agent
 
@@ -198,11 +207,15 @@ MVP 以兩個並行的 AI Agent 搜尋資料：
 
 ## 8. 功能需求
 
-### FR-01：固定區域與匿名入口
+### FR-01：固定區域與匿名／帳號入口
 
 - 首頁明確顯示目前區域為「圓山區」。
-- 不要求註冊、登入或精確地址。
-- 不保存使用者的精確位置；若需要工作階段識別，只使用不含個資的暫時 ID。
+- 匿名使用者不需要註冊或登入即可輸入需求、解析與搜尋。
+- 提供 username／password 註冊、登入、登出與修改密碼。
+- 不保存使用者的精確位置；匿名工作階段使用瀏覽器 `sessionStorage`，已登入工作階段使用固定 30 分鐘的 opaque session token。
+- 登入 username 全站唯一、不分大小寫，允許英文字母、數字、`_`、`-`，長度 3–30 字元；nickname 是可修改的顯示名稱。
+- password 最少 12 字元；伺服器只保存 Argon2id 或同等強度的 hash，不保存明文 password。
+- 不使用 Cookie 保存 username、password 或 session token；token 存於 `sessionStorage`，重新整理同一分頁時可恢復登入。
 
 ### FR-02：最小輸入
 
@@ -289,7 +302,8 @@ MVP 以兩個並行的 AI Agent 搜尋資料：
 ### FR-12：清單、收藏、分享與回報
 
 - 使用者可將結果加入暫時清單與收藏。
-- 匿名模式下，收藏與清單至少在目前瀏覽工作階段有效；不得暗示跨裝置永久保存。
+- 匿名模式下，收藏與清單只在目前瀏覽工作階段有效；已登入帳號可保存清單、收藏與設定。
+- 註冊或登入時，匿名 session 的清單、收藏與設定合併到帳號；清單與收藏依 ID 去重，帳號原有設定優先。
 - 分享內容應包含需求摘要、結果名稱、來源與資料時間；不包含精確位置或不必要個資。
 - 使用者可回報過期價格、錯誤條件、來源失效或分類錯誤。
 
@@ -305,6 +319,17 @@ MVP 以兩個並行的 AI Agent 搜尋資料：
 - 交通結果不得提供導航按鈕、路線規劃或轉向指示。
 - 食品結果不得推導健康分數、營養建議、醫療建議或未查證營養數值。
 - UI、Demo 腳本與文案不可暗示上述功能已完成。
+
+### FR-15：可選帳號與登入
+
+- 匿名使用者可完成需求解析與搜尋；登入不是搜尋前置條件。
+- 註冊需要全站唯一、不分大小寫的 username、至少 12 字元的 password，以及可選 nickname；nickname 預設等於 username，之後可修改。
+- 登入、登出與修改密碼使用 Auth API；忘記密碼按鈕只顯示 `SUPPORT_EMAIL=xuanweilin805@gmail.com`，不提供 App 內自動 reset。
+- Server 只保存 password hash；Browser 不保存 username／password。登入成功後只將隨機 opaque session token 保存到 `sessionStorage`。
+- session token 建立後固定 30 分鐘到期，不因請求自動延長；登出立即撤銷 token。
+- 已登入帳號保存清單、收藏與設定；音檔、逐字稿、需求與限制、搜尋歷史不保存到帳號資料。
+- 匿名使用者註冊或登入時，當前 session 的清單、收藏與設定合併到帳號；清單與收藏依 ID 去重，帳號原有設定優先。
+- 資料回報與揪團是共享資料；真實共享狀態需要 Database。匿名使用者仍可維持目前 MVP 的 session-local 行為。
 
 ## 9. 資料與證據規則
 
@@ -378,6 +403,46 @@ action_url
 - 外部連結回到原始提供者，並在 UI 提醒使用者以原始頁面為準。
 - 任何供應商、活動主辦者或公共機構的名稱與價格都必須能追溯。
 
+### 9.7 帳號與工作階段資料契約
+
+Database engine 尚未指定；以下是 Auth 的 logical schema：
+
+```text
+users
+  id
+  username                 # normalized unique
+  password_hash            # Argon2id or equivalent; never plaintext
+  nickname
+  created_at
+  updated_at
+
+auth_sessions
+  id
+  user_id
+  token_hash               # never store the raw browser token
+  created_at
+  expires_at               # created_at + 30 minutes
+  revoked_at
+
+user_settings
+  user_id
+  monthly_budget
+  spent
+  survival
+  exclude
+  prefs
+
+user_lists / user_list_items
+user_favorites
+reports
+teams / team_members
+```
+
+- `user_settings`、`user_lists`、`user_favorites` 是帳號私有資料。
+- `reports` 與 `teams`／`team_members` 是共享資料；必須可追溯提交者、成員與時間。
+- 音檔、逐字稿、需求與限制、搜尋歷史不進 Database。
+- 候選紀錄、來源與證據是否持久化，依搜尋資料管線另行決定；不能因 Auth 需求默默擴大保存範圍。
+
 ## 10. 非功能需求
 
 ### NFR-01：Mobile-first
@@ -407,8 +472,12 @@ action_url
 
 ### NFR-05：隱私與安全
 
-- 不要求或儲存精確地址、GPS、姓名、電話或付款資料。
+- 不要求或儲存精確地址、GPS、電話或付款資料；帳號只保存必要的 username、password hash、nickname 與帳號功能資料。
 - 預設不保存自然語言輸入原文；若為錯誤排查需暫存，應去除個資並設定短保留期。
+- 不保存明文 password；不把 password 寫入 Cookie、`sessionStorage`、log 或 Email。
+- session token 只放在 `sessionStorage`，不使用 Cookie；token 固定 30 分鐘到期，登出時撤銷。
+- Auth API 必須使用 HTTPS；正式環境使用嚴格 CSP、輸出編碼與最少化第三方 script，降低 XSS 竊取 token 的風險。
+- 忘記密碼只顯示 `SUPPORT_EMAIL`，支援人員不得要求使用者傳送明文 password。
 - 外部連結應清楚標示離開 ALL in life，並避免未經確認的自動操作。
 
 ### NFR-06：成本與退化
@@ -422,7 +491,7 @@ action_url
 以下條件全部達成，才算 MVP Demo ready：
 
 1. **產品識別**：頁面、Demo 與文件只使用產品名稱「ALL in life」，並明確顯示固定區域「圓山區」。
-2. **匿名入口**：手機瀏覽器可直接使用，不註冊、不要求精確位置，不保存敏感位置資料。
+2. **匿名與帳號入口**：手機瀏覽器可直接匿名使用；也能以 username／password 註冊、登入、登出與修改密碼，不保存敏感位置資料。
 3. **輸入可控**：語音與文字 fallback 至少能表達需求、預算、人數／份量、距離／時間與日期；送出前看得到逐字稿與解析摘要並可修正。語音驗收案例見 SPEC-voice-input.md §9。
 4. **兩 Agent 並行**：畫面能看到付費選項搜尋 Agent 與免費資源搜尋 Agent 同時運作，且任一失敗不會讓另一個結果消失。
 5. **五類結果**：Dashboard 有食品、日用品、免費／公益資源、活動、交通五類；Demo 固定資料集中每類有 7–10 筆通過證據閘門的可操作紀錄。
@@ -433,6 +502,7 @@ action_url
 10. **免費資源可行動**：至少一筆免費／公益資源明確顯示直接費用為零、登記／資格／時段條件、來源與下一步連結。
 11. **例外透明**：能示範或至少在測試資料中處理缺欄位、來源衝突、過期、Agent 逾時與無結果。
 12. **範圍守門**：Demo 中沒有導航、路線規劃、健康／營養／醫療建議、即時庫存保證或虛構來源。
+13. **帳號安全**：password 只以 hash 保存；session token 只在 `sessionStorage` 保存 30 分鐘；登出會撤銷 token；忘記密碼只顯示支援 Email。
 
 ### 驗收用最小測試案例
 
@@ -456,6 +526,24 @@ action_url
   - When：查看結果。
   - Then：採較新且較權威來源；無法判斷時標為衝突並排除主要排序。
 
+- **Case Auth-A：註冊與登入**
+  - Given：使用者輸入合法且唯一的 username、12 字元以上 password，可選 nickname。
+  - When：註冊後重新整理同一分頁。
+  - Then：帳號建立成功，password 只存 hash，session token 在 `sessionStorage`，`/api/auth/me` 恢復登入。
+
+- **Case Auth-B：session expiry**
+  - Given：session token 建立已超過 30 分鐘。
+  - When：使用者呼叫受保護功能。
+  - Then：回傳 401、清除 token、回到匿名狀態並提示重新登入。
+
+- **Case Auth-C：匿名資料合併**
+  - Given：匿名 session 有清單／收藏／設定，使用者登入既有帳號。
+  - Then：清單與收藏依 ID 去重後合併，帳號原有設定優先；音檔、逐字稿、需求與限制不遷移。
+
+- **Case Auth-D：忘記密碼**
+  - Given：使用者點擊忘記密碼。
+  - Then：只顯示 `xuanweilin805@gmail.com`，不在 App 內自動重設，也不要求寄送明文 password。
+
 ## 12. 風險與應對
 
 - **資料過期**：價格、名額與活動資訊可能改變。每筆顯示時間，使用固定快照作 Demo fallback，不承諾即時狀態。
@@ -467,6 +555,9 @@ action_url
 - **Agent 延遲／API 成本**：限制搜尋範圍、並行執行、設置 timeout、使用已驗證的固定資料 fallback。
 - **圓山區範圍模糊**：Demo 先固定團隊定義的生活圈與邊界文字，資料集中的 `area` 必須一致；不暗示全台適用。
 - **匿名收藏不持久**：UI 明示工作階段限制，不讓使用者以為資料已永久保存。
+- **session token 外洩**：`sessionStorage` 可被同源 JavaScript 讀取；使用 HTTPS、嚴格 CSP、輸出編碼、短期限 token 與撤銷機制降低風險，不把 password 存到瀏覽器。
+- **帳號恢復不足**：忘記密碼只提供支援 Email；支援流程不得要求明文 password，人工身份驗證與重設作業屬平台營運責任。
+- **帳號資料合併衝突**：註冊／登入時清單與收藏依 ID 去重，帳號原有設定優先，且不遷移語音與需求原文。
 - **範圍膨脹**：健康、營養、導航、交易與更多地區列入 backlog；Demo 只驗收本 PRD 的閉環。
 
 ## 13. 60–90 秒 Demo 故事線
@@ -506,13 +597,14 @@ action_url
 
 ## 14. Hackathon 團隊執行順序
 
-1. **先凍結資料契約**：確認五類欄位、狀態值、證據格式與比較基準規則。
-2. **先做可信資料**：每類整理 7–10 筆可核對紀錄，標示 curated、來源與時間；再接 web-searched enrichment。
-3. **接輸入與解析**：自然語言與表單共用同一個結構化需求。
-4. **接兩個並行 Agent**：先讓狀態、timeout、partial result 與 fallback 可展示，再增加搜尋廣度。
-5. **做正規化與排序**：先硬限制，再最低可比成本；將無證據、衝突與過期資料隔離。
-6. **完成手機 Dashboard**：五類、結果卡、證據抽屜、外部動作與錯誤狀態。
-7. **跑驗收案例與 Demo 排練**：用固定輸入重播，確認每個數字都能回到來源，並在 90 秒內完成故事線。
+1. **先凍結資料契約**：確認五類欄位、狀態值、證據格式、比較基準與 Auth logical schema。
+2. **先做 Auth 基礎**：建立 users／auth_sessions 與帳號資料表，完成 username/password hash、30 分鐘 token、匿名資料合併與支援 Email。
+3. **先做可信資料**：每類整理 7–10 筆可核對紀錄，標示 curated、來源與時間；再接 web-searched enrichment。
+4. **接輸入與解析**：自然語言與表單共用同一個結構化需求。
+5. **接兩個並行 Agent**：先讓狀態、timeout、partial result 與 fallback 可展示，再增加搜尋廣度。
+6. **做正規化與排序**：先硬限制，再最低可比成本；將無證據、衝突與過期資料隔離。
+7. **完成手機 Dashboard**：五類、結果卡、證據抽屜、外部動作、帳號入口與錯誤狀態。
+8. **跑驗收案例與 Demo 排練**：用固定輸入重播，確認 Auth 與每個數字都能回到來源，並在 90 秒內完成故事線。
 
 ## 15. 後續路線圖
 
@@ -527,7 +619,7 @@ action_url
 
 - 使用者明確同意後的地區選擇與位置權限。
 - 更多行政區與跨區比較。
-- 個人預算、常用份量、會員資格與收藏檔案。
+- 跨區個人化需求、常用份量、會員資格與更完整的帳號檔案。
 - 更完整的商家、活動主辦者與公共資源合作資料。
 
 ### Phase 3：延後能力
@@ -541,6 +633,6 @@ action_url
 
 ALL in life 的 MVP 不以「功能最多」或「涵蓋所有生活」成功，而以以下閉環成功：
 
-> 一位匿名使用者在圓山區輸入一個有預算與限制的日常需求，看到兩個 Agent 並行搜尋，從五類結果中找到有證據的可行選項，理解為何它符合限制、能否省下明確金額，以及下一步該查看哪個原始來源。
+> 一位匿名或已登入使用者在圓山區輸入一個有預算與限制的日常需求，看到兩個 Agent 並行搜尋，從五類結果中找到有證據的可行選項，理解為何它符合限制、能否省下明確金額，以及下一步該查看哪個原始來源；已登入者可保存清單、收藏與設定。
 
 只要這個閉環可在手機上穩定重播、資料不造假、限制與證據可解釋，ALL in life 就具備可供評審理解、團隊開發與後續擴展的 Hackathon MVP。

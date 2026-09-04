@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ALL in life · Feature inventory</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #181818;
+      --surface: #202020;
+      --surface-2: #262626;
+      --text: #e4e4e4;
+      --muted: #a7a7a7;
+      --faint: #777;
+      --line: #3c3c3c;
+      --line-soft: #303030;
+      --green: #78c69a;
+      --cyan: #82c9d8;
+      --yellow: #e1b86c;
+      --blue: #82b7ea;
+      --red: #ee8498;
+      --accent: #6aa9e6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.55 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a { color: var(--blue); }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .page {
+      width: min(1220px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 34px 0 64px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--faint);
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 10px; font-size: clamp(25px, 4vw, 36px); line-height: 1.15; }
+    h2 { margin: 0 0 8px; font-size: 20px; line-height: 1.25; }
+    h3 { margin-bottom: 8px; font-size: 16px; line-height: 1.3; }
+
+    .hero {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 26px;
+    }
+
+    .hero-copy { min-width: 0; }
+    .hero-copy p { max-width: 820px; margin-bottom: 0; color: var(--muted); font-size: 16px; }
+    .hero-actions { margin-left: auto; white-space: nowrap; }
+
+    .button, .filter {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 6px 11px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface-2);
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .button:hover, .filter:hover { border-color: var(--accent); }
+    .filter.active { border-color: var(--accent); color: var(--blue); }
+
+    .callout {
+      margin-bottom: 20px;
+      padding: 15px 17px;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--blue);
+      border-radius: 6px;
+      background: var(--surface);
+    }
+
+    .callout.warning { border-left-color: var(--yellow); }
+    .callout.danger { border-left-color: var(--red); }
+    .callout strong { display: block; margin-bottom: 4px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .stat {
+      padding: 16px;
+      border: 1px solid var(--line-soft);
+      border-radius: 6px;
+      background: var(--surface);
+    }
+
+    .stat-value { display: block; font-size: 25px; font-weight: 650; }
+    .stat-label { color: var(--muted); font-size: 12px; }
+    .stat.success .stat-value { color: var(--green); }
+    .stat.warning .stat-value { color: var(--yellow); }
+    .stat.danger .stat-value { color: var(--red); }
+
+    section { margin-bottom: 32px; }
+    .section-note { margin: 0 0 14px; color: var(--muted); font-size: 12px; }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .flow-node {
+      min-height: 116px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+    }
+
+    .flow-number { color: var(--faint); font-size: 12px; }
+    .flow-title { margin: 8px 0 4px; font-weight: 650; }
+    .flow-detail { margin-bottom: 10px; color: var(--muted); font-size: 12px; }
+
+    .status, .db {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+
+    .status::before, .db::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      content: "";
+    }
+
+    .status-done { color: var(--green); }
+    .status-local { color: var(--cyan); }
+    .status-preview { color: var(--yellow); }
+    .status-designed { color: var(--blue); }
+    .status-missing { color: var(--red); }
+    .status-excluded { color: var(--faint); }
+    .db-none { color: var(--faint); }
+    .db-optional { color: var(--yellow); }
+    .db-required { color: var(--red); font-weight: 650; }
+
+    .db-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .table-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .search {
+      width: min(300px, 100%);
+      min-height: 32px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      outline: none;
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .search:focus { border-color: var(--accent); }
+    .result-count { margin-left: auto; color: var(--muted); font-size: 12px; }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1060px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: #292929; }
+    td.group { width: 112px; color: var(--muted); }
+    td.feature { width: 220px; font-weight: 600; }
+    td.source { color: var(--blue); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    td.note { min-width: 320px; color: var(--muted); }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .card p { margin-bottom: 0; color: var(--muted); }
+
+    .sources {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .source-card {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+    }
+
+    .source-card a {
+      display: block;
+      margin-bottom: 7px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+    }
+
+    .source-card p { margin: 0; color: var(--muted); font-size: 12px; }
+
+    details {
+      border-top: 1px solid var(--line-soft);
+    }
+
+    summary {
+      padding: 12px 0;
+      cursor: pointer;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    details p { max-width: 900px; color: var(--muted); }
+    .footer { color: var(--faint); font-size: 12px; }
+
+    @media (max-width: 900px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .flow { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .cards, .sources { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .page { width: min(100% - 24px, 1220px); padding-top: 24px; }
+      .hero { display: block; }
+      .hero-actions { margin-top: 16px; }
+      .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stats { gap: 8px; }
+      .stat { padding: 12px; }
+      .result-count { width: 100%; margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">ALL IN LIFE · FEATURE INVENTORY · 2026-09-04</p>
+        <h1>這個 App 有哪些功能？</h1>
+        <p>把產品規格、目前程式與 preview/mock 分開；「有寫在 PRD」不等於「已接上真實服務」。</p>
+      </div>
+      <div class="hero-actions">
+        <a class="button" href="../../docs/PRD-all-in-life.md">開啟 PRD</a>
+      </div>
+    </header>
+
+    <div class="callout">
+      <strong>最短版本</strong>
+      這是一個固定在圓山區、匿名可用、可選帳號、語音優先的生活選項搜尋 Web App：使用者說出需求，
+      系統解析限制，確認後查看有來源與證據的食品、日用品、免費資源、活動與交通選項。目前語音 API 與 UI
+      有基礎實作，但真實搜尋、Auth code、Database 與交易流程尚未接上。
+    </div>
+
+    <div class="stats" aria-label="現況統計">
+      <div class="stat success"><span class="stat-value">8</span><span class="stat-label">主要 UI screen surfaces</span></div>
+      <div class="stat success"><span class="stat-value">2</span><span class="stat-label">真實 server API routes</span></div>
+      <div class="stat warning"><span class="stat-value">15</span><span class="stat-label">Preview fabricated records</span></div>
+      <div class="stat danger"><span class="stat-value">0</span><span class="stat-label">Search / Auth / DB routes</span></div>
+    </div>
+
+    <section>
+      <h2>使用者主流程</h2>
+      <p class="section-note">從輸入到結果的每個階段，以及目前是否真的有後端支撐。</p>
+      <div class="flow">
+        <div class="flow-node"><div class="flow-number">01</div><div class="flow-title">說需求</div><div class="flow-detail">語音錄音或文字輸入</div><span class="status status-done">已實作</span></div>
+        <div class="flow-node"><div class="flow-number">02</div><div class="flow-title">轉逐字稿</div><div class="flow-detail">POST /api/transcribe</div><span class="status status-done">已實作</span></div>
+        <div class="flow-node"><div class="flow-number">03</div><div class="flow-title">解析需求</div><div class="flow-detail">POST /api/parse → Need</div><span class="status status-done">已實作</span></div>
+        <div class="flow-node"><div class="flow-number">04</div><div class="flow-title">確認與修正</div><div class="flow-detail">欄位編輯、說修正語句</div><span class="status status-done">已實作</span></div>
+        <div class="flow-node"><div class="flow-number">05</div><div class="flow-title">可選登入</div><div class="flow-detail">username/password · sessionStorage</div><span class="status status-designed">只有規格</span></div>
+        <div class="flow-node"><div class="flow-number">06</div><div class="flow-title">搜尋五類結果</div><div class="flow-detail">目前只有 preview/mock</div><span class="status status-preview">預覽／Mock</span></div>
+        <div class="flow-node"><div class="flow-number">07</div><div class="flow-title">查看證據與行動</div><div class="flow-detail">結果卡、詳情、外部連結</div><span class="status status-preview">預覽／Mock</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>功能總表</h2>
+      <p class="section-note">DB 依賴標記是按「要共享或持久化」判斷；MVP 明確採 stateless，不代表所有功能永遠不需要 DB。</p>
+      <div class="table-tools">
+        <input id="search" class="search" type="search" placeholder="搜尋功能、群組或說明…" aria-label="搜尋功能">
+        <button class="filter active" data-db="all">全部</button>
+        <button class="filter" data-db="required">需要 DB</button>
+        <button class="filter" data-db="optional">DB 可選</button>
+        <button class="filter" data-db="none">MVP 不需 DB</button>
+        <span id="result-count" class="result-count"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>功能群組</th>
+              <th>功能</th>
+              <th>現況</th>
+              <th>DB 依賴</th>
+              <th>證據位置</th>
+              <th>說明</th>
+            </tr>
+          </thead>
+          <tbody id="features"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>DB dependency map</h2>
+      <div class="cards">
+        <article class="card">
+          <div class="card-head"><span>真正需要 DB</span><span class="db db-required">需要：共享／持久化</span></div>
+          <h3>共享狀態與長期資料</h3>
+          <p>Account、auth sessions、真實使用者回報、揪團成員／加入代碼，以及要跨請求保存的候選紀錄、來源、證據與驗證狀態。</p>
+        </article>
+        <article class="card">
+          <div class="card-head"><span>看產品選擇</span><span class="db db-optional">可選：快取／持久化</span></div>
+          <h3>快取、資料集與跨裝置</h3>
+          <p>搜尋快取、baseline、跨裝置收藏／清單、設定、分享連結與長期帳號資料可使用 DB；MVP 已定義 Auth logical schema，但實作尚未接上。</p>
+        </article>
+        <article class="card">
+          <div class="card-head"><span>MVP 不需要 DB</span><span class="db db-none">MVP 不需 DB</span></div>
+          <h3>輸入解析閉環</h3>
+          <p>錄音、STT、文字 fallback、Need parsing、確認畫面與修正語句都可直接以 stateless API 完成。</p>
+        </article>
+      </div>
+      <div class="db-legend">
+        <span class="db db-required">需要：共享／持久化</span>
+        <span class="db db-optional">可選：快取／持久化</span>
+        <span class="db db-none">MVP 不需 DB</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>目前狀況摘要</h2>
+      <div class="cards">
+        <article class="card">
+          <div class="card-head"><span>已經可以實際操作</span><span class="status status-done">已實作</span></div>
+          <p>語音錄音、文字 fallback、STT／解析 API、確認頁、欄位編輯、修正語句、session-local 設定、清單、收藏、分享與基本結果／證據 UI。</p>
+        </article>
+        <article class="card">
+          <div class="card-head"><span>目前只能在 Preview／本地看到</span><span class="status status-preview">預覽／Mock</span></div>
+          <p>兩 Agent 進度、15 筆候選資料、證據卡片、節省比較、揪團成員與部分回報效果。Preview records 是 fabricated data。</p>
+        </article>
+        <article class="card">
+          <div class="card-head"><span>產品有規格，但程式尚未完成</span><span class="status status-designed">只有規格</span></div>
+          <p>真實兩 Agent 搜尋、來源抓取、正規化、server-side 品質閘門、Auth routes、Database schema implementation、partial result 與來源刷新。</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>刻意不包含的功能</h2>
+      <details open>
+        <summary>交易與即時服務</summary>
+        <p>不包含付款、下單、票券核銷、即時庫存、即時名額、營業狀態保證或即時交通到站。</p>
+      </details>
+      <details open>
+        <summary>地圖與健康判斷</summary>
+        <p>不包含導航、地圖、路線規劃、turn-by-turn、健康／營養／醫療建議。</p>
+      </details>
+      <details open>
+        <summary>進階對話與語音</summary>
+        <p>不包含 TTS、即時逐字稿串流、靜音自動停止、長按錄音、語言切換、卡片語音指令或多輪追問。</p>
+      </details>
+      <details open>
+        <summary>帳號與長期資料</summary>
+        <p>不包含跨裝置需求歷史、完整個人檔案、精確位置保存與交易；可選帳號已列入 MVP，但 Auth 與 Database 尚未實作。</p>
+      </details>
+    </section>
+
+    <div class="callout warning">
+      <strong>目前最重要的落差</strong>
+      UI 已經把「搜尋完成後」的體驗畫出來，但 production path 還缺真實搜尋 API、Agent orchestration、
+      候選資料 pipeline、Auth implementation 與 Database implementation。非 preview 模式進入搜尋時，兩個 Agent 目前會顯示尚未接上。
+    </div>
+
+    <section>
+      <h2>程式與文件入口</h2>
+      <div class="sources">
+        <article class="source-card"><a href="../../docs/PRD-all-in-life.md">docs/PRD-all-in-life.md</a><p>完整產品功能、兩 Agent、Auth、資料品質、結果顯示、隱私與 roadmap。</p></article>
+        <article class="source-card"><a href="../../docs/SPEC-voice-input.md">docs/SPEC-voice-input.md</a><p>語音／文字輸入、Need schema、Auth API contract 與 fallback 行為。</p></article>
+        <article class="source-card"><a href="../../src/client/App.tsx">src/client/App.tsx</a><p>主要 route、工作階段狀態、輸入流程、設定、清單與 preview switch。</p></article>
+        <article class="source-card"><a href="../../src/client/records.ts">src/client/records.ts</a><p>候選結果型別、資料狀態、成本計算、硬限制與排序。</p></article>
+        <article class="source-card"><a href="../../src/server/index.ts">src/server/index.ts</a><p>目前真正存在的 Hono backend routes 與靜態檔案服務。</p></article>
+        <article class="source-card"><a href="../../src/client/mockResults.ts">src/client/mockResults.ts</a><p>Preview 用 fabricated records、reports 與 team joiners。</p></article>
+      </div>
+    </section>
+
+    <p class="footer">狀態定義：已實作＝程式可找到；本地＝只在 browser session；預覽＝mock／timer；只有規格＝文件有寫；尚未接上＝缺實作；刻意排除＝MVP 不做。</p>
+  </main>
+
+  <script>
+    const features = [
+      ["入口", "固定生活圈：圓山區", "done", "none", "App.tsx / Voice Spec §2.1", "首頁與麥克風狀態固定顯示圓山區；不接受其他地區進入搜尋。"],
+      ["入口", "匿名使用、不需登入", "done", "none", "PRD FR-01", "不要求帳號、姓名、電話、GPS 或精確地址。"],
+      ["帳號", "Username／password 註冊與登入", "designed", "required", "PRD FR-15 / Voice Spec §4", "匿名使用仍保留；Auth API 已寫入規格，但目前沒有實作 route。"],
+      ["帳號", "登出與 30 分鐘 session", "designed", "required", "PRD FR-15 / Voice Spec §2.4", "不使用 Cookie；opaque session token 存於 sessionStorage，固定 30 分鐘到期。"],
+      ["帳號", "修改密碼", "designed", "required", "Voice Spec §4", "需要目前 password；成功後保存新 hash 並撤銷既有 sessions。"],
+      ["帳號", "忘記密碼支援入口", "designed", "none", "SUPPORT_EMAIL", "點擊後彈出 xuanweilin805@gmail.com；不提供 App 內自動 reset。"],
+      ["帳號", "登入後保存清單／收藏／設定", "designed", "required", "PRD FR-12 / §9.7", "帳號資料進 Database；音檔、逐字稿、需求與限制、搜尋歷史不保存。"],
+      ["入口", "語音優先輸入", "done", "none", "recorder.ts / App.tsx", "瀏覽器原生 MediaRecorder；點一下開始、再點一下結束，最長 30 秒。"],
+      ["入口", "文字輸入 fallback", "done", "none", "App.tsx / api.ts", "麥克風權限、瀏覽器不支援、STT 失敗或逾時時可改用文字。"],
+      ["入口", "原始逐字稿顯示", "done", "none", "App.tsx / Voice Spec §2.1", "逐字稿不改寫；修正語句會保留並標示為修正。"],
+      ["需求理解", "自然語言解析成 Need schema", "done", "none", "src/shared/need.ts", "輸出需求、類別、預算、人數、日期、距離、偏好、資格與 unresolved。"],
+      ["需求理解", "確認畫面可編輯欄位", "done", "none", "App.tsx #/confirm", "搜尋前可修改需求、硬限制、不吃項目與軟偏好。"],
+      ["需求理解", "硬限制／軟偏好分組", "done", "none", "SPEC-voice-input.md §3", "硬限制先影響篩選；軟偏好只用於排序或標籤。"],
+      ["需求理解", "缺少欄位與未解析內容揭露", "done", "none", "App.tsx / Voice Spec §5.4", "null 顯示無限制；無法對應的內容放 unresolved，不猜測。"],
+      ["需求理解", "語音／文字修正語句", "done", "none", "parse.ts / Voice Spec §5.3", "以 current 為基礎，只更新修正語句提到的欄位。"],
+      ["需求理解", "搜尋需求缺少時停用搜尋", "done", "none", "App.tsx #/confirm", "need 為空時顯示請說明想找什麼，搜尋按鈕不可用。"],
+      ["搜尋", "五類 Dashboard", "done", "none", "Results.tsx / PRD FR-09", "食品、日用品、免費／公益資源、活動、交通。"],
+      ["搜尋", "兩個並行搜尋 Agent", "preview", "optional", "Search.tsx / PRD §7.2", "UI 有付費選項與免費資源兩個進度面板；目前由 timer 模擬。"],
+      ["搜尋", "真實搜尋 Agent 與搜尋 API", "missing", "optional", "src/server/", "目前沒有 search route、Agent implementation 或真實來源抓取。"],
+      ["搜尋", "結果分成主要、超出限制、待確認", "local", "none", "records.ts / Results.tsx", "分桶與顯示邏輯存在，但目前套用在 client records／mock 結果。"],
+      ["搜尋", "硬限制過濾", "local", "none", "records.ts", "目前實際執行預算、免費與排除標籤；人數、日期、距離等尚未執行。"],
+      ["搜尋", "可比成本排序", "local", "none", "records.ts", "價格＋必要費用－明確折扣；生存模式可讓免費項目優先。"],
+      ["搜尋", "放寬限制重新搜尋", "local", "none", "Results.tsx", "可放寬預算或取消只要免費，重新使用目前結果集。"],
+      ["結果", "結果卡片", "preview", "optional", "Card.tsx / mockResults.ts", "顯示名稱、提供者、成本、條件、資料狀態、來源類型與節省資訊。"],
+      ["結果", "證據詳細頁", "preview", "optional", "Detail.tsx", "顯示成本拆解、資格、證據摘錄、來源 URL、蒐集／確認時間。"],
+      ["結果", "資料可信度狀態", "designed", "optional", "PRD §9 / records.ts", "已驗證、待確認、過期、衝突與無法比較；主要排序只接受可通過閘門的資料。"],
+      ["結果", "節省比較", "preview", "optional", "records.ts / Detail.tsx", "需有 verified record、完整成本與 baseline；資料不足時不虛構數字。"],
+      ["結果", "外部可執行動作", "preview", "none", "Detail.tsx", "可查看菜單、公告、報名頁等外部連結；不在平台內完成交易。"],
+      ["個人工作區", "暫時清單", "local", "optional", "App.tsx #/list", "可加入、移除與標記已購買；只在目前工作階段有效。"],
+      ["個人工作區", "收藏", "local", "optional", "App.tsx / sessionStorage", "以結果 ID 保存於 sessionStorage，不是帳號收藏。"],
+      ["個人工作區", "分享", "done", "optional", "App.tsx", "優先使用 Web Share API，否則複製到剪貼簿。"],
+      ["個人工作區", "資料與體驗回報", "local", "required", "Detail.tsx / App.tsx", "支援食安、過敏、身體不適，以及價格過期、條件錯誤等回報；目前只存本地。"],
+      ["個人工作區", "設定", "local", "optional", "Settings.tsx", "暱稱、顏色、每月預算、已花費、生存模式、排除項目與偏好。"],
+      ["個人工作區", "設定衍生預設值", "local", "none", "App.tsx", "剩餘月預算與設定偏好可加入解析結果，並在確認頁標示來自設定。"],
+      ["帳號", "匿名資料合併", "designed", "required", "PRD FR-15 / Voice Spec §9", "註冊／登入時清單與收藏依 ID 去重合併；帳號原有設定優先；語音與需求原文不遷移。"],
+      ["協作", "揪團與加入代碼", "preview", "required", "Team.tsx / mockResults.ts", "有團購方案與 deterministic join code；成員、同步、付款與聊天都未接後端。"],
+      ["後端", "STT endpoint", "done", "none", "src/server/index.ts", "POST /api/transcribe；檔案驗證、5 MB 上限、30 秒 timeout、STT forwarding。"],
+      ["後端", "需求解析 endpoint", "done", "none", "src/server/index.ts", "POST /api/parse；JSON 驗證、Taipei 日期、structured output 與固定錯誤文案。"],
+      ["後端", "Provider 設定", "done", "none", "transcribe.ts / parse.ts", "STT 與 LLM 使用 OpenAI-compatible endpoint；Auth 另有 DATABASE_URL、AUTH_SESSION_TTL_SECONDS、SUPPORT_EMAIL。"],
+      ["後端", "Auth API routes", "designed", "required", "Voice Spec §4", "register、login、me、logout、change-password 已定義；目前沒有實作 route。"],
+      ["後端", "Auth logical data model", "designed", "required", "PRD §9.7 / Voice Spec §4", "users、auth_sessions、settings、lists、favorites、reports、teams；Database engine 尚未指定。"],
+      ["後端", "Database 與後端持久化", "designed", "required", "Voice Spec §7 / PRD §9.7", "Auth 需要 Database；目前沒有 tables、migration、搜尋結果保存或 server implementation。"],
+      ["隱私", "音檔／逐字稿不保存", "designed", "none", "Voice Spec §7", "音檔直接轉送 STT；需求與逐字稿只保留在瀏覽器工作階段。"],
+      ["Demo", "Preview mode", "preview", "none", "App.tsx / mockResults.ts", "VITE_PREVIEW=1 或 ?mock 啟用；使用 15 筆 fabricated records 與模擬 Agent。"]
+    ];
+
+    const statusText = {
+      done: "已實作",
+      local: "本地／工作階段",
+      preview: "預覽／Mock",
+      designed: "只有規格",
+      missing: "尚未接上",
+      excluded: "刻意排除"
+    };
+
+    const dbText = {
+      none: "MVP 不需 DB",
+      optional: "可選：快取／持久化",
+      required: "需要：共享／持久化"
+    };
+
+    const searchInput = document.querySelector("#search");
+    const count = document.querySelector("#result-count");
+    const tableBody = document.querySelector("#features");
+    let dbFilter = "all";
+
+    function render() {
+      const query = searchInput.value.trim().toLowerCase();
+      const visible = features.filter((item) => {
+        const matchesDb = dbFilter === "all" || item[3] === dbFilter;
+        const matchesQuery = !query || item.join(" ").toLowerCase().includes(query);
+        return matchesDb && matchesQuery;
+      });
+
+      tableBody.innerHTML = visible.map((item) => `
+        <tr>
+          <td class="group">${item[0]}</td>
+          <td class="feature">${item[1]}</td>
+          <td><span class="status status-${item[2]}">${statusText[item[2]]}</span></td>
+          <td><span class="db db-${item[3]}">${dbText[item[3]]}</span></td>
+          <td class="source">${item[4]}</td>
+          <td class="note">${item[5]}</td>
+        </tr>
+      `).join("");
+
+      count.textContent = `顯示 ${visible.length} / ${features.length} 項`;
+    }
+
+    document.querySelectorAll("[data-db]").forEach((button) => {
+      button.addEventListener("click", () => {
+        dbFilter = button.dataset.db;
+        document.querySelectorAll("[data-db]").forEach((item) => item.classList.toggle("active", item === button));
+        render();
+      });
+    });
+
+    searchInput.addEventListener("input", render);
+    render();
+  </script>
+</body>
+</html>

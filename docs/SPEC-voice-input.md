@@ -1,9 +1,9 @@
 # ALL in life — 語音輸入規格（Voice Input Spec）
 
 - 文件狀態：Hackathon MVP build spec
-- 版本：v0.1
+- 版本：v0.2
 - 日期：2026-09-04
-- 上游文件：[PRD-all-in-life.md](./PRD-all-in-life.md)（FR-02、FR-03、§7.1、§13）
+- 上游文件：[PRD-all-in-life.md](./PRD-all-in-life.md)（FR-02、FR-03、FR-15、§7.1、§13）
 - 詞彙：以 [CONTEXT.md](../CONTEXT.md) 為準
 
 ## 1. 摘要與範圍
@@ -14,6 +14,8 @@
 
 語音輸入**不是第三個 Agent**。它只是需求解析的一個輸入管道；PRD §7.2「不另造第三個 Agent」維持不變。
 
+帳號與登入是可選的帳號功能，不改變匿名輸入閉環。匿名使用者仍可完成需求解析與搜尋；註冊／登入只用來保存帳號資料與使用需要共享狀態的功能。
+
 ### 1.1 MVP 包含
 
 - 首頁錄音按鈕：點一下開始、再點一下結束，上限 30 秒。
@@ -22,6 +24,8 @@
 - 兩種修正方式：點欄位編輯，或再按麥克風說修正語句。
 - Dashboard 頂部的需求與限制 chip row，點擊回到同一個確認畫面（涵蓋 FR-13 放寬限制）。
 - 文字輸入 fallback，與語音共用同一個解析端點。
+- 可選的 username／password 註冊、登入、登出與修改密碼。
+- 已登入帳號保存清單、收藏與設定；匿名工作階段仍可使用 `sessionStorage`。
 
 ### 1.2 MVP 不包含
 
@@ -29,8 +33,9 @@
 - 即時逐字稿串流、靜音自動停止、長按錄音。
 - 語言切換；辨識語言固定 zh-TW。
 - Dashboard 卡片上的語音指令。
-- 保存音檔、逐字稿或需求與限制到伺服器。
+- 保存音檔、逐字稿、需求與限制或搜尋歷史到伺服器。
 - 多輪對話式追問；缺欄位一律在確認畫面用「無限制」呈現。
+- 自動密碼重設；忘記密碼只顯示平台支援 Email。
 
 ## 2. 使用流程
 
@@ -39,6 +44,7 @@
 **首頁**
 
 - 區域標籤「圓山區」。
+- 顯示「註冊／登入」入口；不登入仍可使用語音、文字與搜尋。
 - 大型錄音按鈕，狀態文字：「點一下開始說」→「錄音中 0:07 / 0:30，點一下結束」。
 - 一行揭露文字：「語音會傳送到第三方辨識服務進行辨識，不會被保存。」
 - 小型連結「改用文字輸入」，點擊後展開文字欄位。
@@ -92,6 +98,26 @@ dashboard
 - **情境 A（低預算付費選項）**：說出「今天晚餐兩個人預算三百圓山區二十分鐘內可以外帶」→ 確認畫面顯示晚餐 / 2 人 / NT$300 / 20 分鐘 / 今天 / 可外帶 → 搜尋。
 - **情境 B（免費資源）**：說出「這週末圓山區有沒有不用付費的活動或公共資源可以先登記」→ 預算與人數顯示「無限制」，`free_only = true`，`registration_ok = true`，`target_categories` 含「免費／公益資源」與「活動」→ 可直接搜尋。
 
+### 2.4 帳號流程
+
+```text
+anonymous
+  ├─ 註冊成功 ─────────────────────────► authenticated
+  └─ 登入成功 ─────────────────────────► authenticated
+
+authenticated
+  ├─ 30 分鐘 session token 到期 ────────► anonymous（提示重新登入）
+  ├─ 點登出 ───────────────────────────► anonymous
+  └─ 修改密碼成功 ─────────────────────► authenticated（既有 sessions 撤銷後需重新登入）
+```
+
+- 登入識別是全站唯一、不分大小寫的 `username`；`nickname` 是可修改的顯示名稱，兩者分開。
+- username 允許英文字母、數字、`_`、`-`，長度 3–30 字元。
+- password 最少 12 字元；伺服器只保存 Argon2id 或同等強度的雜湊值。
+- session token 是隨機 opaque token，存於瀏覽器 `sessionStorage`；不使用 Cookie，也不保存 username／password。
+- session token 固定在建立後 30 分鐘過期，不因請求自動延長。瀏覽器重新整理時，以同一分頁的 token 呼叫 `/api/auth/me` 恢復登入。
+- 忘記密碼按鈕只彈出 `SUPPORT_EMAIL`；不提供自動 reset，也不要求使用者透過 Email 傳送 password。
+
 ## 3. 需求與限制 schema
 
 需求解析的輸出，也是搜尋的輸入。欄位名稱在實作時可映射，但語意固定。
@@ -121,7 +147,67 @@ unresolved           string[]        聽到但無法對應欄位的片語；顯�
 
 ## 4. API 契約
 
-伺服器無狀態。兩個端點都不寫入磁碟、不記錄音檔或逐字稿。
+STT 與需求解析端點維持無狀態；它們不寫入音檔、逐字稿、需求與限制或搜尋歷史。帳號端點另使用 Database 保存帳號、sessions 與帳號資料。
+
+### Auth endpoints
+
+#### `POST /api/auth/register`
+
+- Request：
+  ```json
+  {
+    "username": "xuan",
+    "password": "至少 12 字元",
+    "nickname": "顯示名稱（可省略，預設等於 username）"
+  }
+  ```
+- 成功 Response 201：
+  ```json
+  {
+    "user": { "id": "user_id", "username": "xuan", "nickname": "xuan" },
+    "session_token": "opaque_random_token",
+    "expires_at": "2026-09-04T23:00:00+08:00"
+  }
+  ```
+- username 已存在回傳 409；格式或 password 不合規回傳 400。訊息不回傳資料庫或雜湊細節。
+
+#### `POST /api/auth/login`
+
+- Request：`{ "username": "xuan", "password": "..." }`
+- 成功 Response 200：格式同 register；client 將 `session_token` 放入 `sessionStorage`。
+- username 或 password 不正確回傳 401 `{ "error": "invalid_credentials", "message": "帳號或密碼錯誤" }`，不透露是哪一欄錯誤。
+
+#### `GET /api/auth/me`
+
+- Request：`Authorization: Bearer <session_token>`。
+- Response 200：目前帳號的 `id`、`username`、`nickname`、設定摘要。
+- token 缺少、撤銷或逾時回傳 401；client 清除 `sessionStorage` 並回到匿名狀態。
+
+#### `POST /api/auth/logout`
+
+- Request：`Authorization: Bearer <session_token>`。
+- 成功：撤銷目前 session token，回傳 204；client 同時清除 `sessionStorage`。
+
+#### `POST /api/auth/change-password`
+
+- Request：`Authorization: Bearer <session_token>` 與 `{ "current_password": "...", "new_password": "..." }`。
+- 成功：驗證目前 password、保存新 hash、撤銷該帳號既有 sessions，回傳 204；client 回到登入畫面。
+- password 不正確或格式不合規時回傳固定錯誤文案，不回傳供應商或雜湊細節。
+
+忘記密碼不設 API。前端點擊按鈕後顯示 `SUPPORT_EMAIL`；支援流程不在 App 內自動驗證或重設。
+
+### Auth logical data model
+
+Database engine 尚未指定；以下是產品層級的 logical schema：
+
+- `users`：`id`、normalized unique `username`、`password_hash`、`nickname`、`created_at`、`updated_at`。
+- `auth_sessions`：`id`、`user_id`、`token_hash`、`created_at`、`expires_at`、`revoked_at`；只保存 token hash，不保存原始 token。
+- `user_settings`：`user_id`、每月預算、已花費、生存模式、排除項目與偏好。
+- `user_lists`／`user_list_items`：帳號的清單與候選紀錄 ID。
+- `user_favorites`：`user_id` 與候選紀錄 ID。
+- `reports`：共享的資料／體驗回報，可追溯提交者與候選紀錄。
+- `teams`／`team_members`：共享揪團、加入代碼與成員關係。
+- 不保存音檔、逐字稿、需求與限制或搜尋歷史；候選資料是否持久化依既有資料管線另行決定。
 
 ### `POST /api/transcribe`
 
@@ -204,13 +290,17 @@ unresolved           string[]        聽到但無法對應欄位的片語；顯�
 
 - 音檔由瀏覽器上傳到本服務伺服器，伺服器直接轉送 STT 供應商，不寫入磁碟、不記錄。
 - 逐字稿視同 PRD NFR-05 的自然語言輸入原文：預設不保存。
-- 需求與限制只存在瀏覽器記憶體與 `sessionStorage`；不產生 session ID。
+- 需求與限制只存在瀏覽器記憶體與 `sessionStorage`；不保存到帳號資料庫。
+- 已登入帳號的清單、收藏與設定保存到 Database；匿名使用者的相同資料只存在目前 `sessionStorage`。
+- session token 只存在 `sessionStorage`，不使用 Cookie，不保存 username／password；token 逾時或登出時必須清除。
+- `sessionStorage` token 可被同源 JavaScript 讀取，正式環境必須使用 HTTPS、嚴格 CSP、輸出編碼與最少化第三方 script，降低 XSS 竊取 token 的風險。
 - 首頁揭露文字：「語音會傳送到第三方辨識服務進行辨識，不會被保存。」
+- 忘記密碼只顯示 `SUPPORT_EMAIL`，支援人員不得要求使用者傳送明文 password。
 - 零保留（zero-retention）合約列入 Phase 1，不在 MVP。
 
 ## 8. 設定
 
-六個環境變數，值由團隊填入，本文件留白：
+九個環境變數，值由團隊填入：
 
 ```text
 STT_BASE_URL=
@@ -219,6 +309,9 @@ STT_MODEL=
 LLM_BASE_URL=
 LLM_API_KEY=
 LLM_MODEL=
+DATABASE_URL=
+AUTH_SESSION_TTL_SECONDS=1800
+SUPPORT_EMAIL=xuanweilin805@gmail.com
 ```
 
 STT 供應商必須提供 OpenAI-compatible 的 `/audio/transcriptions` 端點；LLM 供應商必須提供 OpenAI-compatible 的 chat 端點並支援 JSON schema 結構化輸出。
@@ -259,9 +352,41 @@ PRD §11 的 Case A、Case B 各增加語音版本，並新增以下案例：
   - Given：說出「晚餐兩個人靠近捷運站」。
   - Then：「靠近捷運站」出現在「聽到但不確定」，不進任何欄位。
 
+- **Case A1：註冊**
+  - Given：使用者輸入符合規則的 username、12 字元以上 password，可選 nickname。
+  - Then：建立帳號、password 只以 hash 保存，回傳 30 分鐘 session token；username 與 password 不進 Cookie 或 `sessionStorage`。
+
+- **Case A2：重複 username**
+  - Given：使用者註冊已存在且不分大小寫相同的 username。
+  - Then：回傳 409 與固定錯誤文案，不建立第二個帳號。
+
+- **Case A3：登入與恢復**
+  - Given：正確 username／password。
+  - Then：登入成功後 token 存入 `sessionStorage`；同一分頁重新整理時呼叫 `/api/auth/me` 恢復登入。
+
+- **Case A4：session 到期**
+  - Given：session token 建立已超過 30 分鐘。
+  - Then：任何受保護請求回傳 401，client 清除 token 並回到匿名狀態。
+
+- **Case A5：登出**
+  - Given：已登入使用者點擊登出。
+  - Then：server 撤銷 session，client 清除 token，之後只能以匿名狀態使用。
+
+- **Case A6：修改密碼**
+  - Given：已登入使用者提供正確目前 password 與符合規則的新 password。
+  - Then：保存新 hash、撤銷既有 sessions，使用者需要重新登入。
+
+- **Case A7：忘記密碼**
+  - Given：使用者點擊忘記密碼。
+  - Then：只彈出 `SUPPORT_EMAIL`；不提供自動 reset，不要求使用者傳送明文 password。
+
+- **Case A8：匿名資料遷移**
+  - Given：匿名 session 有清單／收藏／設定，使用者註冊或登入帳號。
+  - Then：資料合併到帳號、清單與收藏依 ID 去重、帳號原有設定優先；音檔、逐字稿、需求與限制不遷移。
+
 ## 10. 驗證
 
-唯一的自動化檢查：一個 `bun test` 檔案，對已設定供應商的 `/api/parse` 送固定逐字稿並斷言回傳物件。錄音與 STT 由 Demo 排練驗證，不自動化。
+自動化檢查包含 `/api/parse` fixtures 與 Auth API 的註冊、登入、session expiry、登出、修改密碼、重複 username、錯誤遮罩與匿名資料遷移。錄音與 STT 由 Demo 排練驗證，不自動化。
 
 Fixtures：
 
@@ -271,13 +396,15 @@ Fixtures：
 4. 修正語句「改成三個人」+ current → 只有人數改變。
 5. 「晚餐兩個人靠近捷運站」→ `unresolved` 含「靠近捷運站」。
 6. 「兩個人晚餐預算 NT$300 想去 Costco 附近」→ 預算 300，"Costco" 保留在 `unresolved` 或 `soft_preferences`，不遺失。
+7. Auth fixtures：註冊、登入、30 分鐘 token expiry、登出、修改密碼、重複 username 與匿名資料合併。
 
 ## 11. 實作備註
 
 - Stack：Bun、Hono、TypeScript、React（Vite）、Vercel AI SDK core。
-- 單一 package：`src/server`（Hono，兩個 route）與 `src/client`（React）。開發時 Vite 將 `/api` 代理到 Hono；正式環境由 Hono 提供 `dist/`。
+- 單一 package：`src/server`（Hono，Auth 與語音 route）與 `src/client`（React）。開發時 Vite 將 `/api` 代理到 Hono；正式環境由 Hono 提供 `dist/`。
 - 需求與限制的 JSON schema 用一份定義，同時給解析器的結構化輸出與前端型別。
 - AI SDK 事實（2026-09-04 查閱）：`@ai-sdk/openai-compatible` 沒有 transcription model；語音辨識要用 `@ai-sdk/openai` 的 `createOpenAI({ baseURL, apiKey })` 搭配 `ai` 的 `transcribe()`。chat 端點用 `createOpenAICompatible({ baseURL, apiKey, supportsStructuredOutputs: true })` 搭配 `generateObject()`。
 - 錄音使用瀏覽器原生 `MediaRecorder`；不引入錄音套件。
 - 逐字稿與需求與限制一起存在 `sessionStorage`，重新整理後確認畫面仍完整。
+- 登入 token 與語音工作階段資料分開保存；token key、匿名資料 migration 與受保護 API 的 `Authorization` header 必須明確定義。
 - 30 秒上限在前端用計時器強制停止，後端再以請求逾時保護。
