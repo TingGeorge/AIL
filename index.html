@@ -59,7 +59,10 @@
         letter-spacing: -0.16px;
       }
 
+      /* Phone-first: on wide screens present as a centered phone-width column with a hairline frame. */
       main {
+        max-width: 430px;
+        margin: 0 auto;
         min-height: 100dvh;
         padding: calc(var(--space-md) + env(safe-area-inset-top)) calc(var(--gutter) + env(safe-area-inset-right))
           calc(var(--space-xl) + env(safe-area-inset-bottom)) calc(var(--gutter) + env(safe-area-inset-left));
@@ -269,6 +272,16 @@
       }
 
       .void { flex: 1; min-height: 72px; }
+
+      @media (min-width: 768px) {
+        body { padding: 32px 0; }
+        main {
+          min-height: min(100dvh - 64px, 900px);
+          border-left: 1px solid var(--fm-light-line);
+          border-right: 1px solid var(--fm-light-line);
+        }
+        main[data-surface="white"] { border-color: var(--fm-white); }
+      }
 
       @media (prefers-reduced-motion: reduce) {
         * { transition: none !important; }
