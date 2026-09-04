@@ -123,15 +123,20 @@ export function App() {
   };
 
   const mm = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-  const micLabel =
-    stage === "recording" ? `錄音中 ${mm(seconds)} / ${mm(MAX_SECONDS)}，點一下結束`
-    : stage === "idle" ? (current ? "點一下說修正，例如「改成三個人」" : "點一下開始說")
+  const micKicker =
+    stage === "recording" ? `錄音中 ${mm(seconds)} / ${mm(MAX_SECONDS)}`
+    : stage === "idle" ? (current ? "說一句修正，例如「改成三個人」" : "點一下開始，再點一下結束")
+    : "";
+  const micText =
+    stage === "recording" ? "點一下結束"
+    : stage === "idle" ? (current ? "說修正" : "開始說")
     : STAGE_TEXT[stage];
 
   const mic = (
     <button className="mic" data-recording={stage === "recording"} onClick={toggleMic}
-      disabled={stage === "transcribing" || stage === "parsing"} aria-label={micLabel}>
-      🎤 {micLabel}
+      disabled={stage === "transcribing" || stage === "parsing"} aria-label={`${micKicker} ${micText}`.trim()}>
+      <span className="mic-kicker">{micKicker || "麥克風"}</span>
+      <span className="mic-text">{micText}</span>
     </button>
   );
 
@@ -139,55 +144,83 @@ export function App() {
 
   const textInput = showText && (
     <section>
-      <h2>文字輸入</h2>
+      <p className="label">文字輸入</p>
       <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="例如：今天晚餐兩個人預算三百，20 分鐘內，可外帶" />
       <button className="primary" onClick={submitText} disabled={!text.trim() || stage !== "idle"}>解析</button>
     </section>
+  );
+
+  const bar = (
+    <header className="bar">
+      <strong>ALL in life</strong>
+      <span className="label">圓山區</span>
+    </header>
   );
 
   if (screen === "confirming" && need) {
     const set = <K extends keyof Need>(k: K, v: Need[K]) => setNeed({ ...need, [k]: v });
     const given = HARD_FIELDS.filter((f) => need[f.key] !== null && need[f.key] !== false);
     const missing = HARD_FIELDS.filter((f) => !given.includes(f));
+    const field = (f: (typeof HARD_FIELDS)[number]) => (
+      <Field key={f.key} label={f.label} kind={f.kind} value={need[f.key]} onChange={(v) => set(f.key, v as Need[typeof f.key])} />
+    );
     return (
-      <main>
-        <h1>確認需求與限制</h1>
+      <main data-surface="black">
+        {bar}
+        <section>
+          <p className="label">確認</p>
+          <h1 className="statement">需求與限制</h1>
+        </section>
         {transcripts.length > 0 && (
           <section>
-            <h2>我們聽到的</h2>
-            {transcripts.map((t, i) => <p key={i} className="transcript">{i > 0 ? `修正：${t}` : t}</p>)}
+            <p className="label">我們聽到的</p>
+            {transcripts.map((t, i) => <p key={i} className="lead">{i > 0 ? `修正：${t}` : t}</p>)}
           </section>
         )}
         <section>
-          <h2>我們理解的：需求</h2>
-          <Field label="需求" kind="text" value={need.need} onChange={(v) => set("need", String(v ?? ""))} />
-          <div className="field"><label>類別</label><span>{need.target_categories.join("、") || <span className="unlimited">全部</span>}</span></div>
+          <p className="label">我們理解的</p>
+          <div className="rows">
+            <Field label="需求" kind="text" value={need.need} onChange={(v) => set("need", String(v ?? ""))} />
+            <div className="row">
+              <span className="row-label">類別</span>
+              <span className="value">{need.target_categories.join(" / ") || <span className="unlimited">全部</span>}</span>
+            </div>
+          </div>
         </section>
         <section>
-          <h2>硬限制</h2>
-          {given.map((f) => <Field key={f.key} label={f.label} kind={f.kind} value={need[f.key]} onChange={(v) => set(f.key, v as Need[typeof f.key])} />)}
-          {given.length === 0 && <p className="unlimited">無</p>}
+          <p className="label">硬限制</p>
+          <div className="rows">
+            {given.map(field)}
+            {given.length === 0 && <div className="row"><span className="row-label">—</span><span className="value unlimited">無</span></div>}
+          </div>
         </section>
         <section>
-          <h2>軟偏好</h2>
-          <Field label="偏好" kind="text" value={need.soft_preferences.join("、")}
-            onChange={(v) => set("soft_preferences", String(v ?? "").split(/[、,，]/).map((x) => x.trim()).filter(Boolean))} />
+          <p className="label">軟偏好</p>
+          <div className="rows">
+            <Field label="偏好" kind="text" value={need.soft_preferences.join("、")}
+              onChange={(v) => set("soft_preferences", String(v ?? "").split(/[、,，]/).map((x) => x.trim()).filter(Boolean))} />
+          </div>
         </section>
         {missing.length > 0 && (
           <section>
-            <h2>未提供</h2>
-            {missing.map((f) => <Field key={f.key} label={f.label} kind={f.kind} value={need[f.key]} onChange={(v) => set(f.key, v as Need[typeof f.key])} />)}
+            <p className="label">未提供</p>
+            <div className="rows">{missing.map(field)}</div>
           </section>
         )}
         {need.unresolved.length > 0 && (
-          <section><h2>聽到但不確定</h2><ul>{need.unresolved.map((u) => <li key={u}>{u}</li>)}</ul></section>
+          <section>
+            <p className="label">聽到但不確定</p>
+            <ul>{need.unresolved.map((u) => <li key={u}>{u}</li>)}</ul>
+          </section>
         )}
-        {mic}
-        {status}
-        {textInput}
-        <button className="primary" disabled={!need.need.trim() || stage !== "idle"} onClick={() => setScreen("dashboard")}>搜尋</button>
-        {!need.need.trim() && <p className="note error">請說明你想找什麼</p>}
-        <button className="secondary" onClick={() => setSession({ need: null, transcripts: [], screen: "landing" })}>重新開始</button>
+        <section>
+          {mic}
+          {status}
+          {textInput}
+          <button className="primary" disabled={!need.need.trim() || stage !== "idle"} onClick={() => setScreen("dashboard")}>搜尋</button>
+          {!need.need.trim() && <p className="note">請說明你想找什麼</p>}
+          <button className="link muted" onClick={() => setSession({ need: null, transcripts: [], screen: "landing" })}>重新開始</button>
+        </section>
       </main>
     );
   }
@@ -195,28 +228,44 @@ export function App() {
   if (screen === "dashboard" && need) {
     const ordered = [...CATEGORIES].sort((a, b) => Number(need.target_categories.includes(b)) - Number(need.target_categories.includes(a)));
     return (
-      <main>
-        <h1>結果</h1>
-        <button className="chips" onClick={() => setScreen("confirming")} aria-label="編輯需求與限制">
-          {chips(need).map((c) => <span key={c} className="chip">{c}</span>)}
-        </button>
+      <main data-surface="white">
+        {bar}
+        <section>
+          <p className="label">結果</p>
+          <button className="chips" onClick={() => setScreen("confirming")} aria-label="編輯需求與限制">
+            {chips(need).map((c) => <span key={c} className="chip">{c}</span>)}
+          </button>
+        </section>
         {/* ponytail: dashboard placeholder. Search + five-category results are PRD scope, not voice scope. */}
-        {ordered.map((c) => (
-          <section key={c}><h2>{c}{need.target_categories.includes(c) ? "（相關）" : ""}</h2><p className="unlimited">搜尋尚未接上</p></section>
-        ))}
+        <section>
+          {ordered.map((c) => (
+            <div key={c} className="cat">
+              <h2>{c}</h2>
+              {need.target_categories.includes(c) && <span className="mark">相關</span>}
+              <p>搜尋尚未接上</p>
+            </div>
+          ))}
+        </section>
       </main>
     );
   }
 
   return (
-    <main>
-      <h1>ALL in life</h1>
-      <p className="area">目前區域：圓山區</p>
-      {mic}
-      <p className="note">語音會傳送到第三方辨識服務進行辨識，不會被保存。</p>
-      {status}
-      {!showText && <button className="link" onClick={() => setShowText(true)}>改用文字輸入</button>}
-      {textInput}
+    <main data-surface="black">
+      {bar}
+      <section>
+        <p className="label">圓山區 · 今天</p>
+        <h1 className="statement">說出你的需求。</h1>
+        <p className="lead">預算、人數、時間、距離，一句話講完。</p>
+      </section>
+      <div className="void" />
+      <section>
+        {mic}
+        <p className="note">語音會傳送到第三方辨識服務進行辨識，不會被保存。</p>
+        {status}
+        {!showText && <button className="link muted" onClick={() => setShowText(true)}>改用文字輸入</button>}
+        {textInput}
+      </section>
     </main>
   );
 }
@@ -230,9 +279,9 @@ function Field({ label, kind, value, onChange }: { label: string; kind: "number"
 
   if (empty && !editing) {
     return (
-      <div className="field">
-        <label>{label}</label>
-        <button className="link" onClick={() => setEditing(true)} aria-label={`${label}：無限制，點一下設定`}>
+      <div className="row">
+        <span className="row-label">{label}</span>
+        <button className="link muted" onClick={() => setEditing(true)} aria-label={`${label}：無限制，點一下設定`}>
           {label === "需求" ? "必填，點一下輸入" : "無限制"}
         </button>
       </div>
@@ -241,7 +290,7 @@ function Field({ label, kind, value, onChange }: { label: string; kind: "number"
 
   if (kind === "bool") {
     return (
-      <div className="field">
+      <div className="row">
         <label htmlFor={label}>{label}</label>
         <select id={label} value={value ? "是" : "否"} onChange={(e) => onChange(e.target.value === "是")} onBlur={() => setEditing(false)}>
           <option>是</option><option>否</option>
@@ -252,7 +301,7 @@ function Field({ label, kind, value, onChange }: { label: string; kind: "number"
 
   const shown = value === null ? "" : Array.isArray(value) ? value.join("、") : String(value);
   return (
-    <div className="field">
+    <div className="row">
       <label htmlFor={label}>{label}</label>
       <input id={label} type={kind === "number" ? "number" : "text"} inputMode={kind === "number" ? "decimal" : "text"}
         value={shown} autoFocus={editing} onBlur={() => setEditing(false)}
