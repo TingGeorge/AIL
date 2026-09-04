@@ -2,7 +2,14 @@
 <html lang="zh-Hant">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="ALL in life" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="color-scheme" content="dark light" />
     <title>ALL in life</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -54,7 +61,8 @@
 
       main {
         min-height: 100dvh;
-        padding: var(--space-md) var(--gutter) var(--space-xl);
+        padding: calc(var(--space-md) + env(safe-area-inset-top)) calc(var(--gutter) + env(safe-area-inset-right))
+          calc(var(--space-xl) + env(safe-area-inset-bottom)) calc(var(--gutter) + env(safe-area-inset-left));
         background: var(--surface);
         color: var(--ink);
         display: flex;
@@ -242,6 +250,18 @@
       .cat p { grid-column: 1 / -1; margin: 0; color: var(--muted); }
 
       ul { margin: 0; padding-left: 1.2em; font-size: var(--text-lead); }
+
+      /* Result card: a ruled block, not a shadowed tile */
+      .card { display: flex; flex-direction: column; gap: 8px; padding: var(--space-sm) 0 var(--space-md); border-bottom: 1px solid var(--rule); }
+      .card-head { display: grid; grid-template-columns: 1fr auto; gap: var(--space-sm); align-items: start; }
+      .card h3 { margin: 0; font-size: var(--text-lead); font-weight: 700; }
+      .price { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+      .price .num { font-size: var(--text-section); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.19px; line-height: 1.1; }
+      .card .meta { margin: 0; font-size: var(--text-body); }
+      .card .evidence { margin: 0; padding-left: 12px; border-left: 2px solid var(--ink); color: var(--muted); }
+      .card .saving { margin: 0; display: inline-block; padding: 2px 8px; background: var(--fm-accent); color: var(--fm-black); font-weight: 500; }
+      .card .link { padding: 8px 0; }
+      .cat p { grid-column: 1 / -1; }
 
       button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
         outline: 2px solid var(--ink);
