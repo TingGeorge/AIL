@@ -10,6 +10,7 @@ const SYSTEM = `你是「ALL in life」的需求解析器。把使用者的一�
 - 「今天」→ today；「這週末」→ date 為下一個週六的 ISO 日期且 time_window 為「週末」。
 - 「免費」「不用付費」→ free_only true；「可以先登記」→ registration_ok true。
 - 「可外帶」「素食」等放 soft_preferences。
+- 「不吃牛」「不要海鮮」「不吃辣」→ exclude_tags 用單一詞：牛、豬、雞、海鮮、辣、素、含酒精。
 - 聽到但對不上任何欄位的片語（例如「靠近捷運站」「便宜一點」）原樣放進 unresolved。
 - target_categories 只能從 ${CATEGORIES.join("、")} 挑選，依需求判斷可能相關的類別。
 - need 是使用者想完成的事，例如「晚餐」；聽不出來就給空字串。

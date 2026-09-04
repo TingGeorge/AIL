@@ -3,8 +3,10 @@ import { CATEGORIES, type Need } from "../shared/need.ts";
 import { ApiError, parse, transcribe } from "./api.ts";
 import { MAX_SECONDS, Recorder, recordingSupported } from "./recorder.ts";
 import { useHashRoute, go } from "./router.ts";
-import type { Category, Rec } from "./records.ts";
-import { MOCK_RECORDS } from "./mockResults.ts"; // PREVIEW ONLY
+import { DOT_COLORS, TAGS, comparableTotal, joinCode, type Category, type Profile, type Rec, type Report, type Settings as S, type Team as T } from "./records.ts";
+import { MOCK_JOINERS, MOCK_RECORDS, MOCK_REPORTS } from "./mockResults.ts"; // PREVIEW ONLY
+import { Settings } from "./screens/Settings.tsx";
+import { Team } from "./screens/Team.tsx";
 import { Shell } from "./screens/Shell.tsx";
 import { Search } from "./screens/Search.tsx";
 import { Results } from "./screens/Results.tsx";
@@ -18,20 +20,26 @@ type Stage = "idle" | "recording" | "transcribing" | "parsing";
 
 // Hard constraints in display order. `kind` drives the editor, so labels are copy only.
 const HARD_FIELDS = [
-  { key: "budget_total_twd", label: "預算 (TWD)", kind: "number" },
-  { key: "people_or_servings", label: "人數／份量", kind: "number" },
-  { key: "date", label: "日期", kind: "text" },
-  { key: "time_window", label: "時段", kind: "text" },
-  { key: "max_distance_km", label: "最大距離 (km)", kind: "number" },
-  { key: "max_minutes", label: "最大時間 (分)", kind: "number" },
-  { key: "free_only", label: "只要免費", kind: "bool" },
-  { key: "registration_ok", label: "可先登記", kind: "bool" },
-  { key: "eligibility_notes", label: "資格", kind: "text" },
-] as const satisfies ReadonlyArray<{ key: keyof Need; label: string; kind: "number" | "text" | "bool" }>;
+  { key: "budget_total_twd", label: "預算 (TWD)", kind: "number", group: "錢" },
+  { key: "free_only", label: "只要免費", kind: "bool", group: "錢" },
+  { key: "people_or_servings", label: "人數／份量", kind: "number", group: "人" },
+  { key: "date", label: "日期", kind: "text", group: "時間" },
+  { key: "time_window", label: "時段", kind: "text", group: "時間" },
+  { key: "max_distance_km", label: "最大距離 (km)", kind: "number", group: "距離" },
+  { key: "max_minutes", label: "最大時間 (分)", kind: "number", group: "距離" },
+  { key: "registration_ok", label: "可先登記", kind: "bool", group: "條件" },
+  { key: "eligibility_notes", label: "資格", kind: "text", group: "條件" },
+] as const satisfies ReadonlyArray<{ key: keyof Need; label: string; kind: "number" | "text" | "bool"; group: string }>;
+const GROUPS = ["錢", "人", "時間", "距離", "條件"] as const;
 
-type Saved = { need: Need | null; transcripts: string[]; list: string[]; favs: string[] };
+type Saved = { need: Need | null; transcripts: string[]; list: string[]; favs: string[]; derived: string[]; profile: Profile; settings: S; reports: Report[]; teams: T[] };
 const STORAGE_KEY = "ail.session";
-const EMPTY: Saved = { need: null, transcripts: [], list: [], favs: [] };
+const EMPTY: Saved = {
+  need: null, transcripts: [], list: [], favs: [], derived: [],
+  profile: { nickname: "", color: DOT_COLORS[3] },
+  settings: { monthly_budget: null, spent: 0, survival: false, exclude: [], prefs: [] },
+  reports: [], teams: [],
+};
 const load = (): Saved => {
   try { return { ...EMPTY, ...JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? "{}") }; } catch { return EMPTY; }
 };
@@ -41,7 +49,7 @@ const STAGE_TEXT: Record<Stage, string> = { idle: "", recording: "", transcribin
 
 export function App() {
   const route = useHashRoute();
-  const [{ need, transcripts, list, favs }, setSession] = useState<Saved>(load);
+  const [{ need, transcripts, list, favs, derived, profile, settings, reports, teams }, setSession] = useState<Saved>(load);
   const [records, setRecords] = useState<Rec[] | null>(null);
   const [stage, setStage] = useState<Stage>("idle");
   const [message, setMessage] = useState<{ text: string; error?: boolean } | null>(null);
@@ -54,11 +62,22 @@ export function App() {
   const timer = useRef<number | null>(null);
   const stopRef = useRef<() => void>(() => {});
 
-  useEffect(() => save({ need, transcripts, list, favs }), [need, transcripts, list, favs]);
+  useEffect(() => save({ need, transcripts, list, favs, derived, profile, settings, reports, teams }), [need, transcripts, list, favs, derived, profile, settings, reports, teams]);
   useEffect(() => { if (toast) { const t = setTimeout(() => setToast(null), 2200); return () => clearTimeout(t); } }, [toast]);
   useEffect(() => { window.scrollTo(0, 0); }, [route]);
 
-  const setNeed = (n: Need | null) => setSession((s) => ({ ...s, need: n }));
+  const setNeed = (n: Need | null) => setSession((s) => ({ ...s, need: n, derived: s.derived.filter((k) => n && s.need && n[k as keyof Need] === s.need[k as keyof Need]) }));
+  const allReports = PREVIEW ? [...MOCK_REPORTS, ...reports] : reports;
+  const exclude = [...new Set([...(need?.exclude_tags ?? []), ...settings.exclude])];
+  const remaining = settings.monthly_budget === null ? null : Math.max(0, settings.monthly_budget - settings.spent);
+  // Defaults from settings, applied after parsing and labeled 「來自設定」 on the confirmation screen.
+  const withDefaults = (n: Need): { need: Need; derived: string[] } => {
+    const d: string[] = [];
+    const out = { ...n };
+    if (out.budget_total_twd === null && remaining !== null) { out.budget_total_twd = remaining; d.push("budget_total_twd"); }
+    if (settings.prefs.length) { const add = settings.prefs.filter((p) => !out.soft_preferences.includes(p)); if (add.length) { out.soft_preferences = [...out.soft_preferences, ...add]; d.push("soft_preferences"); } }
+    return { need: out, derived: d };
+  };
   const notify = (m: string) => setToast(m);
   const onSearchDone = useCallback((r: Rec[]) => { setRecords(r); go("/results"); }, []);
 
@@ -77,8 +96,9 @@ export function App() {
     setStage("parsing");
     setMessage({ text: STAGE_TEXT.parsing });
     try {
-      const n = await parse(t, current);
-      setSession((s) => ({ ...s, need: n, transcripts: current ? [...s.transcripts, t] : [t] }));
+      const parsed = await parse(t, current);
+      const { need: n, derived: d } = withDefaults(parsed);
+      setSession((s) => ({ ...s, need: n, derived: d, transcripts: current ? [...s.transcripts, t] : [t] }));
       setShowText(false);
       setText("");
       setMessage(null);
@@ -188,8 +208,25 @@ export function App() {
   };
 
   // ---- Routing ----
+  if (route === "/settings") {
+    return <><Settings profile={profile} settings={settings} listCount={list.length}
+      setProfile={(p) => setSession((s) => ({ ...s, profile: p }))} setSettings={(st) => setSession((s) => ({ ...s, settings: st }))} />{toastEl}</>;
+  }
+
+  if (route.startsWith("/team/")) {
+    const r = byId(route.slice(6));
+    if (r?.group_offer) {
+      const me = { name: profile.nickname || "我", color: profile.color };
+      const team = teams.find((t) => t.rec_id === r.id) ?? { rec_id: r.id, code: joinCode(r.id), members: [me] };
+      if (!teams.some((t) => t.rec_id === r.id)) setSession((s) => ({ ...s, teams: [...s.teams, team] }));
+      return <><Team r={r} team={team} preview={PREVIEW} joiners={MOCK_JOINERS} listCount={list.length}
+        join={(m) => setSession((s) => ({ ...s, teams: s.teams.map((t) => t.rec_id === r.id && !t.members.some((x) => x.name === m.name) ? { ...t, members: [...t.members, m] } : t) }))}
+        share={() => share(`一起揪團：${r.title}（${r.provider}）\n加入代碼 ${team.code}\n${r.group_offer!.note}`)} />{toastEl}</>;
+    }
+  }
+
   if (route === "/search" && need) {
-    return <>{<Search preview={PREVIEW} records={PREVIEW ? MOCK_RECORDS : []} onDone={onSearchDone} listCount={list.length} />}{toastEl}</>;
+    return <>{<Search preview={PREVIEW} records={PREVIEW ? MOCK_RECORDS : []} onDone={onSearchDone} listCount={list.length} survival={settings.survival} />}{toastEl}</>;
   }
 
   if (route.startsWith("/results") && need) {
@@ -197,7 +234,7 @@ export function App() {
     const cat = decodeURIComponent(route.split("/")[2] ?? "") as Category;
     const category: Category = (CATEGORIES as readonly string[]).includes(cat) ? cat : (need.target_categories[0] as Category | undefined) ?? CATEGORIES[0];
     return <>
-      <Results need={need} records={recs} category={category} setNeed={(n) => { setNeed(n); notify("已放寬限制"); }} listCount={list.length} chips={chips(need)} />
+      <Results need={need} records={recs} category={category} setNeed={(n) => { setNeed(n); notify("已放寬限制"); }} listCount={list.length} chips={chips(need)} exclude={exclude} survival={settings.survival} reports={allReports} />
       {PREVIEW && <p className="note preview-note">示範資料：店家、價格與活動皆為虛構。</p>}
       {toastEl}
     </>;
@@ -210,7 +247,8 @@ export function App() {
         toggleList={() => setSession((s) => ({ ...s, list: s.list.includes(r.id) ? s.list.filter((x) => x !== r.id) : [...s.list, r.id] }))}
         toggleFav={() => setSession((s) => ({ ...s, favs: s.favs.includes(r.id) ? s.favs.filter((x) => x !== r.id) : [...s.favs, r.id] }))}
         share={() => share(shareText(r.title, [`${r.provider} · ${r.data_status} · 確認 ${r.verified_at}`]))}
-        report={(reason) => notify(`已回報：${reason}`)} />
+        reports={allReports} survival={settings.survival}
+        report={(reason, note) => { setSession((s) => ({ ...s, reports: [...s.reports, { id: `u${Date.now()}`, rec_id: r.id, reason, note, at: new Date().toISOString(), by: s.profile.nickname || "匿名" }] })); notify(`已回報：${reason}`); }} />
       {toastEl}
     </>;
   }
@@ -219,8 +257,9 @@ export function App() {
     const items = list.map(byId).filter((r): r is Rec => Boolean(r));
     const favItems = favs.map(byId).filter((r): r is Rec => Boolean(r));
     return <>
-      <ListScreen need={need} items={items} favs={favItems} listCount={list.length}
+      <ListScreen need={need} items={items} favs={favItems} listCount={list.length} survival={settings.survival}
         remove={(id) => setSession((s) => ({ ...s, list: s.list.filter((x) => x !== id) }))}
+        bought={(r) => { const t = comparableTotal(r) ?? 0; setSession((s) => ({ ...s, list: s.list.filter((x) => x !== r.id), settings: { ...s.settings, spent: s.settings.spent + t } })); notify(`已加進本月已花：NT$${t}`); }}
         share={() => share(shareText("清單", items.map((r) => `- ${r.title}（${r.provider}）確認 ${r.verified_at}`)))} />
       {toastEl}
     </>;
@@ -232,10 +271,10 @@ export function App() {
     const missing = HARD_FIELDS.filter((f) => !given.includes(f));
     let n = 0;
     const field = (f: (typeof HARD_FIELDS)[number]) => (
-      <Field key={f.key} idx={++n} label={f.label} kind={f.kind} value={need[f.key]} onChange={(v) => set(f.key, v as Need[typeof f.key])} />
+      <Field key={f.key} idx={++n} label={f.label} kind={f.kind} value={need[f.key]} fromSettings={derived.includes(f.key)} onChange={(v) => set(f.key, v as Need[typeof f.key])} />
     );
     return <>
-      <Shell surface="black" title="重新說" listCount={list.length}>
+      <Shell surface="black" title="重新說" listCount={list.length} survival={settings.survival}>
         <section className="rise">
           <p className="eyebrow">{pips} 02 / 03 · 確認</p>
           <h1 className="display"><span className="outline">需求</span><br /><span className="fill">與限制</span></h1>
@@ -258,16 +297,25 @@ export function App() {
           </div>
         </section>
         <section className="rise">
-          <p className="eyebrow">HARD · 硬限制</p>
-          <div className="rows">
-            {given.map(field)}
-            {given.length === 0 && <div className="row"><span className="idx">··</span><span className="row-label">—</span><span className="value unlimited">無</span></div>}
+          <p className="eyebrow">HARD · 硬限制{settings.survival && <span className="modechip">生存模式</span>}</p>
+          {GROUPS.map((g) => {
+            const rows = given.filter((f) => f.group === g);
+            return rows.length ? <div key={g} className="group"><span className="group-label">{g}</span><div className="rows">{rows.map(field)}</div></div> : null;
+          })}
+          <div className="group"><span className="group-label">不吃</span>
+            <div className="chipset">
+              {TAGS.map((t) => {
+                const on = exclude.includes(t), fromS = settings.exclude.includes(t);
+                return <button key={t} className={`pick ${on ? "on red" : ""}`} aria-pressed={on} onClick={() => set("exclude_tags", on ? need.exclude_tags.filter((x) => x !== t) : [...need.exclude_tags, t])}>{t}{fromS && on && <small> 設定</small>}</button>;
+              })}
+            </div>
           </div>
+          {given.length === 0 && exclude.length === 0 && <div className="rows"><div className="row"><span className="idx">··</span><span className="row-label">—</span><span className="value unlimited">無</span></div></div>}
         </section>
         <section className="rise">
           <p className="eyebrow">SOFT · 軟偏好</p>
           <div className="rows">
-            <Field idx={0} label="偏好" kind="text" value={need.soft_preferences.join("、")}
+            <Field idx={0} label="偏好" kind="text" value={need.soft_preferences.join("、")} fromSettings={derived.includes("soft_preferences")}
               onChange={(v) => set("soft_preferences", String(v ?? "").split(/[、,，]/).map((x) => x.trim()).filter(Boolean))} />
           </div>
         </section>
@@ -298,7 +346,7 @@ export function App() {
 
   // Landing (also the fallback for any route that needs a need but has none).
   return <>
-    <Shell surface="black" home listCount={list.length}>
+    <Shell surface="black" home listCount={list.length} survival={settings.survival}>
       <section className="rise">
         <p className="eyebrow">{pips} 01 / 03 · 說</p>
         <h1 className="display"><span className="outline">說出</span><br /><span className="fill">需求</span></h1>
@@ -312,6 +360,7 @@ export function App() {
         {!showText && <button className="link muted" onClick={() => setShowText(true)}>改用文字輸入</button>}
         {textInput}
         {need && <button className="link acid" onClick={() => go("/confirm")}>繼續上次的需求</button>}
+        {remaining !== null && <p className="note">本月剩餘 NT${remaining}{settings.survival ? " · 生存模式" : ""}</p>}
       </section>
     </Shell>
     {toastEl}
@@ -321,10 +370,11 @@ export function App() {
 type Value = string | number | boolean | null;
 
 // A null value renders as a visible 「無限制」 that becomes an editor on tap.
-function Field({ idx, label, kind, value, onChange }: { idx: number; label: string; kind: "number" | "text" | "bool"; value: Need[keyof Need]; onChange: (v: Value) => void }) {
+function Field({ idx, label, kind, value, onChange, fromSettings }: { idx: number; label: string; kind: "number" | "text" | "bool"; value: Need[keyof Need]; onChange: (v: Value) => void; fromSettings?: boolean }) {
   const [editing, setEditing] = useState(false);
   const empty = value === null || value === "" || (kind === "bool" && value === false);
   const index = <span className="idx">{idx ? String(idx).padStart(2, "0") : "··"}</span>;
+  const from = fromSettings && <span className="fromtag">來自設定</span>;
 
   if (empty && !editing) {
     return (
@@ -342,7 +392,7 @@ function Field({ idx, label, kind, value, onChange }: { idx: number; label: stri
     return (
       <div className="row">
         {index}
-        <label htmlFor={label}>{label}</label>
+        <label htmlFor={label}>{label}{from}</label>
         <select id={label} value={value ? "是" : "否"} onChange={(e) => onChange(e.target.value === "是")} onBlur={() => setEditing(false)}>
           <option>是</option><option>否</option>
         </select>
@@ -354,7 +404,7 @@ function Field({ idx, label, kind, value, onChange }: { idx: number; label: stri
   return (
     <div className="row">
       {index}
-      <label htmlFor={label}>{label}</label>
+      <label htmlFor={label}>{label}{from}</label>
       <input id={label} type={kind === "number" ? "number" : "text"} inputMode={kind === "number" ? "decimal" : "text"}
         value={shown} autoFocus={editing} onBlur={() => setEditing(false)}
         onChange={(e) => {

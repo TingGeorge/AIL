@@ -3,25 +3,31 @@ import { comparableTotal, money, type Rec } from "../records.ts";
 import { go } from "../router.ts";
 import { Shell } from "./Shell.tsx";
 
-// PRD FR-12: session-only list and favorites, share without personal data.
-export function ListScreen({ need, items, favs, remove, share, listCount }: {
-  need: Need | null; items: Rec[]; favs: Rec[]; remove: (id: string) => void; share: () => void; listCount: number;
+// PRD FR-12: session-only list and favorites, share without personal data. 標記已買 feeds 本月已花.
+export function ListScreen({ need, items, favs, remove, bought, share, listCount, survival }: {
+  need: Need | null; items: Rec[]; favs: Rec[]; remove: (id: string) => void; bought: (r: Rec) => void; share: () => void; listCount: number; survival: boolean;
 }) {
   const totals = items.map(comparableTotal);
   const known = totals.filter((t): t is number => t !== null);
   const sum = known.reduce((a, b) => a + b, 0);
-  const over = need?.budget_total_twd !== null && need?.budget_total_twd !== undefined && sum > need.budget_total_twd;
+  const budget = need?.budget_total_twd ?? null;
+  const over = budget !== null && sum > budget;
 
   const row = (r: Rec, removable: boolean) => (
     <div key={r.id} className="row list-row">
       <button className="link" onClick={() => go(`/card/${r.id}`)}>{r.title}</button>
       <span className="value">{comparableTotal(r) === null ? "—" : money(comparableTotal(r)!)}</span>
-      {removable ? <button className="link muted" onClick={() => remove(r.id)} aria-label={`移除 ${r.title}`}>移除</button> : <span />}
+      {removable ? (
+        <span className="list-actions">
+          <button className="link acid" onClick={() => bought(r)}>標記已買</button>
+          <button className="link muted" onClick={() => remove(r.id)} aria-label={`移除 ${r.title}`}>移除</button>
+        </span>
+      ) : <span />}
     </div>
   );
 
   return (
-    <Shell surface="black" title="返回" listCount={listCount}>
+    <Shell surface="black" title="返回" listCount={listCount} survival={survival}>
       <section className="rise">
         <p className="eyebrow">LIST · 清單</p>
         <h1 className="display"><span className="outline">這次</span><br /><span className="fill">清單</span></h1>
@@ -35,7 +41,7 @@ export function ListScreen({ need, items, favs, remove, share, listCount }: {
             <div className="row total">
               <span className="idx">=</span>
               <span className="row-label">合計{known.length < items.length ? "（部分未知）" : ""}</span>
-              <span className={`value ${over ? "over" : ""}`}>{money(sum)}{need?.budget_total_twd !== null && need?.budget_total_twd !== undefined && ` / ${money(need.budget_total_twd)}`}</span>
+              <span className={`value ${over ? "over" : ""}`}>{money(sum)}{budget !== null && ` / ${money(budget)}`}</span>
             </div>
           )}
         </div>

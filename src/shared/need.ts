@@ -18,6 +18,7 @@ export const needSchema = z.object({
   registration_ok: z.boolean().nullable(),
   soft_preferences: z.array(z.string()),
   eligibility_notes: z.string().nullable(),
+  exclude_tags: z.array(z.string()).default([]).describe("使用者說不吃／不要的東西，例如 牛、豬、海鮮、辣"),
   unresolved: z.array(z.string()),
 });
 
@@ -36,5 +37,6 @@ export const EMPTY_NEED: Need = {
   registration_ok: null,
   soft_preferences: [],
   eligibility_notes: null,
+  exclude_tags: [],
   unresolved: [],
 };

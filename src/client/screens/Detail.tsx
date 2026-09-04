@@ -1,25 +1,38 @@
 import { useState } from "react";
-import { comparableTotal, money, saving, statusPip, type Rec } from "../records.ts";
+import { DATA_REASONS, EXPERIENCE_REASONS, comparableTotal, isExperience, money, recentExperience, saving, statusPip, type Rec, type Report } from "../records.ts";
+import { go } from "../router.ts";
 import { Shell } from "./Shell.tsx";
 
-const REASONS = ["價格過期", "條件錯誤", "來源失效", "分類錯誤"] as const;
-
-// Evidence detail (PRD FR-10, FR-11, FR-12).
-export function Detail({ r, inList, fav, toggleList, toggleFav, share, report, listCount }: {
-  r: Rec; inList: boolean; fav: boolean; toggleList: () => void; toggleFav: () => void; share: () => void; report: (reason: string) => void; listCount: number;
+// Evidence detail (PRD FR-10, FR-11, FR-12) + 體驗回報 + 揪團 entry.
+export function Detail({ r, inList, fav, toggleList, toggleFav, share, report, reports, listCount, survival }: {
+  r: Rec; inList: boolean; fav: boolean; toggleList: () => void; toggleFav: () => void; share: () => void;
+  report: (reason: string, note: string) => void; reports: Report[]; listCount: number; survival: boolean;
 }) {
   const [reporting, setReporting] = useState(false);
-  const [reason, setReason] = useState<string>(REASONS[0]);
+  const [reason, setReason] = useState<string>(EXPERIENCE_REASONS[0]);
+  const [note, setNote] = useState("");
   const total = comparableTotal(r);
   const sv = saving(r);
+  const mine = reports.filter((x) => x.rec_id === r.id).sort((a, b) => b.at.localeCompare(a.at));
+  const recent = recentExperience(reports, r.id).length;
+  const ago = (iso: string) => { const d = Math.floor((Date.now() - Date.parse(iso)) / 86_400_000); return d === 0 ? "今天" : `${d} 天前`; };
 
   return (
-    <Shell surface="black" title={r.category} listCount={listCount}>
+    <Shell surface="black" title={r.category} listCount={listCount} survival={survival}>
       <section className="rise">
-        <p className="eyebrow"><span className={`pip ${statusPip(r.data_status)}`} />{r.data_status} · {r.agent === "free" ? "FREE AGENT" : "PAID AGENT"}</p>
+        <p className="eyebrow"><span className={`pip ${statusPip(r.data_status)}`} />{r.data_status} · {r.agent === "free" ? "白嫖獵人" : "CP值獵人"}</p>
         <h1 className="display small"><span className="outline">{r.title}</span></h1>
         <p className="lead">{r.provider}</p>
+        {recent > 0 && <p className="warntag big"><span className="pip red" />{recent} 則體驗回報 · 30 天內 · 這是使用者回報，不是本平台判斷</p>}
       </section>
+
+      {r.group_offer && (
+        <section className="rise groupbox">
+          <p className="eyebrow">TEAM · 揪團</p>
+          <p className="lead">{r.group_offer.note}</p>
+          <button className="primary" onClick={() => go(`/team/${r.id}`)}>揪團 · 滿 {r.group_offer.min_people} 人</button>
+        </section>
+      )}
 
       <section className="rise">
         <p className="eyebrow">COST · 總可比成本</p>
@@ -54,6 +67,7 @@ export function Detail({ r, inList, fav, toggleList, toggleFav, share, report, l
           <div className="row"><span className="idx">··</span><span className="row-label">距離／時間</span><span className="value">{r.distance_or_time_text ?? "未列"}</span></div>
           <div className="row"><span className="idx">··</span><span className="row-label">登記</span><span className="value">{r.registration_required ? "需要" : "不需要"}</span></div>
           <div className="row"><span className="idx">··</span><span className="row-label">資格／限制</span><span className={`value ${r.eligibility.length ? "" : "unlimited"}`}>{r.eligibility.join("、") || "無"}</span></div>
+          <div className="row"><span className="idx">··</span><span className="row-label">成分標籤</span><span className={`value ${r.tags?.length ? "" : "unlimited"}`}>{r.tags === null ? "成分未標示" : r.tags.join("、") || "無"}</span></div>
         </div>
       </section>
 
@@ -65,6 +79,19 @@ export function Detail({ r, inList, fav, toggleList, toggleFav, share, report, l
         <p className="note">請以原始頁面為準。不保證即時庫存、名額或營業狀態。</p>
       </section>
 
+      <section className="rise">
+        <p className="eyebrow">REPORTS · 回報 <b className="count">{mine.length}</b></p>
+        {mine.length === 0 && <p className="note">還沒有人回報。</p>}
+        <ul className="reports">
+          {mine.map((x) => (
+            <li key={x.id} className={isExperience(x) ? "exp" : ""}>
+              <span className={`pip ${isExperience(x) ? "red" : "blue"}`} /><b>{x.reason}</b>{x.note && <span> · {x.note}</span>}<small>{x.by} · {ago(x.at)}</small>
+            </li>
+          ))}
+        </ul>
+        <p className="note">體驗回報是使用者的個人經驗，平台不做健康或安全判斷。資料回報會改變這筆資料的狀態。</p>
+      </section>
+
       <section className="rise actions">
         <button className="primary" onClick={toggleList}>{inList ? "✓ 已在清單" : "加入清單"}</button>
         <div className="action-row">
@@ -73,11 +100,12 @@ export function Detail({ r, inList, fav, toggleList, toggleFav, share, report, l
           <button className="secondary" onClick={() => setReporting((v) => !v)}>回報</button>
         </div>
         {reporting && (
-          <form className="report" onSubmit={(e) => { e.preventDefault(); report(reason); setReporting(false); }}>
-            <p className="eyebrow">REPORT · 回報資料問題</p>
-            {REASONS.map((x) => (
-              <label key={x} className="radio"><input type="radio" name="reason" value={x} checked={reason === x} onChange={() => setReason(x)} />{x}</label>
-            ))}
+          <form className="report" onSubmit={(e) => { e.preventDefault(); report(reason, note.trim()); setReporting(false); setNote(""); }}>
+            <p className="eyebrow">體驗回報</p>
+            <div className="chipset">{EXPERIENCE_REASONS.map((x) => <button type="button" key={x} className={`pick ${reason === x ? "on red" : ""}`} aria-pressed={reason === x} onClick={() => setReason(x)}>{x}</button>)}</div>
+            <p className="eyebrow">資料回報</p>
+            <div className="chipset">{DATA_REASONS.map((x) => <button type="button" key={x} className={`pick ${reason === x ? "on" : ""}`} aria-pressed={reason === x} onClick={() => setReason(x)}>{x}</button>)}</div>
+            <input value={note} maxLength={40} placeholder="補充（選填，40 字內）" onChange={(e) => setNote(e.target.value)} aria-label="補充" />
             <button className="secondary" type="submit">送出回報</button>
           </form>
         )}
