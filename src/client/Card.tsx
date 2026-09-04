@@ -15,25 +15,30 @@ export type Card = {
   action: string;
 };
 
+// Badge dots: yellow = verified, blue = pending, red = expired/conflict.
+const pipFor = (status: string) => (status.startsWith("已驗證") ? "yellow" : status.includes("過期") || status.includes("衝突") ? "red" : "blue");
+
 export function ResultCard({ c }: { c: Card }) {
   return (
-    <article className="card">
+    <article className="card rise">
       <div className="card-head">
         <div>
           <h3>{c.title}</h3>
-          <p className="label">{c.provider}</p>
+          <p className="provider">{c.provider}</p>
         </div>
         <div className="price">
-          <span className="num">{c.total === 0 ? "免費" : `NT$${c.total}`}</span>
-          {c.unit && <span className="label">{c.unit}</span>}
+          <span className={`num ${c.total === 0 ? "free" : ""}`}>{c.total === 0 ? "FREE" : `NT$${c.total}`}</span>
+          {c.unit && <span className="unit">{c.unit}</span>}
         </div>
       </div>
       <p className="meta">{[c.distance, ...c.conditions].filter(Boolean).join(" / ")}</p>
       <p className="evidence">{c.evidence}</p>
-      <p className="label">{c.source === "curated" ? "人工整理" : "網路搜尋"} · {c.sourceLabel} · 確認 {c.verifiedAt} · {c.status}</p>
-      {c.saving && <p className="saving">{c.saving}</p>}
-      {!c.saving && c.total > 0 && <p className="label">無足夠資料計算節省</p>}
-      <button className="link">{c.action} ↗</button>
+      <p className="status-line">
+        <span className={`pip ${pipFor(c.status)}`} aria-hidden="true" />
+        {c.status} · {c.source === "curated" ? "人工整理" : "網路搜尋"} · {c.sourceLabel} · {c.verifiedAt}
+      </p>
+      {c.saving ? <p className="saving">{c.saving}</p> : c.total > 0 && <p className="note">無足夠資料計算節省</p>}
+      <button className="link acid">{c.action}</button>
     </article>
   );
 }
