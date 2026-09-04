@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ALL in life</title>
+    <style>
+      :root { color-scheme: light; font-family: system-ui, -apple-system, "PingFang TC", sans-serif; }
+      body { margin: 0; background: #f6f5f2; color: #1b1b1b; }
+      main { max-width: 480px; margin: 0 auto; padding: 16px; }
+      h1 { font-size: 1.25rem; margin: 0 0 4px; }
+      .area { font-size: 0.9rem; color: #555; margin-bottom: 24px; }
+      .mic { width: 100%; min-height: 72px; font-size: 1.1rem; border-radius: 16px; border: 2px solid #1b1b1b; background: #fff; }
+      .mic[data-recording="true"] { background: #ffe8e0; border-color: #c0392b; }
+      .note { font-size: 0.8rem; color: #555; margin: 12px 0; }
+      .link { background: none; border: none; color: #0b57d0; text-decoration: underline; font-size: 0.95rem; padding: 8px 0; }
+      .status { min-height: 1.5em; font-size: 0.95rem; margin: 12px 0; }
+      .error { color: #b3261e; }
+      section { background: #fff; border-radius: 12px; padding: 12px; margin: 12px 0; }
+      section h2 { font-size: 0.95rem; margin: 0 0 8px; color: #555; }
+      .transcript { white-space: pre-wrap; }
+      .field { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid #eee; }
+      .field label { flex: 0 0 7em; }
+      .field input { flex: 1; min-width: 0; font-size: 1rem; padding: 8px; border: 1px solid #ccc; border-radius: 8px; }
+      .unlimited { color: #777; }
+      .primary { width: 100%; min-height: 48px; font-size: 1.05rem; border-radius: 12px; border: none; background: #1b1b1b; color: #fff; margin-top: 8px; }
+      .primary:disabled { background: #999; }
+      .secondary { width: 100%; min-height: 44px; font-size: 1rem; border-radius: 12px; border: 1px solid #1b1b1b; background: #fff; margin-top: 8px; }
+      .chips { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; background: #fff; border: 1px solid #ccc; border-radius: 12px; padding: 10px; text-align: left; font-size: 0.95rem; }
+      .chip { background: #eee; border-radius: 999px; padding: 2px 10px; }
+      textarea { width: 100%; box-sizing: border-box; font-size: 1rem; padding: 10px; border-radius: 12px; border: 1px solid #ccc; min-height: 96px; }
+      ul { padding-left: 20px; margin: 0; }
+      button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #0b57d0; outline-offset: 2px; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/client/main.tsx"></script>
+  </body>
+</html>
