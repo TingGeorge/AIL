@@ -98,11 +98,11 @@
         --ink: var(--black);
         --surface: var(--white);
         --rule: var(--line);
-        --grid: rgba(0, 0, 0, 0.06);
+        --grid: rgba(0, 0, 0, 0.045);
         --muted: #6a6a6a;
       }
       main[data-surface="white"]::before {
-        background: radial-gradient(circle at 88% 6%, rgba(228, 255, 26, 0.9) 0, rgba(228, 255, 26, 0.35) 18%, transparent 34%);
+        background: radial-gradient(circle at 92% 2%, var(--acid) 0, var(--acid) 9%, transparent 9.5%);
       }
 
       /* Header bar */
@@ -169,15 +169,11 @@
         font-family: var(--font-display);
         font-weight: 900;
         font-size: var(--text-display);
-        line-height: 1.0;
-        letter-spacing: -0.02em;
+        line-height: 1.05;
+        letter-spacing: 0;
         text-wrap: balance;
       }
-      .display .outline {
-        color: transparent;
-        -webkit-text-stroke: 1.5px var(--ink);
-        paint-order: stroke fill;
-      }
+      .display .outline { color: var(--ink); }
       .display .fill { color: var(--acid); }
       main[data-surface="white"] .display .fill {
         color: var(--black);
@@ -330,6 +326,7 @@
       .link.muted { color: var(--muted); }
       .link.acid { color: var(--acid); text-decoration: none; }
       .link.acid::before { content: "▶ "; font-size: 0.7em; }
+      main[data-surface="white"] .link.acid { color: var(--black); text-decoration: underline; text-decoration-color: var(--acid); text-decoration-thickness: 3px; }
 
       .status { margin: 0; min-height: 22px; font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.04em; }
       .status.error { color: var(--acid); }
