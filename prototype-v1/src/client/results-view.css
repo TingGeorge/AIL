@@ -417,6 +417,23 @@
 }
 
 .image-badge svg { width: 12px; }
+
+/* Beat the later MVP badge's left offset and oversized hero icon. */
+.results-view-detail .image-badge-icon {
+  left: auto;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.results-view-detail .image-badge-icon > svg {
+  width: 18px;
+  height: 18px;
+}
+
 .image-badge-demo { border-color: rgb(255 202 66 / 0.5); background: rgb(42 31 8 / 0.9); color: var(--amber); }
 
 .demo-record-notice {

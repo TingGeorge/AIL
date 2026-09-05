@@ -362,3 +362,44 @@ test("ResultsView：待確認與排除區同樣精簡，未知費用不能呈現
   expect(html).toContain("必要費用未知");
   expect(html).not.toContain("FREE");
 });
+
+
+test("DetailView：已驗證標章改為小圖示，保留無障礙名稱與提示", () => {
+  const html = renderToStaticMarkup(createElement(DetailView, {
+    item: rec({ source_url: "https://merchant.test/listing" }),
+    favorite: false,
+    listed: false,
+    onFavorite: () => {},
+    onList: () => {},
+    onReport: () => {},
+  }));
+  const badge = html.match(/<span class="image-badge [\s\S]*?<\/span>/)?.[0] ?? "";
+  expect(badge).toContain("image-badge-icon");
+  expect(badge).toContain('role="img"');
+  expect(badge).toContain('aria-label="已驗證"');
+  expect(badge).toContain('title="已驗證"');
+  expect(badge).toContain('<svg');
+  expect(badge.replace(/<[^>]*>/g, "")).toBe("");
+  expect(html).toContain("資料狀態");
+  expect(html).toContain("<strong>已驗證</strong>");
+});
+
+test("DetailView：未驗證及示範資料不套用已驗證小圖示", () => {
+  for (const item of [
+    rec({ source_url: "https://merchant.test/listing", data_status: "過期／待確認" }),
+    rec({ source_url: "https://example.com/ail-demo/sample" }),
+  ]) {
+    const html = renderToStaticMarkup(createElement(DetailView, {
+      item,
+      favorite: false,
+      listed: false,
+      onFavorite: () => {},
+      onList: () => {},
+      onReport: () => {},
+    }));
+    const badge = html.match(/<span class="image-badge [\s\S]*?<\/span>/)?.[0] ?? "";
+    expect(badge).not.toContain("image-badge-icon");
+    expect(badge).not.toContain('aria-label="已驗證"');
+    expect(badge).toContain(item.data_status === "已驗證" ? "示範測試資料" : item.data_status);
+  }
+});

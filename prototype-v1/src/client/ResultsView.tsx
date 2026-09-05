@@ -576,6 +576,7 @@ export function DetailView({
   onReport,
 }: DetailViewProps) {
   const demo = isDemoRecord(item);
+  const verified = !demo && item.data_status === "已驗證";
   const total = comparableTotal(item);
   const sourceUrl = safeHttpUrl(item.source_url);
   const actionUrl = demo ? null : safeHttpUrl(item.action_url);
@@ -598,7 +599,15 @@ export function DetailView({
     <section className={`screen detail-screen results-view-detail tone-${item.category}`}>
       <div className="detail-hero">
         <CategoryArt category={item.category} />
-        <span className={`image-badge ${demo ? "image-badge-demo" : ""}`}><ShieldCheck aria-hidden="true" />{demo ? "示範測試資料" : item.data_status}</span>
+        <span
+          className={`image-badge ${demo ? "image-badge-demo" : ""} ${verified ? "image-badge-icon" : ""}`}
+          role={verified ? "img" : undefined}
+          aria-label={verified ? "已驗證" : undefined}
+          title={verified ? "已驗證" : undefined}
+        >
+          <ShieldCheck aria-hidden="true" />
+          {!verified && (demo ? "示範測試資料" : item.data_status)}
+        </span>
       </div>
 
       {demo && (
