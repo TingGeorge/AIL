@@ -6,6 +6,7 @@ import { parseNeed, parseConfigured } from "./parse.ts";
 import { transcribeAudio, sttConfigured } from "./transcribe.ts";
 import { applySchema, dbConfigured } from "./db.ts";
 import { search } from "./search.ts";
+import { data } from "./data.ts";
 
 const TIMEOUT_MS = 30_000;
 const MAX_AUDIO_BYTES = 5 * 1024 * 1024; // trust boundary: 30 s of opus/aac is well under this
@@ -62,6 +63,7 @@ app.post("/api/parse", async (c) => {
 
 // 新路由一定要掛在 serveStatic 的 catch-all 之前，否則會被靜態檔案接走（SPEC-backend §5.2）。
 app.route("/", search);
+app.route("/", data);
 
 app.use("/*", serveStatic({ root: "./dist" }));
 app.get("/*", serveStatic({ path: "./dist/index.html" }));

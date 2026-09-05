@@ -1,4 +1,4 @@
-import { afterAll, describe, expect, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { sql } from "../src/server/db.ts";
 import {
   candidateSchema, dataStatusOf, missingEvidence, rowToRec, selfConflicting,
@@ -97,12 +97,11 @@ test("dataStatusOf：無法納入比較 → 衝突 → 過期 → 部分驗證 �
 });
 
 // ---- 需要資料庫的部分：沒有 DATABASE_URL 就跳過（同 parse test 的做法）----
+// 不要在這裡 sql.end()：sql 是整個測試行程共用的單例，關掉之後別的測試檔就連不上了。
 const dbLive = Boolean(process.env.DATABASE_URL);
 const ROOT = Bun.fileURLToPath(new URL("..", import.meta.url));
 
 describe.skipIf(!dbLive)("匯入管線 (live database)", () => {
-  afterAll(async () => { await sql.end(); });
-
   const runImport = async () => {
     const p = Bun.spawn(["bun", "run", "scripts/import.ts"], { cwd: ROOT, stdout: "pipe", stderr: "pipe" });
     const code = await p.exited;

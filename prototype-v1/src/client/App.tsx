@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CATEGORIES, type Need } from "../shared/need.ts";
-import { ApiError, parse, transcribe } from "./api.ts";
+import { ApiError, candidates, parse, transcribe } from "./api.ts";
 import { MAX_SECONDS, Recorder, recordingSupported } from "./recorder.ts";
 import { useHashRoute, go } from "./router.ts";
 import { DOT_COLORS, TAGS, comparableTotal, joinCode, type Category, type Profile, type Rec, type Report, type Settings as S, type Team as T } from "../shared/records.ts";
@@ -14,6 +14,7 @@ import { Detail } from "./screens/Detail.tsx";
 import { ListScreen } from "./screens/ListScreen.tsx";
 
 // Preview mode: fabricated records and simulated Agents. Never on in a real build without the flag.
+const NO_RECORDS: Rec[] = [];   // 穩定參考：Search 的 effect 以 records 為相依，每次 render 新開陣列會重跑搜尋
 const PREVIEW = import.meta.env.VITE_PREVIEW === "1" || new URLSearchParams(location.search).has("mock");
 
 type Stage = "idle" | "recording" | "transcribing" | "parsing";
@@ -80,6 +81,18 @@ export function App() {
   };
   const notify = (m: string) => setToast(m);
   const onSearchDone = useCallback((r: Rec[]) => { setRecords(r); go("/results"); }, []);
+
+  // 票 11：直接開 #/card/<id> 或重整 #/list 時記憶體裡沒有紀錄，用批次查詢補回來。
+  useEffect(() => {
+    if (PREVIEW) return;
+    const have = new Set((records ?? []).map((r) => r.id));
+    const want = route.startsWith("/card/") ? [route.slice(6)] : route === "/list" ? [...list, ...favs] : [];
+    const missing = want.filter((id) => id && !have.has(id));
+    if (missing.length === 0) return;
+    let live = true;
+    candidates(missing).then((got) => { if (live && got.length) setRecords((prev) => [...(prev ?? []), ...got]); }).catch(() => notify("讀取失敗"));
+    return () => { live = false; };
+  }, [route, records, list, favs]);
 
   // A correction on the confirmation screen is parsed against the current 需求與限制.
   const onConfirm = route === "/confirm";
@@ -226,7 +239,7 @@ export function App() {
   }
 
   if (route === "/search" && need) {
-    return <>{<Search preview={PREVIEW} records={PREVIEW ? MOCK_RECORDS : []} onDone={onSearchDone} listCount={list.length} survival={settings.survival} />}{toastEl}</>;
+    return <>{<Search preview={PREVIEW} records={PREVIEW ? MOCK_RECORDS : NO_RECORDS} need={need} exclude={exclude} costcoOk={settings.costco_ok} onDone={onSearchDone} listCount={list.length} survival={settings.survival} />}{toastEl}</>;
   }
 
   if (route.startsWith("/results") && need) {
@@ -234,7 +247,7 @@ export function App() {
     const cat = decodeURIComponent(route.split("/")[2] ?? "") as Category;
     const category: Category = (CATEGORIES as readonly string[]).includes(cat) ? cat : (need.target_categories[0] as Category | undefined) ?? CATEGORIES[0];
     return <>
-      <Results need={need} records={recs} category={category} setNeed={(n) => { setNeed(n); notify("已放寬限制"); }} listCount={list.length} chips={chips(need)} exclude={exclude} survival={settings.survival} reports={allReports} />
+      <Results need={need} records={recs} category={category} setNeed={(n) => { setNeed(n); notify("已放寬限制"); }} listCount={list.length} chips={chips(need)} exclude={exclude} survival={settings.survival} costcoOk={settings.costco_ok} reports={allReports} />
       {PREVIEW && <p className="note preview-note">示範資料：店家、價格與活動皆為虛構。</p>}
       {toastEl}
     </>;

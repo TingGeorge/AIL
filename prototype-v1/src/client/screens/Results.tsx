@@ -1,20 +1,21 @@
 import { CATEGORIES, type Need } from "../../shared/need.ts";
 import { ResultCard } from "../Card.tsx";
-import { bucket, comparableTotal, money, recentExperience, type Category, type Rec, type Report } from "../../shared/records.ts";
+import { bucket, comparableTotal, hardViolations, money, recentExperience, type Category, type Rec, type Report } from "../../shared/records.ts";
 import { go } from "../router.ts";
 import { Shell } from "./Shell.tsx";
 
-export function Results({ need, records, category, setNeed, listCount, chips, exclude, survival, reports }: {
-  need: Need; records: Rec[]; category: Category; setNeed: (n: Need) => void; listCount: number; chips: string[]; exclude: string[]; survival: boolean; reports: Report[];
+export function Results({ need, records, category, setNeed, listCount, chips, exclude, survival, costcoOk, reports }: {
+  need: Need; records: Rec[]; category: Category; setNeed: (n: Need) => void; listCount: number; chips: string[]; exclude: string[]; survival: boolean; costcoOk: boolean; reports: Report[];
 }) {
   const inCat = records.filter((r) => r.category === category);
-  const b = bucket(inCat, need, exclude, survival);
+  const b = bucket(inCat, need, exclude, survival, costcoOk);
   const relevant = need.target_categories.includes(category);
-  const counts = Object.fromEntries(CATEGORIES.map((c) => [c, bucket(records.filter((r) => r.category === c), need, exclude, survival).main.length]));
+  const counts = Object.fromEntries(CATEGORIES.map((c) => [c, bucket(records.filter((r) => r.category === c), need, exclude, survival, costcoOk).main.length]));
   const paidOk = records.some((r) => r.agent === "paid");
   const freeOk = records.some((r) => r.agent === "free");
   const cheapestExcluded = b.excluded.map(comparableTotal).filter((x): x is number => x !== null).sort((x, y) => x - y)[0];
   const byTag = b.excluded.filter((r) => r.tags && exclude.some((t) => r.tags!.includes(t))).length;
+  const excludedBy = (k: "registration" | "costco") => b.excluded.filter((r) => hardViolations(r, need, exclude, costcoOk).includes(k)).length;
   const card = (r: Rec) => <ResultCard key={r.id} r={r} reportCount={recentExperience(reports, r.id).length} />;
 
   return (
@@ -58,6 +59,13 @@ export function Results({ need, records, category, setNeed, listCount, chips, ex
               </>
             )}
             {need.free_only && b.excluded.length > 0 && <button className="secondary" onClick={() => setNeed({ ...need, free_only: false })}>不限免費</button>}
+            {need.registration_ok === false && excludedBy("registration") > 0 && (
+              <>
+                <p className="note">「不想先登記」排除了 {excludedBy("registration")} 筆。</p>
+                <button className="secondary" onClick={() => setNeed({ ...need, registration_ok: true })}>接受需要先登記</button>
+              </>
+            )}
+            {!costcoOk && excludedBy("costco") > 0 && <p className="note">Costco 會員限定排除了 {excludedBy("costco")} 筆。到設定可以開啟會員身分。</p>}
           </div>
         )}
         {b.main.map(card)}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DATA_REASONS, EXPERIENCE_REASONS, comparableTotal, isExperience, money, recentExperience, saving, statusPip, type Rec, type Report } from "../../shared/records.ts";
+import { DATA_REASONS, EXPERIENCE_REASONS, comparableTotal, isExperience, isExpired, money, recentExperience, saving, statusPip, type Rec, type Report } from "../../shared/records.ts";
 import { go } from "../router.ts";
 import { Shell } from "./Shell.tsx";
 
@@ -15,6 +15,9 @@ export function Detail({ r, inList, fav, toggleList, toggleFav, share, report, r
   const sv = saving(r);
   const mine = reports.filter((x) => x.candidate_id === r.id).sort((a, b) => b.created_at.localeCompare(a.created_at));
   const recent = recentExperience(reports, r.id).length;
+  const day = (iso: string) => new Date(iso).toLocaleDateString("en-CA", { timeZone: "Asia/Taipei" });
+  // 同一個 field 有兩條摘錄＝來源自我矛盾，並列顯示（票 11、ADR 0002）。
+  const fields = [...new Set(r.evidence.map((e) => e.field))];
   const ago = (iso: string) => { const d = Math.floor((Date.now() - Date.parse(iso)) / 86_400_000); return d === 0 ? "今天" : `${d} 天前`; };
 
   return (
@@ -65,6 +68,15 @@ export function Detail({ r, inList, fav, toggleList, toggleFav, share, report, r
         <div className="rows">
           <div className="row"><span className="idx">··</span><span className="row-label">時間</span><span className="value">{r.availability_or_event_time ?? "未列"}</span></div>
           <div className="row"><span className="idx">··</span><span className="row-label">距離／時間</span><span className="value">{r.distance_or_time_text ?? "未列"}</span></div>
+          {r.valid_until && (
+            <div className="row"><span className="idx">··</span><span className="row-label">有效期</span>
+              <span className={`value ${isExpired(r) ? "acid" : ""}`}>{isExpired(r) ? `優惠已於 ${day(r.valid_until)} 到期，僅供參考` : `有效至 ${day(r.valid_until)}`}</span></div>
+          )}
+          {r.address && (
+            <div className="row"><span className="idx">··</span><span className="row-label">地點</span>
+              {/* ponytail: 純 URL 外部連結，不載入地圖 SDK。要顯示店家位置的內嵌地圖時再換。 */}
+              <span className="value"><a className="link acid" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.address)}`} target="_blank" rel="noopener">{r.address}</a></span></div>
+          )}
           <div className="row"><span className="idx">··</span><span className="row-label">登記</span><span className="value">{r.registration_required ? "需要" : "不需要"}</span></div>
           <div className="row"><span className="idx">··</span><span className="row-label">資格／限制</span><span className={`value ${r.eligibility.length ? "" : "unlimited"}`}>{r.eligibility.join("、") || "無"}</span></div>
           <div className="row"><span className="idx">··</span><span className="row-label">成分標籤</span><span className={`value ${r.tags?.length ? "" : "unlimited"}`}>{r.tags === null ? "成分未標示" : r.tags.join("、") || "無"}</span></div>
@@ -73,7 +85,15 @@ export function Detail({ r, inList, fav, toggleList, toggleFav, share, report, r
 
       <section className="rise">
         <p className="eyebrow">EVIDENCE · 證據</p>
-        {r.evidence.map((e, i) => <p key={i} className="lead quote">{e.field}：{e.quote}</p>)}
+        {fields.map((f) => {
+          const same = r.evidence.filter((e) => e.field === f);
+          return (
+            <div key={f}>
+              {same.map((e, i) => <p key={i} className="lead quote">{e.field}：{e.quote}</p>)}
+              {same.length > 1 && <p className="warntag"><span className="pip red" />同一個來源對「{f}」有兩種說法 · 衝突待確認，不進主要排序</p>}
+            </div>
+          );
+        })}
         <p className="note">{r.source_type === "curated" ? "人工整理" : "網路搜尋"} · {({ official: "官方", provider: "提供者", public: "公共機關", other: "其他" })[r.source_authority]} · 搜尋 {r.collected_at.slice(0, 10)} · 確認 {r.verified_at}</p>
         <a className="link acid" href={r.source_url} target="_blank" rel="noopener">{r.action_label}（離開 ALL in life）</a>
         <p className="note">請以原始頁面為準。不保證即時庫存、名額或營業狀態。</p>
