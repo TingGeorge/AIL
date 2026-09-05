@@ -1,6 +1,7 @@
 import type { Need } from "../shared/need.ts";
 import type { Rec } from "../shared/records.ts";
 import type { AccountData, AuthResponse, User } from "../shared/account.ts";
+import { voiceResultSchema, type VoiceResult } from "../shared/voice.ts";
 
 export class ApiError extends Error {
   constructor(public kind: "timeout" | "failed" | "aborted", message: string, public status = 0) { super(message); }
@@ -25,13 +26,15 @@ async function call<T>(url: string, init: RequestInit = {}, token?: string, sign
   } catch (e) { throw errorOf(e); }
 }
 const json = (method: string, body?: unknown): RequestInit => ({method, headers:{"content-type":"application/json"}, ...(body === undefined ? {} : {body:JSON.stringify(body)})});
-export const transcribe = (audio: Blob, signal?: AbortSignal) => {
-  const form = new FormData(); form.append("audio", audio, "clip.webm");
-  return call<{transcript:string}>("/api/transcribe", {method:"POST",body:form}, undefined, signal);
-};
+export async function voice(audio: File, signal?: AbortSignal): Promise<VoiceResult> {
+  const form = new FormData(); form.append("audio", audio);
+  const result = voiceResultSchema.safeParse(await call<unknown>("/api/voice", {method:"POST",body:form}, undefined, signal));
+  if (!result.success) throw new ApiError("failed", "語音服務回應格式不正確。");
+  return result.data;
+}
 export const parse = (transcript: string, current: Need | null, signal?: AbortSignal) => call<Need>("/api/parse", json("POST",{transcript,current}), undefined, signal);
 export const candidates = (ids: string[], signal?: AbortSignal) => call<Rec[]>(`/api/candidates?ids=${encodeURIComponent(ids.join(","))}`, {}, undefined, signal);
-export type ServiceConfig = {database:boolean;parse:boolean;transcribe:boolean;ranking:boolean;support_email:string|null;area:string};
+export type ServiceConfig = {database:boolean;parse:boolean;voice:boolean;ranking:boolean;support_email:string|null;area:string};
 export const config = () => call<ServiceConfig>("/api/config");
 export const register = (username:string,password:string,nickname:string) => call<AuthResponse>("/api/auth/register",json("POST",{username,password,nickname}));
 export const login = (username:string,password:string) => call<AuthResponse>("/api/auth/login",json("POST",{username,password}));

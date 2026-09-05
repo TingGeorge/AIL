@@ -1,5 +1,4 @@
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { generateText, Output } from "ai";
+import { generateStructured, geminiConfigured } from "./gemini.ts";
 import { z } from "zod";
 import type { Need } from "../shared/need.ts";
 import { comparableTotal, TAGS, type Category, type Rec } from "../shared/records.ts";
@@ -31,27 +30,14 @@ const SYSTEM = `你是「ALL in life」的推薦排序 Agent，只排序已由�
 - 免費只代表總可比成本為 0，不代表沒有資格、登記、押金或其他條件。
 - 只輸出指定的結構化 JSON。`;
 
-const provider = () => createOpenAICompatible({
-  name: "llm",
-  baseURL: process.env.LLM_BASE_URL ?? "",
-  apiKey: process.env.LLM_API_KEY,
-  supportsStructuredOutputs: true,
+export const rankingConfigured = geminiConfigured;
+
+const aiRankingGenerator: RankingGenerator = ({ system, prompt, signal }) => generateStructured({
+  signal,
+  schema: rankingOutputSchema,
+  system,
+  input: [{ type: "text", text: prompt }],
 });
-
-export const rankingConfigured = () => Boolean(
-  process.env.LLM_BASE_URL?.trim() && process.env.LLM_MODEL?.trim(),
-);
-
-const aiRankingGenerator: RankingGenerator = async ({ system, prompt, signal }) => {
-  const { output } = await generateText({
-    model: provider()(process.env.LLM_MODEL ?? ""),
-    output: Output.object({ schema: rankingOutputSchema, name: "ranking" }),
-    system,
-    prompt,
-    abortSignal: signal,
-  });
-  return output;
-};
 
 // 缺少結構化欄位時仍顯示候選，但一定把限制說明交給前端，不能假稱硬限制已保證。
 export const constraintWarnings = (need: Need, records: Rec[], settingsExclude: string[] = []): RankingWarning[] => {

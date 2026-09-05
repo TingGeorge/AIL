@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Bookmark, Check, CircleDollarSign, Compass, Heart, Home, LogIn, MapPin, Mic, Pencil, Radar, Search, Settings, ShieldCheck, SlidersHorizontal, Sparkles, Square, UserRound, Users, WalletCards, X } from "lucide-react";
 import { EMPTY_NEED, needSchema, type Need } from "../shared/need.ts";
-import { currentAccountMonth } from "../shared/account.ts";
+import { currentAccountMonth, type AccountSettings } from "../shared/account.ts";
+import type { VoiceResult } from "../shared/voice.ts";
 import { isDemoRecord, type Rec } from "../shared/records.ts";
 import * as api from "./api.ts";
-import { Recorder, MAX_SECONDS, recordingSupported } from "./recorder.ts";
+import { Recorder, scheduleRecordingLimit, recordingSupported } from "./recorder.ts";
 import { initialSearch, rankedRecords, reduceSearch } from "./search-state.ts";
 import { useAccount } from "./useAccount.ts";
 import { applyBudgetDefault } from "./need-defaults.ts";
@@ -26,12 +27,17 @@ function route(){const [raw,id]=location.hash.replace(/^#\/?/,"").split("/");ret
 const navigate=(view:View,id?:string)=>{location.hash=`/${view}${id?`/${encodeURIComponent(id)}`:""}`;};
 const money=(value:number)=>new Intl.NumberFormat("zh-TW",{maximumFractionDigits:0}).format(value);
 const modes={daily:{short:"日常",title:"精打細算",description:"以真實成本與來源證據探索",color:"var(--lime)"},team:{short:"優惠",title:"一起省更多",description:"商家團購條件與兌換資訊",color:"var(--violet)"},zero:{short:"零元",title:"零元探索",description:"只看總可比成本為零的選項",color:"var(--coral)"}};
+export function prepareVoiceReview(result:VoiceResult,settings:AccountSettings,now=new Date()){
+ const prepared=applyBudgetDefault(result.need,settings,now);
+ return {transcript:result.transcript,need:prepared.need,budgetFromSettings:prepared.fromSettings,parsed:true,reviewStarted:true,mode:prepared.need.free_only?"zero" as const:"daily" as const};
+}
+export const voiceResultIsCurrent=(signal:AbortSignal,revision:number,currentRevision:number)=>!signal.aborted&&revision===currentRevision;
 export function App(){
  const [current,setCurrent]=useState(route),[mode,setMode]=useState<Mode>("daily"),[transcript,setTranscript]=useState(""),[need,setNeed]=useState<Need>({...EMPTY_NEED}),[parsed,setParsed]=useState(false),[correction,setCorrection]=useState("");
  const account=useAccount();
  const [reviewStarted,setReviewStarted]=useState(false),[budgetFromSettings,setBudgetFromSettings]=useState(false);
  const [config,setConfig]=useState<api.ServiceConfig|null>(null),[configError,setConfigError]=useState(false),[online,setOnline]=useState(navigator.onLine);
- const [busy,setBusy]=useState<""|"parsing"|"recording"|"transcribing">(""),[seconds,setSeconds]=useState(0),[message,setMessage]=useState(""),[error,setError]=useState("");
+ const [busy,setBusy]=useState<""|"parsing"|"recording"|"voice">(""),[seconds,setSeconds]=useState(0),[message,setMessage]=useState(""),[error,setError]=useState("");
  const [position,setPosition]=useState<{lat:number;lng:number}|null>(null),[locating,setLocating]=useState(false);
  const [searchState,setSearchState]=useState(initialSearch),[searching,setSearching]=useState(false),[searchError,setSearchError]=useState("");
  const [cache,setCache]=useState<Record<string,Rec>>({}),[recordError,setRecordError]=useState(""),[recordsLoading,setRecordsLoading]=useState(false),[collection,setCollection]=useState<"list"|"favs">("list");
@@ -47,7 +53,7 @@ export function App(){
  useEffect(()=>{if(current.view!=="search"&&searching){requestId.current++;searchAbort.current?.abort();setSearching(false);}},[current.view]);
  useEffect(()=>{let live=true;api.config().then(value=>{if(live)setConfig(value);}).catch(()=>{if(live)setConfigError(true);});const change=()=>setOnline(navigator.onLine);const install=(event:Event)=>{event.preventDefault();setInstallPrompt(event as InstallPrompt);};window.addEventListener("online",change);window.addEventListener("offline",change);window.addEventListener("beforeinstallprompt",install);return()=>{live=false;window.removeEventListener("online",change);window.removeEventListener("offline",change);window.removeEventListener("beforeinstallprompt",install);};},[]);
  useEffect(()=>()=>{requestId.current++;searchAbort.current?.abort();parseAbort.current?.abort();if(recordTimer.current)clearInterval(recordTimer.current);if(recordDeadline.current)clearTimeout(recordDeadline.current);void recorder.current?.stop().catch(()=>{});},[]);
- useEffect(()=>{if(current.view!=="home"&&recorder.current){const mic=recorder.current;recorder.current=null;if(recordTimer.current)clearInterval(recordTimer.current);if(recordDeadline.current)clearTimeout(recordDeadline.current);void mic.stop().catch(()=>{});setBusy("");}if(current.view!=="home"&&busy==="transcribing"){parseAbort.current?.abort();setBusy("");}},[current.view]);
+ useEffect(()=>{if(current.view!=="home"&&recorder.current){const mic=recorder.current;recorder.current=null;if(recordTimer.current)clearInterval(recordTimer.current);if(recordDeadline.current)clearTimeout(recordDeadline.current);void mic.stop().catch(()=>{});setBusy("");}if(current.view!=="home"&&busy==="voice"){parseAbort.current?.abort();setBusy("");}},[current.view]);
  useEffect(()=>{if(!message)return;const t=setTimeout(()=>setMessage(""),6000);return()=>clearTimeout(t);},[message]);
  const loadIds=current.view==="detail"&&current.id?[current.id]:current.view==="saved"?ids:[];
  const idsKey=loadIds.join(",");
@@ -74,15 +80,20 @@ export function App(){
  }
  async function stopVoice(){
   if(recordTimer.current)clearInterval(recordTimer.current);if(recordDeadline.current)clearTimeout(recordDeadline.current);
-  const currentRecorder=recorder.current;if(!currentRecorder)return;recorder.current=null;setBusy("transcribing");
-  const controller=new AbortController();parseAbort.current=controller;
-  try{const clip=await currentRecorder.stop();if(!clip.size||controller.signal.aborted)return;const result=await api.transcribe(clip,controller.signal);if(controller.signal.aborted)return;setTranscript(result.transcript);transcriptRevision.current++;setParsed(false);setReviewStarted(false);setMessage("逐字稿已完成，請先檢查文字，再按解析。");}catch(e){if(!controller.signal.aborted)setError(`${(e as Error).message} 可改用文字輸入。`);}finally{if(parseAbort.current===controller)setBusy("");}
+  const currentRecorder=recorder.current;if(!currentRecorder)return;recorder.current=null;setBusy("voice");
+  parseAbort.current?.abort();const controller=new AbortController();parseAbort.current=controller;const revision=transcriptRevision.current;
+  try{
+   const clip=await currentRecorder.stop();if(!clip.size)throw new Error("沒有錄到音訊。");if(!voiceResultIsCurrent(controller.signal,revision,transcriptRevision.current))return;
+   const review=prepareVoiceReview(await api.voice(clip,controller.signal),account.data.settings);
+   if(!voiceResultIsCurrent(controller.signal,revision,transcriptRevision.current))return;
+   setTranscript(review.transcript);transcriptRevision.current++;setNeed(review.need);setBudgetFromSettings(review.budgetFromSettings);setParsed(review.parsed);setReviewStarted(review.reviewStarted);setMode(review.mode);setCorrection("");go("filters");setMessage("請確認語音與條件。");
+  }catch(e){if(!controller.signal.aborted)setError(`${(e as Error).message} 請重試或改用文字輸入。`);}finally{if(parseAbort.current===controller)setBusy("");}
  }
  async function startVoice(){
   if(busy==="recording"){await stopVoice();return;}if(busy)return;
   if(!recordingSupported()){setError("此瀏覽器無法錄音；請使用 HTTPS 或改用文字輸入。");return;}
   setError("");const mic=new Recorder();recorder.current=mic;
-  try{setBusy("recording");await mic.start();if(recorder.current!==mic){await mic.stop();return;}setSeconds(0);recordTimer.current=setInterval(()=>setSeconds(n=>n+1),1000);recordDeadline.current=setTimeout(()=>void stopVoice(),MAX_SECONDS);}catch{if(recorder.current!==mic)return;recorder.current=null;setBusy("");setError("麥克風未開啟或權限被拒絕，請改用文字輸入。");}
+  try{setBusy("recording");await mic.start();if(recorder.current!==mic){await mic.stop();return;}setSeconds(0);recordTimer.current=setInterval(()=>setSeconds(n=>n+1),1000);recordDeadline.current=scheduleRecordingLimit(()=>void stopVoice());}catch{if(recorder.current!==mic)return;recorder.current=null;setBusy("");setError("麥克風未開啟或權限被拒絕，請改用文字輸入。");}
  }
  function locate(){
   if(!navigator.geolocation){setError("瀏覽器不支援定位，仍可不使用距離篩選。");return;}
@@ -117,12 +128,12 @@ export function App(){
  <button className="wallet-card" onClick={()=>go("settings")} aria-label="設定本月預算與已花費"><div><span className="wallet-label"><WalletCards/>本月剩餘</span><strong>{budget===null?"尚未設定":`NT$ ${money(budget-spent)}`}</strong></div><div className="wallet-side"><span>手動記錄支出</span><b>NT$ {money(spent)}</b><small>調整生活預算</small></div><div className="wallet-progress"><i style={{width:`${budget&&budget>0?Math.max(0,Math.min(100,(budget-spent)/budget*100)):0}%`}}/></div></button>
  <div className="mode-carousel">{(Object.keys(modes) as Mode[]).map(value=><button key={value} className={`mode-card ${mode===value?"active":""}`} style={{"--mode-color":modes[value].color} as React.CSSProperties} onClick={()=>chooseMode(value)}><span>{value==="daily"?<CircleDollarSign/>:value==="team"?<Users/>:<Sparkles/>}</span><b>{modes[value].short}</b><small>{modes[value].title}</small>{mode===value&&<Check className="mode-check"/>}</button>)}</div>
  <div className="mission-card"><div className="mission-top"><span className="mode-dot"/><span>{modes[mode].title}</span><button onClick={openManual}><SlidersHorizontal/>手動條件</button></div>
- {config?.transcribe!==false&&<button className={`voice-action ${busy==="recording"?"recording":""}`} disabled={busy!==""&&busy!=="recording"} onClick={()=>void startVoice()}><span>{busy==="recording"?<Square/>:<Mic/>}</span><b>{busy==="recording"?`錄音 ${seconds} / 30 秒 · 點擊停止`:busy==="transcribing"?"正在轉成逐字稿…":"用語音說需求"}</b><small>最長 30 秒，確認後才解析</small></button>}
- <label className="need-input"><Pencil/><textarea value={transcript} maxLength={2000} placeholder="例如：兩人晚餐，300 元，不吃牛" aria-label="文字輸入需求或編輯逐字稿" disabled={busy==="recording"||busy==="transcribing"} onChange={e=>{setTranscript(e.target.value);setParsed(false);setReviewStarted(false);transcriptRevision.current++;}}/><span>可修改文字或逐字稿</span></label>
+ {config?.voice===true&&<button className={`voice-action ${busy==="recording"?"recording":""}`} disabled={busy!==""&&busy!=="recording"} onClick={()=>void startVoice()}><span>{busy==="recording"?<Square/>:<Mic/>}</span><b>{busy==="recording"?`錄音 ${seconds} / 30 秒 · 點擊停止`:busy==="voice"?"正在整理語音與條件…":"用語音說需求"}</b><small>最長 30 秒；停止後音訊會傳送給 Gemini 解析</small></button>}
+ <label className="need-input"><Pencil/><textarea value={transcript} maxLength={2000} placeholder="例如：兩人晚餐，300 元，不吃牛" aria-label="文字輸入需求或編輯逐字稿" disabled={busy==="recording"||busy==="voice"} onChange={e=>{setTranscript(e.target.value);setParsed(false);setReviewStarted(false);transcriptRevision.current++;}}/><span>可修改文字或逐字稿</span></label>
  <button className="primary-action" disabled={Boolean(busy)||!online} onClick={()=>config?.parse===false?openManual():void parseText()}>{config?.parse===false?<Search/>:<Sparkles/>}{busy==="parsing"?"解析中…":config?.parse===false?"手動搜尋":"解析並確認"}<ArrowRight/></button>
  {config?.parse!==false&&<button className="text-button manual-button" onClick={openManual}>手動搜尋</button>}
  </div>
- {(config?.parse===false||configError)&&<p className="service-note">{configError?"暫時無法讀取服務狀態。":"AI 未啟用。"}可使用手動搜尋。</p>}
+ {(config?.parse===false||config?.voice===false||configError)&&<p className="service-note">{configError?"暫時無法讀取服務狀態。":config?.parse===false&&config?.voice===false?"文字與語音 AI 未啟用。":config?.voice===false?"語音 AI 未啟用。":"文字 AI 未啟用。"}可使用文字輸入或手動搜尋。</p>}
  {config?.database===false&&<p className="notice warning">資料庫尚未設定；搜尋與帳號需要管理者連接 PostgreSQL。</p>}
  <CatalogNotice/>
  <button className="quick-team" onClick={()=>go("offers")}><span className="quick-icon"><Users/></span><span><b>團購優惠</b><small>查看人數門檻與兌換碼</small></span><ArrowRight/></button><p className="home-footnote"><ShieldCheck/>比較的是已匯入資料，不是即時網路搜尋。</p>

@@ -1,41 +1,37 @@
 # ALL in life — 語音輸入規格（Voice Input Spec）
 
 - 文件狀態：Hackathon MVP build spec
-- 版本：v0.3
+- 版本：v0.4（Gemini 原生音訊／結構化遷移）
 - 日期：2026-09-05
 - 上游文件：[PRD-all-in-life.md](./PRD-all-in-life.md)（FR-02、FR-03、FR-15、§7.1、§13）
 - 詞彙：以 [CONTEXT.md](../CONTEXT.md) 為準
 
 ## 1. 摘要與範圍
 
-使用者用說的告訴系統需求與限制，例如「今天晚餐兩個人預算三百圓山區二十分鐘內可以外帶」。系統把語音轉成逐字稿，再由需求解析轉成結構化的需求與限制，顯示在確認畫面讓使用者修正後才送出搜尋。使用者不需要自己填品類、預算、人數等欄位。
+使用者說出需求後，瀏覽器在錄音停止時立即將一份音訊送到 `POST /api/voice`。伺服器透過 **Gemini 原生 Interactions API 的一次請求**，直接取得 `{transcript, need}`；前端將逐字稿與結構化條件一起放進確認畫面，**使用者確認後才搜尋**。不是先 STT 再 parse，也不能收到語音逐字稿後自動呼叫 `/api/parse`。
 
-語音輸入是 MVP 的**主要入口**；文字輸入是 fallback；結構化表單只作為確認畫面的可編輯呈現，不再是獨立入口。
+文字輸入與手動條件是獨立可用入口。文字或逐字稿的主動重新解析、文字修正仍用 `POST /api/parse`；沒有 Gemini 設定也能手動填寫，不把 AI 可用性當成搜尋的先決條件（搜尋仍需 DB）。
 
-語音輸入**不是第三個 Agent**。它只是需求解析的一個輸入管道；PRD §7.2「不另造第三個 Agent」維持不變。
-
-帳號與登入是可選的帳號功能，不改變匿名輸入閉環。匿名使用者仍可完成需求解析與搜尋；註冊／登入只用來保存帳號資料與使用需要共享狀態的功能。
+語音輸入不是第三個 Agent。匿名仍可解析與搜尋，帳號只負責收藏、清單、設定及需要共享狀態的功能。官方契約與限制見 [2026-09-05 Gemini 查核](research/gemini-audio-structured.md)。
 
 ### 1.1 MVP 包含
 
-- 首頁錄音按鈕：點一下開始、再點一下結束，上限 30 秒。
-- 伺服器端語音辨識（STT）與需求解析，兩者都走 OpenAI-compatible API。
-- 確認畫面：逐字稿、解析欄位、未提供的硬限制、未解析內容。
-- 兩種修正方式：點欄位編輯，或再按麥克風說修正語句。
-- Dashboard 頂部的需求與限制 chip row，點擊回到同一個確認畫面（涵蓋 FR-13 放寬限制）。
-- 文字輸入 fallback，與語音共用同一個解析端點。
-- 可選的 username／password 註冊、登入、登出與修改密碼。
-- 已登入帳號保存清單、收藏與設定；匿名工作階段的設定仍可使用 `sessionStorage`，收藏與清單需要登入。
+- 原生 `MediaRecorder`，點一下開始、再點一下停止；最多 **30 秒（30,000 ms）**，停止後僅一次語音請求。
+- server-side Gemini 音訊 → `{transcript,need}`，共享 Zod schema 驗證；音訊不另送 STT。
+- 確認頁顯示逐字稿、可編輯 Need、未知限制與 `unresolved`；搜尋必須由使用者主動送出。
+- 文字／逐字稿可重新編輯與解析；文字 correction 以目前 Need 為基礎，只修改提到的欄位。
+- 保留設定中的預算預填、手動清空／修改及文字「預算不限」行為，不把預填誤稱為語音辨識所得。
+- 取消、離開流程、輸入修訂的 stale-result 防護；麥克風拒絕、不支援、上傳／模型失敗時顯示原因與重試／手動入口。
+- 可選 username/password 註冊、登入、登出、改密碼；帳號保存收藏、清單與設定，匿名設定保留在該分頁 `sessionStorage`。
 
 ### 1.2 MVP 不包含
 
-- 語音回讀（TTS）。
-- 即時逐字稿串流、靜音自動停止、長按錄音。
-- 語言切換；辨識語言固定 zh-TW。
-- Dashboard 卡片上的語音指令。
-- 保存音檔、逐字稿、需求與限制或搜尋歷史到伺服器。
-- 多輪對話式追問；缺欄位一律在確認畫面用「無限制」呈現。
-- 自動密碼重設；忘記密碼只顯示平台支援 Email。
+- TTS、即時逐字稿串流、靜音自動停止、長按錄音或 Dashboard 語音指令。
+- 多輪語音修正歷史；目前 correction 是文字 `/api/parse`，重新錄音是新需求，不暗中帶入舊 Need。
+- 語言切換介面；prompt 要求繁體中文並保留品牌／數字／否定詞，沒有額外的 STT `language` 參數。
+- 音訊轉碼或 ffmpeg；不把 WebM bytes 改名成 WAV，也不以 MIME 改名宣稱 codec 已轉換。
+- 伺服器保存音檔、逐字稿、Need 或搜尋歷史；不承諾 Google 整體零保留。
+- 自動追問或自動密碼重設；忘記密碼僅顯示設定好的支援聯絡方式。
 
 ## 2. 使用流程
 
@@ -43,60 +39,55 @@
 
 **首頁**
 
-- 區域標籤「圓山區」。
-- 顯示「註冊／登入」入口；不登入仍可使用語音、文字與搜尋。
-- 大型錄音按鈕，狀態文字：「點一下開始說」→「錄音中 0:07 / 0:30，點一下結束」。
-- 一行揭露文字：「語音會傳送到第三方辨識服務進行辨識，不會被保存。」
-- 小型連結「改用文字輸入」，點擊後展開文字欄位。
-- 表單欄位**不出現**在首頁。
+- 保留既有簡單視覺與固定區域「圓山區」，匿名可用文字、語音與搜尋。
+- `config.voice === true` 才顯示錄音按鈕；未設定或能力狀態取得失敗時保留文字／手動入口。
+- 按鈕揭露：「最長 30 秒；停止後音訊會傳送給 Gemini 解析」。不寫「供應商不會保存」。
+- 錄音時顯示秒數，停止後顯示「正在整理語音與條件…」。文字欄位可輸入／編輯逐字稿，錄音及語音請求期間避免同時編輯。
+- 手動條件可直接進確認頁；`parse:false` 不要求模型解析才能繼續。
 
 **確認畫面**
 
-1. 「我們聽到的」：逐字稿原文，不修飾。
-2. 「我們理解的」：解析欄位，每個都可點擊編輯。硬限制與軟偏好分成兩區。
-3. 「未提供」：逐字稿沒提到的硬限制顯示「無限制」，不猜數字。
-4. 「聽到但不確定」：`unresolved` 內容逐條列出。
-5. 麥克風按鈕（說修正語句）、單一「搜尋」按鈕，以及「重新開始」（清除需求與限制回到首頁）。
-6. 修正語句送出後，「我們聽到的」保留原始逐字稿並在下方列出修正語句。
+1. 同時顯示逐字稿與 Need；逐字稿是模型聽到的內容（server 僅 trim 首尾空白），不是已證實的事實。
+2. 條件可直接編輯；回首頁編輯逐字稿後，須主動送出文字解析，沒有自動網路請求。
+3. 未提供的數字／可空限制保持未知或無限制，不猜值；`unresolved` 逐項顯示。
+4. 缺預算時可由生活設定預填本月剩餘預算，明示「預算來自設定」，可修改或清空；沒有可用設定就維持 null。
+5. 已解析需求可用「一句話修正」送出 `{transcript: correction, current: need}`，返回完整 Need；「預算不限」不得再被預填覆蓋。
+6. 單一確認搜尋動作；有需求文字或選擇類別後可搜尋。重錄、取消或返回不讓舊回應覆蓋新輸入。
 
 **Dashboard**
 
-- 頂部 chip row 顯示已確認的需求與限制，例如「晚餐 · 2 人 · NT$300 · 20 分鐘內 · 可外帶」。
-- 點 chip row 回到確認畫面，麥克風可用；FR-13 的放寬限制走同一條路。
+- 顯示已確認條件，可返回條件頁放寬限制（FR-13）。AI 音訊／文字完成不是搜尋的授權，只有使用者點搜尋才發 `/api/search`。
 
 ### 2.2 狀態機
 
 ```text
 idle
-  └─ tap mic ──────────────────────────► recording (countdown 0:00→0:30)
+  ├─ mic（voice:true） ───────────────► recording
+  ├─ 主動送出文字（parse:true） ──────► parsing       POST /api/parse, current:null
+  └─ 手動条件 ───────────────────────► confirming
 recording
-  ├─ tap mic / 30s reached ────────────► transcribing  (POST /api/transcribe)
-  └─ mic permission denied ────────────► text_fallback (reason shown)
-transcribing
-  ├─ ok, transcript non-empty ─────────► parsing       (POST /api/parse)
-  ├─ ok, transcript empty ─────────────► idle          (「沒有聽到內容，再試一次」，留在目前畫面)
-  ├─ error, 1st time ──────────────────► idle          (「辨識失敗」；麥克風按鈕即重試)
-  ├─ error, 2nd time ──────────────────► text_fallback
-  └─ timeout 30s ──────────────────────► text_fallback
+  ├─ 手動停止 / 30,000 ms ────────────► voice         POST /api/voice 一次
+  ├─ 權限／格式錯誤 ─────────────────► idle          原因 + 文字／手動入口
+  └─ 取消／離開 ─────────────────────► idle          關閉 tracks，不上傳
+voice
+  ├─ 有效 {transcript,need} ──────────► confirming    不呼叫 /api/parse、不搜尋
+  ├─ 空語音／格式錯誤／timeout ───────► idle          原因 + 重錄／文字／手動入口
+  └─ 取消／輸入版本已變 ─────────────► idle          丟棄晚到結果
 parsing
-  ├─ ok ───────────────────────────────► confirming
-  ├─ error / timeout 30s ──────────────► text_fallback (逐字稿保留在文字欄位)
+  ├─ 有效 Need ──────────────────────► confirming
+  └─ 失敗／timeout ──────────────────► 保留原文字與條件，顯示重試／手動入口
 confirming
-  ├─ tap field, edit ──────────────────► confirming
-  ├─ tap mic, speak delta ─────────────► recording (with current 需求與限制 as context)
-  └─ tap 搜尋 (need present) ──────────► searching (existing PRD §7.1 step 3 onward)
-text_fallback
-  └─ submit text ──────────────────────► parsing
-dashboard
-  └─ tap chip row ─────────────────────► confirming
+  ├─ 直接編輯 Need ──────────────────► confirming
+  ├─ 主動文字修正 ───────────────────► parsing       POST /api/parse, current:Need
+  └─ 使用者點搜尋 ───────────────────► searching
 ```
 
-轉場期間顯示階段名稱：「辨識中」、「解析中」。不顯示空白等待頁。
+取消使用 AbortSignal，並檢查輸入 revision／目前請求；即使 provider 在取消後才完成，也不得更新 transcript、Need 或導航。錄音停止有單次所有權，避免按鈕與 deadline 同時觸發兩次上傳。30 秒是前端 timer cap；背景分頁／裝置排程與實際錄音長度仍需真機驗收。
 
 ### 2.3 Demo 情境對應
 
-- **情境 A（低預算付費選項）**：說出「今天晚餐兩個人預算三百圓山區二十分鐘內可以外帶」→ 確認畫面顯示晚餐 / 2 人 / NT$300 / 20 分鐘 / 今天 / 可外帶 → 搜尋。
-- **情境 B（免費資源）**：說出「這週末圓山區有沒有不用付費的活動或公共資源可以先登記」→ 預算與人數顯示「無限制」，`free_only = true`，`registration_ok = true`，`target_categories` 含「免費／公益資源」與「活動」→ 可直接搜尋。
+- **情境 A**：「今天晚餐兩個人預算三百圓山區二十分鐘內可以外帶」→ 人工確認晚餐／2 人／NT$300／20 分鐘／今天／可外帶 → 搜尋。
+- **情境 B**：「這週末圓山區有沒有不用付費的活動或公共資源可以先登記」→ `free_only=true`、`registration_ok=true`，類別含免費公益與活動；未提的預算由模型回 null，若 UI 套用設定預填則明示，人工確認後搜尋。
 
 ### 2.4 帳號流程
 
@@ -121,10 +112,10 @@ authenticated
 
 ## 3. 需求與限制 schema
 
-需求解析的輸出，也是搜尋的輸入。欄位名稱在實作時可映射，但語意固定。
+唯一實作定義是 `prototype-v1/src/shared/need.ts` 的 `needSchema`／`Need`；語音 wrapper 在 `prototype-v1/src/shared/voice.ts` 匯出 `voiceResultSchema`／`VoiceResult`。音訊結果是 `{transcript:string, need:Need}`，文字解析及搜尋沿用同一份 Need，不另造同名異義欄位。
 
 ```text
-need                 string          必填。生活需求，例如「晚餐」「找免費活動」
+need                 string          必有 key，可空字串。生活需求，例如「晚餐」
 target_categories    string[]        子集合：食品 | 日用品 | 免費／公益資源 | 活動 | 交通
 budget_total_twd     number | null   硬限制。null = 無限制
 people_or_servings   number | null   硬限制
@@ -136,19 +127,21 @@ free_only            boolean         硬限制。使用者說「免費」「不�
 registration_ok      boolean | null  硬限制。使用者說「可以先登記」為 true
 soft_preferences     string[]        軟偏好，例如 ["可外帶"]
 eligibility_notes    string | null   硬限制。例如「學生」
+exclude_tags         string[]        不吃／不要的項目，例如 ["牛"]；預設 []
 unresolved           string[]        聽到但無法對應欄位的片語；顯示給使用者，不猜
 ```
 
 規則：
 
-- 硬限制 = `budget_total_twd` 到 `eligibility_notes`；`null` 一律顯示「無限制」。
-- `need` 是唯一必填欄位。沒有 `need` 時「搜尋」按鈕停用並提示「請說明你想找什麼」。
+- 可空限制的 null 表示未指定，不等於數字 0；布林／陣列保持各自語意，軟偏好不當成硬限制。
+- 搜尋至少有非空 `need` 或一個 `target_categories`，支援只選類別的手動搜尋；Need 仍須通過 schema。
+- 字串、數值、陣列有長度／範圍上限；日期除 YYYY-MM-DD 格式外，server Zod 還會驗證真實日曆日期。模型 JSON Schema 不能取代這層驗證。
 - `target_categories` 只影響 Dashboard 的排序與強調；五類仍全部搜尋。
 - 「圓山區」是固定區域，不進 schema；使用者說到其他地區時放入 `unresolved`。
 
 ## 4. API 契約
 
-STT 與需求解析端點維持無狀態；它們不寫入音檔、逐字稿、需求與限制或搜尋歷史。帳號端點另使用 Database 保存帳號、sessions 與帳號資料。
+`/api/voice` 與 `/api/parse` 是無狀態請求；不寫入音檔、逐字稿、Need 或搜尋歷史。帳號端點另存帳號、sessions 與帳號資料。所有 `/api/*` 使用 `Cache-Control: no-store`。
 
 ### Auth endpoints
 
@@ -207,36 +200,52 @@ Database 為本機 PostgreSQL；完整 schema 與其餘 API（搜尋、帳號資
 - `account_data`：每個帳號一列，`list`、`favs`、`settings`（每月預算、已花費、已花費所屬月份、生存模式、排除項目、偏好、是否有 Costco 會員）、`profile`。
 - 不保存音檔、逐字稿、需求與限制、搜尋歷史或使用者位置。
 
-### `POST /api/transcribe`
+### `GET /api/config`
 
-- Request：`multipart/form-data`，欄位 `audio`（`MediaRecorder` 產出的 blob；Android Chrome 為 webm/opus，iOS Safari 為 mp4/aac）。辨識語言由伺服器固定為中文，不由請求決定。
-- Response 200：`{ "transcript": "今天晚餐兩個人..." }`
-- Response 400/502/503：`{ "error": "stt_failed", "message": "..." }`；逾時為 504 `{ "error": "timeout", "message": "逾時" }`。訊息為固定文案，不回傳供應商錯誤內容。
-- 上限：音檔 30 秒；伺服器逾時 30 秒。
+```json
+{"database":false,"parse":false,"voice":false,"ranking":false,"support_email":null,"area":"圓山區"}
+```
+
+上述是無設定範例。`voice` 取代舊的 `transcribe` 旗標；`parse`／`voice`／`ranking` 均依 Gemini key 與 model 設定決定，不是遠端連線、權限或模型健康保證。無 key 可手動填寫；搜尋／帳號需 DB。
+
+### `POST /api/voice`
+
+- Request：`multipart/form-data`，**恰好一份 `audio` File**，不接受文字 field、重複檔案、額外欄位。瀏覽器自行產生 multipart boundary，不手動指定整個 request 的 Content-Type。
+- File MIME 與 bytes 必須相符，filename 依真實容器副檔名產生。支援 canonical MIME：`audio/webm`、`audio/m4a`、`audio/ogg`、`audio/wav`、`audio/mpeg`、`audio/aac`、`audio/flac`、`audio/aiff`。
+- server 去除 `;codecs=…` 等參數後驗證 MIME essence；alias：`audio/mp4`／`audio/x-m4a` → `audio/m4a`，`audio/x-wav`／`audio/wave` → `audio/wav`，`audio/mp3` → `audio/mpeg`，`audio/x-aiff` → `audio/aiff`。前端 Safari MP4 用 `.m4a`；此為容器標示正規化，沒有轉碼。
+- 上限：前端錄音 **30 秒**、檔案 **5 MiB（5,242,880 bytes）**、整個 multipart **6 MiB（6,291,456 bytes）**；模型呼叫 timeout 30 秒。後端不解碼或驗證音檔實際時長。
+- `readVoiceUpload` 用 busboy 保留 part 宣告的 Content-Type，不以 filename 推斷。原因是 Bun 1.4 已重現原生 `Request.formData()` 的 filename-derived MIME 改寫；仍須核對基本 magic header，宣告 MIME 不是信任憑證。處理只在記憶體，不落地磁碟。
+- Response 200：`{ "transcript": "…", "need": Need }`，由共享 `voiceResultSchema` 驗證；空白逐字稿不是成功。一次 Gemini 呼叫同時產生兩欄，不另行解析文字。
+- server 以 Asia/Taipei 當日日期提供 `today`；語音的 `current` 固定 null。前端不傳 client date 或 correction context。
+
+| HTTP | error | 條件 |
+|---|---|---|
+| 400 | `voice_failed` | 缺少／空檔、錯誤 multipart、重複或額外欄位 |
+| 413 | `too_large` | 檔案超過 5 MiB 或請求超過 6 MiB |
+| 415 | `unsupported_audio` | MIME 不在清單，或 bytes 不符基本檔頭 |
+| 422 | `no_speech` | 模型回傳無可辨識語音 |
+| 502 | `voice_failed` | Gemini 失敗、非 completed、錯誤／缺失輸出或 JSON／Zod 驗證失敗 |
+| 503 | `voice_failed` | Gemini 未設定 |
+| 504 | `timeout` | 語音處理逾時 |
+
+錯誤皆 `{error,message}` 固定文案，不回傳 key、provider body 或錄音；多個錯誤同時存在時依 middleware／route 檢查順序回應。
 
 ### `POST /api/parse`
 
-- Request：
-  ```json
-  {
-    "transcript": "改成三個人",
-    "current": { ...需求與限制 或 null... }
-  }
-  ```
-- Response 200：完整的需求與限制物件（見 §3），必須符合 JSON schema。
-- Response 400/502/503：`{ "error": "parse_failed", "message": "..." }`；逾時為 504 `{ "error": "timeout", "message": "逾時" }`。訊息為固定文案。
-- `current` 為 `null` 表示全新解析；非 `null` 表示修正語句，回傳物件只更新被提到的欄位。
-- 「今天」以伺服器的 Asia/Taipei 日期解析；客戶端不送日期。
-- 文字輸入 fallback 走同一端點，`transcript` 為使用者輸入的文字。
-- 伺服器逾時 30 秒。
+- Request：JSON `{ "transcript": "改成三個人", "current": Need或null }`；`transcript` 1–2000 字元，整體 request 最大 32 KiB。省略 `current` 預設 null。
+- Response 200：完整 Need（不是 VoiceResult），同一份 Zod 驗證。
+- `current:null` 是全新文字／逐字稿解析；非 null 是文字 correction，只更新提到的欄位，其餘保留。
+- 使用者主動提交文字、編輯後重新解析或送出 correction 時才使用；**不得在 `/api/voice` 後自動串接**。
+- `today` 由 server 以 Asia/Taipei 決定，不由 client 指定；模型 timeout 30 秒。
+- 400／502／503：`{error:"parse_failed",message:"…"}`；413 為 `too_large`，504 為 `timeout`。保留文字與原 Need，讓使用者重試或手動修正。
 
 ## 5. 語音辨識與解析規則
 
 ### 5.1 辨識
 
-- 語言固定 zh-TW。
+- prompt 要求繁體中文逐字稿與 Need；不是額外的 `language: zh-TW` API 設定。
 - 夾雜的英文品牌名與金額寫法（Costco、NT$300）必須原樣保留在逐字稿。
-- 逐字稿不做任何清理或改寫再顯示；使用者看到的就是辨識結果。
+- 不潤飾或補造逐字稿；server 只 trim 首尾空白。語音結果與 Need 都需要使用者核對。
 
 ### 5.2 解析：數字與單位正規化
 
@@ -271,48 +280,44 @@ Database 為本機 PostgreSQL；完整 schema 與其餘 API（搜尋、帳號資
 
 ## 6. 例外與 fallback
 
-| 情況 | 使用者看到 | 下一步 |
-|---|---|---|
-| 麥克風權限被拒 | 「無法使用麥克風」 | 自動展開文字欄位 |
-| 瀏覽器不支援 `MediaRecorder` | 「此瀏覽器不支援錄音」 | 自動展開文字欄位 |
-| STT 失敗（第一次） | 「辨識失敗，再點一次麥克風重試」 | 使用者重錄 |
-| STT 失敗（第二次） | 「辨識失敗，請改用文字」 | 自動展開文字欄位 |
-| STT 或解析逾時 30 秒 | 「逾時，請改用文字」 | 自動展開文字欄位 |
-| 逐字稿為空 | 「沒有聽到內容，再試一次」 | 留在目前畫面 |
-| 解析失敗 | 「解析失敗」 | 展開文字欄位，逐字稿預填 |
-| 解析結果缺 `need` | 「請說明你想找什麼」 | 搜尋按鈕停用 |
+| 情況 | 行為 |
+|---|---|
+| `voice:false`／能力狀態未知 | 不顯示可用的錄音入口，保留文字／手動條件；`parse:false` 不阻擋手動流程 |
+| 權限被拒／非安全環境／無 MediaRecorder | 顯示原因，可直接改文字；停止已取得的 microphone tracks |
+| 不支援的 recorder MIME／空音訊 | 顯示重錄或文字／手動入口，不改名假冒可支援格式 |
+| 400／413／415 | 說明上傳問題，可重錄；不盲目自動重試或轉成 STT |
+| 422 無語音 | 不建立假 Need，顯示重錄或文字入口 |
+| 音訊／文字解析失敗或 30 秒 timeout | 保留已有文字及條件，顯示錯誤與重試／手動入口 |
+| 取消／離開／新輸入使舊回應過期 | 不套用回應、不導航、不自動搜尋 |
+| 沒有需求或類別 | 提示填需求或選類別，不開始搜尋 |
 
-任何 fallback 都顯示原因，不顯示假成功。
+不以「連續兩次失敗」作為開放手動輸入的門檻；任何失敗皆可立即手動繼續。取消 HTTP 不保證已送到 Gemini 的工作會停止或不計費。
 
 ## 7. 隱私
 
-- 音檔由瀏覽器上傳到本服務伺服器，伺服器直接轉送 STT 供應商，不寫入磁碟、不記錄。
-- 逐字稿視同 PRD NFR-05 的自然語言輸入原文：預設不保存。
-- 需求與限制只存在瀏覽器記憶體與 `sessionStorage`；不保存到帳號資料庫。
-- 已登入帳號的清單、收藏與設定保存到 Database；匿名使用者只有設定，且只存在目前 `sessionStorage`。
-- session token 只存在 `sessionStorage`，不使用 Cookie，不保存 username／password；token 逾時或登出時必須清除。
-- `sessionStorage` token 可被同源 JavaScript 讀取，正式環境必須使用 HTTPS、嚴格 CSP、輸出編碼與最少化第三方 script，降低 XSS 竊取 token 的風險。
-- 首頁揭露文字：「語音會傳送到第三方辨識服務進行辨識，不會被保存。」
-- 忘記密碼只顯示 `SUPPORT_EMAIL`，支援人員不得要求使用者傳送明文 password。
-- 零保留（zero-retention）合約列入 Phase 1，不在 MVP。
+- 音訊經本服務傳往 Gemini；上傳與 base64 只在 server 記憶體，不落地音檔、不把內容寫入 DB 或 log。
+- 逐字稿與 Need 草稿只在 React 記憶體；沒有把它們存入 `sessionStorage` 的恢復契約，重新整理會失去草稿。
+- Gemini 請求設 `store:false`，不使用 previous interaction、背景工作或 Files API；**不等於整體零保留／不用於訓練／無濫用防護日誌**。部署者需依付費狀態、地區與 Google 當期条款查核，不能對使用者承諾供應商「不會保存」。
+- 首頁短文案為「停止後音訊會傳送給 Gemini 解析」。不要提交不必要的個資／敏感內容。
+- 已登入帳號的清單、收藏、設定存 DB；匿名只有設定，在目前 `sessionStorage`。token 亦存該分頁 `sessionStorage`，不用 Cookie，不保存 username/password；逾時或登出清除。
+- 同源 JavaScript 可讀 token；正式部署仍需 HTTPS、CSP、輸出編碼與最少第三方 script。API no-store 不等同供應商 retention 設定。
+- 忘記密碼只顯示已設定的 `SUPPORT_EMAIL`，不得索取明文 password；未設定不假造信箱。零保留合約不是本 MVP 已完成能力。
 
 ## 8. 設定
 
-九個環境變數，值由團隊填入：
+以下為欄位範例，空值代表尚未設定；key 只放 server，不使用 `VITE_` 前綴，不提交秘密：
 
-```text
-STT_BASE_URL=
-STT_API_KEY=
-STT_MODEL=
-LLM_BASE_URL=
-LLM_API_KEY=
-LLM_MODEL=
-DATABASE_URL=
-AUTH_SESSION_TTL_SECONDS=1800
-SUPPORT_EMAIL=xuanweilin805@gmail.com
+```dotenv
+GEMINI_API_KEY=
+GEMINI_MODEL=
+DATABASE_URL=postgres://localhost/ail
+SUPPORT_EMAIL=
+PORT=3000
 ```
 
-STT 供應商必須提供 OpenAI-compatible 的 `/audio/transcriptions` 端點；LLM 供應商必須提供 OpenAI-compatible 的 chat 端點並支援 JSON schema 結構化輸出。
+- `GEMINI_MODEL` 由部署者選擇帳號可用、支援音訊及結構化輸出的 `gemini-*` ID；無預設，建議用官方範例的 bare model name。設定存在不代表 provider 健康。
+- 語音、文字解析及分組排序共用 `GEMINI_API_KEY`／`GEMINI_MODEL`，使用固定 `POST https://generativelanguage.googleapis.com/v1beta/interactions`，`x-goog-api-key` header、JSON `response_format` 與 `store:false`。不提供自訂 AI base URL 或 OpenAI adapter。
+- Session 固定 1,800 秒（30 分鐘），不是可調的 env 參數。更多資料匯入／部署設定見根目錄 README。
 
 ## 9. 驗收條件
 
@@ -324,31 +329,43 @@ PRD §11 的 Case A、Case B 各增加語音版本，並新增以下案例：
 
 - **Case V2：情境 B 語音版**
   - Given：說出「這週末圓山區有沒有不用付費的活動或公共資源可以先登記」。
-  - Then：預算與人數顯示「無限制」，`free_only` 與 `registration_ok` 為 true，可直接搜尋。
+  - Then：模型未提的預算與人數為 null，`free_only` 與 `registration_ok` 為 true；若有設定預填明示來源，人工確認後搜尋。
 
 - **Case V3：辨識錯誤用點擊修正**
   - Given：逐字稿把「三百」辨識成「三千」。
   - Then：使用者點預算欄位改成 300，其他欄位不變，搜尋使用 300。
 
 - **Case V4：修正語句只改一個欄位**
-  - Given：確認畫面人數 2、預算 300；說出「改成三個人」。
+  - Given：確認畫面人數 2、預算 300；在文字 correction 輸入「改成三個人」。
   - Then：人數變 3，預算與其他欄位不變。
 
 - **Case V5：沒說預算**
   - Given：說出「圓山區今天晚餐」。
-  - Then：預算顯示「無限制」，搜尋按鈕可用，搜尋時不套用預算限制。
+  - Then：模型回預算 null；沒有設定預算時顯示無限制，有設定則預填並標示來源。手動清空或 correction「預算不限」後維持 null，不再次預填。
 
 - **Case V6：權限被拒**
   - Given：使用者拒絕麥克風權限。
-  - Then：顯示原因並自動展開文字欄位；文字輸入走同一解析流程。
+  - Then：顯示原因並保留文字／手動入口；主動文字解析才走 `/api/parse`。
 
 - **Case V7：逾時**
-  - Given：STT 超過 30 秒未回應。
-  - Then：顯示逾時並展開文字欄位；不無限等待。
+  - Given：Gemini 語音請求超過 30 秒未回應。
+  - Then：顯示逾時與文字／手動入口；不無限等待或自動重送音訊。
 
 - **Case V8：未解析內容**
   - Given：說出「晚餐兩個人靠近捷運站」。
   - Then：「靠近捷運站」出現在「聽到但不確定」，不進任何欄位。
+
+- **Case V9：一次語音請求與人工確認**
+  - Given：錄音停止，模擬有效 `{transcript,need}`。
+  - Then：只發一次 `/api/voice`；沒有 `/api/parse`／`/api/search`，逐字稿及 Need 一起進確認頁。
+
+- **Case V10：MIME、大小與中止**
+  - Given：WebM／OGG／Safari MP4、偽造 MIME、空檔、超限、取消或舊回應。
+  - Then：正確格式保留 bytes／副檔名；`audio/mp4` canonicalize 為 M4A。錯誤回應可手動繼續；過期回應不覆蓋目前資料。
+
+- **Case V11：30 秒而非 30 毫秒**
+  - Given：錄音 timer 啟動。
+  - Then：排程 delay 是 `MAX_SECONDS * 1000 = 30000`，停止按鈕與 deadline 同時抵達仍只上傳一次；停止後關閉 tracks。
 
 - **Case A1：註冊**
   - Given：使用者輸入符合規則的 username、12 字元以上 password，可選 nickname。
@@ -384,7 +401,9 @@ PRD §11 的 Case A、Case B 各增加語音版本，並新增以下案例：
 
 ## 10. 驗證
 
-自動化檢查包含 `/api/parse` fixtures 與 Auth API 的註冊、登入、session expiry、登出、修改密碼、重複 username 與錯誤遮罩。錄音與 STT 由 Demo 排練驗證，不自動化。
+隔離測試可用 mocked fetch／錄音器與純函式，檢查 client FormData、MIME／副檔名、錯誤、schema、review／stale 防護及 30,000 ms timer；server 可驗證 multipart metadata／大小／檔頭與 Gemini request／response contract，不需真實 DB 或 key。這些不證明真機 codec、音訊辨識品質或 live Interactions 相容性。
+
+保留 `/api/parse` 語意 fixtures 與 Auth API 測試；DB 測試只用獨立資料庫，live-provider 測試需明確啟用。**2026-09-05 最新結果：150 pass / 28 skip / 0 fail，912 assertions**；typecheck 與 build 通過，fixture suite 未觸及真實 DB。對 39 筆真實公開 catalog 的日用品手動搜尋可用；未使用真實 Gemini key，真機音訊與 live provider 驗收仍待完成。
 
 Fixtures：
 
@@ -398,11 +417,10 @@ Fixtures：
 
 ## 11. 實作備註
 
-- Stack：Bun、Hono、TypeScript、React（Vite）、Vercel AI SDK core。
-- 單一 package：`src/server`（Hono，Auth 與語音 route）與 `src/client`（React）。開發時 Vite 將 `/api` 代理到 Hono；正式環境由 Hono 提供 `dist/`。
-- 需求與限制的 JSON schema 用一份定義，同時給解析器的結構化輸出與前端型別。
-- AI SDK 事實（2026-09-04 查閱）：`@ai-sdk/openai-compatible` 沒有 transcription model；語音辨識要用 `@ai-sdk/openai` 的 `createOpenAI({ baseURL, apiKey })` 搭配 `ai` 的 `transcribe()`。chat 端點用 `createOpenAICompatible({ baseURL, apiKey, supportsStructuredOutputs: true })` 搭配 `generateObject()`。
-- 錄音使用瀏覽器原生 `MediaRecorder`；不引入錄音套件。
-- 逐字稿與需求與限制一起存在 `sessionStorage`，重新整理後確認畫面仍完整。
-- 登入 token 與語音工作階段資料分開保存；token key 為 `ail.token`，受保護 API 使用 `Authorization: Bearer`。
-- 30 秒上限在前端用計時器強制停止，後端再以請求逾時保護。
+- Stack：Bun、Hono、TypeScript、React／Vite、Zod；native `fetch` 呼叫 Gemini。multipart metadata 使用 busboy，沒有 AI SDK adapter 或額外 STT。
+- 單一 `prototype-v1` package；開發由 Vite proxy `/api` 到 Hono，正式由 Hono 提供 `dist/`。
+- `gemini.ts` 共用結構化呼叫：`z.toJSONSchema`（移除 `$schema` 與 provider 未明列的 default／pattern／字串長度 keywords；原始 Zod 驗證保留）→ `response_format` → completed Interaction 的 `model_output` 文字 → JSON.parse → 原始 Zod schema.parse。模型 schema 的支援子集與 runtime-only refinement 見查核紀錄。
+- 原生 `MediaRecorder` 使用實際 `mimeType`（必要時從 chunk 取得）；未知格式直接顯示錯誤，不預設把未知 bytes 當 WebM。停止／取消必須釋放 microphone tracks。
+- timer helper 使用 `MAX_SECONDS * 1000`；30 秒錄音、30 秒模型 timeout 與大小檢查各自獨立，不能互相替代。
+- 語音完成只更新逐字稿、Need 與 review 狀態；abort／revision 防止舊結果覆蓋，保留手動表單及預算語意。
+- token key 為 `ail.token`，受保護 API 使用 Bearer；語音／Need 草稿不進帳號資料或 `sessionStorage`。

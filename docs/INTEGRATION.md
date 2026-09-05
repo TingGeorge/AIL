@@ -1,6 +1,6 @@
 # UI × main 後端整合紀錄
 
-日期：2026-09-05。新分支：`codex/integrate-mvp-ui-main-backend`。
+日期：2026-09-05。整合分支：`codex/integrate-mvp-ui-main-backend`。本次更新活躍 Gemini 架構與 API；歷史驗證紀錄不代表遷移後已驗收。官方契約與限制見 [Gemini 查核](research/gemini-audio-structured.md)。
 
 ## 1. 來源與優先順序
 
@@ -18,15 +18,19 @@
 
 ```mermaid
 flowchart LR
-  UI[原 MVP 視覺<br/>React / Vite] --> API[同源 /api<br/>Hono / Bun]
-  UI --> NEED[共用 Need schema<br/>手動確認與修正]
-  NEED --> API
-  API --> DB[(PostgreSQL<br/>candidates / users<br/>auth_sessions / account_data / reports)]
-  API --> STT[設定的 STT provider<br/>audio → transcript]
-  API --> PARSE[設定的 LLM provider<br/>text → Need]
+  UI[原 MVP 視覺<br/>React / Vite] --> VOICE[POST /api/voice<br/>單一 audio File]
+  VOICE --> GEMINI[Gemini native Interactions<br/>audio → transcript + Need]
+  GEMINI --> REVIEW[逐字稿與條件人工確認]
+  UI --> TEXT[主動文字／修正<br/>POST /api/parse]
+  TEXT --> PARSE[Gemini native Interactions<br/>text + current → Need]
+  PARSE --> REVIEW
+  UI --> MANUAL[無 key 手動填寫]
+  MANUAL --> REVIEW
+  REVIEW --> SEARCH[使用者點搜尋<br/>POST /api/search]
+  SEARCH --> DB[(PostgreSQL<br/>candidates / users<br/>auth_sessions / account_data / reports)]
   DB --> FILTER[一次 deterministic 篩選<br/>來源狀態 / 已知限制 / 成本]
-  FILTER --> PAID[付費選項 Agent<br/>每類別一個並行工作]
-  FILTER --> FREE[免費資源 Agent<br/>每類別一個並行工作]
+  FILTER --> PAID[付費選項 Agent<br/>按類別 Gemini 排序]
+  FILTER --> FREE[免費資源 Agent<br/>按類別 Gemini 排序]
   PAID --> SSE[SSE 串流<br/>失敗群組改成本排序]
   FREE --> SSE
   SSE --> UI
@@ -40,10 +44,10 @@ flowchart LR
 
 | UI | API | 資料／責任 |
 |---|---|---|
-| 首頁能力狀態 | `GET /api/config` | 只揭露設定有無，不回傳 key；`database:true` 不代表 DB readiness |
+| 首頁能力狀態 | `GET /api/config` | `{database,parse,voice,ranking,support_email,area}`；旗標只揭露設定有無，不回傳 key，不代表 DB／Gemini readiness |
 | 首頁資料涵蓋 | `GET /api/catalog` | 實際 DB 的五類筆數、可排序／待確認、最近確認時間；預設不公開 demo／封存資料 |
-| 語音按鈕 | `POST /api/transcribe` | multipart 音訊；上限 5 MiB、30 秒錄音；只回逐字稿 |
-| 解析、修正 | `POST /api/parse` | `{transcript,current}` → 同一份 Need；送出前可手動修正 |
+| 語音按鈕 | `POST /api/voice` | multipart 單一 `audio` File → `{transcript,need}`；5 MiB 檔案／6 MiB 請求，前端錄音上限 30 秒；立即進入人工確認，不再自動 parse |
+| 文字解析、修正 | `POST /api/parse` | JSON `{transcript,current}` → Need；`current:null` 全新解析，非 null 只修正提到的欄位；使用者主動送出 |
 | 確認搜尋 | `POST /api/search` | `{need,exclude,location,costco_ok}`；`text/event-stream` |
 | 詳情／收藏還原 | `GET /api/candidates?ids=...`；`GET /api/candidates/:id` | 使用候選真實 id；不存在項目明示，可移除；單次最多 200 ids |
 | 註冊／登入 | `POST /api/auth/register`、`login` | Argon2id；回 user/data/session_token/expires_at |
@@ -52,6 +56,15 @@ flowchart LR
 | 收藏／清單／設定 | `GET`、`PUT /api/me/data` | 只允許 list/favs/settings/profile；nickname 以 users 為唯一來源 |
 | 回報 | `GET`、`POST /api/candidates/:id/reports` | 可公開讀取，寫入需登入；七種原因，不自動改資料狀態 |
 | 團體優惠 | 候選 `group_offer` | 真實碼、門檻與試算；沒有 join/team-members 假 API |
+
+### 語音與設定契約（2026-09-05）
+
+- AI 設定只用 server-side `GEMINI_API_KEY`、`GEMINI_MODEL`；語音、文字與排序共用固定 Google native endpoint，無 OpenAI adapter 或獨立 STT 設定。
+- `voice:false` 不顯示錄音入口；無 key 仍可手動填寫。文字解析僅在 `parse:true` 時可用；手動搜尋仍需資料庫。
+- 保留錄音的真實 MIME／bytes：WebM、OGG 原樣；Safari AAC MP4 以 `audio/m4a`、`.m4a` 標示。完整 MIME／alias 清單與錯誤見 [語音規格 §4](SPEC-voice-input.md#4-api-契約)。
+- 使用 `readVoiceUpload`／busboy 保留 part Content-Type，拒絕重複／額外欄位，不按 filename 推斷 MIME；僅記憶體處理，6 MiB 請求／5 MiB 檔案上限，之後核對 MIME 及基本 magic header。這避開Bun 1.4 已重現的 `Request.formData()` filename-derived MIME 問題。
+- 錄音計時 helper 用 `30 * 1000` ms（不是 30 ms）；權限被拒、不支援、空音訊、上傳／模型失敗均顯示重試或手動入口。30 秒錄音 cap 與 30 秒模型 timeout 是兩件事，後端不解碼驗證音檔時長。
+- 取消、離開流程或輸入修訂使旧回應失效；聲音結果只填逐字稿與 Need，不發起搜尋。缺預算可套用設定中的預設值，明示來源且可清除；文字 correction 的「預算不限」不可再次被預設值覆蓋。
 
 ### SSE 事件
 
@@ -83,18 +96,18 @@ flowchart LR
 
 - 只存帳號、清單／收藏 ids、設定、暱稱／顏色與回報。不存錄音、逐字稿、Need、搜尋歷史與使用者座標。
 - token 在 sessionStorage；匿名設定也只在該分頁 sessionStorage。沒有 guest → account 自動合併。
-- 若設定 AI provider，逐字稿／必要候選內容會送到該 provider；本應用不等於該 provider 的資料保留承諾。座標只在 deterministic 距離計算使用。
+- 錄音按鈕事前揭露「停止後音訊會傳送給 Gemini 解析」。音訊、使用者主動送出的文字／修正、必要候選內容會送到 Gemini；逐字稿與 Need 的草稿只在前端記憶體。`store:false` 只控制 Interaction 儲存，不代表整體零保留或不作訓練；仍須核對 Google 條款／帳號計費與地區。座標只在 deterministic 距離計算使用。
 - 同源 API 不使用 cookie，不需要開放任意 origin CORS。Bun production 在 `prototype-v1` 工作目錄執行，靜態檔案為 `dist`。
 - 資料庫及 key 放 server env，不提交 `.env`；使用 HTTPS。公開部署請另外設 edge 限流（含註冊、語音及搜尋成本）、DB 備份與監控。
 - `/api/health` 是程序存活檢查，不是資料庫／模型 readiness 檢查。只設了變數不代表 provider 可呼叫。
 
 ## 6. 驗證紀錄與未驗證項目
 
-本機隔離 PostgreSQL、停用真實 provider，執行型別檢查、全套測試與 production build。測試涵蓋帳號隔離／撤銷／並行改密碼、欄位白名單、body 大小、匯入、SSE、ranking fallback、UI 渲染、示範隔離、Need 邊界與支出。
+以下為 **Gemini 遷移前的歷史驗證**：本機隔離 PostgreSQL、停用真實 provider，執行型別檢查、全套測試與 production build。測試涵蓋帳號隔離／撤銷／並行改密碼、欄位白名單、body 大小、匯入、SSE、ranking fallback、UI 渲染、示範隔離、Need 邊界與支出。
 
 第一階段（隔離 fixture 資料庫）瀏覽器實際走訪：註冊、登入、設定儲存及重整還原、手動搜尋、結果分類、示範警告、收藏／清單、詳情與共享回報。亦驗證登出清除個人狀態、重新登入還原清單與預算、390px 手機／1366px 桌面版面，以及 HTML 圖表篩選／流程切換。開發指令的 API 代理與 Ctrl-C 結束亦經測試。
 
-2026-09-05 最終驗證：**128 pass / 6 skip / 0 fail**（745 assertions），型別檢查、production build 與 `git diff --check` 通過。GitHub Actions 是否成功需以遠端工作流程結果為準。
+2026-09-05 遷移前驗證：**128 pass / 6 skip / 0 fail**（745 assertions），型別檢查、production build 與 `git diff --check` 通過。GitHub Actions 是否成功需以遠端工作流程結果為準。
 
 ### 最後一輪真實資料驗收
 
@@ -110,7 +123,9 @@ flowchart LR
 
 未知費用的詳情不顯示免費；「明確折扣 0」及「必要費用 0」用 NT$0 金額呈現，不以 FREE 誤導。所有資料仍是有限研究快照，不是即時可用性承諾；尚未公開部署。
 
-**不當作已驗證：** 真實麥克風／STT 正確率、真實 LLM 語意品質、使用者真實定位、跨裝置 PWA 安裝與離線升級、公開生產部署。6 個 live-provider 解析測試在無 provider 設定時 skip；其他 fallback 與安全行為可獨立驗證。
+**不當作已驗證：** 真實麥克風／Gemini 音訊品質、Gemini 文字與排名語意品質、使用者真實定位、跨裝置 PWA 安裝與離線升級、公開生產部署。歷史 6 個 live-provider skip 不表示新契約通過。
+
+**最新遷移驗證（2026-09-05）：150 pass / 28 skip / 0 fail，912 assertions**；typecheck 與 production build 通過。已納入 multipart MIME 保留與 30,000 ms 錄音上限回歸；fixture suite 未觸及真實 DB。對 39 筆真實公開 catalog 的日用品手動搜尋可用。未使用真實 Gemini key，live 語音／文字／排序驗收仍待完成。
 
 
 ## 7. 真實來源資料管線（2026-09-05 更新）

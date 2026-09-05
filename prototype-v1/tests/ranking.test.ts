@@ -216,3 +216,33 @@ test("constraintWarnings：need 與設定排除遇到未知標籤或候選缺標
     message: "排除項目「堅果」不在目前可辨識標籤內；部分候選缺少成分標籤；無法保證已完整排除，請逐筆核對。",
   }]);
 });
+
+test("rankGroup defaults to native Gemini with the shared key and schema", async () => {
+  const oldKey = process.env.GEMINI_API_KEY, oldModel = process.env.GEMINI_MODEL;
+  const oldFetch = globalThis.fetch;
+  const calls: { url: string; init?: RequestInit }[] = [];
+  try {
+    process.env.GEMINI_API_KEY = "mock-ranking-key";
+    process.env.GEMINI_MODEL = "gemini-test";
+    globalThis.fetch = (async (url: Parameters<typeof fetch>[0], init?: RequestInit) => {
+      calls.push({ url: String(url), init });
+      return Response.json({ status: "completed", steps: [{ type: "model_output", content: [{
+        type: "text", text: JSON.stringify({ order: [{ id: "a", reason: "總可比成本為 100 元。" }] }),
+      }] }] });
+    }) as unknown as typeof fetch;
+    const result = await rankGroup({ agent: "paid", category: "食品", records: [rec()], need: need() });
+    expect(result.status).toBe("done");
+    expect(result.records[0]?.id).toBe("a");
+    expect(calls).toHaveLength(1);
+    expect(calls[0]?.url).toBe("https://generativelanguage.googleapis.com/v1beta/interactions");
+    const body = JSON.parse(String(calls[0]?.init?.body));
+    expect(body.response_format.schema.required).toEqual(["order"]);
+    expect(body.store).toBe(false);
+    expect(body.input).toHaveLength(1);
+    expect(body.input[0].type).toBe("text");
+  } finally {
+    globalThis.fetch = oldFetch;
+    if (oldKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = oldKey;
+    if (oldModel === undefined) delete process.env.GEMINI_MODEL; else process.env.GEMINI_MODEL = oldModel;
+  }
+});

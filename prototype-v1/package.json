@@ -16,9 +16,7 @@
     "check": "bun run typecheck && bun test && bun run build"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^4.0.58",
-    "@ai-sdk/openai-compatible": "^3.0.43",
-    "ai": "^7.0.92",
+    "busboy": "^1.6.0",
     "hono": "^4.13.5",
     "lucide-react": "1.31.0",
     "react": "^19.2.8",
@@ -27,6 +25,7 @@
   },
   "devDependencies": {
     "@types/bun": "^1.4.0",
+    "@types/busboy": "^1.5.4",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",

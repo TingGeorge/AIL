@@ -1,7 +1,7 @@
 # ALL in life — Backend 規格（Backend Spec）
 
 - 文件狀態：Hackathon MVP build spec
-- 版本：v0.1
+- 版本：v0.2（Gemini 原生語音／文字／排序契約）
 - 日期：2026-09-05
 - 上游文件：[PRD-all-in-life.md](./PRD-all-in-life.md)、[SPEC-voice-input.md](./SPEC-voice-input.md)
 - 下游文件：[SPEC-ingestion.md](./SPEC-ingestion.md)（候選紀錄的蒐集、欄位契約與匯入）、[SPEC-geocoding.md](./SPEC-geocoding.md)（地址與座標的取得規則）
@@ -11,20 +11,20 @@
 
 ## 1. 摘要
 
-目前後端只有 `POST /api/transcribe` 與 `POST /api/parse` 兩條無狀態路由；搜尋、Agent、帳號、資料庫、回報與揪團都只有規格。本文件定義接下來要建的後端：本機 PostgreSQL、一張候選紀錄表、兩階段搜尋（先 deterministic 篩選、再 LLM 推薦排序）、username／password 帳號，以及這些決定連帶要修改的 PRD／SPEC／CONTEXT 條文。
+目前可執行後端在 `prototype-v1`：Bun／Hono／PostgreSQL、兩階段搜尋（deterministic 篩選，再 Gemini 分組推薦排序）、SSE、候選／catalog、帳號與回報。2026-09-05 音訊入口改為 `POST /api/voice` → **Gemini 一次回傳 `{transcript,need}`** → 前端人工確認後才搜尋。文字與 correction 保留 `POST /api/parse` → Need，後端共用 Gemini native Interactions adapter，不串接 STT。官方契約及未驗證事項見 [Gemini 查核紀錄](research/gemini-audio-structured.md)。
 
 有兩個決定偏離原 PRD，本文件明確記錄：
 
 1. **資料事先匯入，執行期不上網搜尋。** 候選紀錄由爬蟲或 API 腳本事先寫進資料庫；Agent 的工作是從已篩選的清單做推薦排序。
 2. **揪團只顯示商家兌換碼，沒有共享狀態。** 不追蹤成員、不做加入代碼。
 
-## 2. 已驗證的事實
+## 2. 實作基線與驗證邊界
 
-- Bun 1.4.0 內建 `Bun.sql`（原生 PostgreSQL client）、`Bun.password`（Argon2id）、`Bun.CryptoHasher`（SHA-256）。Hono 4.13.5 有 `streamSSE`。**不需要新增任何套件。**
-- 這台 Mac 尚未安裝 PostgreSQL；見 §11 安裝步驟。
-- 現有程式全部在 `old_version/`；新版本放在 `prototype-v1/`。
-- 證據閘門、硬限制、成本計算與排序的純函式已存在於 `old_version/src/client/records.ts`（`comparableTotal`、`passesGate`、`passesHard`、`bucket`、`saving`、`groupTotal`），搬到 `src/shared/` 後前後端共用。
-- 資料量：五類各 7–10 筆，總計約 35–50 列。這個量級允許整表讀出後在 TypeScript 篩選。
+- 活躍 package 是 `prototype-v1/`，不是 `old_version/`；不需重新複製舊快照。Bun 提供 SQL／密碼雜湊，Hono 提供 HTTP／SSE，Zod 定義資料邊界。
+- `gemini.ts` 直接使用 native `fetch`，共用於音訊、文字與 ranking；無 AI SDK adapter。`voice-upload.ts` 用 busboy 保留 multipart part 的 MIME，不依 filename 推斷。
+- `src/shared/records.ts` 是前後端共用的成本、證據與硬限制純函式邊界；資料仍事先匯入，不在搜尋時爬網頁。
+- 公開資料涵蓋、數量與來源限制以 `/api/catalog` 及 [整合紀錄](INTEGRATION.md) 為準；不能用原設計估算筆數冒充即時庫存。
+- 官方契約與離線 schema 匯出已查核；最新全套驗證見 §13。未使用真實 Gemini key，live provider 相容性仍待驗收。
 
 ## 3. 定案決策
 
@@ -35,70 +35,84 @@
 | 資料匯入 | 欄位契約、可空規則與匯入腳本見 [SPEC-ingestion.md](./SPEC-ingestion.md)；本文件從「資料已在表裡」開始。 |
 | 搜尋流程 | 第一階段（不是 Agent）：deterministic 篩選 = 證據閘門 + 硬限制，整個請求跑一次。第二階段：LLM 推薦排序。 |
 | Agent | 產品、畫面與 PRD 維持兩個 Agent（付費選項 Agent、免費資源 Agent）。每個 Agent 內部**按類別各打一次 LLM、並行執行**（付費最多 4 條、免費最多 2 條）。某一類失敗只有該類退回成本排序。 |
-| LLM 排序規則 | LLM 對它負責的 (agent, category) 群組排序**整份**篩選後清單；不刪任何一筆；每筆附一句繁中 `reason`。系統提示明講：總可比成本第一、軟偏好第二；排在更便宜項目前面時，理由必須說明原因。 |
+| Gemini 排序規則 | LLM 對它負責的 (agent, category) 群組排序**整份**篩選後清單；不刪任何一筆；每筆附一句繁中 `reason`。系統提示明講：總可比成本第一、軟偏好第二；排在更便宜項目前面時，理由必須說明原因。 |
 | 同類別免費／付費並存 | 類別分頁顯示一張清單：付費與免費兩份排序依名次交錯（付費第 1、免費第 1、付費第 2…）；免費項目掛「免費」標籤；生存模式把免費整段釘在最前（沿用現有前端邏輯）。PRD FR-08 改為「以標籤區分，不合成單一分數」。 |
 | 距離 | `candidates.lat／lng`；使用者座標由瀏覽器原生 `navigator.geolocation` 在搜尋當下取得、放在請求 body、不保存、不寫 log。伺服器以 haversine 算直線公里數，標示「估算」；`max_minutes` 以 km ÷ 0.08（步行每分鐘 80 公尺）換算，標示「估算」。沒有座標 → 距離為 null → 不做距離篩選。`address` 與 `lat／lng` 的取得與寫入見 [SPEC-geocoding.md](./SPEC-geocoding.md)。 |
 | 候選紀錄持久化 | 五類共用一張 `candidates` 表；保留 `agent` 欄位（`paid`／`free`）；證據放 `jsonb` 陣列（逐欄摘錄）；類別特有零碎欄位放 `extra jsonb`。 |
 | 帳號 | 照 PRD／SPEC：username `^[a-z0-9_-]{3,30}$`（不分大小寫唯一，小寫儲存）、password ≥ 12 字元、`Bun.password` Argon2id、32 bytes 隨機 opaque token、只存 SHA-256 hash、固定 30 分鐘到期、`Authorization: Bearer`、token 放 `sessionStorage`。不用 Cookie。忘記密碼只顯示 `SUPPORT_EMAIL`。 |
 | 帳號資料 | 每個帳號一列：`account_data(user_id, list, favs, settings, profile, updated_at)` 全部 `jsonb`；`GET／PUT /api/me/data` 整包讀寫。每個帳號一份清單。 |
-| 已花費 | 沿用現有行為（`old_version/src/client/App.tsx:262`）：清單頁按「標記已買」→ 該筆移出清單、`settings.spent += 總可比成本`。加入清單不累加（加入清單不等於花錢）。跨月歸零：`settings.spent_month` 存 `"2026-09"`，前端載入帳號資料時若不等於當月就把 `spent` 歸零並更新月份。`ponytail:` 純前端、不做記帳歷史；升級路徑是加一張 `monthly_spend` 表。 |
+| 已花費 | 沿用整合版的生活設定／清單行為：清單頁按「標記已買」→ 該筆移出清單、`settings.spent += 總可比成本`。加入清單不累加（加入清單不等於花錢）。跨月歸零：`settings.spent_month` 存 `"2026-09"`，前端載入帳號資料時若不等於當月就把 `spent` 歸零並更新月份。`ponytail:` 純前端、不做記帳歷史；升級路徑是加一張 `monthly_spend` 表。 |
 | 匿名使用者 | 可以搜尋、可以改設定（只存在該分頁 `sessionStorage`）。**★ 與加入清單需要登入**（點擊時提示登入）。不做匿名→帳號合併；登入後帳號資料取代 session-local 資料。這推翻 PRD FR-12／FR-15 與 SPEC Case A8。 |
 | 回報 | 共享資料，需登入。`reports(id, candidate_id, user_id, reason, note, created_at)`。七種原因（4 種資料回報 + 3 種體驗回報）。回報不自動改 `data_status`。體驗回報顯示時標示「使用者回報，非系統判斷」。 |
 | 揪團 | 純顯示。`group_offer jsonb` 增加 `redeem_code`。揪團頁顯示商家兌換碼、人數條件、成本試算（單獨／成團後／每人）、分享按鈕。移除成員列表與加入代碼。不建表。 |
 | 搜尋 API | `POST /api/search`，回 Server-Sent Events。 |
 
-## 4. 架構圖
+## 4. 架構
 
+```text
+MediaRecorder（前端最多 30 秒）
+  → POST /api/voice：恰好一份 audio File
+  → 記憶體 multipart parser → 5 MiB／MIME／基本檔頭檢查
+  → Gemini Interactions：audio + today → {transcript,need}（一次請求）
+  → 前端逐字稿與 Need 人工確認 ───────────────────────┐
+                                                    │
+文字／主動編輯逐字稿／文字 correction                 │
+  → POST /api/parse：{transcript,current}             │
+  → Gemini Interactions → Need → 人工確認 ───────────┤
+                                                    │
+無 key：手動條件 ───────────────→ 人工確認 ───────────┤
+                                                    ▼
+                       使用者點搜尋 → POST /api/search
+                                    │
+                      PostgreSQL 已匯入的五類 candidates
+                                    │
+                    deterministic 證據／成本／已知硬限制篩選
+                                    │
+             按 (paid/free, category) 非空群組並行 Gemini 排序
+                        30 秒 timeout，失敗群組成本 fallback
+                                    │
+                     SSE：每組完成即回傳，最後 done
 ```
-瀏覽器 ──POST /api/search {need, exclude, location}──► Hono
-                                                        │ SELECT * FROM candidates
-                                                        ▼
-                                  第一階段：共用純函式篩選（證據閘門 + 硬限制）
-                                   → main（通過）、pending（待確認）、excluded_by 各限制的排除數
-                                                        │ 依 (agent, category) 分組
-                      ┌──────────────┬─────────────────┼──────────────┬──────────────┐
-                 paid·食品       paid·日用品       paid·活動      paid·交通    free·免費／公益  free·活動
-                      └──────────────┴──── 各自 LLM 排序，30 秒逾時，Promise.allSettled ────┘
-                                                        │ 每組完成就推一個 SSE 事件
-                                                        ▼
-                                  瀏覽器依類別合併（名次交錯；生存模式免費在前）
-```
+
+語音完成不自動呼叫文字解析或搜尋；文字 correction 只由使用者主動送出。所有模型呼叫使用 server key／fixed Google origin，`store:false`、`background:false`、`stream:false`；搜尋結果 SSE 是本服務的串流，並非 Gemini audio streaming。
 
 ## 5. 目錄配置（`prototype-v1/`）
 
-先把 `old_version/{package.json,tsconfig.json,vite.config.ts,public,tests,src}` 複製過來，再新增：
+以下是活躍模組的責任，不是重新建立專案的指令：
 
-```
+```text
 prototype-v1/
-  .env.example                 新增 DATABASE_URL、AUTH_SESSION_TTL_SECONDS=1800、SUPPORT_EMAIL
-  src/shared/need.ts           不動
-  src/shared/records.ts        從 client 搬來；Rec 依 §5.1 對齊資料庫欄位並加上 rowToRec；純函式不動
-  src/server/index.ts          現有路由 + 掛載 auth／search／data（**必須加在 serveStatic 的 `app.get("/*")` catch-all 之前**）
-  src/server/db.ts             `import { sql } from "bun"`；**連線與 schema 套用都必須 lazy**，見 §5.2
-  src/server/schema.sql
-  src/server/llm.ts            從 parse.ts 抽出的 createOpenAICompatible 工廠
-  src/server/auth.ts           register／login／logout／change-password／me + requireUser middleware
-  src/server/search.ts         第一階段篩選、第二階段分組並行、SSE
-  src/server/data.ts           /api/me/data、/api/candidates/:id、reports
-  data/<category>.json         人工蒐集的候選紀錄；欄位契約見 SPEC-ingestion.md
-  scripts/import.ts            讀 data/*.json，以 id upsert 進 candidates（冪等）
-  scripts/geocode.ts           匯入後補 address／lat／lng；規格見 SPEC-geocoding.md（本文件不實作）
-  scripts/check-data.ts        匯入驗收檢查；不過就不算匯入完成（SPEC-ingestion §9）
-  tests/search.test.ts         純篩選 + LLM 輸出驗證（不需資料庫）
-  tests/auth.test.ts           需要 DATABASE_URL，沒有就跳過（同現有 parse test 的做法）
+  src/shared/need.ts           Need／needSchema，文字解析、語音內層與搜尋共用
+  src/shared/voice.ts          VoiceResult／voiceResultSchema = {transcript,need}
+  src/shared/records.ts        候選、成本與篩選共用純函式
+  src/server/index.ts          config／voice／parse；掛 search／data／auth／account
+  src/server/gemini.ts         fixed native Interactions fetch、JSON Schema、Zod 驗證
+  src/server/voice.ts          MIME alias／基本 magic header、audio → VoiceResult
+  src/server/voice-upload.ts   busboy 讀 part MIME，6 MiB multipart／5 MiB 檔案，不落地
+  src/server/parse.ts          共用 NEED_SYSTEM；text／current → Need
+  src/server/rank.ts           每組 Gemini 排序、結果核對及 deterministic fallback
+  src/server/db.ts             lazy SQL；僅直接啟動時 applySchema
+  src/server/schema.sql        實際資料庫 schema 的唯一執行來源
+  src/server/auth.ts           帳號、session、requireUser
+  src/server/account.ts        帳號資料讀寫
+  src/server/search.ts         篩選、分組並行、SSE
+  src/server/data.ts           候選、catalog、reports
+  data/live/*.json             預設真實來源快照；fixture 預設不公開
+  scripts/import.ts           驗證資料並原子 upsert
+  tests/                      純函式／mocked API 與需隔離 DB 的測試分開
 ```
 
 ### 5.2 兩個會讓現有測試爆掉的陷阱
 
-**一、路由順序。** `src/server/index.ts:60` 是 `app.use("/*", serveStatic({ root: "./dist" }))`，`:61` 是 `app.get("/*", serveStatic({ path: "./dist/index.html" }))` — 這是 catch-all。新的 `auth`／`search`／`data` 路由**必須掛在這兩行之前**，否則 `POST /api/search` 會被 static handler 接走，回 200 + `index.html`，看起來像「API 沒反應」但沒有任何錯誤訊息。
+**一、路由順序。** API routes 必須掛在 `serveStatic` catch-all 之前；未知 `/api/*` 回 JSON 404，不得變成成功的 HTML。不要依賴會隨遷移變動的行號。
 
-**二、`db.ts` 不能在 import 時連線。** 現有的 `tests/routes.test.ts` 直接 `import { app }`，而且不需要資料庫。如果 `index.ts` 掛載 `search.ts` → `search.ts` import `db.ts` → `db.ts` 在模組最上層連線或跑 `schema.sql`，那麼**沒有 PostgreSQL 的環境下整組測試都會爆**，包括原本會過的 parse／transcribe 測試。
+**二、`db.ts` 不能在 import 時連線。** 現有的 `tests/routes.test.ts` 直接 `import { app }`，而且不需要資料庫。如果 `index.ts` 掛載 `search.ts` → `search.ts` import `db.ts` → `db.ts` 在模組最上層連線或跑 `schema.sql`，那麼**沒有 PostgreSQL 的環境下整組測試都會爆**，包括原本會過的 parse／voice 測試。
 
 做法：`db.ts` 只 `export const sql`（`Bun.sql` 本身是 lazy，第一次查詢才連線），`schema.sql` 的套用寫成 `export async function applySchema()`，**只在 `index.ts` 的啟動路徑呼叫，不在模組載入時呼叫**。需要資料庫的測試沿用現有做法：沒有 `DATABASE_URL` 就 `test.skip`。
 
 ### 5.1 資料庫列 → `Rec` 的轉換
 
-`candidates` 的一列和前端 `Rec`（現在的 `old_version/src/client/records.ts`）欄位對不起來。搬到 `src/shared/records.ts` 時一次改掉，並寫**一個** `rowToRec(row): Rec` 函式；`/api/search` 與 `/api/candidates/:id` 都只能走這個函式，不各自轉一次。
+`candidates` 的資料庫列統一透過 `rowToRec(row): Rec` 轉成共享候選契約；`/api/search` 與 `/api/candidates/:id` 共用轉換，不各自實作。下表保留原整合決策，實際完整欄位以 `src/shared/records.ts` 為準。
 
 `Rec` 的修改：
 
@@ -211,7 +225,33 @@ create index if not exists reports_candidate on reports (candidate_id, created_a
 
 ## 7. API 契約
 
-現有、不動：`POST /api/transcribe`、`POST /api/parse`。
+### 語音、文字與能力狀態
+
+| 方法／路徑 | Request → Response |
+|---|---|
+| `GET /api/config` | `{database:boolean,parse:boolean,voice:boolean,ranking:boolean,support_email:string或null,area:"圓山區"}`；設定旗標，不是遠端健康檢查 |
+| `POST /api/voice` | multipart：恰好一份 `audio` File → `{transcript:string,need:Need}`；不寫 DB，不需登入 |
+| `POST /api/parse` | JSON `{transcript:string,current:Need或null}` → Need；不需登入，保留主動文字解析及 correction |
+
+`voice` 取代舊 config 的 `transcribe`。`/api/transcribe` 不再是有效路由；音訊不會自動接 `/api/parse`。`voice:false` 時 client 不顯示可用錄音入口；沒有 Gemini key 仍可手動填寫條件，DB 配置與 AI 配置獨立。
+
+**語音邊界：** file ≤ 5 MiB、multipart request ≤ 6 MiB、空檔拒絕；busboy 保留 part Content-Type，拒絕非 multipart、額外 fields／duplicate files。`audio/mp4`／`audio/x-m4a` canonicalize 為 `audio/m4a`；其他 alias 與格式清單见 [語音規格 §4](SPEC-voice-input.md#4-api-契約)。核對基本 magic header，不能把 filename 或 MIME 當成已解碼證據；不轉碼、不使用 ffmpeg。前端最多錄 30,000 ms，後端不驗證音檔實際時長。
+
+**文字邊界：** transcript 長度 1–2000，request ≤ 32 KiB；current 預設 null。server 以 Asia/Taipei 提供 `today`；音訊 current 固定 null，文字 current 非 null 表示只更新提到的欄位。每次模型呼叫有 30 秒 timeout 與 request abort。
+
+| HTTP | `/api/voice` error | 意義 |
+|---|---|---|
+| 400 | `voice_failed` | multipart／欄位／空檔錯誤 |
+| 413 | `too_large` | 檔案或總請求超限 |
+| 415 | `unsupported_audio` | 不支援 MIME 或基本檔頭不符 |
+| 422 | `no_speech` | 沒有可辨識語音 |
+| 502 | `voice_failed` | 上游失敗或回應不符 JSON／Zod 契約 |
+| 503 | `voice_failed` | Gemini 未設定 |
+| 504 | `timeout` | 處理逾時 |
+
+`/api/parse` 400／502／503 對應 `parse_failed`，413 為 `too_large`，504 為 `timeout`。錯誤格式 `{error,message}` 固定，不洩漏 provider body、音訊、key；多個錯誤同時存在時以實際檢查順序為準。所有 API no-store。
+
+### 其他 API（保留搜尋／資料／帳號契約）
 
 | 方法 | 路徑 | 需登入 | Request → Response |
 |---|---|---|---|
@@ -228,7 +268,7 @@ create index if not exists reports_candidate on reports (candidate_id, created_a
 | GET | `/api/candidates/:id/reports` | 否 | → `[{reason, note, created_at, by: nickname}]` |
 | POST | `/api/candidates/:id/reports` | 是 | `{reason, note}` → 201 |
 
-錯誤 body 沿用現有 `{error, message}` 固定文案；供應商錯誤只寫 log，不回傳。
+錯誤 body 使用 `{error, message}` 固定文案。Gemini wrapper 遮罩 provider 內容，route 僅記錄 error 類型，不記錄完整上游回應、key 或使用者輸入。
 
 ### 7.1 `/api/search` 的 SSE 事件
 
@@ -250,7 +290,7 @@ SSE（Server-Sent Events）是同一個 HTTP 連線保持打開，伺服器有�
 2. 有 `location` 且該列有 `lat／lng` 時算 `distance_km`（haversine，一個函式放在 `shared/records.ts`）。
 3. 第一階段用共用純函式：`passesGate`（已驗證、總可比成本可算，且 `valid_until` 為 null 或 `> now()`；已過期的視同「過期／待確認」退到 pending）→ 否則進 pending；`passesHard(need, exclude)` 擴充距離（`max_distance_km`）、時間（`max_minutes` 對 `km ÷ 0.08`）、`registration_ok === false` 時要求 `registration_required` 為 false。統計每個限制的 `excluded_by`。`ponytail:` `people_or_servings`、`date`、`time_window`、`eligibility_notes` 維持文字，只顯示並交給 LLM，不做機器篩選；紀錄沒有對應的結構化欄位。
 4. `main` 依 `(agent, category)` 分組；每個非空群組跑 `rankGroup()`，`Promise.allSettled`，各自包在現有 `withTimeout`（30 秒）。
-5. `rankGroup`：`generateText` + `Output.object({ order: [{id, reason}] })`，使用從 `parse.ts` 抽出的 `createOpenAICompatible` 工廠。每筆送給 LLM 的欄位：id、title、provider、總可比成本、price_unit、quantity_or_servings、distance_km、availability、eligibility、tags。不送 URL、證據原文、baseline。系統提示：總可比成本第一、軟偏好第二、不刪任何一筆、理由一句繁中、排在更便宜項目前面時理由必須說明。
+5. `rankGroup`：使用共用 `gemini.ts` 的 `generateStructured`，以 strict Zod schema 取得 `{order:[{id,reason}]}`；native Interactions 的 text input／JSON response_format，沒有 OpenAI adapter。每筆送給 LLM 的欄位：id、title、provider、總可比成本、price_unit、quantity_or_servings、distance_km、availability、eligibility、tags。不送 URL、證據原文、baseline。系統提示：總可比成本第一、軟偏好第二、不刪任何一筆、理由一句繁中、排在更便宜項目前面時理由必須說明。
 6. 驗證輸出：不在輸入清單的 id 丟掉；漏掉的 id 依成本順序補到最後、`reason: null`；逾時或格式不合 → 整組依成本排序，`status:"failed"` 加固定文案。
 7. 每組完成就推事件；最後推 `{step:"done", pending}`。
 
@@ -258,7 +298,7 @@ SSE（Server-Sent Events）是同一個 HTTP 連線保持打開，伺服器有�
 
 `settings.costco_ok` 是「我有 Costco 會員」的開關（預設 false），不是顯示偏好：為 false 時 `passesHard` 排除 `eligibility` 含 `Costco 會員` 的候選（計入 `excluded_by.costco`），前端同時隱藏 `baseline.basis === "costco"` 的節省。沒有會員就買不到，用買不到的價格算節省是假的。欄位規則見 [SPEC-ingestion.md §8](./SPEC-ingestion.md)。
 
-`need.budget` 為 null（使用者沒設預算）時不做預算篩選；排序仍以總可比成本為第一考量，單位成本（CP 值）為第二考量，LLM 系統提示不變。
+`need.budget_total_twd` 為 null（使用者沒設預算）時不做預算篩選；模型排序仍以總可比成本第一、軟偏好第二；不捏造 CP 分數。前端已套用並讓使用者確認的設定預填，以送來的 Need 為準；server 不替使用者補預算。
 
 ### 8.1 排序範例
 
@@ -293,47 +333,57 @@ SSE（Server-Sent Events）是同一個 HTTP 連線保持打開，伺服器有�
 
 ## 11. 安裝與啟動
 
+需要可用的 PostgreSQL；不要以本文件推定某台機器已安裝或未安裝。完整啟動與真實資料匯入程序見根目錄 README。已有設定檔時保留，只補缺欄位。
+
 ```sh
-brew install postgresql@17 && brew services start postgresql@17
-createdb ail
-cd prototype-v1 && cp .env.example .env   # 填 STT_*、LLM_*、DATABASE_URL=postgres://localhost/ail
-bun install && bun run dev
+cd prototype-v1
+bun install --frozen-lockfile
+cp -n .env.example .env
+# 在自己的 server env 設 DATABASE_URL、GEMINI_API_KEY、GEMINI_MODEL；勿提交 key。
+bun run dev
 ```
 
-## 12. 文件連動修改（已於 2026-09-05 完成）
+設定欄位範例（空值表示尚未設定）：
 
-以下修改已套用；ADR 見 [adr/0001](./adr/0001-offline-ingestion-and-per-category-ranking.md)。
+```dotenv
+DATABASE_URL=postgres://localhost/ail
+GEMINI_API_KEY=
+GEMINI_MODEL=
+SUPPORT_EMAIL=
+PORT=3000
+```
+
+`GEMINI_MODEL` 使用帳號可用、支援音訊與結構化輸出的 `gemini-*` 模型 ID，建議 bare name，無預設。缺 key 或 model 時 voice／parse／ranking 停用；搜尋可走 deterministic fallback。`gemini.ts` 固定 Google origin，不提供可將 key 導向其他站的 base URL。
+
+Session 固定 1,800 秒，不因請求延長；不是可調的 env 參數。所有模型請求設 `store:false`，但這不是整體零保留、不作訓練或免除安全日誌的承諾；部署者需核對 Google 條款，見研究紀錄。
+
+## 12. 文件沿革與本次更新
+
+以下保留原後端整合的歷史紀錄；ADR 見 [adr/0001](./adr/0001-offline-ingestion-and-per-category-ranking.md)。
 
 - `CONTEXT.md`：Agent 改為「負責一種推薦排序任務的 LLM 執行單元；不上網搜尋」；新增：第一階段篩選、推薦排序、推薦理由、資料回報／體驗回報、團體優惠（含兌換碼，由商家到店驗證，平台不追蹤成員）、生存模式、每月預算／已花費、排除項目、估算距離。
 - `docs/PRD-all-in-life.md`：§3.2 與 NFR-05 的位置條文改為「經同意後僅於該次搜尋使用目前位置，不保存」；§7.1／§7.2 Agent 對事先匯入的資料庫做推薦排序、每個 Agent 內部按類別並行；§9.1 增加 lat／lng、證據陣列、redeem_code；§9.7 以 `account_data` 取代清單／收藏各表；FR-08 免費／付費改為標籤區分；FR-12／FR-15 匿名不可 ★／清單、不做合併；揪團改為純顯示。
 - `docs/SPEC-voice-input.md`：§1.1／§2.4／§4 移除合併（Case A8）；`/api/auth/me` 回傳 data；§8 環境變數已列。
-- `.env.example`：新增 `DATABASE_URL`、`AUTH_SESSION_TTL_SECONDS=1800`、`SUPPORT_EMAIL`。
+- 舊規格曾把 session TTL 列為 env；目前固定 1,800 秒。有效 AI 設定以本文件 §11 的 Gemini 欄位為準。
 - ADR `docs/adr/0001-offline-ingestion-and-per-category-ranking.md`：難以回頭、與 PRD「即時網路搜尋」相反、有真實取捨（誠實與成本 vs 廣度）。
 
-## 13. 建置順序與驗證
+## 13. 遷移驗證與驗收
 
-### 13.1 建置順序
+### 13.1 無 live key 的回歸檢查
 
-每一步都有一個「跑得起來就算過」的檢查；沒過就不要往下一步。
+1. 共享 schema、API body、MIME／filename／magic header、5 MiB 檔案及 6 MiB multipart 邊界、重複／額外 fields，以 mocked provider 測試，不需真實 DB。
+2. 驗證 Gemini endpoint／header／response_format／store:false；completed → model_output → text → JSON.parse → Zod，拒絕錯誤／不完整／非文字結果。這只能驗證程式契約，不證明 Google 遠端接受。
+3. 驗證錄音 deadline 是 `30 * 1000`，停止僅一次上傳；client FormData 保留 MIME，response 同時進逐字稿與 Need review，不自動 parse／search；abort／revision 舊結果不可覆蓋。
+4. 關閉 Gemini 設定，確認手動條件可用、config voice／parse／ranking 為 false，搜尋分組明示成本 fallback。
+5. 保留純篩選／SSE／ranking sanitization／帳號隔離與撤銷測試。需要 DB 的 fixtures 只用專用測試資料庫；不得把匯入或寫入型測試指向真實資料庫。
+6. `bun run typecheck`、`bun run build`；型別／建置成功不等於真機麥克風或 live Gemini 成功。
 
-| 步驟 | 做什麼 | verify |
-|---|---|---|
-| 1 | 複製 `old_version` → `prototype-v1`，改 `package.json` 名稱 | `bun run dev` 打得開、`bun test` 全過（現有 parse／routes 測試） |
-| 2 | `db.ts` + `schema.sql`（含 `valid_until`） | 啟動後 `psql ail -c "\dt"` 看到五張表 |
-| 3 | `shared/records.ts`：搬過來 + §5.1 的 `Rec` 改造 + `rowToRec` + haversine | `tests/search.test.ts` 的純函式測試通過（不需資料庫、不需 LLM） |
-| 4 | `search.ts` 第一階段：篩選 + SSE，**先不接 LLM**，直接依成本排序 | `curl -N` 看得到 filter 事件與各類 done 事件；**再從瀏覽器（經 vite proxy）確認事件是逐一到達、不是最後一次全到** — `curl` 直打 3000 測不到 proxy 這一層 |
-| 5 | `search.ts` 第二階段（LLM 排序）→ `auth.ts` → `data.ts` | 拿掉 `LLM_BASE_URL` 仍出得來結果（fallback 有效） |
+### 13.2 2026-09-05 驗證紀錄與限制
 
-第 3 步是地基，而且它的測試不需要資料庫也不需要 LLM，壞了最容易查。第 4 步刻意先不接 LLM：結果不對時，你確定是篩選邏輯的問題，不是模型的問題。`auth` 排在最後是因為搜尋不需要登入 — 帳號壞掉頂多不能存清單，Demo 主線還是走得完。
-
-資料蒐集與程式可以並行，但**先只做食品 3 筆**，跑完 `import → geocode → check-data → /api/search →瀏覽器` 確認欄位契約沒問題，再回頭補滿 35–50 筆（見 [SPEC-ingestion.md](./SPEC-ingestion.md) §3）。用 3 筆發現契約要改，改一次；用 50 筆發現，改 50 次。
-
-### 13.2 驗證
-
-1. 在 `prototype-v1/` 跑 `bun run typecheck` 與 `bun test`。`tests/search.test.ts` 涵蓋：閘門與硬限制（含距離、登記）、`excluded_by` 計數（含 `costco`）、`valid_until` 過期的紀錄退到 pending、`rowToRec` 的欄位對應（§5.1）、LLM 輸出驗證（未知 id 丟棄、漏掉的 id 補回、輸出不少於輸入）。`tests/auth.test.ts`（需資料庫）涵蓋 SPEC Case A1–A7：註冊、重複 409、登入、過期 401、登出、修改密碼撤銷 sessions、固定 401 文案。
-2. 開發資料：`scripts/seed-dev.ts` 把現有標示為虛構的 `MOCK_RECORDS` 只塞進另一個 `ail_dev` 資料庫；Demo 資料庫永遠不放。
-3. 手動：`curl -N -X POST localhost:3000/api/search -d '{"need":{...情境 A...},"exclude":["牛"],"location":null}'` 看到 filter 事件、各類事件、done。帶 `location` 再跑一次看 `distance_km` 與距離排除。拿掉 `LLM_BASE_URL` 看各類 `failed` fallback。
-4. 瀏覽器：情境 A、B 走完；匿名按 ★ 會提示登入；登入後清單還原；揪團頁顯示兌換碼且沒有成員 UI。
+- **最新全套結果：150 pass / 28 skip / 0 fail，912 assertions**；typecheck 與 build 通過。fixture suite 未觸及真實 DB。
+- **UI 驗收：** 對 39 筆真實公開 catalog 的日用品手動搜尋可用；這不是 Gemini 語音驗收。
+- **契約查核：** 官方文件與目前原始碼一致；Need／VoiceResult 離線 Zod JSON Schema 匯出通過。未使用真實 Gemini key。
+- **仍待 live Gemini／真機驗收：** 帳號／模型權限、實際錄音 WebM／OGG／M4A 解碼、數字／否定詞／繁中 transcript 品質、JSON Schema 關鍵字接受與值驗證、延遲／timeout、人工確認後搜尋。不得以 mocked tests 或略過數代替這些結果。
 
 ## 14. 延後與不在範圍
 

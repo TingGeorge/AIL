@@ -8,38 +8,45 @@ import { comparableTotal, type Rec } from "../src/shared/records.ts";
 const post = (path: string, body: BodyInit, headers?: Record<string, string>) =>
   app.request(path, { method: "POST", body, headers });
 
-test("parse: 503 when LLM is unconfigured", async () => {
-  delete process.env.LLM_BASE_URL;
-  const res = await post("/api/parse", JSON.stringify({ transcript: "晚餐" }), { "content-type": "application/json" });
-  expect(res.status).toBe(503);
-  expect((await res.json()).error).toBe("parse_failed");
-});
-
-test("parse: 400 on malformed body", async () => {
-  process.env.LLM_BASE_URL = "http://127.0.0.1:9";
-  process.env.LLM_MODEL = "x";
-  const res = await post("/api/parse", "{}", { "content-type": "application/json" });
-  expect(res.status).toBe(400);
-  expect(await res.json()).toEqual({ error: "parse_failed", message: "請求格式錯誤" });
-});
-
-test("parse: upstream failure is 502 with a fixed message, no leaked detail", async () => {
-  process.env.LLM_BASE_URL = "http://127.0.0.1:9";
-  process.env.LLM_MODEL = "x";
-  const res = await post("/api/parse", JSON.stringify({ transcript: "晚餐" }), { "content-type": "application/json" });
-  expect(res.status).toBe(502);
-  expect(await res.json()).toEqual({ error: "parse_failed", message: "解析失敗" });
-}, 20_000); // SDK retries with backoff before failing
-
-test("transcribe: 400 without audio, 400 on empty clip", async () => {
-  process.env.STT_BASE_URL = "http://127.0.0.1:9";
-  process.env.STT_MODEL = "w";
-  const noAudio = new FormData();
-  noAudio.append("other", "1");
-  expect((await post("/api/transcribe", noAudio)).status).toBe(400);
-  const empty = new FormData();
-  empty.append("audio", new File([], "clip"));
-  expect((await post("/api/transcribe", empty)).status).toBe(400);
+describe("Gemini API contract without live provider", () => {
+  const keys = ["GEMINI_API_KEY", "GEMINI_MODEL"] as const;
+  let saved: (string | undefined)[];
+  let originalFetch: typeof fetch;
+  beforeEach(() => {
+    saved = keys.map(key => process.env[key]);
+    originalFetch = globalThis.fetch;
+    process.env.GEMINI_API_KEY = "test-only-key";
+    process.env.GEMINI_MODEL = "gemini-test";
+    globalThis.fetch = (async () => Response.json({error:"private upstream details"}, {status:502})) as unknown as typeof fetch;
+  });
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+    keys.forEach((key,index) => { if (saved[index] === undefined) delete process.env[key]; else process.env[key] = saved[index]; });
+  });
+  test("parse: 503 when Gemini is unconfigured", async () => {
+    delete process.env.GEMINI_API_KEY;
+    const res = await post("/api/parse", JSON.stringify({ transcript: "晚餐" }), { "content-type": "application/json" });
+    expect(res.status).toBe(503);
+    expect((await res.json()).error).toBe("parse_failed");
+  });
+  test("parse: 400 on malformed body", async () => {
+    const res = await post("/api/parse", "{}", { "content-type": "application/json" });
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: "parse_failed", message: "請求格式錯誤" });
+  });
+  test("parse: upstream failure is 502 with a fixed message, no leaked detail", async () => {
+    const res = await post("/api/parse", JSON.stringify({ transcript: "晚餐" }), { "content-type": "application/json" });
+    expect(res.status).toBe(502);
+    expect(await res.json()).toEqual({ error: "parse_failed", message: "解析失敗" });
+  });
+  test("voice: 400 without audio or on an empty clip", async () => {
+    const noAudio = new FormData();
+    noAudio.append("other", "1");
+    expect((await post("/api/voice", noAudio)).status).toBe(400);
+    const empty = new FormData();
+    empty.append("audio", new File([], "clip.webm", {type:"audio/webm"}));
+    expect((await post("/api/voice", empty)).status).toBe(400);
+  });
 });
 
 // ---- 票 05／11：搜尋與候選查詢 ----
@@ -100,8 +107,8 @@ describe.skipIf(!dbLive)("搜尋與候選查詢 (live database)", () => {
   };
 
   const events = async (body: unknown) => {
-    // 前面的 parse 測試會留下 127.0.0.1:9；搜尋 fallback 測試不可誤打假 provider 或等待 SDK retry。
-    const keys = ["LLM_BASE_URL", "LLM_API_KEY", "LLM_MODEL"] as const;
+    // 明確停用 Gemini，搜尋 fallback 測試不能呼叫付費服務。
+    const keys = ["GEMINI_API_KEY", "GEMINI_MODEL"] as const;
     const previous = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
     for (const key of keys) delete process.env[key];
     try {

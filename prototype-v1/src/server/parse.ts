@@ -1,8 +1,7 @@
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { generateText, Output } from "ai";
+import { generateStructured, geminiConfigured } from "./gemini.ts";
 import { needSchema, type Need, CATEGORIES } from "../shared/need.ts";
 
-const SYSTEM = `你是「ALL in life」的需求解析器。把使用者的一句話（逐字稿或文字）轉成需求與限制 JSON。
+export const NEED_SYSTEM = `你是「ALL in life」的需求解析器。把使用者的一句話（逐字稿或文字）轉成需求與限制 JSON。
 規則：
 - 固定區域是圓山區，不要放進任何欄位；使用者提到其他地區時放進 unresolved。
 - 沒提到的欄位回傳 null 或空陣列，絕不用常識補值。
@@ -18,23 +17,13 @@ const SYSTEM = `你是「ALL in life」的需求解析器。把使用者的一�
   例：current 人數 2 預算 300，「改成三個人」→ 人數 3、預算 300。「預算不限」→ budget_total_twd null。
 - 所有字串用繁體中文。只輸出 JSON。`;
 
-const llm = () =>
-  createOpenAICompatible({
-    name: "llm",
-    baseURL: process.env.LLM_BASE_URL ?? "",
-    apiKey: process.env.LLM_API_KEY,
-    supportsStructuredOutputs: true,
-  });
+export const parseConfigured = geminiConfigured;
 
-export const parseConfigured = () => Boolean(process.env.LLM_BASE_URL && process.env.LLM_MODEL);
-
-export async function parseNeed(input: { transcript: string; current: Need | null; today: string }, signal?:AbortSignal): Promise<Need> {
-  const { output } = await generateText({
-    abortSignal: signal,
-    model: llm()(process.env.LLM_MODEL ?? ""),
-    output: Output.object({ schema: needSchema, name: "need" }),
-    system: SYSTEM,
-    prompt: JSON.stringify({ today: input.today, current: input.current, transcript: input.transcript }),
+export async function parseNeed(input: { transcript: string; current: Need | null; today: string }, signal?: AbortSignal): Promise<Need> {
+  return generateStructured({
+    signal,
+    schema: needSchema,
+    system: NEED_SYSTEM,
+    input: [{ type: "text", text: JSON.stringify(input) }],
   });
-  return needSchema.parse(output);
 }

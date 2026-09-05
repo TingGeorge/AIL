@@ -3,9 +3,9 @@ import { parseNeed, parseConfigured } from "../src/server/parse.ts";
 import { EMPTY_NEED, needSchema, type Need } from "../src/shared/need.ts";
 
 // Fixtures from docs/SPEC-voice-input.md §10, run against the configured LLM.
-// Skips when LLM_BASE_URL / LLM_MODEL are unset so the suite stays green on a bare checkout.
+// Live calls are opt-in; a developer key alone must never start paid test requests.
 const today = "2026-09-04";
-const live = parseConfigured();
+const live = process.env.RUN_LIVE_GEMINI_TESTS === "1" && parseConfigured();
 
 describe.skipIf(!live)("需求解析 (live provider)", () => {
   test("1. 情境 A", async () => {

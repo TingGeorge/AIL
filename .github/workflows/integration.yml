@@ -25,10 +25,9 @@ jobs:
         working-directory: prototype-v1
     env:
       DATABASE_URL: postgres://ail_ci:ci_test_only@127.0.0.1:5432/ail_test
-      LLM_BASE_URL: ""
-      LLM_MODEL: ""
-      STT_BASE_URL: ""
-      STT_MODEL: ""
+      GEMINI_API_KEY: ""
+      GEMINI_MODEL: ""
+      RUN_LIVE_GEMINI_TESTS: "0"
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
