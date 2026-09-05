@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import Image from 'next/image';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -120,6 +120,7 @@ type Result = {
   expiresAt?: string;
   reportCount: number;
   image?: string;
+  imageKind?: 'verified-real';
   tags?: string[];
   preferenceTags?: string[];
   agent?: 'cp' | 'zero';
@@ -461,7 +462,13 @@ const results: Result[] = [
     preferenceTags: ['快速', '能坐', '低預算'],
     agent: 'cp',
     tone: 'amber',
-    dimensions: { price: 86, food: 78, quality: 72, convenience: 86, discount: 68 },
+    dimensions: {
+      price: 86,
+      food: 78,
+      quality: 72,
+      convenience: 86,
+      discount: 68,
+    },
   },
   {
     id: 'ys-food-003',
@@ -490,7 +497,13 @@ const results: Result[] = [
     preferenceTags: ['可外帶', '低預算', '不用等'],
     agent: 'cp',
     tone: 'lime',
-    dimensions: { price: 90, food: 76, quality: 70, convenience: 78, discount: 72 },
+    dimensions: {
+      price: 90,
+      food: 76,
+      quality: 70,
+      convenience: 78,
+      discount: 72,
+    },
   },
   {
     id: 'ys-food-004',
@@ -519,7 +532,13 @@ const results: Result[] = [
     preferenceTags: ['安靜', '能坐', '有冷氣'],
     agent: 'cp',
     tone: 'blue',
-    dimensions: { price: 74, food: 84, quality: 82, convenience: 82, discount: 60 },
+    dimensions: {
+      price: 74,
+      food: 84,
+      quality: 82,
+      convenience: 82,
+      discount: 60,
+    },
   },
   {
     id: 'taxi-carpool-night',
@@ -548,7 +567,13 @@ const results: Result[] = [
     preferenceTags: ['少走路', '不用等', '揪團'],
     agent: 'cp',
     tone: 'violet',
-    dimensions: { price: 82, food: 40, quality: 78, convenience: 94, discount: 86 },
+    dimensions: {
+      price: 82,
+      food: 40,
+      quality: 78,
+      convenience: 94,
+      discount: 86,
+    },
   },
 ];
 
@@ -565,11 +590,7 @@ const localNow = () =>
   }).format(new Date());
 const overlap = (a: string[] = [], b: string[] = []) =>
   a.filter((item) => b.includes(item));
-const cpFormulaScore = (
-  item: Result,
-  filters: Filters,
-  params: CpParams,
-) => {
+const cpFormulaScore = (item: Result, filters: Filters, params: CpParams) => {
   const priceScore =
     filters.budget <= 0
       ? item.totalCost === 0
@@ -673,40 +694,45 @@ export default function App() {
   const [pwaStatus, setPwaStatus] = useState('檢查中');
 
   const selected = results.find((item) => item.id === selectedId) ?? results[0];
-  const ordered = useMemo(
-    () => {
-      const ranked = results
-        .filter((item) => {
-          const categoryMatch =
-            filters.category === '全部' || item.category === filters.category;
-          const budgetMatch =
-            filters.budget === 0
-              ? item.totalCost === 0
-              : item.totalCost <= filters.budget;
-          return (
-            categoryMatch && budgetMatch && item.distanceKm <= filters.distance
-          );
-        })
-        .sort((a, b) => {
-          const aExcluded = overlap(a.tags, filters.exclusions).length > 0;
-          const bExcluded = overlap(b.tags, filters.exclusions).length > 0;
-          if (aExcluded !== bExcluded) return aExcluded ? 1 : -1;
-          const aPreference = overlap(a.preferenceTags, filters.preferences).length;
-          const bPreference = overlap(b.preferenceTags, filters.preferences).length;
-          if (aPreference !== bPreference) return bPreference - aPreference;
-          if (sort === 'cost') return a.totalCost - b.totalCost;
-          if (sort === 'distance') return a.distanceKm - b.distanceKm;
-          return (
-            cpFormulaScore(b, filters, cpParams) -
-            cpFormulaScore(a, filters, cpParams)
-          );
-        });
-      return mode === 'zero'
-        ? ranked.sort((a, b) => (b.agent === 'zero' ? 1 : 0) - (a.agent === 'zero' ? 1 : 0))
-        : ranked;
-    },
-    [filters, mode, sort, cpParams],
-  );
+  const ordered = useMemo(() => {
+    const ranked = results
+      .filter((item) => {
+        const categoryMatch =
+          filters.category === '全部' || item.category === filters.category;
+        const budgetMatch =
+          filters.budget === 0
+            ? item.totalCost === 0
+            : item.totalCost <= filters.budget;
+        return (
+          categoryMatch && budgetMatch && item.distanceKm <= filters.distance
+        );
+      })
+      .sort((a, b) => {
+        const aExcluded = overlap(a.tags, filters.exclusions).length > 0;
+        const bExcluded = overlap(b.tags, filters.exclusions).length > 0;
+        if (aExcluded !== bExcluded) return aExcluded ? 1 : -1;
+        const aPreference = overlap(
+          a.preferenceTags,
+          filters.preferences,
+        ).length;
+        const bPreference = overlap(
+          b.preferenceTags,
+          filters.preferences,
+        ).length;
+        if (aPreference !== bPreference) return bPreference - aPreference;
+        if (sort === 'cost') return a.totalCost - b.totalCost;
+        if (sort === 'distance') return a.distanceKm - b.distanceKm;
+        return (
+          cpFormulaScore(b, filters, cpParams) -
+          cpFormulaScore(a, filters, cpParams)
+        );
+      });
+    return mode === 'zero'
+      ? ranked.sort(
+          (a, b) => (b.agent === 'zero' ? 1 : 0) - (a.agent === 'zero' ? 1 : 0),
+        )
+      : ranked;
+  }, [filters, mode, sort, cpParams]);
 
   useEffect(() => {
     if ('serviceWorker' in navigator)
@@ -1159,12 +1185,17 @@ export default function App() {
           </p>
         </DialogContent>
       </Dialog>
-      <Dialog open={Boolean(shareUrl)} onOpenChange={(open) => !open && setShareUrl('')}>
+      <Dialog
+        open={Boolean(shareUrl)}
+        onOpenChange={(open) => !open && setShareUrl('')}
+      >
         <DialogContent className="evidence-sheet share-sheet">
           <DialogHeader>
             <span className="kicker lime-text">可掃描分享</span>
             <DialogTitle>ALL IN LIFE 分享連結</DialogTitle>
-            <DialogDescription>可直接掃描 QR Code，或開啟下方連結。</DialogDescription>
+            <DialogDescription>
+              可直接掃描 QR Code，或開啟下方連結。
+            </DialogDescription>
           </DialogHeader>
           <div className="qr-frame">
             <QrCode aria-hidden="true" />
@@ -1177,11 +1208,18 @@ export default function App() {
               loader={({ src }) => src}
             />
           </div>
-          <a className="source-link" href={shareUrl} target="_blank" rel="noreferrer">
+          <a
+            className="source-link"
+            href={shareUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
             開啟分享連結
             <ExternalLink />
           </a>
-          <p className="fine-print">QR 圖片需要網路載入；分享連結本身可直接複製使用。</p>
+          <p className="fine-print">
+            QR 圖片需要網路載入；分享連結本身可直接複製使用。
+          </p>
         </DialogContent>
       </Dialog>
     </div>
@@ -1245,7 +1283,9 @@ function OnboardingScreen({
     <section className="screen onboarding-screen">
       <div className="onboarding-top">
         <span className="brand-inline">ALL IN LIFE</span>
-        <button className="skip-button" onClick={onDone}>略過</button>
+        <button className="skip-button" onClick={onDone}>
+          略過
+        </button>
       </div>
       <Progress value={step * 33.4} />
       {step === 1 && (
@@ -1481,7 +1521,11 @@ function HomeScreen({
           {profile.name.slice(0, 1)}
         </button>
       </div>
-      <button className="wallet-card" onClick={onAnalytics} aria-label="查看消費分析">
+      <button
+        className="wallet-card"
+        onClick={onAnalytics}
+        aria-label="查看消費分析"
+      >
         <div>
           <span className="wallet-label">
             <WalletCards />
@@ -1607,7 +1651,8 @@ function SearchScreen({
       <span className="kicker lime-text">雙 Agent 探索中</span>
       <h1>
         CP 值獵人
-        <br />與零元獵人出動
+        <br />
+        與零元獵人出動
       </h1>
       <p>先套硬限制，再依偏好、價格與距離排序；排斥成分會標警告並放到後段。</p>
       <div className="agent-grid">
@@ -1661,7 +1706,10 @@ function AgentPanel({
   return (
     <div className={`agent-panel agent-${tone}`}>
       <div className="agent-panel-top">
-        <span><i />{title}</span>
+        <span>
+          <i />
+          {title}
+        </span>
         <b>{subtitle}</b>
       </div>
       <div className="agent-steps">
@@ -1704,7 +1752,9 @@ function CpFormulaPanel({
           <CircleDollarSign />
           <b>我的 CP 值公式</b>
         </span>
-        <strong>{sample ? cpFormulaScore(sample, filters, params) : '—'}</strong>
+        <strong>
+          {sample ? cpFormulaScore(sample, filters, params) : '—'}
+        </strong>
       </summary>
       <p>CP = 價格分 × 權重＋距離分 × 權重＋喜好符合分 × 權重</p>
       <small>先依喜好分組；含排斥成分的選項標示警告並排到後段。</small>
@@ -1806,17 +1856,17 @@ function ResultsScreen({
         </button>
       </div>
       <div className="category-tabs">
-        {(['全部', '餐飲', '日用', '育樂', '交通'] as Filters['category'][]).map(
-          (category) => (
-            <button
-              key={category}
-              className={filters.category === category ? 'active' : ''}
-              onClick={() => onFiltersChange({ ...filters, category })}
-            >
-              {category}
-            </button>
-          ),
-        )}
+        {(
+          ['全部', '餐飲', '日用', '育樂', '交通'] as Filters['category'][]
+        ).map((category) => (
+          <button
+            key={category}
+            className={filters.category === category ? 'active' : ''}
+            onClick={() => onFiltersChange({ ...filters, category })}
+          >
+            {category}
+          </button>
+        ))}
       </div>
       <CpFormulaPanel
         params={cpParams}
@@ -1836,10 +1886,10 @@ function ResultsScreen({
           {items.map((item, index) => (
             <article key={item.id} className={`result-card tone-${item.tone}`}>
               <button className="result-open" onClick={() => onOpen(item.id)}>
-                {item.image ? (
+                {item.image && item.imageKind === 'verified-real' ? (
                   <Image
                     src={item.image}
-                    alt="餐食組合示意"
+                    alt={`${item.provider}實景`}
                     width={112}
                     height={196}
                   />
@@ -1926,11 +1976,11 @@ function DetailScreen({
   );
   return (
     <section className="screen detail-screen">
-      {item.image ? (
+      {item.image && item.imageKind === 'verified-real' ? (
         <div className="detail-image">
           <Image
             src={item.image}
-            alt="餐食組合示意"
+            alt={`${item.provider}實景`}
             width={430}
             height={230}
             priority
@@ -2235,18 +2285,33 @@ function TeamScreen({
       </button>
       <div className="more-teams">
         <button>
-          <span className="campaign-logo transport"><Bike /></span>
-          <span><b>夜間計程車順風團</b><small>22:10 圓山站出發 · 2 / 4 人</small></span>
+          <span className="campaign-logo transport">
+            <Bike />
+          </span>
+          <span>
+            <b>夜間計程車順風團</b>
+            <small>22:10 圓山站出發 · 2 / 4 人</small>
+          </span>
           <strong>每人約 NT$40</strong>
         </button>
         <button>
-          <span className="campaign-logo food"><Utensils /></span>
-          <span><b>週末早午餐併桌</b><small>明天 11:30 · 3 / 6 人</small></span>
+          <span className="campaign-logo food">
+            <Utensils />
+          </span>
+          <span>
+            <b>週末早午餐併桌</b>
+            <small>明天 11:30 · 3 / 6 人</small>
+          </span>
           <strong>預估省 18%</strong>
         </button>
         <button>
-          <span className="campaign-logo daily"><ShoppingBag /></span>
-          <span><b>日用品箱購分攤</b><small>今晚截止 · 4 / 5 人</small></span>
+          <span className="campaign-logo daily">
+            <ShoppingBag />
+          </span>
+          <span>
+            <b>日用品箱購分攤</b>
+            <small>今晚截止 · 4 / 5 人</small>
+          </span>
           <strong>還差 1 人</strong>
         </button>
       </div>
@@ -2344,7 +2409,9 @@ function FiltersScreen({
             })
           }
         />
-        <p className="slider-tip">拖曳亮綠色圓點調整搜尋半徑；距離越短，CP 距離分越高。</p>
+        <p className="slider-tip">
+          拖曳亮綠色圓點調整搜尋半徑；距離越短，CP 距離分越高。
+        </p>
       </div>
       <TagPicker
         title="類別"
@@ -2729,20 +2796,26 @@ function HistoryScreen({
                 ? 'tfam'
                 : 'daily-store';
           return (
-          <button className="history-entry" key={item.id} onClick={() => onOpen(targetId)}>
-            <span className="history-icon">{categoryIcon(item.category)}</span>
-            <span>
-              <b>{item.title}</b>
-              <small>
-                {item.date} · {item.category}
-              </small>
-            </span>
-            <span>
-              <strong>NT${money(item.amount)}</strong>
-              <small>省 NT${money(item.saved)}</small>
-            </span>
-            <ChevronRight />
-          </button>
+            <button
+              className="history-entry"
+              key={item.id}
+              onClick={() => onOpen(targetId)}
+            >
+              <span className="history-icon">
+                {categoryIcon(item.category)}
+              </span>
+              <span>
+                <b>{item.title}</b>
+                <small>
+                  {item.date} · {item.category}
+                </small>
+              </span>
+              <span>
+                <strong>NT${money(item.amount)}</strong>
+                <small>省 NT${money(item.saved)}</small>
+              </span>
+              <ChevronRight />
+            </button>
           );
         })}
       </div>
