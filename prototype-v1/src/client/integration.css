@@ -16,3 +16,14 @@ html,body,#root{min-height:100%;margin:0}body{font-family:var(--font-geist-sans)
 .settings-screen > form + .secondary-action {
   margin-top: 12px;
 }
+
+.settings-screen > .pwa-card {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.settings-screen > .pwa-card > h2,
+.settings-screen > .pwa-card > .section-copy {
+  margin: 0;
+}
