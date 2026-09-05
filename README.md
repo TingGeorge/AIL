@@ -4,7 +4,7 @@
 
 ALL in Life 是一個以「限制優先、證據可追溯、成本不造假」為原則的生活決策 Demo。使用者可以輸入預算、人數、飲食限制與偏好，從「省錢晚餐」、「Team 團購」或「白嫖一天」三條路徑出發，比較圓山站周邊的餐食、免費資源、活動與交通方案。
 
-目前版本是可互動的單頁前端 MVP：搜尋流程、部分團購資料與狀態是 Demo fixture；D1 schema、多人協作與資料擷取流程已完成技術規格，但尚未接上正式後端。這個邊界會在介面與文件中明確標示，避免把模擬結果誤認為即時優惠。
+目前版本是手機 App 型前端：以單一 route 管理 Home、Search、Results、Detail、Saved、Team、Settings、Map 八個獨立 screen，搭配頁面轉場、底部導覽、收藏、清單勾選、篩選排序與設定互動。搜尋流程、部分團購資料與狀態仍是本地 fixture；D1 schema、多人協作與資料擷取流程已完成技術規格，但尚未接上正式後端。資料真實性邊界會以來源、查核時間與適用條件呈現，避免把模擬結果誤認為即時優惠。
 
 ## 問題與目標
 
@@ -29,7 +29,7 @@ ALL in Life 的目標使用者是學生、剛進入職場者、精打細算的�
 
 | 能力 | 狀態 | 說明 |
 | --- | --- | --- |
-| 響應式互動介面 | 可操作 | 主要流程集中在 `mvp/app/page.tsx` |
+| 手機 App 多畫面介面 | 可操作 | 八個 state-driven screens 集中在 `mvp/app/page.tsx`，固定導覽且只捲動內容區 |
 | CP Value 計算 | 可操作 | 純 TypeScript 規則引擎，包含 evidence、hard constraint 與 coverage gate |
 | 官方來源連結 | 部分完成 | 北美館等展示資料附原始連結與查核標示 |
 | Google 地圖 | Demo | 使用公開 embed/search URL，尚未串 Places API 或儲存 Place ID |
@@ -52,13 +52,21 @@ ALL in Life 的目標使用者是學生、剛進入職場者、精打細算的�
 4. 先套用 Evidence Gate 與硬限制，再計算 CP Value。
 5. 以可靠度與覆蓋率修正分數，回傳可解釋的排序與來源。
 
-產品操作流程圖可在 [`docs/architecture/all-in-life-product-flow.html`](docs/architecture/all-in-life-product-flow.html) 中互動檢視。
+![ALL in Life 產品流程](docs/architecture/all-in-life-product-flow.visual-check.1440x900.dark.png)
+
+文件導覽：
+
+- [互動式產品流程圖](docs/architecture/all-in-life-product-flow.html)
+- [互動式系統架構圖](docs/architecture/all-in-life-architecture.html)
+- [目前分支與 main 的架構、語言與衝突比較](docs/branch-main-comparison.md)
+- [Team / CP / Zero-Cost 技術規格](docs/SPEC-team-cp-zero-cost-v1.md)
+- [BUILDMODE 送件 checklist](submission-checklist.md)
 
 ## 使用技術
 
 | 類型 | 技術／服務 | 用途與目前狀態 |
 | --- | --- | --- |
-| 前端 | React 19、TypeScript 5、Vinext、Tailwind CSS 4 | 響應式單頁介面與 Cloudflare 相容建置 |
+| 前端 | React 19、TypeScript 5、Vinext、Tailwind CSS 4 | 手機 App shell、多畫面狀態導覽與 Cloudflare 相容建置 |
 | UI | Base UI、shadcn、Lucide React | Dialog、Tabs、Slider、按鈕與 icon |
 | 評分 | 自製 CP Value Engine | 五維加權、可靠度修正、證據與覆蓋率守門 |
 | 語音 | Web Speech API | 瀏覽器端 `zh-TW` 語音辨識；不支援時回退文字輸入 |

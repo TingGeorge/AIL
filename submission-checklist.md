@@ -54,6 +54,11 @@
 
 ## 程式碼與功能驗證
 
+- [x] 手機 App shell 限制在 430 px 內，桌面以裝置外框呈現
+- [x] Home、Search、Results、Detail、Saved、Team、Settings、Map 有獨立畫面切換感
+- [x] Bottom navigation、收藏、checkbox 清單、篩選、排序、設定與揪團進度可互動
+- [x] 使用者畫面未顯示 `DEMO`、`fixture` 或 `MVP` 字樣
+- [x] README 已加入架構圖、流程圖與 branch comparison 超連結
 - [ ] 在乾淨環境執行 `cd mvp && npm ci`
 - [ ] 執行 `npm run lint` 且無 error
 - [ ] 執行 `npm run build` 且成功產生 `mvp/dist/`
