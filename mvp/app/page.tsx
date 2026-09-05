@@ -579,6 +579,26 @@ const results: Result[] = [
 
 const money = (value: number) =>
   new Intl.NumberFormat('zh-TW').format(Math.round(value));
+const taipeiDateTime = () => {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Taipei',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  })
+    .formatToParts(new Date())
+    .reduce<Record<string, string>>((values, part) => {
+      if (part.type !== 'literal') values[part.type] = part.value;
+      return values;
+    }, {});
+  return {
+    date: `${parts.year}-${parts.month}-${parts.day}`,
+    time: `${parts.hour}:${parts.minute}`,
+  };
+};
 const localNow = () =>
   new Intl.DateTimeFormat('zh-TW', {
     timeZone: 'Asia/Taipei',
@@ -586,7 +606,8 @@ const localNow = () =>
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false,
+    second: '2-digit',
+    hourCycle: 'h23',
   }).format(new Date());
 const overlap = (a: string[] = [], b: string[] = []) =>
   a.filter((item) => b.includes(item));
@@ -634,16 +655,20 @@ export default function App() {
   });
   const [mode, setMode] = useState<Mode>('daily');
   const [need, setNeed] = useState('今晚兩人吃飯，可以外帶，不吃堅果');
-  const [filters, setFilters] = useState<Filters>({
-    date: '2026-09-05',
-    time: '20:00',
-    category: '全部',
-    budget: 500,
-    people: 2,
-    distance: 2,
-    exclusions: ['堅果'],
-    preferences: ['安靜', '能坐'],
+  const [filters, setFilters] = useState<Filters>(() => {
+    const now = taipeiDateTime();
+    return {
+      date: now.date,
+      time: now.time,
+      category: '全部',
+      budget: 500,
+      people: 2,
+      distance: 2,
+      exclusions: ['堅果'],
+      preferences: ['安靜', '能坐'],
+    };
   });
+  const [followCurrentTime, setFollowCurrentTime] = useState(true);
   const [selectedId, setSelectedId] = useState(results[0].id);
   const [saved, setSaved] = useState<string[]>([]);
   const [completed, setCompleted] = useState<string[]>([]);
@@ -653,6 +678,7 @@ export default function App() {
   const [toast, setToast] = useState('');
   const [evidenceOpen, setEvidenceOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
+  const [showSopGuide, setShowSopGuide] = useState(false);
   const [sort, setSort] = useState<Sort>('cp');
   const [cpParams, setCpParams] = useState<CpParams>({
     price: 55,
@@ -775,9 +801,19 @@ export default function App() {
     return () => window.clearTimeout(timer);
   }, [toast]);
   useEffect(() => {
-    const timer = window.setInterval(() => setNowText(localNow()), 30_000);
+    const timer = window.setInterval(() => {
+      setNowText(localNow());
+      if (followCurrentTime) {
+        const now = taipeiDateTime();
+        setFilters((current) =>
+          current.date === now.date && current.time === now.time
+            ? current
+            : { ...current, date: now.date, time: now.time },
+        );
+      }
+    }, 1_000);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [followCurrentTime]);
   useEffect(() => {
     if (!('geolocation' in navigator)) {
       queueMicrotask(() => setLocationStatus('此裝置不支援定位'));
@@ -949,6 +985,7 @@ export default function App() {
                 onDone={() => {
                   setHistory([]);
                   setView('home');
+                  setShowSopGuide(true);
                 }}
               />
             )}
@@ -973,6 +1010,7 @@ export default function App() {
                   chooseMode('team');
                   navigate('team');
                 }}
+                onGuide={() => setShowSopGuide(true)}
               />
             )}
             {view === 'search' && (
@@ -1080,6 +1118,8 @@ export default function App() {
                 need={need}
                 onNeed={setNeed}
                 onChange={setFilters}
+                followCurrentTime={followCurrentTime}
+                onFollowCurrentTime={setFollowCurrentTime}
                 onApply={() => {
                   setToast('條件已套用');
                   goBack();
@@ -1149,6 +1189,7 @@ export default function App() {
             {toast}
           </div>
         )}
+        {showSopGuide && <SopGuide onClose={() => setShowSopGuide(false)} />}
       </main>
       <Dialog open={evidenceOpen} onOpenChange={setEvidenceOpen}>
         <DialogContent className="evidence-sheet">
@@ -1262,6 +1303,90 @@ function WelcomeScreen({
       </button>
       <small>匿名資料只留在這台裝置；登入後才能跨裝置保存。</small>
     </section>
+  );
+}
+
+function SopGuide({ onClose }: { onClose: () => void }) {
+  const [step, setStep] = useState(0);
+  const guide = [
+    {
+      eyebrow: 'STEP 01 · 說出需求',
+      title: '語音或打字都可以',
+      copy: '像聊天一樣說出人數、預算與不喜歡的項目，內容之後都能修改。',
+      icon: <Mic />,
+    },
+    {
+      eyebrow: 'STEP 02 · 確認界線',
+      title: '先確認，再開始搜尋',
+      copy: '時間、預算、距離是硬限制；喜好用來排序，排斥成分會清楚警告。',
+      icon: <SlidersHorizontal />,
+    },
+    {
+      eyebrow: 'STEP 03 · 雙獵人出動',
+      title: 'CP 與零元同步探索',
+      copy: '兩個 Agent 同時找方案，回來後可看 CP 公式、來源與可執行的下一步。',
+      icon: <Radar />,
+    },
+  ];
+  useEffect(() => {
+    const timer = window.setTimeout(
+      () => setStep((current) => (current < guide.length - 1 ? current + 1 : current)),
+      3_200,
+    );
+    return () => window.clearTimeout(timer);
+  }, [step, guide.length]);
+  const item = guide[step];
+  return (
+    <dialog open className="sop-overlay" aria-label="使用教學">
+      <div className="sop-guide-card">
+        <div className="sop-guide-top">
+          <span className="brand-inline">ALL IN LIFE</span>
+          <button onClick={onClose}>略過教學</button>
+        </div>
+        <div className={`sop-demo sop-demo-${step + 1}`}>
+          <div className="sop-demo-orbit" />
+          <span className="sop-demo-icon">{item.icon}</span>
+          {step === 0 && (
+            <div className="voice-wave" aria-hidden="true">
+              <i /><i /><i /><i /><i />
+            </div>
+          )}
+          {step === 1 && (
+            <div className="guide-constraints" aria-hidden="true">
+              <i>現在</i><i>NT$500</i><i>2 km</i>
+            </div>
+          )}
+          {step === 2 && (
+            <div className="guide-agents" aria-hidden="true">
+              <i><b>CP</b><span /></i>
+              <i><b>0元</b><span /></i>
+            </div>
+          )}
+        </div>
+        <div className="sop-guide-copy" key={step}>
+          <span>{item.eyebrow}</span>
+          <h2>{item.title}</h2>
+          <p>{item.copy}</p>
+        </div>
+        <div className="sop-guide-progress">
+          {guide.map((entry, index) => (
+            <button
+              key={entry.eyebrow}
+              className={index === step ? 'active' : index < step ? 'done' : ''}
+              onClick={() => setStep(index)}
+              aria-label={`前往教學第 ${index + 1} 步`}
+            ><i /></button>
+          ))}
+        </div>
+        <button
+          className="primary-action sop-guide-next"
+          onClick={() => (step < guide.length - 1 ? setStep(step + 1) : onClose())}
+        >
+          {step < guide.length - 1 ? '下一步' : '開始探索'}
+          <ArrowRight />
+        </button>
+      </div>
+    </dialog>
   );
 }
 
@@ -1483,6 +1608,7 @@ function HomeScreen({
   onProfile,
   onAnalytics,
   onTeam,
+  onGuide,
 }: {
   profile: Profile;
   mode: Mode;
@@ -1500,6 +1626,7 @@ function HomeScreen({
   onProfile: () => void;
   onAnalytics: () => void;
   onTeam: () => void;
+  onGuide: () => void;
 }) {
   return (
     <section className="screen home-screen">
@@ -1607,11 +1734,14 @@ function HomeScreen({
           <ArrowRight />
         </button>
       </div>
-      <div className="sop-strip">
-        <span>1 語音/打字</span>
-        <span>2 確認限制</span>
-        <span>3 雙獵人探索</span>
-      </div>
+      <button className="sop-launcher" onClick={onGuide}>
+        <span className="sop-launcher-icon"><Sparkles /></span>
+        <span>
+          <b>新手必看 · 快速動畫教學</b>
+          <small>語音／打字 → 確認限制 → 雙獵人探索</small>
+        </span>
+        <ChevronRight />
+      </button>
       <div className="location-tip">
         <MapPin />
         <span>{locationStatus} · 距離會用於 CP 值與最大距離篩選</span>
@@ -2331,12 +2461,16 @@ function FiltersScreen({
   need,
   onNeed,
   onChange,
+  followCurrentTime,
+  onFollowCurrentTime,
   onApply,
 }: {
   filters: Filters;
   need: string;
   onNeed: (s: string) => void;
   onChange: (f: Filters) => void;
+  followCurrentTime: boolean;
+  onFollowCurrentTime: (follow: boolean) => void;
   onApply: () => void;
 }) {
   return (
@@ -2355,7 +2489,10 @@ function FiltersScreen({
           <input
             type="date"
             value={filters.date}
-            onChange={(e) => onChange({ ...filters, date: e.target.value })}
+            onChange={(e) => {
+              onFollowCurrentTime(false);
+              onChange({ ...filters, date: e.target.value });
+            }}
           />
         </label>
         <label className="field-label">
@@ -2364,7 +2501,10 @@ function FiltersScreen({
           <input
             type="time"
             value={filters.time}
-            onChange={(e) => onChange({ ...filters, time: e.target.value })}
+            onChange={(e) => {
+              onFollowCurrentTime(false);
+              onChange({ ...filters, time: e.target.value });
+            }}
           />
         </label>
         <label className="field-label">
@@ -2392,7 +2532,19 @@ function FiltersScreen({
           />
         </label>
       </div>
-      <div className="setting-group">
+      <button
+        className={`live-time-button ${followCurrentTime ? 'active' : ''}`}
+        onClick={() => {
+          const now = taipeiDateTime();
+          onFollowCurrentTime(true);
+          onChange({ ...filters, date: now.date, time: now.time });
+        }}
+      >
+        <Clock3 />
+        {followCurrentTime ? '正在跟隨台北即時時間' : '改用現在時間'}
+        <i />
+      </button>
+      <div className="setting-group distance-setting">
         <div className="setting-label">
           <span>最大距離</span>
           <strong>{filters.distance} km</strong>
@@ -2564,7 +2716,7 @@ function SettingsScreen({
         </span>
         <ChevronRight />
       </button>
-      <div className="setting-group">
+      <div className="setting-group mode-setting">
         <span className="setting-title">預設模式</span>
         <div className="setting-modes">
           {(Object.keys(modes) as Mode[]).map((item) => (
