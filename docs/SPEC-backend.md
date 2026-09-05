@@ -24,7 +24,7 @@
 - `gemini.ts` 直接使用 native `fetch`，共用於音訊、文字與 ranking；無 AI SDK adapter。`voice-upload.ts` 用 busboy 保留 multipart part 的 MIME，不依 filename 推斷。
 - `src/shared/records.ts` 是前後端共用的成本、證據與硬限制純函式邊界；資料仍事先匯入，不在搜尋時爬網頁。
 - 公開資料涵蓋、數量與來源限制以 `/api/catalog` 及 [整合紀錄](INTEGRATION.md) 為準；不能用原設計估算筆數冒充即時庫存。
-- 官方契約與離線 schema 匯出已查核；最新全套驗證見 §13。未使用真實 Gemini key，live provider 相容性仍待驗收。
+- 官方契約與離線 schema 匯出已查核；最新回歸與有限樣本 live Gemini 驗證見 §13。真機麥克風、其他 codec 與廣泛語意品質仍待驗收。
 
 ## 3. 定案決策
 
@@ -380,10 +380,10 @@ Session 固定 1,800 秒，不因請求延長；不是可調的 env 參數。所
 
 ### 13.2 2026-09-05 驗證紀錄與限制
 
-- **最新全套結果：150 pass / 28 skip / 0 fail，912 assertions**；typecheck 與 build 通過。fixture suite 未觸及真實 DB。
-- **UI 驗收：** 對 39 筆真實公開 catalog 的日用品手動搜尋可用；這不是 Gemini 語音驗收。
-- **契約查核：** 官方文件與目前原始碼一致；Need／VoiceResult 離線 Zod JSON Schema 匯出通過。未使用真實 Gemini key。
-- **仍待 live Gemini／真機驗收：** 帳號／模型權限、實際錄音 WebM／OGG／M4A 解碼、數字／否定詞／繁中 transcript 品質、JSON Schema 關鍵字接受與值驗證、延遲／timeout、人工確認後搜尋。不得以 mocked tests 或略過數代替這些結果。
+- **最新全套結果：151 pass / 28 skip / 0 fail，942 assertions**；typecheck 與 build 通過。fixture suite 未觸及真實 DB。
+- **UI smoke：** 實際文字解析→確認→39 筆真實 catalog 搜尋→AI 排序通過；日用品顯示 2 筆主候選，修復後無 AI fallback 警告，詳情／來源正常。
+- **Live Gemini：** `gemini-3.5-flash-lite` 文字解析 HTTP 200；約 5 秒合成中文 WebM 音訊 HTTP 200，約 2.6 秒取得 transcript／Need。排序 schema 的 `maxItems:500` 在單筆與多組搜尋均造成 HTTP 400；只移除該 provider 約束即成功，後端仍保留 500 筆／欄位長度／strict object 驗證。
+- **仍待驗收：** 使用者真機麥克風、OGG／M4A、噪音／口音／廣泛數字否定詞案例、其他模型、配額與網路失敗及正式部署。上述有限樣本的延遲不是效能承諾，mocked tests 或略過數不能代替真機結果。
 
 ## 14. 延後與不在範圍
 

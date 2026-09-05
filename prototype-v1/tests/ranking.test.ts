@@ -217,7 +217,7 @@ test("constraintWarnings：need 與設定排除遇到未知標籤或候選缺標
   }]);
 });
 
-test("rankGroup defaults to native Gemini with the shared key and schema", async () => {
+test("rankGroup defaults to Gemini without the provider-rejected 500-item array bound", async () => {
   const oldKey = process.env.GEMINI_API_KEY, oldModel = process.env.GEMINI_MODEL;
   const oldFetch = globalThis.fetch;
   const calls: { url: string; init?: RequestInit }[] = [];
@@ -226,6 +226,11 @@ test("rankGroup defaults to native Gemini with the shared key and schema", async
     process.env.GEMINI_MODEL = "gemini-test";
     globalThis.fetch = (async (url: Parameters<typeof fetch>[0], init?: RequestInit) => {
       calls.push({ url: String(url), init });
+      const request = JSON.parse(String(init?.body));
+      // Live regression: this schema returned HTTP 400 even for one candidate.
+      if (request.response_format.schema.properties.order.maxItems === 500) {
+        return Response.json({error: {code: "invalid_request", message: "Request contains an invalid argument."}}, {status: 400});
+      }
       return Response.json({ status: "completed", steps: [{ type: "model_output", content: [{
         type: "text", text: JSON.stringify({ order: [{ id: "a", reason: "總可比成本為 100 元。" }] }),
       }] }] });
@@ -237,9 +242,47 @@ test("rankGroup defaults to native Gemini with the shared key and schema", async
     expect(calls[0]?.url).toBe("https://generativelanguage.googleapis.com/v1beta/interactions");
     const body = JSON.parse(String(calls[0]?.init?.body));
     expect(body.response_format.schema.required).toEqual(["order"]);
+    expect(body.response_format.schema.properties.order.maxItems).toBeUndefined();
+    expect(body.response_format.schema.additionalProperties).toBe(false);
+    expect(body.response_format.schema.properties.order.items.additionalProperties).toBe(false);
     expect(body.store).toBe(false);
     expect(body.input).toHaveLength(1);
     expect(body.input[0].type).toBe("text");
+  } finally {
+    globalThis.fetch = oldFetch;
+    if (oldKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = oldKey;
+    if (oldModel === undefined) delete process.env.GEMINI_MODEL; else process.env.GEMINI_MODEL = oldModel;
+  }
+});
+
+test("Gemini ranking still validates local size, item lengths and strict objects", async () => {
+  const oldKey = process.env.GEMINI_API_KEY, oldModel = process.env.GEMINI_MODEL;
+  const oldFetch = globalThis.fetch;
+  const item = {id: "a", reason: "總可比成本為 100 元。"};
+  const cases: {output: unknown; status: "done" | "failed"}[] = [
+    {output: {order: Array.from({length:500}, () => item)}, status: "done"},
+    {output: {order: Array.from({length:501}, () => item)}, status: "failed"},
+    {output: {order: [{...item, reason:"長".repeat(301)}]}, status: "failed"},
+    {output: {order: [{...item, reason:"   "}]}, status: "failed"},
+    {output: {order: [{...item, id:""}]}, status: "failed"},
+    {output: {order: [{...item, invented:true}]}, status: "failed"},
+    {output: {order: [item], invented:true}, status: "failed"},
+  ];
+  try {
+    process.env.GEMINI_API_KEY = "mock-ranking-key";
+    process.env.GEMINI_MODEL = "gemini-test";
+    for (const scenario of cases) {
+      let calls = 0;
+      globalThis.fetch = (async () => {
+        calls++;
+        return Response.json({status:"completed", steps:[{type:"model_output", content:[{type:"text", text:JSON.stringify(scenario.output)}]}]});
+      }) as unknown as typeof fetch;
+      const result = await rankGroup({agent:"paid", category:"食品", records:[rec()], need:need()});
+      expect(result.status).toBe(scenario.status);
+      expect(calls).toBe(1);
+      expect(result.records.map(record => record.id)).toEqual(["a"]);
+      if (scenario.status === "failed") expect(result.records[0]?.reason).toBeNull();
+    }
   } finally {
     globalThis.fetch = oldFetch;
     if (oldKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = oldKey;

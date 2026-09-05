@@ -403,7 +403,7 @@ PRD §11 的 Case A、Case B 各增加語音版本，並新增以下案例：
 
 隔離測試可用 mocked fetch／錄音器與純函式，檢查 client FormData、MIME／副檔名、錯誤、schema、review／stale 防護及 30,000 ms timer；server 可驗證 multipart metadata／大小／檔頭與 Gemini request／response contract，不需真實 DB 或 key。這些不證明真機 codec、音訊辨識品質或 live Interactions 相容性。
 
-保留 `/api/parse` 語意 fixtures 與 Auth API 測試；DB 測試只用獨立資料庫，live-provider 測試需明確啟用。**2026-09-05 最新結果：150 pass / 28 skip / 0 fail，912 assertions**；typecheck 與 build 通過，fixture suite 未觸及真實 DB。對 39 筆真實公開 catalog 的日用品手動搜尋可用；未使用真實 Gemini key，真機音訊與 live provider 驗收仍待完成。
+保留 `/api/parse` 語意 fixtures 與 Auth API 測試；DB 測試只用獨立資料庫，live-provider 測試需明確啟用。**2026-09-05 最新結果：151 pass / 28 skip / 0 fail，942 assertions**；typecheck 與 build 通過，fixture suite 未觸及真實 DB。另以實際 `gemini-3.5-flash-lite` 通過文字解析與約 5 秒合成中文 WebM，一次取得逐字稿／Need；UI 確認→真實 catalog 搜尋→AI 排序也通過。未操作使用者麥克風；其他 codec、噪音／口音及廣泛語意品質仍待驗收。
 
 Fixtures：
 

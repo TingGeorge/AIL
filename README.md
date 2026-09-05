@@ -92,7 +92,7 @@ Session 固定 **1,800 秒**，不是 sliding expiration；舊範本的 `AUTH_SE
 
 ## 驗證
 
-**最新驗證（2026-09-05）**：全套安全測試 **150 pass / 28 skip / 0 fail，912 assertions**；typecheck 與 production build 通過。fixture suite 未觸及真實 DB；對 39 筆真實公開 catalog 的日用品手動搜尋可用。**未使用真實 Gemini key**，因此不代表音訊解碼、模型辨識品質或 live Interactions 相容性已驗收。
+**最新驗證（2026-09-05）**：全套安全測試 **151 pass / 28 skip / 0 fail，942 assertions**；typecheck 與 production build 通過。fixture suite 未觸及真實 DB。另以實際 `gemini-3.5-flash-lite` 通過文字解析、約 5 秒合成中文 WebM → `{transcript,need}`，以及 39 筆真實 catalog 的確認→搜尋→AI 排序 UI smoke；已修復排序 schema 的 `maxItems:500` 造成 HTTP 400。這是有限樣本實測，不代表真機麥克風、其他 codec 或所有語意品質已驗收。
 
 ```bash
 # 安全的離線測試；明確覆蓋本機 .env，不連資料庫或真實 Gemini。
@@ -108,7 +108,7 @@ GEMINI_API_KEY= GEMINI_MODEL= RUN_LIVE_GEMINI_TESTS=0 bun test
 - 沒有 `DATABASE_URL` 時 DB 測試會 skip；設了錯誤連線字串會失敗，不會偽裝測試通過。
 - 實際模型測試須設定有效的 `GEMINI_API_KEY`／`GEMINI_MODEL` 並明確啟用 `RUN_LIVE_GEMINI_TESTS=1`；mock 測試不證明 Gemini 可用性或語音品質。
 - CI 使用隔離 PostgreSQL，安裝鎖定依賴、匯入 fixture、檢查型別、測試、建置，再匯入真實資料做五類 HTTP／SSE 驗收；不使用真實 provider key。
-- 瀏覽器人工驗證與限制詳見整合文件。尚未宣稱已部署到公開網址，亦未宣稱真實 Gemini 語音／文字／排序已驗收。
+- 瀏覽器人工驗證與限制詳見整合文件。尚未宣稱已部署到公開網址；Gemini live smoke 範圍與真機／跨瀏覽器待驗項目見 [查核紀錄](docs/research/gemini-audio-structured.md)。
 
 ## 仍需明確知道的限制
 

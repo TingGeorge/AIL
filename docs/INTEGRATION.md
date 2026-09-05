@@ -125,7 +125,7 @@ flowchart LR
 
 **不當作已驗證：** 真實麥克風／Gemini 音訊品質、Gemini 文字與排名語意品質、使用者真實定位、跨裝置 PWA 安裝與離線升級、公開生產部署。歷史 6 個 live-provider skip 不表示新契約通過。
 
-**最新遷移驗證（2026-09-05）：150 pass / 28 skip / 0 fail，912 assertions**；typecheck 與 production build 通過。已納入 multipart MIME 保留與 30,000 ms 錄音上限回歸；fixture suite 未觸及真實 DB。對 39 筆真實公開 catalog 的日用品手動搜尋可用。未使用真實 Gemini key，live 語音／文字／排序驗收仍待完成。
+**最新遷移驗證（2026-09-05）：151 pass / 28 skip / 0 fail，942 assertions**；typecheck 與 production build 通過。已納入 multipart MIME 保留與 30,000 ms 錄音上限回歸；fixture suite 未觸及真實 DB。另以實際 `gemini-3.5-flash-lite` 通過文字解析、合成中文 WebM 音訊，以及 39 筆真實 catalog 的 UI 確認→搜尋→AI 排序；修正排序 `maxItems:500` 造成的 HTTP 400，後端仍保留 500 筆上限與嚴格驗證。這是有限樣本 live smoke，真機麥克風／其他 codec／廣泛語意品質仍待驗收；詳見 [Gemini 查核紀錄](research/gemini-audio-structured.md)。
 
 
 ## 7. 真實來源資料管線（2026-09-05 更新）

@@ -6,12 +6,14 @@ import type { SearchWarning } from "../shared/search.ts";
 
 export const RANK_TIMEOUT_MS = 30_000;
 
-const rankingOutputSchema = z.strictObject({
-  order: z.array(z.strictObject({
-    id: z.string().min(1),
-    reason: z.string().trim().min(1).max(300),
-  })).max(500),
-});
+const rankingOrderSchema = z.array(z.strictObject({
+  id: z.string().min(1),
+  reason: z.string().trim().min(1).max(300),
+}));
+// Gemini rejected maxItems:500 even for a single candidate (live HTTP 400).
+// Keep that application limit local; the item schema remains strict.
+const rankingProviderSchema = z.strictObject({ order: rankingOrderSchema });
+const rankingOutputSchema = z.strictObject({ order: rankingOrderSchema.max(500) });
 
 export type RankingOutput = z.infer<typeof rankingOutputSchema>;
 export type RankingGeneratorInput = { system: string; prompt: string; signal: AbortSignal };
@@ -34,7 +36,7 @@ export const rankingConfigured = geminiConfigured;
 
 const aiRankingGenerator: RankingGenerator = ({ system, prompt, signal }) => generateStructured({
   signal,
-  schema: rankingOutputSchema,
+  schema: rankingProviderSchema,
   system,
   input: [{ type: "text", text: prompt }],
 });
