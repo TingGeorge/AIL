@@ -27,6 +27,7 @@
     "embla-carousel-react": "8.5.2",
     "input-otp": "1.4.2",
     "lucide-react": "1.31.0",
+    "qrcode.react": "^4.2.0",
     "react-day-picker": "9.8.1",
     "react-resizable-panels": "4.5.8",
     "recharts": "3.8.0",

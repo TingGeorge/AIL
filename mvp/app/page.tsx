@@ -1,10 +1,18 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import {
   ArrowLeft,
   ArrowRight,
+  ArrowUpDown,
   BadgePercent,
   Bell,
   BellRing,
@@ -14,10 +22,12 @@ import {
   Camera,
   ChartNoAxesCombined,
   Check,
+  ChevronDown,
   ChevronRight,
   CircleDollarSign,
   Clock3,
   Compass,
+  Copy,
   ExternalLink,
   Flag,
   Gamepad2,
@@ -30,7 +40,6 @@ import {
   Mic,
   Pencil,
   PackageCheck,
-  QrCode,
   Radar,
   ReceiptText,
   Share2,
@@ -75,9 +84,10 @@ type View =
   | 'report'
   | 'map';
 type Mode = 'daily' | 'team' | 'zero';
-type Category = '餐飲' | '日用' | '育樂' | '交通';
+type Category = '食品' | '日用品' | '免費／公益資源' | '活動' | '交通';
 type Sort = 'cp' | 'cost' | 'distance';
 type LocationPermission = 'idle' | 'requesting' | 'granted' | 'declined' | 'denied';
+type GeoPoint = { latitude: number; longitude: number };
 type Profile = { name: string; avatar: string; signedIn: boolean };
 type CpParams = { price: number; distance: number; preference: number };
 type Filters = {
@@ -164,10 +174,31 @@ const modeNeedExamples: Record<Mode, string> = {
   team: '今晚想揪 5 人吃火鍋，每人預算 NT$500',
   zero: '今晚想找圓山附近的免費活動，最好有冷氣',
 };
+const publicAppUrl = 'https://all-in-life-ail.chiehlun.chatgpt.site/';
+const publicAppHost = new URL(publicAppUrl).host;
+const resultCategories: Category[] = [
+  '食品',
+  '日用品',
+  '免費／公益資源',
+  '活動',
+  '交通',
+];
+const categoryColors: Record<Category, string> = {
+  食品: 'var(--lime)',
+  日用品: 'var(--amber)',
+  '免費／公益資源': 'var(--blue)',
+  活動: 'var(--violet)',
+  交通: 'var(--coral)',
+};
+const sortOptions: { value: Sort; label: string; hint: string }[] = [
+  { value: 'cp', label: 'CP 值優先', hint: '綜合價格、距離與喜好' },
+  { value: 'cost', label: '價格優先', hint: '同喜好群組內，總成本低的優先' },
+  { value: 'distance', label: '距離優先', hint: '同喜好群組內，離你近的優先' },
+];
 const results: Result[] = [
   {
     id: 'jianjia',
-    category: '餐飲',
+    category: '食品',
     title: '雙人古早味肉圓組合',
     provider: '大龍峒簡家肉圓',
     subcategory: '台式小吃',
@@ -202,7 +233,7 @@ const results: Result[] = [
   },
   {
     id: 'bremen',
-    category: '餐飲',
+    category: '食品',
     title: '雙人義大利麵提案',
     provider: '不萊梅圓山店',
     subcategory: '義式／聚餐',
@@ -237,7 +268,7 @@ const results: Result[] = [
   },
   {
     id: 'tfam',
-    category: '育樂',
+    category: '免費／公益資源',
     title: '北美館傍晚看展',
     provider: '臺北市立美術館',
     subcategory: '美術館／展覽',
@@ -274,7 +305,7 @@ const results: Result[] = [
   },
   {
     id: 'confucius',
-    category: '育樂',
+    category: '免費／公益資源',
     title: '臺北孔子廟夜間散步',
     provider: '臺北市孔廟',
     subcategory: '文化／古蹟',
@@ -308,7 +339,7 @@ const results: Result[] = [
   },
   {
     id: 'market',
-    category: '育樂',
+    category: '活動',
     title: '臺北花博農民市集',
     provider: '花博公園圓山園區',
     subcategory: '週末市集',
@@ -415,7 +446,7 @@ const results: Result[] = [
   },
   {
     id: 'daily-store',
-    category: '日用',
+    category: '日用品',
     title: '24 小時臨時補給',
     provider: '7-ELEVEN 圓泉門市',
     subcategory: '便利商店',
@@ -450,7 +481,7 @@ const results: Result[] = [
   },
   {
     id: 'ys-food-002',
-    category: '餐飲',
+    category: '食品',
     title: '圓山麵食快餐方案',
     provider: '圓山資料庫餐飲 YS_FOOD_002',
     subcategory: '麵食／快速晚餐',
@@ -485,7 +516,7 @@ const results: Result[] = [
   },
   {
     id: 'ys-food-003',
-    category: '餐飲',
+    category: '食品',
     title: '圓山便當外帶方案',
     provider: '圓山資料庫餐飲 YS_FOOD_003',
     subcategory: '便當／外帶',
@@ -520,7 +551,7 @@ const results: Result[] = [
   },
   {
     id: 'ys-food-004',
-    category: '餐飲',
+    category: '食品',
     title: '圓山早午餐座位方案',
     provider: '圓山資料庫餐飲 YS_FOOD_004',
     subcategory: '早午餐／咖啡',
@@ -590,6 +621,36 @@ const results: Result[] = [
   },
 ];
 
+// 前端候選卡片的定位點；正式 API 上線後改由 D1 places 座標欄位提供。
+const resultLocations: Record<string, GeoPoint> = {
+  jianjia: { latitude: 25.068981, longitude: 121.515792 },
+  bremen: { latitude: 25.070537, longitude: 121.51884 },
+  tfam: { latitude: 25.0725, longitude: 121.52472 },
+  confucius: { latitude: 25.072761, longitude: 121.516171 },
+  market: { latitude: 25.07035, longitude: 121.5205 },
+  youbike: { latitude: 25.07133, longitude: 121.52024 },
+  'taxi-share': { latitude: 25.07133, longitude: 121.52024 },
+  'daily-store': { latitude: 25.07077, longitude: 121.52007 },
+  'ys-food-002': { latitude: 25.068166, longitude: 121.513507 },
+  'ys-food-003': { latitude: 25.07451, longitude: 121.515086 },
+  'ys-food-004': { latitude: 25.067623, longitude: 121.519313 },
+  'taxi-carpool-night': { latitude: 25.0782, longitude: 121.53237 },
+};
+
+const distanceBetween = (from: GeoPoint, to: GeoPoint) => {
+  const toRadians = (value: number) => (value * Math.PI) / 180;
+  const latitudeDelta = toRadians(to.latitude - from.latitude);
+  const longitudeDelta = toRadians(to.longitude - from.longitude);
+  const fromLatitude = toRadians(from.latitude);
+  const toLatitude = toRadians(to.latitude);
+  const haversine =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(fromLatitude) *
+      Math.cos(toLatitude) *
+      Math.sin(longitudeDelta / 2) ** 2;
+  return 6371 * 2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
+};
+
 const money = (value: number) =>
   new Intl.NumberFormat('zh-TW').format(Math.round(value));
 const taipeiDateTime = () => {
@@ -648,11 +709,13 @@ const cpFormulaScore = (item: Result, filters: Filters, params: CpParams) => {
   );
 };
 const categoryIcon = (category: Category) =>
-  category === '餐飲' ? (
+  category === '食品' ? (
     <Utensils />
-  ) : category === '日用' ? (
+  ) : category === '日用品' ? (
     <ShoppingBag />
-  ) : category === '育樂' ? (
+  ) : category === '免費／公益資源' ? (
+    <Sparkles />
+  ) : category === '活動' ? (
     <Gamepad2 />
   ) : (
     <Bike />
@@ -707,11 +770,12 @@ export default function App() {
   );
   const [locationPermission, setLocationPermission] =
     useState<LocationPermission>('idle');
+  const [userLocation, setUserLocation] = useState<GeoPoint | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([
     {
       id: 'h1',
       title: '圓山站日常補給',
-      category: '日用',
+      category: '日用品',
       amount: 126,
       date: '09/03',
       saved: 14,
@@ -727,7 +791,7 @@ export default function App() {
     {
       id: 'h3',
       title: '週末看展',
-      category: '育樂',
+      category: '活動',
       amount: 30,
       date: '08/24',
       saved: 30,
@@ -736,9 +800,26 @@ export default function App() {
   const [installPrompt, setInstallPrompt] = useState<Event | null>(null);
   const [pwaStatus, setPwaStatus] = useState('檢查中');
 
-  const selected = results.find((item) => item.id === selectedId) ?? results[0];
+  const locatedResults = useMemo(() => {
+    if (!userLocation) return results;
+    return results.map((item) => {
+      const destination = resultLocations[item.id];
+      if (!destination) return item;
+      const distanceKm = Math.max(
+        0.05,
+        Math.round(distanceBetween(userLocation, destination) * 100) / 100,
+      );
+      return {
+        ...item,
+        distanceKm,
+        walkMin: Math.max(1, Math.round(distanceKm * 13)),
+      };
+    });
+  }, [userLocation]);
+  const selected =
+    locatedResults.find((item) => item.id === selectedId) ?? locatedResults[0];
   const ordered = useMemo(() => {
-    const ranked = results
+    const ranked = locatedResults
       .filter((item) => {
         const categoryMatch =
           filters.category === '全部' || item.category === filters.category;
@@ -775,7 +856,7 @@ export default function App() {
           (a, b) => (b.agent === 'zero' ? 1 : 0) - (a.agent === 'zero' ? 1 : 0),
         )
       : ranked;
-  }, [filters, mode, sort, cpParams]);
+  }, [filters, mode, sort, cpParams, locatedResults]);
 
   useEffect(() => {
     if ('serviceWorker' in navigator)
@@ -858,14 +939,27 @@ export default function App() {
     setLocationStatus('等待瀏覽器定位授權');
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        setUserLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
         setLocationPermission('granted');
-        setLocationStatus(`定位成功，精度約 ${Math.round(position.coords.accuracy)} m`);
+        setLocationStatus(
+          `定位成功，已更新推薦距離（精度約 ${Math.round(position.coords.accuracy)} m）`,
+        );
       },
-      () => {
+      (error) => {
+        setUserLocation(null);
         setLocationPermission('denied');
-        setLocationStatus('未取得定位，將使用圓山站估算');
+        setLocationStatus(
+          error.code === error.PERMISSION_DENIED
+            ? '瀏覽器未允許定位；請在網站權限開啟「位置」後重試'
+            : error.code === error.TIMEOUT
+              ? '定位逾時；請確認裝置定位服務已開啟後重試'
+              : '裝置暫時無法判斷位置；請開啟 Wi-Fi 或系統定位後重試',
+        );
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 },
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 600000 },
     );
   }
 
@@ -929,15 +1023,30 @@ export default function App() {
     setToast(wasDone ? '已取消購買標記' : '已買，消費分析已更新');
   }
   async function share(text: string) {
-    const url = `https://all-in-life-ail.chiehlun.chatgpt.site/?share=${encodeURIComponent(text.slice(0, 60))}`;
+    const url = publicAppUrl;
     setShareUrl(url);
     try {
-      if (navigator.share)
+      if (navigator.share) {
         await navigator.share({ title: 'ALL IN LIFE', text, url });
-      else await navigator.clipboard?.writeText(`${text}\n${url}`);
-      setToast('分享連結與 QR Code 已準備好');
+        setToast('分享完成；公開連結仍保留在下方');
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(`${text}\n${url}`);
+        setToast('分享內容與連結已複製');
+      } else {
+        setToast('請使用下方的開啟或複製連結按鈕');
+      }
     } catch {
-      setToast('已保留 QR Code，可改用掃碼分享');
+      setToast('分享已取消；仍可掃描、開啟或複製連結');
+    }
+  }
+  async function copyShareLink() {
+    if (!shareUrl) return;
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(shareUrl);
+      setToast('公開連結已複製');
+    } catch {
+      setToast('無法自動複製，請長按下方網址');
     }
   }
   function startVoice() {
@@ -1005,6 +1114,7 @@ export default function App() {
           <AppHeader
             view={view}
             nowText={nowText}
+            areaLabel={userLocation ? '目前位置' : '圓山生活圈'}
             unread={unread}
             savedCount={saved.length}
             onBack={goBack}
@@ -1060,6 +1170,7 @@ export default function App() {
                 onGuide={() => setShowSopGuide(true)}
                 onRequestLocation={requestLocation}
                 onDeclineLocation={() => {
+                  setUserLocation(null);
                   setLocationPermission('declined');
                   setLocationStatus('已選擇使用圓山站估算');
                 }}
@@ -1080,7 +1191,9 @@ export default function App() {
             {view === 'results' && (
               <ResultsScreen
                 items={ordered}
+                allItems={locatedResults}
                 filters={filters}
+                locationLabel={userLocation ? '目前位置' : '圓山'}
                 cpParams={cpParams}
                 sort={sort}
                 saved={saved}
@@ -1112,7 +1225,7 @@ export default function App() {
             )}
             {view === 'saved' && (
               <SavedScreen
-                items={results.filter((item) => saved.includes(item.id))}
+                items={locatedResults.filter((item) => saved.includes(item.id))}
                 completed={completed}
                 budget={filters.budget}
                 onBuy={markPurchased}
@@ -1243,9 +1356,9 @@ export default function App() {
               savedCount={saved.length}
               onNavigate={navigate}
             />
-          )}
+        )}
         {toast && (
-          <div className="toast">
+          <div className="toast" role="status" aria-live="polite">
             <Check />
             {toast}
           </div>
@@ -1293,34 +1406,55 @@ export default function App() {
       >
         <DialogContent className="evidence-sheet share-sheet">
           <DialogHeader>
-            <span className="kicker lime-text">可掃描分享</span>
-            <DialogTitle>ALL IN LIFE 分享連結</DialogTitle>
+            <span className="kicker lime-text">掃描進站</span>
+            <DialogTitle>ALL IN LIFE 體驗連結</DialogTitle>
             <DialogDescription>
-              可直接掃描 QR Code，或開啟下方連結。
+              用另一台裝置掃描，或直接開啟／複製下方網址。
             </DialogDescription>
           </DialogHeader>
-          <div className="qr-frame">
-            <QrCode aria-hidden="true" />
-            <Image
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(shareUrl)}`}
-              alt="ALL IN LIFE 分享 QR Code"
-              width="180"
-              height="180"
-              unoptimized
-              loader={({ src }) => src}
-            />
+          <div className="share-preview">
+            <div className="share-preview-copy">
+              <span className="share-preview-mark">ALL IN LIFE</span>
+              <strong>生活提案，一起找到更好的選擇。</strong>
+              <a href={shareUrl} target="_blank" rel="noreferrer">
+                {publicAppHost}
+              </a>
+            </div>
+            <div className="qr-frame">
+              <QRCodeSVG
+                value={shareUrl}
+                size={160}
+                level="M"
+                marginSize={4}
+                bgColor="#ffffff"
+                fgColor="#0a0d0b"
+                title="掃描開啟 ALL IN LIFE 公開網站"
+                aria-label="掃描開啟 ALL IN LIFE 公開網站"
+              />
+              <small>掃描開啟</small>
+            </div>
           </div>
           <a
-            className="source-link"
+            className="share-visible-url"
             href={shareUrl}
             target="_blank"
             rel="noreferrer"
           >
-            開啟分享連結
+            <span>https://{publicAppHost}</span>
             <ExternalLink />
           </a>
+          <div className="share-actions">
+            <a href={shareUrl} target="_blank" rel="noreferrer">
+              直接開啟
+              <ExternalLink />
+            </a>
+            <button type="button" onClick={copyShareLink}>
+              <Copy />
+              複製連結
+            </button>
+          </div>
           <p className="fine-print">
-            QR 圖片需要網路載入；分享連結本身可直接複製使用。
+            QR、可見網址與按鈕都指向同一個公開 HTTPS 網站；同一支手機請直接開啟或複製連結。
           </p>
         </DialogContent>
       </Dialog>
@@ -1581,6 +1715,7 @@ function OnboardingScreen({
 function AppHeader({
   view,
   nowText,
+  areaLabel,
   unread,
   savedCount,
   onBack,
@@ -1590,6 +1725,7 @@ function AppHeader({
 }: {
   view: View;
   nowText: string;
+  areaLabel: string;
   unread: number;
   savedCount: number;
   onBack: () => void;
@@ -1616,7 +1752,7 @@ function AppHeader({
       {root ? (
         <button className="brand-lockup" onClick={onHome}>
           <b>ALL IN LIFE</b>
-          <small><i />{nowText} · 圓山生活圈</small>
+          <small><i />{nowText} · {areaLabel}</small>
         </button>
       ) : (
         <button className="icon-button" onClick={onBack} aria-label="返回">
@@ -1908,11 +2044,11 @@ function HomeScreen({
         {canRequestLocation && (
           <span className="location-consent-actions">
             <button onClick={onRequestLocation}>
-              {locationPermission === 'idle' ? '同意定位' : '重新授權'}
+              {locationPermission === 'idle' ? '同意定位' : '重新定位'}
             </button>
-            {locationPermission === 'idle' && (
-              <button onClick={onDeclineLocation}>暫不</button>
-            )}
+            <button onClick={onDeclineLocation}>
+              {locationPermission === 'idle' ? '暫不' : '使用圓山站'}
+            </button>
           </span>
         )}
         {locationPermission === 'requesting' && <em>等待授權…</em>}
@@ -2092,7 +2228,9 @@ function TagLine({ item, filters }: { item: Result; filters: Filters }) {
 
 function ResultsScreen({
   items,
+  allItems,
   filters,
+  locationLabel,
   cpParams,
   sort,
   saved,
@@ -2104,7 +2242,9 @@ function ResultsScreen({
   onSave,
 }: {
   items: Result[];
+  allItems: Result[];
   filters: Filters;
+  locationLabel: string;
   cpParams: CpParams;
   sort: Sort;
   saved: string[];
@@ -2115,10 +2255,34 @@ function ResultsScreen({
   onOpen: (id: string) => void;
   onSave: (id: string) => void;
 }) {
+  const [sortOpen, setSortOpen] = useState(false);
+  const activeSort =
+    sortOptions.find((option) => option.value === sort) ?? sortOptions[0];
+  const dashboardCounts = resultCategories.map((category) => ({
+    category,
+    count: allItems.filter((item) => {
+      const budgetMatch =
+        filters.budget === 0
+          ? item.totalCost === 0
+          : item.totalCost <= filters.budget;
+      return (
+        item.category === category &&
+        budgetMatch &&
+        item.distanceKm <= filters.distance
+      );
+    }).length,
+  }));
+  const dashboardTotal = dashboardCounts.reduce(
+    (total, item) => total + item.count,
+    0,
+  );
+
   return (
     <section className="screen results-screen">
       <div className="results-intro">
-        <span className="kicker">符合硬限制 · 圓山 {filters.distance} KM</span>
+        <span className="kicker">
+          符合硬限制 · {locationLabel} {filters.distance} KM
+        </span>
         <h1>
           {items.length
             ? `找到 ${items.length} 個可行選擇`
@@ -2132,33 +2296,83 @@ function ResultsScreen({
       <div className="filter-row">
         <button className="filter-summary" onClick={onFilters}>
           <SlidersHorizontal />
-          {filters.category} · {filters.preferences.slice(0, 1).join('')}
+          <span>
+            <b>調整需求與限制</b>
+            <small>
+              {filters.category} ·{' '}
+              {filters.preferences.slice(0, 2).join('、') || '尚未設定喜好'}
+            </small>
+          </span>
         </button>
-        <button
-          className="sort-button"
-          onClick={() =>
-            onSort(sort === 'cp' ? 'cost' : sort === 'cost' ? 'distance' : 'cp')
-          }
-        >
-          {sort === 'cp'
-            ? 'CP 優先'
-            : sort === 'cost'
-              ? '價格優先'
-              : '距離優先'}
-        </button>
-      </div>
-      <div className="category-tabs">
-        {(
-          ['全部', '餐飲', '日用', '育樂', '交通'] as Filters['category'][]
-        ).map((category) => (
+        <div className="sort-picker">
           <button
-            key={category}
-            className={filters.category === category ? 'active' : ''}
-            onClick={() => onFiltersChange({ ...filters, category })}
+            className="sort-button"
+            aria-haspopup="menu"
+            aria-expanded={sortOpen}
+            onClick={() => setSortOpen((open) => !open)}
           >
-            {category}
+            <ArrowUpDown />
+            <span>
+              <small>排序方式</small>
+              <b>{activeSort.label}</b>
+            </span>
+            <ChevronDown className={sortOpen ? 'open' : ''} />
           </button>
-        ))}
+          {sortOpen && (
+            <div className="sort-menu" role="menu" aria-label="選擇排序方式">
+              {sortOptions.map((option) => (
+                <button
+                  key={option.value}
+                  role="menuitemradio"
+                  aria-checked={sort === option.value}
+                  className={sort === option.value ? 'active' : ''}
+                  onClick={() => {
+                    onSort(option.value);
+                    setSortOpen(false);
+                  }}
+                >
+                  <span>
+                    <b>{option.label}</b>
+                    <small>{option.hint}</small>
+                  </span>
+                  {sort === option.value && <Check />}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="category-dashboard">
+        <div className="category-dashboard-head">
+          <span>
+            <b>五類推薦 Dashboard</b>
+            <small>點選類別切換推薦結果</small>
+          </span>
+          <button
+            className={filters.category === '全部' ? 'active' : ''}
+            onClick={() =>
+              onFiltersChange({ ...filters, category: '全部' })
+            }
+          >
+            全部 <b>{dashboardTotal}</b>
+          </button>
+        </div>
+        <div className="category-dashboard-grid">
+          {dashboardCounts.map(({ category, count }) => (
+            <button
+              key={category}
+              className={filters.category === category ? 'active' : ''}
+              style={
+                { '--category-color': categoryColors[category] } as CSSProperties
+              }
+              onClick={() => onFiltersChange({ ...filters, category })}
+            >
+              <span>{categoryIcon(category)}</span>
+              <b>{category}</b>
+              <i>{count}</i>
+            </button>
+          ))}
+        </div>
       </div>
       <CpFormulaPanel
         params={cpParams}
@@ -2721,7 +2935,7 @@ function FiltersScreen({
       <div className="filter-tag-stack">
         <TagPicker
           title="類別"
-          values={['全部', '餐飲', '日用', '育樂', '交通']}
+          values={['全部', ...resultCategories]}
           selected={[filters.category]}
           single
           onChange={(values) =>
@@ -3013,13 +3227,8 @@ function AnalyticsScreen({
 }) {
   const spent = transactions.reduce((sum, item) => sum + item.amount, 0);
   const saved = transactions.reduce((sum, item) => sum + item.saved, 0);
-  const categories: Category[] = ['餐飲', '日用', '育樂', '交通'];
-  const palette: Record<Category, string> = {
-    餐飲: 'var(--lime)',
-    日用: 'var(--coral)',
-    育樂: 'var(--blue)',
-    交通: 'var(--violet)',
-  };
+  const categories = resultCategories;
+  const palette = categoryColors;
   return (
     <section className="screen analytics-screen">
       <span className="kicker">SEPTEMBER</span>
@@ -3100,7 +3309,7 @@ function HistoryScreen({
             ? item.id.replace('buy-', '')
             : item.category === '交通'
               ? 'taxi-share'
-              : item.category === '育樂'
+              : item.category === '活動' || item.category === '免費／公益資源'
                 ? 'tfam'
                 : 'daily-store';
           return (
