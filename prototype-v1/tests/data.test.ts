@@ -103,12 +103,24 @@ const ROOT = Bun.fileURLToPath(new URL("..", import.meta.url));
 
 describe.skipIf(!dbLive)("匯入管線 (live database)", () => {
   const runImport = async () => {
-    const p = Bun.spawn(["bun", "run", "scripts/import.ts"], { cwd: ROOT, stdout: "pipe", stderr: "pipe" });
+    const p = Bun.spawn(["bun", "run", "scripts/import.ts"], { cwd: ROOT, env: {...process.env, ALLOW_DEMO_DATA:"1"}, stdout: "pipe", stderr: "pipe" });
     const code = await p.exited;
     if (code !== 0) throw new Error(await new Response(p.stderr).text());
   };
   const snapshot = async () =>
     (await sql`select id, md5(c::text) as h from candidates c order by id`).map((r: { id: string; h: string }) => `${r.id}:${r.h}`);
+
+  test("示範資料未明確允許時拒絕匯入，資料庫維持不變", async () => {
+    const before = await snapshot();
+    const p = Bun.spawn(["bun", "run", "scripts/import.ts"], {
+      cwd: ROOT, env: { ...process.env, ALLOW_DEMO_DATA: "0", DATA_DIR: "" },
+      stdout: "pipe", stderr: "pipe",
+    });
+    const stderr = new Response(p.stderr).text();
+    expect(await p.exited).not.toBe(0);
+    expect(await stderr).toContain("ALLOW_DEMO_DATA=1");
+    expect(await snapshot()).toEqual(before);
+  });
 
   test("import.ts 連跑兩次：列數與內容都不變", async () => {
     await runImport();

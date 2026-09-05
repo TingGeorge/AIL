@@ -1,0 +1,41 @@
+name: Integration checks
+on:
+  pull_request:
+  push:
+    branches: [main, codex/integrate-mvp-ui-main-backend]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: ail_ci
+          POSTGRES_PASSWORD: ci_test_only
+          POSTGRES_DB: ail_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U ail_ci -d ail_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    defaults:
+      run:
+        working-directory: prototype-v1
+    env:
+      DATABASE_URL: postgres://ail_ci:ci_test_only@127.0.0.1:5432/ail_test
+      LLM_BASE_URL: ""
+      LLM_MODEL: ""
+      STT_BASE_URL: ""
+      STT_MODEL: ""
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
+      - run: bun install --frozen-lockfile
+      - run: ALLOW_DEMO_DATA=1 bun run db:import
+      - run: bun run typecheck
+      - run: bun test
+      - run: bun run build

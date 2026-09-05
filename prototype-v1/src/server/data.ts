@@ -9,7 +9,7 @@ const MAX_IDS = 200;   // trust boundary：query string 帶進來的 id 數量�
 export const data = new Hono();
 
 const failed = (c: { json: (o: unknown, s: 502) => Response }, e: unknown) => {
-  console.error("candidates_failed", e);   // 上游錯誤只寫 log，不回傳
+  console.error("candidates_failed", e instanceof Error ? e.name : "unknown_error");   // 上游錯誤只寫 log，不回傳
   return c.json({ error: "candidates_failed", message: "讀取失敗" }, 502);
 };
 

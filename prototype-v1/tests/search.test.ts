@@ -93,3 +93,16 @@ test("filterStage：一筆被多個限制排除時每個限制都計數", () => 
   expect(s.excluded_by.budget).toBe(1);
   expect(s.excluded_by.exclude).toBe(1);
 });
+
+// 這些欄位目前沒有可供 deterministic filter 使用的結構化候選欄位：不可假稱已保證符合。
+test("filterStage：文字型人數／日期／時段／資格不會靜默刪除候選", async () => {
+  const { constraintWarnings } = await import("../src/server/rank.ts");
+  const n = need({ people_or_servings: 4, date: "2026-09-06", time_window: "晚上", eligibility_notes: "限學生" });
+  const candidate = rec({ quantity_or_servings: "約 2 人份", availability_or_event_time: "週一白天", eligibility: ["一般民眾"] });
+  expect(stage([candidate], n).main.map((r) => r.id)).toEqual([candidate.id]);
+  expect(constraintWarnings(n, [candidate])).toEqual([{
+    code: "text_constraints_not_filtered",
+    fields: ["people_or_servings", "date", "time_window", "eligibility_notes"],
+    message: "人數／份量、日期、時段與資格目前只有文字資料，未作結構化硬限制篩選；請逐筆核對。",
+  }]);
+});

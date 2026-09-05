@@ -1,9 +1,11 @@
 // 讀 data/*.json，逐筆驗證後以 id upsert 進 candidates（SPEC-ingestion §4、SPEC-backend §5）。
 // 只寫入與更新，永遠不刪除任何一列；有任何一筆不合規就整批不寫，避免留下半套資料。
+import { pathToFileURL } from "node:url";
+import { resolve } from "node:path";
 import { sql, dbConfigured, applySchema } from "../src/server/db.ts";
-import { CANDIDATE_COLUMNS, candidateSchema } from "../src/shared/records.ts";
+import { CANDIDATE_COLUMNS, candidateSchema, isDemoRecord } from "../src/shared/records.ts";
 
-const DIR = new URL("../data/", import.meta.url);
+const DIR = process.env.DATA_DIR ? pathToFileURL(resolve(process.env.DATA_DIR) + "/") : new URL("../data/", import.meta.url);
 const JSONB = new Set(["evidence", "baseline", "group_offer", "extra"]);
 const TEXT_ARRAY = new Set(["eligibility", "tags"]);
 
@@ -46,6 +48,7 @@ for (const file of files) {
     const first = seen.get(parsed.data.id);
     if (first) errors.push(`${where}：id 與 ${first} 重複`);
     seen.set(parsed.data.id, where);
+    if(isDemoRecord(parsed.data) && process.env.ALLOW_DEMO_DATA !== "1") errors.push(`${where}：示範資料需要明確設定 ALLOW_DEMO_DATA=1；正式環境請使用真實來源。`);
     rows.push(parsed.data as Row);
   });
 }
@@ -64,9 +67,9 @@ const placeholders = CANDIDATE_COLUMNS
 const updates = CANDIDATE_COLUMNS.filter((c) => c !== "id").map((c) => `${c} = excluded.${c}`).join(", ");
 const upsert = `insert into candidates (${CANDIDATE_COLUMNS.join(", ")}) values (${placeholders}) on conflict (id) do update set ${updates}`;
 
-for (const row of rows) {
-  await sql.unsafe(upsert, CANDIDATE_COLUMNS.map((c) => toParam(c, row[c])));
-}
+await sql.begin(async transaction=>{
+  for (const row of rows) await transaction.unsafe(upsert, CANDIDATE_COLUMNS.map((c) => toParam(c, row[c])));
+});
 
 const counts = await sql`select category, count(*)::int as n from candidates group by category order by category`;
 console.log(`匯入 ${rows.length} 筆（${files.join("、")}）`);

@@ -8,8 +8,9 @@ const stt = () =>
 
 export const sttConfigured = () => Boolean(process.env.STT_BASE_URL && process.env.STT_MODEL);
 
-export async function transcribeAudio(audio: Uint8Array): Promise<string> {
+export async function transcribeAudio(audio: Uint8Array, signal?:AbortSignal): Promise<string> {
   const { text } = await transcribe({
+    abortSignal: signal,
     model: stt().transcription(process.env.STT_MODEL ?? ""),
     audio,
     providerOptions: { openai: { language: "zh" } }, // OpenAI-format STT takes ISO-639-1; zh-TW is fixed by product, not by request

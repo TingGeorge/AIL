@@ -28,8 +28,9 @@ const llm = () =>
 
 export const parseConfigured = () => Boolean(process.env.LLM_BASE_URL && process.env.LLM_MODEL);
 
-export async function parseNeed(input: { transcript: string; current: Need | null; today: string }): Promise<Need> {
+export async function parseNeed(input: { transcript: string; current: Need | null; today: string }, signal?:AbortSignal): Promise<Need> {
   const { output } = await generateText({
+    abortSignal: signal,
     model: llm()(process.env.LLM_MODEL ?? ""),
     output: Output.object({ schema: needSchema, name: "need" }),
     system: SYSTEM,

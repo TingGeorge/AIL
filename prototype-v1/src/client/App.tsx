@@ -1,445 +1,144 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { CATEGORIES, type Need } from "../shared/need.ts";
-import { ApiError, candidates, parse, transcribe } from "./api.ts";
-import { MAX_SECONDS, Recorder, recordingSupported } from "./recorder.ts";
-import { useHashRoute, go } from "./router.ts";
-import { DOT_COLORS, TAGS, comparableTotal, joinCode, type Category, type Profile, type Rec, type Report, type Settings as S, type Team as T } from "../shared/records.ts";
-import { MOCK_JOINERS, MOCK_RECORDS, MOCK_REPORTS } from "./mockResults.ts"; // PREVIEW ONLY
-import { Settings } from "./screens/Settings.tsx";
-import { Team } from "./screens/Team.tsx";
-import { Shell } from "./screens/Shell.tsx";
-import { Search } from "./screens/Search.tsx";
-import { Results } from "./screens/Results.tsx";
-import { Detail } from "./screens/Detail.tsx";
-import { ListScreen } from "./screens/ListScreen.tsx";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, Bookmark, Check, CircleDollarSign, Compass, Heart, Home, LogIn, MapPin, Mic, Pencil, Radar, Search, Settings, ShieldCheck, SlidersHorizontal, Sparkles, Square, UserRound, Users, WalletCards, X } from "lucide-react";
+import { EMPTY_NEED, needSchema, type Need } from "../shared/need.ts";
+import { currentAccountMonth } from "../shared/account.ts";
+import { isDemoRecord, type Rec } from "../shared/records.ts";
+import * as api from "./api.ts";
+import { Recorder, MAX_SECONDS, recordingSupported } from "./recorder.ts";
+import { initialSearch, rankedRecords, reduceSearch } from "./search-state.ts";
+import { useAccount } from "./useAccount.ts";
+import { applyBudgetDefault } from "./need-defaults.ts";
+import { canMarkBought, markBought } from "./purchases.ts";
+import { NeedEditor } from "./NeedEditor.tsx";
+import { AccountView, SettingsView } from "./AccountView.tsx";
+import { ReportView } from "./ReportView.tsx";
+import { ResultsView, DetailView } from "./ResultsView.tsx";
+import "./mvp.css";
+import "./integration.css";
 
-// Preview mode: fabricated records and simulated Agents. Never on in a real build without the flag.
-const NO_RECORDS: Rec[] = [];   // 穩定參考：Search 的 effect 以 records 為相依，每次 render 新開陣列會重跑搜尋
-const PREVIEW = import.meta.env.VITE_PREVIEW === "1" || new URLSearchParams(location.search).has("mock");
-
-type Stage = "idle" | "recording" | "transcribing" | "parsing";
-
-// Hard constraints in display order. `kind` drives the editor, so labels are copy only.
-const HARD_FIELDS = [
-  { key: "budget_total_twd", label: "預算 (TWD)", kind: "number", group: "錢" },
-  { key: "free_only", label: "只要免費", kind: "bool", group: "錢" },
-  { key: "people_or_servings", label: "人數／份量", kind: "number", group: "人" },
-  { key: "date", label: "日期", kind: "text", group: "時間" },
-  { key: "time_window", label: "時段", kind: "text", group: "時間" },
-  { key: "max_distance_km", label: "最大距離 (km)", kind: "number", group: "距離" },
-  { key: "max_minutes", label: "最大時間 (分)", kind: "number", group: "距離" },
-  { key: "registration_ok", label: "可先登記", kind: "bool", group: "條件" },
-  { key: "eligibility_notes", label: "資格", kind: "text", group: "條件" },
-] as const satisfies ReadonlyArray<{ key: keyof Need; label: string; kind: "number" | "text" | "bool"; group: string }>;
-const GROUPS = ["錢", "人", "時間", "距離", "條件"] as const;
-
-type Saved = { need: Need | null; transcripts: string[]; list: string[]; favs: string[]; derived: string[]; profile: Profile; settings: S; reports: Report[]; teams: T[] };
-const STORAGE_KEY = "ail.session";
-const EMPTY: Saved = {
-  need: null, transcripts: [], list: [], favs: [], derived: [],
-  profile: { nickname: "", color: DOT_COLORS[3] },
-  settings: { monthly_budget: null, spent: 0, spent_month: new Date().toISOString().slice(0, 7), survival: false, exclude: [], prefs: [], costco_ok: false },
-  reports: [], teams: [],
-};
-const load = (): Saved => {
-  try { return { ...EMPTY, ...JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? "{}") }; } catch { return EMPTY; }
-};
-const save = (s: Saved) => { try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {} };
-
-const STAGE_TEXT: Record<Stage, string> = { idle: "", recording: "", transcribing: "辨識中…", parsing: "解析中…" };
-
-export function App() {
-  const route = useHashRoute();
-  const [{ need, transcripts, list, favs, derived, profile, settings, reports, teams }, setSession] = useState<Saved>(load);
-  const [records, setRecords] = useState<Rec[] | null>(null);
-  const [stage, setStage] = useState<Stage>("idle");
-  const [message, setMessage] = useState<{ text: string; error?: boolean } | null>(null);
-  const [showText, setShowText] = useState(false);
-  const [text, setText] = useState("");
-  const [seconds, setSeconds] = useState(0);
-  const [sttFailures, setSttFailures] = useState(0);
-  const [toast, setToast] = useState<string | null>(null);
-  const recorder = useRef(new Recorder());
-  const timer = useRef<number | null>(null);
-  const stopRef = useRef<() => void>(() => {});
-
-  useEffect(() => save({ need, transcripts, list, favs, derived, profile, settings, reports, teams }), [need, transcripts, list, favs, derived, profile, settings, reports, teams]);
-  useEffect(() => { if (toast) { const t = setTimeout(() => setToast(null), 2200); return () => clearTimeout(t); } }, [toast]);
-  useEffect(() => { window.scrollTo(0, 0); }, [route]);
-
-  const setNeed = (n: Need | null) => setSession((s) => ({ ...s, need: n, derived: s.derived.filter((k) => n && s.need && n[k as keyof Need] === s.need[k as keyof Need]) }));
-  const allReports = PREVIEW ? [...MOCK_REPORTS, ...reports] : reports;
-  const exclude = [...new Set([...(need?.exclude_tags ?? []), ...settings.exclude])];
-  const remaining = settings.monthly_budget === null ? null : Math.max(0, settings.monthly_budget - settings.spent);
-  // Defaults from settings, applied after parsing and labeled 「來自設定」 on the confirmation screen.
-  const withDefaults = (n: Need): { need: Need; derived: string[] } => {
-    const d: string[] = [];
-    const out = { ...n };
-    if (out.budget_total_twd === null && remaining !== null) { out.budget_total_twd = remaining; d.push("budget_total_twd"); }
-    if (settings.prefs.length) { const add = settings.prefs.filter((p) => !out.soft_preferences.includes(p)); if (add.length) { out.soft_preferences = [...out.soft_preferences, ...add]; d.push("soft_preferences"); } }
-    return { need: out, derived: d };
-  };
-  const notify = (m: string) => setToast(m);
-  const onSearchDone = useCallback((r: Rec[]) => { setRecords(r); go("/results"); }, []);
-
-  // 票 11：直接開 #/card/<id> 或重整 #/list 時記憶體裡沒有紀錄，用批次查詢補回來。
-  useEffect(() => {
-    if (PREVIEW) return;
-    const have = new Set((records ?? []).map((r) => r.id));
-    const want = route.startsWith("/card/") ? [route.slice(6)] : route === "/list" ? [...list, ...favs] : [];
-    const missing = want.filter((id) => id && !have.has(id));
-    if (missing.length === 0) return;
-    let live = true;
-    candidates(missing).then((got) => { if (live && got.length) setRecords((prev) => [...(prev ?? []), ...got]); }).catch(() => notify("讀取失敗"));
-    return () => { live = false; };
-  }, [route, records, list, favs]);
-
-  // A correction on the confirmation screen is parsed against the current 需求與限制.
-  const onConfirm = route === "/confirm";
-  const current = onConfirm ? need : null;
-
-  const fallbackToText = (reason: string, prefill = "") => {
-    setMessage({ text: reason, error: true });
-    setShowText(true);
-    if (prefill) setText(prefill);
-    setStage("idle");
-  };
-
-  const runParse = async (t: string) => {
-    setStage("parsing");
-    setMessage({ text: STAGE_TEXT.parsing });
-    try {
-      const parsed = await parse(t, current);
-      const { need: n, derived: d } = withDefaults(parsed);
-      setSession((s) => ({ ...s, need: n, derived: d, transcripts: current ? [...s.transcripts, t] : [t] }));
-      setShowText(false);
-      setText("");
-      setMessage(null);
-      go("/confirm");
-    } catch (e) {
-      fallbackToText((e as ApiError).kind === "timeout" ? "逾時，請改用文字" : "解析失敗，請改用文字", t);
-    } finally {
-      setStage("idle");
-    }
-  };
-
-  const stopRecording = async () => {
-    if (timer.current) clearInterval(timer.current);
-    setStage("transcribing");
-    setMessage({ text: STAGE_TEXT.transcribing });
-    const clip = await recorder.current.stop();
-    try {
-      const { transcript } = await transcribe(clip);
-      if (!transcript) {
-        setStage("idle");
-        setMessage({ text: "沒有聽到內容，再試一次", error: true });
-        return;
-      }
-      setSttFailures(0);
-      await runParse(transcript);
-    } catch (e) {
-      if ((e as ApiError).kind === "timeout") return fallbackToText("逾時，請改用文字");
-      const n = sttFailures + 1;
-      setSttFailures(n);
-      if (n >= 2) return fallbackToText("辨識失敗，請改用文字");
-      setStage("idle");
-      setMessage({ text: "辨識失敗，再點一次麥克風重試", error: true });
-    }
-  };
-  stopRef.current = stopRecording; // the 30 s auto-stop must call the latest closure
-
-  const toggleMic = async () => {
-    if (stage === "recording") return stopRecording();
-    if (stage !== "idle") return;
-    if (!recordingSupported()) return fallbackToText("此瀏覽器不支援錄音");
-    try {
-      await recorder.current.start();
-    } catch {
-      return fallbackToText("無法使用麥克風");
-    }
-    setStage("recording");
-    setMessage(null);
-    setSeconds(0);
-    const startedAt = Date.now();
-    timer.current = window.setInterval(() => {
-      const s = Math.floor((Date.now() - startedAt) / 1000);
-      setSeconds(s);
-      if (s >= MAX_SECONDS) stopRef.current();
-    }, 250);
-  };
-
-  const submitText = () => {
-    const t = text.trim();
-    if (t) runParse(t);
-  };
-
-  const mm = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
-  const busy = stage === "transcribing" || stage === "parsing";
-  const micText = stage === "recording" ? "點一下結束" : stage === "idle" ? (current ? "說修正" : "開始說") : STAGE_TEXT[stage];
-  const micKicker = stage === "idle" ? (current ? "例如「改成三個人」「預算改五百」" : "點一下開始，再點一下結束，30 秒內") : "";
-
-  const mic = (
-    <button className="mic" data-recording={stage === "recording"} onClick={toggleMic} disabled={busy} aria-label={`${micText} ${micKicker}`.trim()}>
-      <span className="mic-top">
-        <span className="rec">
-          <span className={`pip ${stage === "recording" ? "" : "off"}`} aria-hidden="true" />
-          {stage === "recording" ? "REC" : busy ? "BUSY" : "MIC"}
-        </span>
-        <span>{stage === "recording" ? `${mm(seconds)} / ${mm(MAX_SECONDS)}` : "圓山區 · zh-TW"}</span>
-      </span>
-      <span>
-        <span className="mic-text">{micText}</span>
-        {micKicker && <span className="mic-kicker" style={{ display: "block" }}>{micKicker}</span>}
-      </span>
-      <span className="mic-bar" style={{ width: stage === "recording" ? `${(seconds / MAX_SECONDS) * 100}%` : 0 }} aria-hidden="true" />
-    </button>
-  );
-
-  const status = <p className={`status ${message?.error ? "error" : ""}`} role="status" aria-live="polite">{message?.text}</p>;
-
-  const textInput = showText && (
-    <section className="rise">
-      <p className="eyebrow">TEXT · 文字輸入</p>
-      <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="例如：今天晚餐兩個人預算三百，20 分鐘內，可外帶" />
-      <button className="secondary" onClick={submitText} disabled={!text.trim() || stage !== "idle"}>解析</button>
-    </section>
-  );
-
-  const pips = (
-    <span className="pips" aria-hidden="true"><span className="pip blue" /><span className="pip red" /><span className="pip yellow" /></span>
-  );
-
-  const toastEl = toast && <div className="toast" role="status">{toast}</div>;
-  const byId = (id: string) => (records ?? (PREVIEW ? MOCK_RECORDS : [])).find((r) => r.id === id);
-  const shareText = (title: string, lines: string[]) =>
-    `${title}\n${chips(need).join(" / ")}\n${lines.join("\n")}\n來源與時間見 ALL in life · 圓山區`;
-  const share = async (t: string) => {
-    try {
-      if (navigator.share) await navigator.share({ text: t });
-      else { await navigator.clipboard.writeText(t); notify("已複製到剪貼簿"); }
-    } catch { /* user cancelled */ }
-  };
-
-  // ---- Routing ----
-  if (route === "/settings") {
-    return <><Settings profile={profile} settings={settings} listCount={list.length}
-      setProfile={(p) => setSession((s) => ({ ...s, profile: p }))} setSettings={(st) => setSession((s) => ({ ...s, settings: st }))} />{toastEl}</>;
-  }
-
-  if (route.startsWith("/team/")) {
-    const r = byId(route.slice(6));
-    if (r?.group_offer) {
-      const me = { name: profile.nickname || "我", color: profile.color };
-      const team = teams.find((t) => t.rec_id === r.id) ?? { rec_id: r.id, code: joinCode(r.id), members: [me] };
-      if (!teams.some((t) => t.rec_id === r.id)) setSession((s) => ({ ...s, teams: [...s.teams, team] }));
-      return <><Team r={r} team={team} preview={PREVIEW} joiners={MOCK_JOINERS} listCount={list.length}
-        join={(m) => setSession((s) => ({ ...s, teams: s.teams.map((t) => t.rec_id === r.id && !t.members.some((x) => x.name === m.name) ? { ...t, members: [...t.members, m] } : t) }))}
-        share={() => share(`一起揪團：${r.title}（${r.provider}）\n加入代碼 ${team.code}\n${r.group_offer!.note}`)} />{toastEl}</>;
-    }
-  }
-
-  if (route === "/search" && need) {
-    return <>{<Search preview={PREVIEW} records={PREVIEW ? MOCK_RECORDS : NO_RECORDS} need={need} exclude={exclude} costcoOk={settings.costco_ok} onDone={onSearchDone} listCount={list.length} survival={settings.survival} />}{toastEl}</>;
-  }
-
-  if (route.startsWith("/results") && need) {
-    const recs = records ?? [];
-    const cat = decodeURIComponent(route.split("/")[2] ?? "") as Category;
-    const category: Category = (CATEGORIES as readonly string[]).includes(cat) ? cat : (need.target_categories[0] as Category | undefined) ?? CATEGORIES[0];
-    return <>
-      <Results need={need} records={recs} category={category} setNeed={(n) => { setNeed(n); notify("已放寬限制"); }} listCount={list.length} chips={chips(need)} exclude={exclude} survival={settings.survival} costcoOk={settings.costco_ok} reports={allReports} />
-      {PREVIEW && <p className="note preview-note">示範資料：店家、價格與活動皆為虛構。</p>}
-      {toastEl}
-    </>;
-  }
-
-  if (route.startsWith("/card/")) {
-    const r = byId(route.slice(6));
-    if (r) return <>
-      <Detail r={r} listCount={list.length} inList={list.includes(r.id)} fav={favs.includes(r.id)}
-        toggleList={() => setSession((s) => ({ ...s, list: s.list.includes(r.id) ? s.list.filter((x) => x !== r.id) : [...s.list, r.id] }))}
-        toggleFav={() => setSession((s) => ({ ...s, favs: s.favs.includes(r.id) ? s.favs.filter((x) => x !== r.id) : [...s.favs, r.id] }))}
-        share={() => share(shareText(r.title, [`${r.provider} · ${r.data_status} · 確認 ${r.verified_at}`]))}
-        reports={allReports} survival={settings.survival}
-        report={(reason, note) => { setSession((s) => ({ ...s, reports: [...s.reports, { id: `u${Date.now()}`, candidate_id: r.id, reason, note, created_at: new Date().toISOString(), by: s.profile.nickname || "匿名" }] })); notify(`已回報：${reason}`); }} />
-      {toastEl}
-    </>;
-  }
-
-  if (route === "/list") {
-    const items = list.map(byId).filter((r): r is Rec => Boolean(r));
-    const favItems = favs.map(byId).filter((r): r is Rec => Boolean(r));
-    return <>
-      <ListScreen need={need} items={items} favs={favItems} listCount={list.length} survival={settings.survival}
-        remove={(id) => setSession((s) => ({ ...s, list: s.list.filter((x) => x !== id) }))}
-        bought={(r) => { const t = comparableTotal(r) ?? 0; setSession((s) => ({ ...s, list: s.list.filter((x) => x !== r.id), settings: { ...s.settings, spent: s.settings.spent + t } })); notify(`已加進本月已花：NT$${t}`); }}
-        share={() => share(shareText("清單", items.map((r) => `- ${r.title}（${r.provider}）確認 ${r.verified_at}`)))} />
-      {toastEl}
-    </>;
-  }
-
-  if (route === "/confirm" && need) {
-    const set = <K extends keyof Need>(k: K, v: Need[K]) => setNeed({ ...need, [k]: v });
-    const given = HARD_FIELDS.filter((f) => need[f.key] !== null && need[f.key] !== false);
-    const missing = HARD_FIELDS.filter((f) => !given.includes(f));
-    let n = 0;
-    const field = (f: (typeof HARD_FIELDS)[number]) => (
-      <Field key={f.key} idx={++n} label={f.label} kind={f.kind} value={need[f.key]} fromSettings={derived.includes(f.key)} onChange={(v) => set(f.key, v as Need[typeof f.key])} />
-    );
-    return <>
-      <Shell surface="black" title="重新說" listCount={list.length} survival={settings.survival}>
-        <section className="rise">
-          <p className="eyebrow">{pips} 02 / 03 · 確認</p>
-          <h1 className="display"><span className="outline">需求</span><br /><span className="fill">與限制</span></h1>
-        </section>
-        {transcripts.length > 0 && (
-          <section className="rise">
-            <p className="eyebrow">HEARD · 我們聽到的</p>
-            {transcripts.map((t, i) => <p key={i} className="lead quote">{i > 0 ? `修正：${t}` : t}</p>)}
-          </section>
-        )}
-        <section className="rise">
-          <p className="eyebrow">NEED · 我們理解的</p>
-          <div className="rows">
-            <Field idx={0} label="需求" kind="text" value={need.need} onChange={(v) => set("need", String(v ?? ""))} />
-            <div className="row">
-              <span className="idx">··</span>
-              <span className="row-label">類別</span>
-              <span className={`value ${need.target_categories.length ? "" : "unlimited"}`}>{need.target_categories.join(" / ") || "全部"}</span>
-            </div>
-          </div>
-        </section>
-        <section className="rise">
-          <p className="eyebrow">HARD · 硬限制{settings.survival && <span className="modechip">生存模式</span>}</p>
-          {GROUPS.map((g) => {
-            const rows = given.filter((f) => f.group === g);
-            return rows.length ? <div key={g} className="group"><span className="group-label">{g}</span><div className="rows">{rows.map(field)}</div></div> : null;
-          })}
-          <div className="group"><span className="group-label">不吃</span>
-            <div className="chipset">
-              {TAGS.map((t) => {
-                const on = exclude.includes(t), fromS = settings.exclude.includes(t);
-                return <button key={t} className={`pick ${on ? "on red" : ""}`} aria-pressed={on} onClick={() => set("exclude_tags", on ? need.exclude_tags.filter((x) => x !== t) : [...need.exclude_tags, t])}>{t}{fromS && on && <small> 設定</small>}</button>;
-              })}
-            </div>
-          </div>
-          {given.length === 0 && exclude.length === 0 && <div className="rows"><div className="row"><span className="idx">··</span><span className="row-label">—</span><span className="value unlimited">無</span></div></div>}
-        </section>
-        <section className="rise">
-          <p className="eyebrow">SOFT · 軟偏好</p>
-          <div className="rows">
-            <Field idx={0} label="偏好" kind="text" value={need.soft_preferences.join("、")} fromSettings={derived.includes("soft_preferences")}
-              onChange={(v) => set("soft_preferences", String(v ?? "").split(/[、,，]/).map((x) => x.trim()).filter(Boolean))} />
-          </div>
-        </section>
-        {missing.length > 0 && (
-          <section className="rise">
-            <p className="eyebrow">OPEN · 未提供</p>
-            <div className="rows">{missing.map(field)}</div>
-          </section>
-        )}
-        {need.unresolved.length > 0 && (
-          <section className="rise">
-            <p className="eyebrow">?? · 聽到但不確定</p>
-            <ul>{need.unresolved.map((u) => <li key={u}>{u}</li>)}</ul>
-          </section>
-        )}
-        <section className="rise">
-          {mic}
-          {status}
-          {textInput}
-          <button className="primary" disabled={!need.need.trim() || stage !== "idle"} onClick={() => go("/search")}>搜尋 →</button>
-          {!need.need.trim() && <p className="note acid">請說明你想找什麼</p>}
-          <button className="link muted" onClick={() => { setSession((s) => ({ ...s, need: null, transcripts: [] })); setRecords(null); go("/"); }}>← 重新開始</button>
-        </section>
-      </Shell>
-      {toastEl}
-    </>;
-  }
-
-  // Landing (also the fallback for any route that needs a need but has none).
-  return <>
-    <Shell surface="black" home listCount={list.length} survival={settings.survival}>
-      <section className="rise">
-        <p className="eyebrow">{pips} 01 / 03 · 說</p>
-        <h1 className="display"><span className="outline">說出</span><br /><span className="fill">需求</span></h1>
-        <p className="lead">預算、人數、時間、距離，一句話講完。<br />先套限制，再找最低可比成本。</p>
-      </section>
-      <div className="void" />
-      <section className="rise">
-        {mic}
-        <p className="note">語音會傳送到第三方辨識服務進行辨識，不會被保存。</p>
-        {status}
-        {!showText && <button className="link muted" onClick={() => setShowText(true)}>改用文字輸入</button>}
-        {textInput}
-        {need && <button className="link acid" onClick={() => go("/confirm")}>繼續上次的需求</button>}
-        {remaining !== null && <p className="note">本月剩餘 NT${remaining}{settings.survival ? " · 生存模式" : ""}</p>}
-      </section>
-    </Shell>
-    {toastEl}
-  </>;
-}
-
-type Value = string | number | boolean | null;
-
-// A null value renders as a visible 「無限制」 that becomes an editor on tap.
-function Field({ idx, label, kind, value, onChange, fromSettings }: { idx: number; label: string; kind: "number" | "text" | "bool"; value: Need[keyof Need]; onChange: (v: Value) => void; fromSettings?: boolean }) {
-  const [editing, setEditing] = useState(false);
-  const empty = value === null || value === "" || (kind === "bool" && value === false);
-  const index = <span className="idx">{idx ? String(idx).padStart(2, "0") : "··"}</span>;
-  const from = fromSettings && <span className="fromtag">來自設定</span>;
-
-  if (empty && !editing) {
-    return (
-      <div className="row">
-        {index}
-        <span className="row-label">{label}</span>
-        <button className="link muted" onClick={() => setEditing(true)} aria-label={`${label}：無限制，點一下設定`}>
-          {label === "需求" ? "必填，點一下輸入" : "—— 無限制"}
-        </button>
-      </div>
-    );
-  }
-
-  if (kind === "bool") {
-    return (
-      <div className="row">
-        {index}
-        <label htmlFor={label}>{label}{from}</label>
-        <select id={label} value={value ? "是" : "否"} onChange={(e) => onChange(e.target.value === "是")} onBlur={() => setEditing(false)}>
-          <option>是</option><option>否</option>
-        </select>
-      </div>
-    );
-  }
-
-  const shown = value === null ? "" : Array.isArray(value) ? value.join("、") : String(value);
-  return (
-    <div className="row">
-      {index}
-      <label htmlFor={label}>{label}{from}</label>
-      <input id={label} type={kind === "number" ? "number" : "text"} inputMode={kind === "number" ? "decimal" : "text"}
-        value={shown} autoFocus={editing} onBlur={() => setEditing(false)}
-        onChange={(e) => {
-          const s = e.target.value.trim();
-          if (kind === "number") onChange(s === "" || !Number.isFinite(Number(s)) ? null : Number(s));
-          else onChange(s === "" ? null : e.target.value);
-        }} />
-    </div>
-  );
-}
-
-function chips(n: Need | null): string[] {
-  if (!n) return [];
-  const c = [n.need];
-  if (n.people_or_servings !== null) c.push(`${n.people_or_servings} 人`);
-  if (n.budget_total_twd !== null) c.push(`NT$${n.budget_total_twd}`);
-  if (n.date) c.push(n.date);
-  if (n.time_window) c.push(n.time_window);
-  if (n.max_minutes !== null) c.push(`${n.max_minutes} 分鐘內`);
-  if (n.max_distance_km !== null) c.push(`${n.max_distance_km} km 內`);
-  if (n.free_only) c.push("只要免費");
-  if (n.registration_ok) c.push("可先登記");
-  if (n.eligibility_notes) c.push(n.eligibility_notes);
-  return c.concat(n.soft_preferences).filter(Boolean);
+type View="welcome"|"home"|"filters"|"search"|"results"|"detail"|"saved"|"account"|"settings"|"offers";
+type Mode="daily"|"team"|"zero";
+type InstallPrompt=Event&{prompt:()=>Promise<void>;userChoice:Promise<{outcome:string}>};
+const views:View[]=["welcome","home","filters","search","results","detail","saved","account","settings","offers"];
+function safeDecode(value:string){try{return decodeURIComponent(value);}catch{return value;}}
+function route(){const [raw,id]=location.hash.replace(/^#\/?/,"").split("/");return {view:views.includes(raw as View)?raw as View:"welcome",id:id?safeDecode(id):null};}
+const navigate=(view:View,id?:string)=>{location.hash=`/${view}${id?`/${encodeURIComponent(id)}`:""}`;};
+const money=(value:number)=>new Intl.NumberFormat("zh-TW",{maximumFractionDigits:0}).format(value);
+const modes={daily:{short:"日常",title:"精打細算",description:"以真實成本與來源證據探索",color:"var(--lime)"},team:{short:"優惠",title:"一起省更多",description:"商家團購條件與兌換資訊",color:"var(--violet)"},zero:{short:"零元",title:"零元探索",description:"只看總可比成本為零的選項",color:"var(--coral)"}};
+export function App(){
+ const [current,setCurrent]=useState(route),[mode,setMode]=useState<Mode>("daily"),[transcript,setTranscript]=useState(""),[need,setNeed]=useState<Need>({...EMPTY_NEED}),[parsed,setParsed]=useState(false),[correction,setCorrection]=useState("");
+ const account=useAccount();
+ const [reviewStarted,setReviewStarted]=useState(false),[budgetFromSettings,setBudgetFromSettings]=useState(false);
+ const [config,setConfig]=useState<api.ServiceConfig|null>(null),[configError,setConfigError]=useState(false),[online,setOnline]=useState(navigator.onLine);
+ const [busy,setBusy]=useState<""|"parsing"|"recording"|"transcribing">(""),[seconds,setSeconds]=useState(0),[message,setMessage]=useState(""),[error,setError]=useState("");
+ const [position,setPosition]=useState<{lat:number;lng:number}|null>(null),[locating,setLocating]=useState(false);
+ const [searchState,setSearchState]=useState(initialSearch),[searching,setSearching]=useState(false),[searchError,setSearchError]=useState("");
+ const [cache,setCache]=useState<Record<string,Rec>>({}),[recordError,setRecordError]=useState(""),[recordsLoading,setRecordsLoading]=useState(false),[collection,setCollection]=useState<"list"|"favs">("list");
+ const [installPrompt,setInstallPrompt]=useState<InstallPrompt|null>(null);
+ const searchAbort=useRef<AbortController|null>(null),parseAbort=useRef<AbortController|null>(null),requestId=useRef(0),recorder=useRef<Recorder|null>(null),recordTimer=useRef<ReturnType<typeof setInterval>|null>(null),recordDeadline=useRef<ReturnType<typeof setTimeout>|null>(null),transcriptRevision=useRef(0);
+ const results=useMemo(()=>rankedRecords(searchState,account.data.settings.survival),[searchState,account.data.settings.survival]);
+ const selected=current.id?cache[current.id]:undefined;
+ const canStore=Boolean(account.user&&account.token&&!account.restoring);
+ const ids=account.data[collection];
+ const mergeRecords=(records:Rec[])=>setCache(previous=>({...previous,...Object.fromEntries(records.map(r=>[r.id,r]))}));
+ const go=(view:View,id?:string)=>{setError("");setMessage("");navigate(view,id);};
+ useEffect(()=>{const onHash=()=>setCurrent(route());window.addEventListener("hashchange",onHash);return()=>window.removeEventListener("hashchange",onHash);},[]);
+ useEffect(()=>{if(current.view!=="search"&&searching){requestId.current++;searchAbort.current?.abort();setSearching(false);}},[current.view]);
+ useEffect(()=>{let live=true;api.config().then(value=>{if(live)setConfig(value);}).catch(()=>{if(live)setConfigError(true);});const change=()=>setOnline(navigator.onLine);const install=(event:Event)=>{event.preventDefault();setInstallPrompt(event as InstallPrompt);};window.addEventListener("online",change);window.addEventListener("offline",change);window.addEventListener("beforeinstallprompt",install);return()=>{live=false;window.removeEventListener("online",change);window.removeEventListener("offline",change);window.removeEventListener("beforeinstallprompt",install);};},[]);
+ useEffect(()=>()=>{requestId.current++;searchAbort.current?.abort();parseAbort.current?.abort();if(recordTimer.current)clearInterval(recordTimer.current);if(recordDeadline.current)clearTimeout(recordDeadline.current);void recorder.current?.stop().catch(()=>{});},[]);
+ useEffect(()=>{if(current.view!=="home"&&recorder.current){const mic=recorder.current;recorder.current=null;if(recordTimer.current)clearInterval(recordTimer.current);if(recordDeadline.current)clearTimeout(recordDeadline.current);void mic.stop().catch(()=>{});setBusy("");}if(current.view!=="home"&&busy==="transcribing"){parseAbort.current?.abort();setBusy("");}},[current.view]);
+ useEffect(()=>{if(!message)return;const t=setTimeout(()=>setMessage(""),6000);return()=>clearTimeout(t);},[message]);
+ const loadIds=current.view==="detail"&&current.id?[current.id]:current.view==="saved"?ids:[];
+ const idsKey=loadIds.join(",");
+ useEffect(()=>{if(!idsKey){setRecordsLoading(false);setRecordError("");return;}const controller=new AbortController();setRecordsLoading(true);setRecordError("");api.candidates(idsKey.split(","),controller.signal).then(mergeRecords).catch(e=>{if(!controller.signal.aborted)setRecordError(e.message);}).finally(()=>{if(!controller.signal.aborted)setRecordsLoading(false);});return()=>controller.abort();},[idsKey,account.user?.id]);
+ async function toggle(id:string,kind:"favs"|"list"){
+  if(!canStore){go("account");return;}
+  const adding=!account.data[kind].includes(id);if(adding&&account.data[kind].length>=200){setError("清單或收藏最多各 200 筆，請先移除一些項目。");return;}
+  try{await account.update(data=>({...data,[kind]:data[kind].includes(id)?data[kind].filter(v=>v!==id):[...data[kind],id]}));setMessage(adding?(kind==="favs"?"已收藏並儲存到帳號":"已加入清單並儲存到帳號"):"已從帳號移除");}catch{/* Account state displays retryable sync failure. */}
+ }
+ async function buy(item:Rec){
+  if(!canStore){go("account");return;}
+  try{await account.update(data=>markBought(data,item));setMessage("已依你的確認移出清單，累計本月支出；此操作不會付款。");}catch(e){setError((e as Error).message);}
+ }
+ function openManual(){
+  if(!reviewStarted){const prepared=applyBudgetDefault({...EMPTY_NEED,need:transcript.trim(),free_only:mode==="zero"},account.data.settings);setNeed(prepared.need);setBudgetFromSettings(prepared.fromSettings);setReviewStarted(true);}
+  go("filters");
+ }
+ async function parseText(delta=false){
+  const input=(delta?correction:transcript).trim();if(!input){setError("請先輸入或錄下你的需求，也可以直接手動填寫。");return;}
+  parseAbort.current?.abort();const controller=new AbortController();parseAbort.current=controller;const revision=transcriptRevision.current;setBusy("parsing");setError("");
+  try{const next=needSchema.parse(await api.parse(input,delta?need:null,controller.signal));if(controller.signal.aborted||revision!==transcriptRevision.current)return;const prepared=delta?{need:next,fromSettings:budgetFromSettings&&next.budget_total_twd===need.budget_total_twd}:applyBudgetDefault(next,account.data.settings);setNeed(prepared.need);setBudgetFromSettings(prepared.fromSettings);setReviewStarted(true);setParsed(true);setMode(next.free_only?"zero":"daily");setCorrection("");go("filters");}
+  catch(e){if(!controller.signal.aborted)setError(`${(e as Error).message} 你仍可手動設定條件。`);}
+  finally{if(parseAbort.current===controller)setBusy("");}
+ }
+ async function stopVoice(){
+  if(recordTimer.current)clearInterval(recordTimer.current);if(recordDeadline.current)clearTimeout(recordDeadline.current);
+  const currentRecorder=recorder.current;if(!currentRecorder)return;recorder.current=null;setBusy("transcribing");
+  const controller=new AbortController();parseAbort.current=controller;
+  try{const clip=await currentRecorder.stop();if(!clip.size||controller.signal.aborted)return;const result=await api.transcribe(clip,controller.signal);if(controller.signal.aborted)return;setTranscript(result.transcript);transcriptRevision.current++;setParsed(false);setReviewStarted(false);setMessage("逐字稿已完成，請先檢查文字，再按解析。");}catch(e){if(!controller.signal.aborted)setError(`${(e as Error).message} 可改用文字輸入。`);}finally{if(parseAbort.current===controller)setBusy("");}
+ }
+ async function startVoice(){
+  if(busy==="recording"){await stopVoice();return;}if(busy)return;
+  if(!recordingSupported()){setError("此瀏覽器無法錄音；請使用 HTTPS 或改用文字輸入。");return;}
+  setError("");const mic=new Recorder();recorder.current=mic;
+  try{setBusy("recording");await mic.start();if(recorder.current!==mic){await mic.stop();return;}setSeconds(0);recordTimer.current=setInterval(()=>setSeconds(n=>n+1),1000);recordDeadline.current=setTimeout(()=>void stopVoice(),MAX_SECONDS);}catch{if(recorder.current!==mic)return;recorder.current=null;setBusy("");setError("麥克風未開啟或權限被拒絕，請改用文字輸入。");}
+ }
+ function locate(){
+  if(!navigator.geolocation){setError("瀏覽器不支援定位，仍可不使用距離篩選。");return;}
+  setLocating(true);setError("");navigator.geolocation.getCurrentPosition(value=>{const {latitude:lat,longitude:lng}=value.coords;setLocating(false);if(lat<21.5||lat>25.5||lng<118||lng>122.5){setPosition(null);setError("目前位置不在服務範圍；本次不計算距離。");return;}setPosition({lat,lng});setMessage("已取得本次搜尋位置，不會保存。");},()=>{setPosition(null);setLocating(false);setError("無法取得位置。本次照常搜尋，但不保證距離符合。");},{timeout:10000,maximumAge:0,enableHighAccuracy:false});
+ }
+ async function startSearch(){
+  const valid=needSchema.safeParse(need);if(!valid.success){setError("條件格式不正確，請檢查數字範圍與日期。");return;}if(!need.need.trim()&&!need.target_categories.length){setError("請填寫生活需求或選擇一個類別。");return;}
+  searchAbort.current?.abort();const controller=new AbortController();searchAbort.current=controller;const id=++requestId.current;
+  setSearchState(initialSearch());setSearchError("");setSearching(true);navigate("search");const location=position;setPosition(null);
+  try{await api.search({need:{...valid.data,soft_preferences:[...new Set([...valid.data.soft_preferences,...account.data.settings.prefs])]},exclude:[...new Set([...account.data.settings.exclude,...valid.data.exclude_tags])],location,costco_ok:account.data.settings.costco_ok},event=>{if(id!==requestId.current||controller.signal.aborted)return;setSearchState(state=>reduceSearch(state,event));if("records" in event)mergeRecords(event.records);if("step" in event&&event.step==="done")mergeRecords([...event.pending,...event.excluded]);},controller.signal);if(id===requestId.current)navigate("results");}
+  catch(e){if(id===requestId.current&&!controller.signal.aborted){setSearchError((e as Error).message);navigate("results");}}
+  finally{if(id===requestId.current)setSearching(false);}
+ }
+ function chooseMode(value:Mode){setMode(value);setNeed(n=>({...n,free_only:value==="zero"}));}
+ async function install(){if(!installPrompt){setMessage("瀏覽器選單選「安裝 App」；iPhone 請用 Safari 分享 → 加入主畫面。");return;}try{await installPrompt.prompt();const result=await installPrompt.userChoice;setMessage(result.outcome==="accepted"?"已接受安裝，請依瀏覽器提示完成。":"未安裝，你可以繼續使用網頁。");setInstallPrompt(null);}catch{setError("無法啟動安裝，請使用瀏覽器選單。");}}
+ const completedGroups=Object.values(searchState.groups).filter(group=>group.status!=="ranking").length;
+ const progress=searchState.complete?100:!searchState.filtered?0:searchState.totalGroups?Math.round(completedGroups/searchState.totalGroups*100):100;
+ const spent=account.data.settings.spent_month===currentAccountMonth()?account.data.settings.spent:0;
+ const budget=account.data.settings.monthly_budget;
+ const titles:Record<View,string>={welcome:"ALL IN LIFE",home:"ALL IN LIFE",filters:"確認需求與限制",search:"正在探索",results:"生活選項",detail:"選項詳情",saved:"我的生活清單",account:"帳號",settings:"生活設定",offers:"商家團購優惠"};
+ return <div className="app-stage" data-survival={account.data.settings.survival}><div className="ambient ambient-one"/><div className="ambient ambient-two"/>
+ <aside className="desktop-note"><span>ALL IN LIFE</span><h2>每一個選擇，<br/>都有生活的依據。</h2><p>圓山生活探索 · 來源 × 成本 × 你的需求</p><div className="connection-badge"><i className={online?"online":""}/>{online?"前後端整合版":"目前離線"}</div></aside>
+ <main className="phone-shell">
+ {current.view!=="welcome"&&<header className="app-header glass"><button className="icon-button" aria-label={current.view==="home"?"回到歡迎頁":"返回首頁"} onClick={()=>go(current.view==="home"?"welcome":"home")}>{current.view==="home"?<Compass/>:<ArrowLeft/>}</button><div className="header-title"><b>{titles[current.view]}</b><span><MapPin/>圓山區 · 資料庫候選</span></div><button className="icon-button" aria-label="帳號與登入" onClick={()=>go("account")}><UserRound/></button></header>}
+ {!online&&<div className="status-banner" role="status">目前離線，搜尋、登入與儲存暫停；畫面不是最新資料。</div>}
+ {account.restoring&&<div className="status-banner" role="status">正在還原帳號資料，請稍候…</div>}
+ {account.error&&<div className="status-banner error" role="alert">{account.error}{canStore&&<button onClick={()=>void account.update(data=>({...data})).catch(()=>{})}>重試同步</button>}<button aria-label="關閉帳號訊息" onClick={()=>account.setError("")}><X/></button></div>}
+ {(error||message)&&<div className={`status-banner ${error?"error":"success"}`} role={error?"alert":"status"}>{error||message}<button aria-label="關閉提示" onClick={()=>{setError("");setMessage("");}}><X/></button></div>}
+ <div className="screen-stack">
+ {current.view==="welcome"&&<section className="welcome-screen"><div className="welcome-mark"><span>ALL</span><span>IN</span><span>LIFE</span></div><p>把預算、時間、距離與偏好<br/>變成今天真的做得到的選擇。</p><div className="welcome-visual"><Compass/><i/><i/><i/></div><button className="primary-action" onClick={()=>go("home")}><Sparkles/>先匿名探索<ArrowRight/></button><button className="secondary-action" onClick={()=>go("account")}><LogIn/>登入並保存清單</button><small>搜尋不用登入；收藏與清單需要帳號。<br/>不保存語音、逐字稿或搜尋紀錄。</small></section>}
+ {current.view==="home"&&<section className="screen home-screen"><div className="home-greeting"><div><span className="kicker">{account.user?`HI, ${account.user.nickname}`:"GOOD CHOICES, EVERY DAY"}</span><h1>今天想<br/>解決什麼？</h1></div><button className="avatar-button" style={{background:account.data.profile.color}} aria-label="個人帳號" onClick={()=>go("account")}>{account.user?account.user.nickname.slice(0,1):<UserRound/>}</button></div>
+ <button className="wallet-card" onClick={()=>go("settings")} aria-label="設定本月預算與已花費"><div><span className="wallet-label"><WalletCards/>本月剩餘</span><strong>{budget===null?"尚未設定":`NT$ ${money(budget-spent)}`}</strong></div><div className="wallet-side"><span>手動記錄支出</span><b>NT$ {money(spent)}</b><small>調整生活預算</small></div><div className="wallet-progress"><i style={{width:`${budget&&budget>0?Math.max(0,Math.min(100,(budget-spent)/budget*100)):0}%`}}/></div></button>
+ <div className="mode-carousel">{(Object.keys(modes) as Mode[]).map(value=><button key={value} className={`mode-card ${mode===value?"active":""}`} style={{"--mode-color":modes[value].color} as React.CSSProperties} onClick={()=>chooseMode(value)}><span>{value==="daily"?<CircleDollarSign/>:value==="team"?<Users/>:<Sparkles/>}</span><b>{modes[value].short}</b><small>{modes[value].title}</small>{mode===value&&<Check className="mode-check"/>}</button>)}</div>
+ <div className="mission-card"><div className="mission-top"><span className="mode-dot"/><span>{modes[mode].title}</span><button onClick={openManual}><SlidersHorizontal/>手動條件</button></div>
+ <button className={`voice-action ${busy==="recording"?"recording":""}`} disabled={busy!==""&&busy!=="recording"||config?.transcribe===false} onClick={()=>void startVoice()}><span>{busy==="recording"?<Square/>:<Mic/>}</span><b>{busy==="recording"?`錄音 ${seconds} / 30 秒 · 點擊停止`:busy==="transcribing"?"正在轉成逐字稿…":"用語音說需求"}</b><small>{config?.transcribe===false?"語音服務未設定，可改用文字":"最多 30 秒，逐字稿由你確認後才解析"}</small></button>
+ <label className="need-input"><Pencil/><textarea value={transcript} maxLength={2000} placeholder="例如：今晚兩人吃飯，總預算 300 元，可以外帶，不吃牛。" aria-label="文字輸入需求或編輯逐字稿" disabled={busy==="recording"||busy==="transcribing"} onChange={e=>{setTranscript(e.target.value);setParsed(false);setReviewStarted(false);transcriptRevision.current++;}}/><span>逐字稿／文字 · 可直接修改</span></label>
+ <button className="primary-action" disabled={Boolean(busy)||!online||config?.parse===false} onClick={()=>void parseText()}><Sparkles/>{busy==="parsing"?"解析中…":"解析需求，再確認"}<ArrowRight/></button>
+ <button className="text-button manual-button" onClick={openManual}>不用 AI，直接手動填寫並搜尋</button>
+ </div>
+ {(config?.parse===false||configError)&&<p className="notice">{configError?"暫時無法讀取服務狀態。":"AI 解析尚未設定。"}手動填寫仍可使用；不會以假解析替代。</p>}
+ {config?.database===false&&<p className="notice warning">資料庫尚未設定；搜尋與帳號需要管理者連接 PostgreSQL。</p>}
+ <button className="quick-team" onClick={()=>go("offers")}><span className="quick-icon"><Users/></span><span><b>一起省，看清楚商家條件</b><small>查看已搜尋選項的團購門檻與兌換碼</small></span><ArrowRight/></button><p className="home-footnote"><ShieldCheck/>比較的是已匯入資料，不是即時網路搜尋。</p>
+ </section>}
+ {current.view==="filters"&&<section className="screen filters-screen"><span className="kicker lime-text">REVIEW BEFORE YOU SEARCH</span><h1>你說的，<br/>由你確認。</h1>{transcript&&<blockquote className="transcript-copy"><small>原始文字／逐字稿</small>{transcript}</blockquote>}<NeedEditor need={need} onChange={value=>{transcriptRevision.current++;if(value.budget_total_twd!==need.budget_total_twd)setBudgetFromSettings(false);setNeed(value);}}/>{budgetFromSettings&&<p className="notice">預算來自設定：以本月預算減已花費，預填 NT$ {money(need.budget_total_twd??0)}；你可以修改或清空。</p>}{(account.data.settings.exclude.length>0||account.data.settings.prefs.length>0)&&<p className="fine-print">另外套用生活設定：排除 {account.data.settings.exclude.join("、")||"無"}；偏好 {account.data.settings.prefs.join("、")||"無"}。可到設定修改。</p>}
+ {parsed&&<div className="setting-group"><label className="field">一句話修正<input value={correction} maxLength={2000} placeholder="例如：改成三個人，預算不變" onChange={e=>setCorrection(e.target.value)}/></label><button className="secondary-action" disabled={Boolean(busy)||!correction.trim()} onClick={()=>void parseText(true)}>{busy==="parsing"?"修正中…":"只修正提到的條件"}</button></div>}
+ <div className="location-panel"><MapPin/><div><b>{position?"已取得本次搜尋位置":"距離需要你的同意"}</b><p>位置僅用於這次搜尋，不會保存。拒絕定位仍可搜尋，距離未知不等於符合限制。</p></div><button className="secondary-action" disabled={locating} onClick={position?()=>setPosition(null):locate}>{locating?"定位中…":position?"撤回本次位置":"僅本次使用定位"}</button></div>
+ <button className="primary-action" disabled={Boolean(busy)||searching||!online} onClick={()=>void startSearch()}><Search/>確認條件，開始探索<ArrowRight/></button>
+ </section>}
+ {current.view==="search"&&<section className="screen search-screen"><div className="search-orbit"><div className="orbit-ring ring-one"/><div className="orbit-ring ring-two"/><Radar/><span>{searchState.filtered?`${progress}%`:"…"}</span></div><span className="kicker lime-text">LIVE FROM YOUR SERVER</span><h1>生活獵人<br/>正在整理你的選項</h1><p>進度只來自後端事件；資料來源不會在這裡臨時編造。</p><progress aria-label="推薦群組完成進度" max="100" value={progress}/><div className="scan-stats"><span>讀取 {searchState.filtered?searchState.found:"—"}</span><span>通過 {searchState.filtered?searchState.passed:"—"}</span><span>完成群組 {completedGroups}/{searchState.totalGroups}</span></div><div className="labor-list"><div className={searchState.filtered?"done":"working"}><span>{searchState.filtered?<Check/>:<i/>}</span><b>證據閘門與硬限制</b><small>{searchState.filtered?"完成":"處理中"}</small></div>{Object.entries(searchState.groups).map(([key,group])=><div key={key} className={group.status==="ranking"?"working":"done"}><span>{group.status==="ranking"?<i/>:<Check/>}</span><b>{group.agent==="free"?"免費":"付費"} · {group.category}</b><small>{group.status==="failed"?"成本備援":group.status==="done"?"完成":"排序中"}</small></div>)}</div><button className="secondary-action" onClick={()=>{requestId.current++;searchAbort.current?.abort();setSearching(false);go("filters");}}>取消並返回條件</button></section>}
+ {current.view==="results"&&<div className="results-page"><div className="result-notices">{[...results,...searchState.pending,...searchState.excluded].some(isDemoRecord)&&<p className="notice warning"><b>目前包含專案示範資料</b>價格、地址、來源與優惠僅供測試串接，不是已驗證的真實商家資訊，請勿據此購買或前往。</p>}{searchError&&<div role="alert" className="notice error">{searchError}<button onClick={()=>go("filters")}>回到條件重試</button></div>}{!searchState.complete&&!searchError&&<p className="notice">尚未完成搜尋，請從首頁設定需求。</p>}{Object.values(searchState.groups).some(g=>g.status==="failed")&&<p className="notice warning">部分 AI 排序未完成，該群組已依總可比成本排序；未產生 CP 分數。</p>}{searchState.warnings.map(w=><p key={w} className="notice warning">{w}</p>)}</div><ResultsView records={results} pending={searchState.pending} excluded={searchState.excluded} favs={account.data.favs} survival={account.data.settings.survival} onFavorite={id=>void toggle(id,"favs")} onOpen={id=>go("detail",id)} onAdjust={()=>go("filters")}/></div>}
+ {current.view==="detail"&&<div className="detail-page">{selected?<><DetailView item={selected} favorite={account.data.favs.includes(selected.id)} listed={account.data.list.includes(selected.id)} onFavorite={()=>void toggle(selected.id,"favs")} onList={()=>void toggle(selected.id,"list")} onReport={()=>document.getElementById("candidate-reports")?.scrollIntoView({behavior:"smooth"})}/><ReportView key={selected.id} id={selected.id} token={account.token} onLogin={()=>go("account")} onExpired={account.reject}/></>:<div className="empty-state"><Search/><h2>{recordsLoading?"讀取紀錄中…":"找不到這筆選項"}</h2><p>{recordError||"這筆資料可能已移除，請重新搜尋。"}</p><button className="secondary-action" onClick={()=>go("home")}>重新探索</button></div>}</div>}
+ {current.view==="saved"&&<section className="screen saved-screen"><span className="kicker lime-text">A LITTLE MORE ORGANIZED</span><h1>留給下次的自己。</h1><div className="segmented"><button className={collection==="list"?"active":""} onClick={()=>setCollection("list")}>清單 {account.data.list.length}</button><button className={collection==="favs"?"active":""} onClick={()=>setCollection("favs")}>收藏 {account.data.favs.length}</button></div>{!canStore?<div className="empty-state"><Bookmark/><h2>先登入，再保存</h2><p>匿名搜尋不會偷偷建立雲端清單。</p><button className="primary-action" onClick={()=>go("account")}>登入帳號<ArrowRight/></button></div>:<>{recordsLoading&&<p role="status">從伺服器還原紀錄…</p>}{recordError&&<p role="alert" className="notice error">{recordError}</p>}{ids.length===0&&<div className="empty-state"><Heart/><h2>這裡還沒有選項</h2><p>探索後，將想再看一眼的選項留下來。</p><button className="secondary-action" onClick={()=>go("home")}>開始探索</button></div>}<div className="saved-items">{ids.map(id=>{const item=cache[id];return <article className="saved-item" key={id}><button onClick={()=>go("detail",id)}><span className="kicker">{item?.category??"暫無資料"}</span><b>{item?.title??`紀錄 ${id} 已不可用或尚未載入`}</b><small>{item?(isDemoRecord(item)?"示範測試資料":item.data_status):"可移除此項目"}</small></button>{collection==="list"&&item&&<button className="text-button" disabled={account.saving||!canMarkBought(item)} onClick={()=>void buy(item)} title="你確認已買才會累計；示範、過期或價格未知不可使用">標記已買</button>}<button className="icon-button" aria-label={`移除 ${item?.title??id}`} onClick={()=>void toggle(id,collection)}><X/></button></article>;})}</div></>}</section>}
+ {current.view==="offers"&&<section className="screen team-screen"><span className="kicker lime-text">TOGETHER, WITH CLEAR TERMS</span><h1>一起省，<br/>先看清楚條件。</h1><p className="section-copy">只顯示資料來源提供的團購優惠與兌換碼。這不是線上組團系統，不會假造加入人數，也不代表已向商家預約。</p>{results.filter(r=>r.group_offer).map(item=><button key={item.id} className="quick-team" onClick={()=>go("detail",item.id)}><Users/><span><b>{item.title}</b><small>{item.group_offer!.min_people} 人門檻 · 查看完整來源條件</small></span><ArrowRight/></button>)}{!results.some(r=>r.group_offer)&&<div className="empty-state"><Users/><h2>目前沒有已搜尋到的團購優惠</h2><p>先探索生活選項，有來源提供的優惠才會顯示。</p><button className="secondary-action" onClick={()=>go("home")}>回到探索</button></div>}</section>}
+ {current.view==="account"&&<AccountView account={account} onDone={()=>go("home")} supportEmail={config?.support_email??null}/>}
+ {current.view==="settings"&&!account.restoring&&<SettingsView key={account.user?.id??"anonymous"} account={account} onLogin={()=>go("account")} onInstall={()=>void install()} installable={Boolean(installPrompt)}/>}
+ </div>
+ {current.view!=="welcome"&&current.view!=="search"&&<nav className="bottom-nav glass" aria-label="主要導覽">{([{view:"home",title:"探索",icon:Home},{view:"results",title:"結果",icon:Search},{view:"saved",title:"清單",icon:Bookmark},{view:"offers",title:"優惠",icon:Users},{view:"settings",title:"設定",icon:Settings}] as const).map(({view,title,icon:Icon})=><button key={view} className={current.view===view?"active":""} aria-current={current.view===view?"page":undefined} onClick={()=>go(view)}><Icon/>{title}{view==="saved"&&account.data.list.length>0&&<i>{account.data.list.length}</i>}</button>)}</nav>}
+ {account.saving&&<div className="saving-indicator" role="status">正在儲存到帳號…</div>}
+ </main></div>;
 }

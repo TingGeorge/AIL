@@ -54,6 +54,13 @@ export type Rec = {
   reason?: string | null;
 };
 
+// Repository seed records are fixtures, never real-world verified offers.
+export const isDemoRecord = (record: Pick<Rec, "source_url" | "extra">) => {
+  if (record.extra.demo === true) return true;
+  try { const url = new URL(record.source_url); return url.hostname === "example.com" && url.pathname.startsWith("/ail-demo/"); }
+  catch { return false; }
+};
+
 export type Profile = { nickname: string; color: string };
 export type Settings = { monthly_budget: number | null; spent: number; spent_month: string; survival: boolean; exclude: string[]; prefs: string[]; costco_ok: boolean };
 export const EXPERIENCE_REASONS = ["食安", "過敏", "身體不適"] as const;
