@@ -376,7 +376,7 @@
 
 .results-view-detail {
   --card-accent: var(--lime);
-  min-height: 100%;
+  min-height: 0;
   padding: 0 0 12px;
   overflow: visible;
   background: linear-gradient(180deg, #0e130f, var(--bg));
@@ -554,14 +554,17 @@
 .fine-print { margin: 9px 0 0; color: #8d978e; font-size: 8px; line-height: 1.45; }
 .fine-print.demo-fine-print { color: #d3c48f; font-weight: 700; }
 
-.detail-actions {
-  position: sticky;
+.detail-page > .detail-actions {
+  position: relative;
   z-index: 15;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  flex: 0 0 auto;
+  width: 100%;
+  height: auto;
   min-height: 74px;
-  margin-top: 8px;
+  margin: 0;
   padding: 9px 10px max(9px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--border);
   display: grid;
@@ -576,19 +579,11 @@
 .detail-actions button.saved { color: var(--coral); }
 .detail-actions .detail-primary { border: 0; flex-direction: row; background: var(--lime); color: #10140e; font-size: 10px; font-weight: 900; }
 
-/* App's .detail-page is the sole scroll container; beat later legacy MVP rules. */
-.detail-page > .results-view-detail.screen {
+/* Keep the detail content inside the dedicated scroll region; the action bar is its sibling. */
+.detail-scroll-region > .results-view-detail.screen {
   height: auto;
-  min-height: 100%;
   padding: 0 0 12px;
   overflow: visible;
-}
-
-.detail-page > .results-view-detail.screen > .detail-actions {
-  position: sticky;
-  bottom: 0;
-  height: auto;
-  min-height: 74px;
 }
 
 .sr-only {
@@ -733,7 +728,7 @@
 .results-view .result-bucket > summary b { font-size: 12px; }
 .results-view-detail .detail-actions button { font-size: 11px; }
 .results-view-detail .detail-actions .detail-primary { font-size: 12px; }
-.detail-page > .reports-panel.detail-disclosure { margin: 0 18px 18px; padding: 0; border: 0; border-top: 1px solid var(--border); border-radius: 0; background: none; }
+.detail-scroll-region > .reports-panel.detail-disclosure { margin: 0 18px 18px; padding: 0; border: 0; border-top: 1px solid var(--border); border-radius: 0; background: none; }
 .reports-panel.detail-disclosure > summary > span { display: flex; align-items: center; gap: 8px; }
 .reports-panel.detail-disclosure > summary > span > svg { width: 16px; height: 16px; }
 .reports-panel.detail-disclosure .fine-print { font-size: 12px; }

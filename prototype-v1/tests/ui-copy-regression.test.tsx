@@ -66,6 +66,23 @@ test("all mounted routes render product copy without banned engineering terms", 
   }
 });
 
+test("home exploration choices use compact labels instead of three feature cards", () => {
+  testLocation.hash = "#/home";
+  const html = renderToStaticMarkup(<App />);
+
+  expect(html).toContain('class="mode-labels"');
+  expect(html).toContain('aria-label="探索方式"');
+  expect(html).toMatch(/mode-label daily[^>]*>[\s\S]*日常<\/button>/);
+  expect(html).toMatch(/mode-label zero[^>]*>[\s\S]*零元<\/button>/);
+  expect(html).toMatch(/mode-label team[^>]*>[\s\S]*團購[\s\S]*<\/button>/);
+  expect(html.indexOf("日常")).toBeLessThan(html.indexOf("零元"));
+  expect(html.indexOf("零元")).toBeLessThan(html.indexOf("團購"));
+  expect(html).not.toContain('class="mode-carousel"');
+  expect(html).not.toContain('class="mode-card');
+  expect(html).not.toContain("一起省更多");
+  expect(html).not.toContain("查看參加人數與兌換方式");
+});
+
 test("generated recommendation copy is translated while source-originated fields remain unchanged", () => {
   const item = { ...rowToRec({
     id: "f_copy",

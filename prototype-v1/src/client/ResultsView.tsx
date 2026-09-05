@@ -62,13 +62,23 @@ export type ResultsViewProps = {
 
 export type DetailViewProps = {
   item: Rec;
+  position?: UserPosition | null;
+  locationStatus?: LocationStatus;
+  /** Kept for compatibility with callers that render detail content and controls together. */
+  favorite?: boolean;
+  listed?: boolean;
+  onFavorite?: () => void;
+  onList?: () => void;
+  onReport?: () => void;
+};
+
+export type DetailActionsProps = {
+  item: Rec;
   favorite: boolean;
   listed: boolean;
   onFavorite: () => void;
   onList: () => void;
   onReport: () => void;
-  position?: UserPosition | null;
-  locationStatus?: LocationStatus;
 };
 
 type SortMode = "rank" | "cost" | "distance" | "verified";
@@ -86,7 +96,7 @@ const DETAIL_QUANTITY_COPY: Record<Category, { title: string; label: string; tim
   食品: { title: "價格與份量", label: "份量", timeLabel: "供應時間", comparison: "份量（例如一份或多人份）" },
   日用品: { title: "價格與商品規格", label: "商品規格", timeLabel: "可購買時間", comparison: "商品規格（例如單件或組合包）" },
   "免費／公益資源": { title: "費用與服務資訊", label: "服務對象／使用方式", timeLabel: "服務時間", comparison: "服務對象／使用方式（例如每人一次或需符合資格）" },
-  活動: { title: "費用與活動資訊", label: "票種／參加方式", timeLabel: "活動時間", comparison: "票種／參加方式（例如一般票或優待票）" },
+  活動: { title: "費用與活動資訊", label: "活動資訊", timeLabel: "活動時間", comparison: "活動資訊（例如票種、場次或參觀範圍）" },
   交通: { title: "票價與使用資訊", label: "票種／使用方式", timeLabel: "行駛／使用時間", comparison: "票種／使用方式（例如單程票或一日票）" },
 };
 
@@ -119,8 +129,74 @@ function displayAmount(value: number): string {
   return value === 0 ? "NT$0" : displayMoney(value);
 }
 
-const evidenceFieldLabel = (category: Category, field: string) =>
-  field === "份量" ? DETAIL_QUANTITY_COPY[category].label : field;
+function looksLikeVenueLabel(value: string): boolean {
+  const text = value.trim();
+  return /(?:館|園區|院區|場館|展場|會場|中心)$/.test(text)
+    && !/(?:每人|人次|票|張|次|入場|入園|參觀)/.test(text);
+}
+
+function evidenceFieldLabel(item: Rec, field: string, quote: string): string {
+  if (field !== "份量") return field;
+  if (item.category === "活動" && looksLikeVenueLabel(quote)) return "參加地點";
+  return DETAIL_QUANTITY_COPY[item.category].label;
+}
+
+function parseEvidenceObject(value: string): Record<string, unknown> | null {
+  const text = value.trim();
+  if (!text.startsWith("{") && !/^"[A-Za-z_][A-Za-z0-9_]*"\s*:/.test(text)) return null;
+  try {
+    const parsed: unknown = JSON.parse(text.startsWith("{") ? text : `{${text}}`);
+    return parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed as Record<string, unknown>
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function apiDatePart(value: unknown): { date: string; time: string | null } | null {
+  if (typeof value !== "string") return null;
+  const match = value.trim().match(/^(\d{4}\/\d{2}\/\d{2})(?:[ T](\d{2}:\d{2})(?::\d{2})?)?/);
+  return match ? { date: match[1]!, time: match[2] ?? null } : null;
+}
+
+function displayApiDateRange(startValue: unknown, endValue: unknown): string | null {
+  const start = apiDatePart(startValue);
+  const end = apiDatePart(endValue);
+  if (!start && !end) return null;
+  if (!start) return `至 ${end!.date}${end!.time && end!.time !== "23:59" ? ` ${end!.time}` : ""}`;
+  if (!end) return `自 ${start.date}${start.time && start.time !== "00:00" ? ` ${start.time}` : ""}起`;
+  if (start.date === end.date) {
+    if (start.time && end.time && (start.time !== "00:00" || end.time !== "23:59")) {
+      return `${start.date} ${start.time}–${end.time}`;
+    }
+    return start.date;
+  }
+  const startTime = start.time && start.time !== "00:00" ? ` ${start.time}` : "";
+  const endTime = end.time && end.time !== "23:59" ? ` ${end.time}` : "";
+  return `${start.date}${startTime}–${end.date}${endTime}`;
+}
+
+function displayEvidenceQuote(item: Rec, field: string, quote: string): string | null {
+  const parsed = parseEvidenceObject(quote);
+  if (!parsed) return quote;
+
+  const dateRange = displayApiDateRange(parsed.StartDate, parsed.EndDate);
+  if (dateRange) return dateRange;
+
+  if (field === "份量" && typeof parsed.ImageURL === "string") {
+    return extraString(item.quantity_or_servings);
+  }
+
+  // Raw API objects expose implementation details rather than useful evidence.
+  return null;
+}
+
+function evidenceOrder(field: string): number {
+  if (field === "價格") return 0;
+  if (field === "時間") return 1;
+  return 2;
+}
 
 const AUTHORITY_LABELS: Record<Rec["source_authority"], string> = {
   official: "官方",
@@ -654,20 +730,39 @@ function GroupOfferPanel({ item }: { item: Rec }) {
         {hasPerPersonPrice && <span>來源每人價格 {displayMoney(offer.price_per_person!)}</span>}
         {hasPercentDiscount && <span>來源折扣 {offer.discount_pct}%</span>}
         <p>{exactText(offer.note, "來源未提供補充說明")}</p>
-        {terms && <><p>使用方式：{terms.redemption_method}</p><p>{terms.valid_until ? `優惠期限：${terms.valid_until}` : "未公告截止日，以官方公告為準"}</p></>}
-        {groupEvidence.map((evidence, index) => <p key={`${evidence.url}-${index}`}><q>{evidence.quote}</q> <a href={evidence.url} target="_blank" rel="noopener noreferrer">官方團體優惠來源</a><small> · 查核：{evidence.checked_at}</small></p>)}
+        {terms && <><p>使用方式：{terms.redemption_method}</p><p>{terms.valid_until ? `優惠期限：${dateLabel(terms.valid_until)}` : "未公告截止日，以官方公告為準"}</p></>}
+        {groupEvidence.map((evidence, index) => <p key={`${evidence.url}-${index}`}><q>{evidence.quote}</q> <a href={evidence.url} target="_blank" rel="noopener noreferrer">官方團體優惠來源</a><small> · 查核：{dateLabel(evidence.checked_at)}</small></p>)}
       </div>
     </section>
   );
 }
 
-export function DetailView({
+export function DetailActions({
   item,
   favorite,
   listed,
   onFavorite,
   onList,
   onReport,
+}: DetailActionsProps) {
+  const demo = isDemoRecord(item);
+
+  return (
+    <div className="detail-actions glass">
+      <button type="button" onClick={onFavorite} className={favorite ? "saved" : ""} aria-pressed={favorite}>
+        <Bookmark aria-hidden="true" />{favorite ? "已收藏" : "收藏"}
+      </button>
+      <button type="button" onClick={onReport}><Flag aria-hidden="true" />回報</button>
+      <button className="detail-primary" type="button" onClick={onList} aria-pressed={listed}>
+        <Heart aria-hidden="true" />
+        {demo ? (listed ? "從測試清單移除" : "加入測試清單") : (listed ? "從這次清單移除" : "加入這次清單")}
+      </button>
+    </div>
+  );
+}
+
+export function DetailView({
+  item,
   position = null,
   locationStatus = "unavailable",
 }: DetailViewProps) {
@@ -687,6 +782,24 @@ export function DetailView({
   const expired = isExpired(item);
   const fees = item.mandatory_fees_twd;
   const quantityCopy = DETAIL_QUANTITY_COPY[item.category];
+  const quantityText = extraString(item.quantity_or_servings);
+  const timeText = extraString(item.availability_or_event_time);
+  const trafficText = extraString(item.distance_or_time_text);
+  const addressText = extraString(item.address);
+  const hasDestinationLocation = Boolean(addressText || hasCoordinates);
+  const hasConditionDetails = item.eligibility.length > 0 || Boolean(context.scope)
+    || context.reviewNotes.length > 0 || Boolean(timeText) || item.registration_required
+    || Boolean(item.valid_until) || Boolean(trafficText) || Boolean(addressText) || Boolean(item.reason?.trim());
+  const hasFactDetails = Boolean(timeText) || item.registration_required || Boolean(item.valid_until)
+    || Boolean(trafficText) || Boolean(addressText);
+  const displayedEvidence = item.evidence
+    .map((evidence, index) => ({
+      evidence,
+      index,
+      displayQuote: displayEvidenceQuote(item, evidence.field, evidence.quote),
+    }))
+    .filter((entry): entry is typeof entry & { displayQuote: string } => Boolean(entry.displayQuote))
+    .sort((a, b) => evidenceOrder(a.evidence.field) - evidenceOrder(b.evidence.field) || a.index - b.index);
 
   return (
     <section className={`screen detail-screen results-view-detail tone-${item.category}`}>
@@ -706,7 +819,7 @@ export function DetailView({
       <div className="detail-content">
         <span className="kicker">{item.provider} · {item.category}</span>
         <h1>{item.title}</h1>
-        <p className="detail-meta"><MapPin aria-hidden="true" /><span>{locationLabel}</span></p>
+        {hasDestinationLocation && <p className="detail-meta"><MapPin aria-hidden="true" /><span>{locationLabel}</span></p>}
 
         <div className="detail-price-summary">
           <div><span>預估總費用</span><strong>{total === null ? UNKNOWN_TOTAL : displayMoney(total)}</strong></div>
@@ -738,21 +851,21 @@ export function DetailView({
             <span><small>必付費用</small><b>{fees === null ? UNKNOWN_TOTAL : displayAmount(fees)}</b></span>
             <span><small>已確認折扣</small><b>{displayAmount(item.discount_twd)}</b></span>
           </div>
-          <p className="detail-explanation">{quantityCopy.label}：{exactText(item.quantity_or_servings)}</p>
+          {quantityText && <p className="detail-explanation">{quantityCopy.label}：{quantityText}</p>}
           {context.pricingContext && <p className="detail-explanation">價格脈絡：{context.pricingContext}</p>}
         </DetailDisclosure>
 
-        <DetailDisclosure title="適用條件與時間" hint={context.reviewNotes.length ? `${context.reviewNotes.length} 則提醒` : undefined}>
+        {hasConditionDetails && <DetailDisclosure title="適用條件與時間" hint={context.reviewNotes.length ? `${context.reviewNotes.length} 則提醒` : undefined}>
           <RecordTerms item={item} />
-          <div className="facts-grid">
-            <Fact label={quantityCopy.timeLabel} value={exactText(item.availability_or_event_time)} icon={Clock3} />
-            <Fact label="是否需登記" value={item.registration_required ? "需要" : "不需要"} icon={Tag} />
-            <Fact label="有效期限" value={item.valid_until ? `${expired ? "已於" : "至"} ${dateLabel(item.valid_until)}${expired ? " 到期" : ""}` : "來源未明示"} icon={CalendarDays} />
-            <Fact label="交通資訊" value={exactText(item.distance_or_time_text, "交通時間未提供")} icon={MapPin} />
-            <Fact label="地址" value={demo && item.address ? `${item.address}（測試資料）` : exactText(item.address)} icon={MapPin} />
-          </div>
+          {hasFactDetails && <div className="facts-grid">
+            {timeText && <Fact label={quantityCopy.timeLabel} value={timeText} icon={Clock3} />}
+            {item.registration_required && <Fact label="報名／登記" value="需要" icon={Tag} />}
+            {item.valid_until && <Fact label="有效期限" value={`${expired ? "已於" : "至"} ${dateLabel(item.valid_until)}${expired ? " 到期" : ""}`} icon={CalendarDays} />}
+            {trafficText && <Fact label="交通資訊" value={trafficText} icon={MapPin} />}
+            {addressText && <Fact label="地址" value={demo ? `${addressText}（測試資料）` : addressText} icon={MapPin} />}
+          </div>}
           {item.reason?.trim() && <div className="condition-box"><Sparkles aria-hidden="true" /><div><b>推薦理由</b><p>{displayGeneratedCopy(item.reason)}</p></div></div>}
-        </DetailDisclosure>
+        </DetailDisclosure>}
 
         {item.group_offer && <DetailDisclosure title="團購優惠" hint={`滿 ${item.group_offer.min_people} 人`}><GroupOfferPanel item={item} /></DetailDisclosure>}
 
@@ -764,17 +877,17 @@ export function DetailView({
           </div>
           <section className="evidence-section">
             <h2>{demo ? "示範來源" : "費用與來源依據"}</h2>
-            <p className="detail-explanation">{demo ? "非真實刊登 · 僅供流程測試" : `${SOURCE_TYPE_LABELS[item.source_type]} · ${AUTHORITY_LABELS[item.source_authority]}`} · {item.evidence.length} 筆摘錄</p>
-          {item.evidence.length === 0 ? (
+            <p className="detail-explanation">{demo ? "非真實刊登 · 僅供流程測試" : `${SOURCE_TYPE_LABELS[item.source_type]} · ${AUTHORITY_LABELS[item.source_authority]}`} · {displayedEvidence.length} 筆摘錄</p>
+          {displayedEvidence.length === 0 ? (
             <p className="evidence-empty">來源未提供逐欄證據摘錄。</p>
           ) : (
             <div className="evidence-list">
-              {item.evidence.map((evidence, index) => {
+              {displayedEvidence.map(({ evidence, displayQuote }, index) => {
                 const evidenceUrl = safeHttpUrl(evidence.url);
                 return (
                   <article key={`${evidence.field}-${evidence.checked_at}-${index}`}>
-                    <span>{evidenceFieldLabel(item.category, evidence.field)}</span>
-                    <blockquote>{evidence.quote}</blockquote>
+                    <span>{evidenceFieldLabel(item, evidence.field, displayQuote)}</span>
+                    <blockquote>{displayQuote}</blockquote>
                     <small>{demo ? "測試日期" : "查核"} {dateLabel(evidence.checked_at)}</small>
                     {evidenceUrl && (
                       <a href={evidenceUrl} target="_blank" rel="noopener noreferrer">
@@ -795,16 +908,6 @@ export function DetailView({
         </DetailDisclosure>
       </div>
 
-      <div className="detail-actions glass">
-        <button type="button" onClick={onFavorite} className={favorite ? "saved" : ""} aria-pressed={favorite}>
-          <Bookmark aria-hidden="true" />{favorite ? "已收藏" : "收藏"}
-        </button>
-        <button type="button" onClick={onReport}><Flag aria-hidden="true" />回報</button>
-        <button className="detail-primary" type="button" onClick={onList} aria-pressed={listed}>
-          <Heart aria-hidden="true" />
-          {demo ? (listed ? "從測試清單移除" : "加入測試清單") : (listed ? "從這次清單移除" : "加入這次清單")}
-        </button>
-      </div>
     </section>
   );
 }

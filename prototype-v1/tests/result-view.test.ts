@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { DetailView, ResultsView, orderResultCandidates } from "../src/client/ResultsView.tsx";
+import { DetailActions, DetailView, ResultsView, orderResultCandidates } from "../src/client/ResultsView.tsx";
 import type { Rec } from "../src/shared/records.ts";
 
 const rec = (overrides: Partial<Rec> = {}): Rec => ({
@@ -89,7 +89,7 @@ test("DetailView：誠實顯示空值、封鎖非 http(s) 連結並使用真實�
 
   expect(html).toContain("依目前資料，以標示價格加上必付費用，再扣除已確認的折扣。");
   expect(html).toContain("來源未提供逐欄證據摘錄");
-  expect(html).toContain("來源未明示");
+  expect(html).not.toContain("有效期限");
   expect(html).toContain("SHOP-REAL-42");
   expect(html).toContain("滿 4 人適用");
   expect(html).not.toContain("javascript:");
@@ -236,7 +236,15 @@ test("DetailView：樣本有醒目警告並隱藏地圖、購買行動與優惠�
   expect(html).toContain("example.com 示範頁僅用來測試來源連結");
   expect(html).toContain("測試兌換碼（不可使用）");
   expect(html).toContain("示範碼不可用於購買");
-  expect(html).toContain("加入測試清單");
+  const actions = renderToStaticMarkup(createElement(DetailActions, {
+    item: rec({ provider: "示範 圓山便當房" }),
+    favorite: false,
+    listed: false,
+    onFavorite: () => {},
+    onList: () => {},
+    onReport: () => {},
+  }));
+  expect(actions).toContain("加入測試清單");
   expect(html).not.toContain("image-badge-icon");
   expect(html).not.toContain("google.com/maps");
   expect(html).not.toContain("立即購買");
@@ -424,7 +432,7 @@ test("DetailView：預設只顯示重點，完整價格、條件與來源可展�
   const initial = collapsedMarkup(html);
   expect((html.match(/<details class="detail-disclosure">/g) ?? []).length).toBe(3);
   expect(html).not.toMatch(/<details[^>]*\sopen(?:=|\s|>)/);
-  for (const essential of ["NT$88", "計價：每支", "含必付費用 NT$59", "需符合資格", "需報名", "限線上取貨", "1 則提醒", "位置／地圖", "原始來源", "加入這次清單"]) {
+  for (const essential of ["NT$88", "計價：每支", "含必付費用 NT$59", "需符合資格", "需報名", "限線上取貨", "1 則提醒", "位置／地圖", "原始來源"]) {
     expect(initial).toContain(essential);
   }
   for (const detail of ["完整份量保留於價格區", "原始來源完整摘錄", "會員專用", "請先向店家確認現貨", "依目前資料，以標示價格加上必付費用，再扣除已確認的折扣。"]) {
@@ -611,12 +619,12 @@ test("default browsing shows all categories together, starts with cost order, an
 test("DetailView：依類別顯示自然的數量用詞，食品仍保留份量", () => {
   const detailProps = { favorite: false, listed: false, onFavorite: () => {}, onList: () => {}, onReport: () => {} };
   const cases = [
-    ["日用品", "價格與商品規格", "商品規格", "三件組"],
-    ["免費／公益資源", "費用與服務資訊", "服務對象／使用方式", "每人一次"],
-    ["活動", "費用與活動資訊", "票種／參加方式", "新北市客家文化園區"],
-    ["交通", "票價與使用資訊", "票種／使用方式", "每人一張"],
+    ["日用品", "價格與商品規格", "商品規格", "商品規格", "三件組"],
+    ["免費／公益資源", "費用與服務資訊", "服務對象／使用方式", "服務對象／使用方式", "每人一次"],
+    ["活動", "費用與活動資訊", "活動資訊", "參加地點", "新北市客家文化園區"],
+    ["交通", "票價與使用資訊", "票種／使用方式", "票種／使用方式", "每人一張"],
   ] as const;
-  for (const [category, title, label, value] of cases) {
+  for (const [category, title, label, evidenceLabel, value] of cases) {
     const html = renderToStaticMarkup(createElement(DetailView, {
       item: rec({
         category,
@@ -627,7 +635,7 @@ test("DetailView：依類別顯示自然的數量用詞，食品仍保留份量"
     }));
     expect(html).toContain(title);
     expect(html).toContain(`${label}：${value}`);
-    expect(html).toContain(`<span>${label}</span>`);
+    expect(html).toContain(`<span>${evidenceLabel}</span>`);
     expect(html).not.toContain("<span>份量</span>");
   }
 
@@ -641,4 +649,100 @@ test("DetailView：依類別顯示自然的數量用詞，食品仍保留份量"
   expect(food).toContain("價格與份量");
   expect(food).toContain("份量：5 人份");
   expect(food).toContain("<span>份量</span>");
+});
+
+test("DetailView：無資料的選用欄位不顯示空列", () => {
+  const html = renderToStaticMarkup(createElement(DetailView, { item: rec() }));
+  expect(html).not.toContain("適用條件與時間");
+  expect(html).not.toContain("是否需登記");
+  expect(html).not.toContain("報名／登記");
+  expect(html).not.toContain("有效期限");
+  expect(html).not.toContain("交通資訊");
+  expect(html).not.toContain("<span>地址</span>");
+  expect(html).not.toContain("份量：未提供");
+});
+
+test("DetailView：活動地點型摘錄改用自然標題並排在價格與時間後", () => {
+  const html = renderToStaticMarkup(createElement(DetailView, {
+    item: rec({
+      category: "活動",
+      quantity_or_servings: "每人1次臺北館一般參觀",
+      availability_or_event_time: "週二至週日10:00–18:00",
+      evidence: [
+        { field: "份量", quote: "臺北館", url: "https://example.test/place", checked_at: "2026-09-05" },
+        { field: "時間", quote: "週二至週日10:00–18:00", url: "https://example.test/time", checked_at: "2026-09-05" },
+        { field: "價格", quote: "免費參觀", url: "https://example.test/price", checked_at: "2026-09-05" },
+      ],
+    }),
+  }));
+  expect(html).toContain("活動資訊：每人1次臺北館一般參觀");
+  expect(html).toContain("<span>參加地點</span>");
+  const evidenceStart = html.indexOf('<div class="evidence-list">');
+  const evidenceEnd = html.indexOf('</div><div class="source-meta">', evidenceStart);
+  const evidenceHtml = html.slice(evidenceStart, evidenceEnd);
+  expect(evidenceHtml.indexOf("免費參觀")).toBeLessThan(evidenceHtml.indexOf("週二至週日10:00–18:00"));
+  expect(evidenceHtml.indexOf("週二至週日10:00–18:00")).toBeLessThan(evidenceHtml.indexOf("臺北館"));
+  expect(html).not.toContain("票種／參加方式");
+});
+
+test("DetailView：API JSON 摘錄轉為可讀內容，不直接顯示內部欄位", () => {
+  const html = renderToStaticMarkup(createElement(DetailView, {
+    item: rec({
+      id: "f_kf06",
+      title: "上校雞塊4塊",
+      quantity_or_servings: "1顆；官方API圖片檔名標示單顆",
+      evidence: [
+        {
+          field: "時間",
+          quote: "\"Fcode\":\"FA013\",\"Name\":\"上校雞塊4塊\",\"StartDate\":\"2026/09/05 00:00:00\",\"EndDate\":\"2026/09/19 23:59:59\"",
+          url: "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+          checked_at: "2026-09-05T23:42:02+08:00",
+        },
+        {
+          field: "份量",
+          quote: "\"ImageURL\":\"/OLO餐圖-青花椒花生蛋撻單顆.png\"",
+          url: "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+          checked_at: "2026-09-05T23:42:02+08:00",
+        },
+      ],
+    }),
+  }));
+
+  expect(html).toContain("2026/09/05–2026/09/19");
+  expect(html).toContain("1顆；官方API圖片檔名標示單顆");
+  expect(html).not.toContain("Fcode");
+  expect(html).not.toContain("StartDate");
+  expect(html).not.toContain("EndDate");
+  expect(html).not.toContain("ImageURL");
+  expect(html).not.toContain("OLO餐圖");
+});
+
+test("DetailView：團購期限與查核時間使用一致的可讀日期", () => {
+  const html = renderToStaticMarkup(createElement(DetailView, {
+    item: rec({
+      group_offer: {
+        min_people: 4,
+        discount_pct: 10,
+        redeem_code: null,
+        note: "四人同行九折",
+      },
+      extra: {
+        group_offer_terms: {
+          redemption_method: "現場核對同行人數",
+          valid_until: "2099-01-31T23:59:59+08:00",
+        },
+        group_offer_evidence: [{
+          field: "團體折扣",
+          quote: "四人同行九折",
+          url: "https://www.gov.taipei/group-offer",
+          checked_at: "2026-09-05T23:49:45+08:00",
+        }],
+      },
+    }),
+  }));
+
+  expect(html).toContain("優惠期限：2099/01/31");
+  expect(html).toContain("查核：2026/09/05");
+  expect(html).not.toContain("2099-01-31T23:59:59+08:00");
+  expect(html).not.toContain("2026-09-05T23:49:45+08:00");
 });

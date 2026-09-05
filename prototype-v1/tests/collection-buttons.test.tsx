@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ResultsView, DetailView } from "../src/client/ResultsView.tsx";
+import { ResultsView, DetailActions, DetailView } from "../src/client/ResultsView.tsx";
 import { BrowseResultsContent } from "../src/client/BrowseResults.tsx";
 import { rowToRec } from "../src/shared/records.ts";
 
@@ -38,11 +38,40 @@ test("pending and excluded card hearts also follow the list", () => {
 
 test("detail bookmark and heart remain independently selected", () => {
   for (const listed of [false, true]) for (const favorite of [false, true]) {
-    const html = renderToStaticMarkup(<DetailView item={item} listed={listed} favorite={favorite} onFavorite={() => {}} onList={() => {}} onReport={() => {}} />);
+    const html = renderToStaticMarkup(<DetailActions item={item} listed={listed} favorite={favorite} onFavorite={() => {}} onList={() => {}} onReport={() => {}} />);
     const buttons = [...html.matchAll(/<button\b[^>]*>[\s\S]*?<\/button>/g)].map(match => match[0]);
     expect(buttons.find(button => button.includes("lucide-bookmark"))).toContain(`aria-pressed="${favorite}"`);
     expect(buttons.find(button => button.includes("lucide-heart"))).toContain(`aria-pressed="${listed}"`);
   }
+});
+
+
+test("detail content and persistent actions are separate layout regions", async () => {
+  const detail = renderToStaticMarkup(<DetailView item={item} />);
+  expect(detail).not.toContain("detail-actions");
+
+  const app = await Bun.file(new URL("../src/client/App.tsx", import.meta.url)).text();
+  expect(app).toContain('className="detail-scroll-region"');
+  expect(app).toContain("<DetailActions");
+
+  const integrationCss = await Bun.file(new URL("../src/client/integration.css", import.meta.url)).text();
+  expect(integrationCss).toMatch(/\.detail-page\{[^}]*display:flex[^}]*flex-direction:column[^}]*overflow:hidden/);
+  expect(integrationCss).toMatch(/\.detail-scroll-region\{[^}]*min-height:0[^}]*flex:1 1 auto[^}]*overflow-y:auto/);
+
+  const detailCss = await Bun.file(new URL("../src/client/results-view.css", import.meta.url)).text();
+  const detailViewRule = [...detailCss.matchAll(/\.results-view-detail\s*\{([^}]*)\}/g)]
+    .map((match) => match[1] ?? "")
+    .find((body) => body.includes("--card-accent")) ?? "";
+  expect(detailViewRule).toContain("min-height: 0");
+
+  const detailRegionRule = detailCss.match(/\.detail-scroll-region > \.results-view-detail\.screen\s*\{([^}]*)\}/)?.[1] ?? "";
+  expect(detailRegionRule).not.toContain("min-height: 100%");
+
+  const actionRule = detailCss.match(/\.detail-page > \.detail-actions\s*\{([^}]*)\}/)?.[1] ?? "";
+  expect(actionRule).toContain("flex: 0 0 auto");
+  expect(actionRule).toContain("position: relative");
+  expect(actionRule).toContain("height: auto");
+  expect(actionRule).not.toMatch(/position:\s*(?:sticky|absolute|fixed)/);
 });
 
 test("selected heart styling cannot paint the button background red", async () => {

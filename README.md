@@ -71,6 +71,25 @@ bun run start
 
 Bun 會同時提供 `dist/` 和 `/api/*`。正式部署需 HTTPS、資料庫備份及存取限制。語音／定位需要安全環境與使用者同意。不要把 Vite 開發伺服器當成正式部署。
 
+### 臨時手機 Demo（ngrok）
+
+```bash
+# 第一次使用 ngrok 時執行
+brew install ngrok
+ngrok config add-authtoken <YOUR_NGROK_AUTHTOKEN>
+
+# Terminal 1
+cd prototype-v1
+bun run build
+bun run start
+
+# Terminal 2
+cd prototype-v1
+ngrok http 3000
+
+# Demo 結束：在兩個 Terminal 分別按 Ctrl-C
+```
+
 ### 可選的 AI 語音與排序
 
 2026-09-05 改用 **Gemini 原生 Interactions API**。錄音停止後只呼叫一次 `/api/voice`，直接取得逐字稿與 Need，進入條件頁供人工確認；不再串接獨立 STT 或自動呼叫文字解析。使用者主動編輯文字／輸入修正時才呼叫 `/api/parse`。API key 僅在 server env，不會嵌入前端。契約與官方文件差異見 [Gemini 查核紀錄](docs/research/gemini-audio-structured.md)。
