@@ -1,0 +1,128 @@
+{
+  "checked_at": "2026-09-05T23:46:54+08:00",
+  "research_batch": "expansion-2026-09-05",
+  "sources": [
+    {
+      "url": "https://www.tpass.tw/faq",
+      "ids": [
+        "t_p120"
+      ],
+      "snapshot": "snapshots/tpass.txt",
+      "sha256": "2f66f9e759a082c1d3721a24e53de149239e2668fdc2d3f6e26c83819bdaff6c",
+      "checked_at": "2026-09-05T23:46:54+08:00"
+    },
+    {
+      "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+      "ids": [
+        "t_nt1d",
+        "t_ntbk",
+        "t_p120"
+      ],
+      "snapshot": "snapshots/nttickets-correct.txt",
+      "sha256": "1f93b805318ec5aed32c4d060a840d4f2e1a3c273a644e275a8415808a9c03d1",
+      "checked_at": "2026-09-05T23:46:54+08:00"
+    },
+    {
+      "url": "https://www.ntmetro.com.tw/basic/?mode=detail&node=3",
+      "ids": [
+        "t_ntbk"
+      ],
+      "snapshot": "snapshots/ntbike-correct.txt",
+      "sha256": "5de2f9fe232e416580a57aa667c952eba09a4d9ee07070755f14ca5c6ba37397",
+      "checked_at": "2026-09-05T23:46:54+08:00"
+    },
+    {
+      "url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+      "ids": [
+        "t_fp1d",
+        "t_fp2d",
+        "t_fp3d",
+        "t_fp5d"
+      ],
+      "snapshot": "snapshots/funpass-gov-faq.txt",
+      "sha256": "ff02e006705e2754f18f3410b510a0e146aa1758208d1bd9a63a7aa51fd9a2b8",
+      "checked_at": "2026-09-05T23:46:54+08:00"
+    },
+    {
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "ids": [
+        "t_fp1d",
+        "t_fp2d",
+        "t_fp3d",
+        "t_fp5d"
+      ],
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "sha256": "82777388e51037b49981a8b084fcc833b928fd25d28ca1f47b77c4ca8de37349",
+      "checked_at": "2026-09-05T23:46:54+08:00"
+    },
+    {
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+      "ids": [
+        "t_a1a3",
+        "t_tm1d"
+      ],
+      "snapshot": "snapshots/ty1.txt",
+      "sha256": "df2bb5e76a54932015bf6803150340893d1a76041f0571914cc985770fc3d27a",
+      "checked_at": "2026-09-05T23:46:54+08:00"
+    },
+    {
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+      "ids": [
+        "t_tm48",
+        "t_tm72"
+      ],
+      "snapshot": "snapshots/tyjoint.txt",
+      "sha256": "2cfd5a64c728e17b312eabd88622eff27317fb7ecad06dbdf0bcace3954c6e1f",
+      "checked_at": "2026-09-05T23:46:54+08:00"
+    },
+    {
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+      "ids": [
+        "t_a1a3"
+      ],
+      "snapshot": "snapshots/group-ty.txt",
+      "sha256": "95a00340bfcff4886012b679ce965009f2a4ea28c878e77ab28519f0eca2fc31",
+      "checked_at": "2026-09-05T23:46:54+08:00"
+    },
+    {
+      "url": "https://www.tymetro.com.tw/tymetro-new/upload/ckupload/20241213_11052534.pdf",
+      "ids": [
+        "t_a1a3"
+      ],
+      "snapshot": "snapshots/tyfare.txt",
+      "sha256": "fe2f6db2a098599e82896b300aeee68142717daaae8f00ab090d5fdee5a8c767",
+      "checked_at": "2026-09-05T23:46:54+08:00"
+    },
+    {
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "ids": [
+        "t_dd1x",
+        "t_dd24",
+        "t_dd48",
+        "t_dd4h",
+        "t_dddy"
+      ],
+      "snapshot": "snapshots/bus-app.js",
+      "sha256": "4122ded72f11e898623b455877f9d614455c7e9b78f2406d7f147c48cde4fe08",
+      "checked_at": "2026-09-05T23:46:54+08:00"
+    }
+  ],
+  "limitations": [
+    "FunPASS商品頁HTTP 403；價格改用政府FAQ、條款改用官方發卡方。",
+    "新北兩個舊連結導回首頁；已改用node=10102及自行車mode=detail&node=3。",
+    "觀光巴士本次HTML為JS應用程式；引文定位到官方公開前端資源，不把改寫句冒充原文。",
+    "hihi bus及170元上車購票更嚴規則來自主agent官網QA，單獨保留限制及來源歸屬，不偽造HTTP時間或quote。"
+  ],
+  "group_offers": {
+    "verified_ids": [
+      "t_a1a3"
+    ],
+    "not_applied": {
+      "t_tm1d": "四張1280元沒有折扣",
+      "t_tm48,t_tm72": "單人套票不是人數優惠",
+      "t_fp1d,t_fp2d,t_fp3d,t_fp5d": "超過50張可洽詢，未有明確折扣且不是people門檻",
+      "t_nt1d,t_ntbk": "普通單程團體票不能擴張到一日票或人車票",
+      "sightseeing": "未找到明示人數及折扣的同票種優惠"
+    }
+  }
+}

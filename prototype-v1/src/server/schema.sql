@@ -21,7 +21,7 @@ create table if not exists account_data (
   user_id    text primary key references users(id) on delete cascade,
   list       jsonb not null default '[]',
   favs       jsonb not null default '[]',
-  settings   jsonb not null default '{}',        -- {monthly_budget, spent, spent_month, survival, exclude, prefs, costco_ok}
+  settings   jsonb not null default '{}',        -- {monthly_budget, spent, spent_month, survival, exclude, prefs}
   profile    jsonb not null default '{}',        -- {color}
   updated_at timestamptz not null default now()
 );
@@ -60,6 +60,15 @@ create table if not exists candidates (
   extra                      jsonb not null default '{}'
 );
 create index if not exists candidates_category_status on candidates (category, data_status);
+
+create table if not exists group_offer_memberships (
+  candidate_id text not null references candidates(id) on delete cascade,
+  user_id      text not null references users(id) on delete cascade,
+  joined_at    timestamptz not null default now(),
+  primary key (candidate_id, user_id)
+);
+create index if not exists group_offer_memberships_user_joined
+  on group_offer_memberships (user_id, joined_at);
 
 create table if not exists reports (
   id           bigserial primary key,

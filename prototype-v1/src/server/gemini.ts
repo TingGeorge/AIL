@@ -10,10 +10,10 @@ export const geminiConfigured = () => Boolean(process.env.GEMINI_API_KEY?.trim()
 
 export type GeminiFailure = "auth" | "quota" | "unavailable" | "request" | "network" | "invalid_response" | "not_configured";
 const messages: Record<GeminiFailure, string> = {
-  auth:"Gemini 金鑰或存取權限驗證失敗", quota:"Gemini 額度或呼叫頻率受限，請稍後重試",
-  unavailable:"Gemini 服務暫時無法使用", request:"Gemini 模型或請求設定不相容",
-  network:"無法連線至 Gemini，請檢查伺服器網路", invalid_response:"Gemini 回應格式不正確，請重試",
-  not_configured:"Gemini 尚未設定",
+  auth:"智慧功能目前無法驗證連線權限，請聯絡管理員。", quota:"智慧功能目前忙碌中，請稍後重試。",
+  unavailable:"智慧功能暫時無法使用，請稍後重試。", request:"智慧功能的服務設定不相容，請改用自行設定條件。",
+  network:"目前無法連線至智慧功能，請稍後重試。", invalid_response:"智慧功能的回應格式不正確，請重試或自行設定條件。",
+  not_configured:"智慧功能尚未啟用，請自行設定條件。",
 };
 export class GeminiError extends Error {
   constructor(public kind: GeminiFailure = "invalid_response", public status = 0) {

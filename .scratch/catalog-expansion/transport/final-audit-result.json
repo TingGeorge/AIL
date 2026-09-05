@@ -1,0 +1,11 @@
+{
+  "audited_at": "2026-09-05T23:48:47+08:00",
+  "records": 16,
+  "exact_quotes": 68,
+  "existing_unchanged": true,
+  "ids_prices_statuses_unchanged": true,
+  "group_offer_ids": [
+    "t_a1a3"
+  ],
+  "passed": true
+}

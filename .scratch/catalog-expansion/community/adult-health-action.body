@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <title>&#x9996;&#x9801; | 臺北市整合性篩檢預約平台</title>
+    
+    <script src="/js/site.min.js?v=qmk3CjCO2qwbKKJawsvdqK0XaeG6TV5l9AnLXKNSR8c"></script>
+    <script>
+        var sysBaseUrl = '/';
+        var sysControllerUrl = "/Home";
+        var sysPageAction = "Index";
+    </script>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700"
+          nonce="25cf4028" />
+    
+
+    <script type="module" crossorigin src="/assets/bundled-zGqRpemX.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/tailwind-oRJWXjWB.css" />
+</head>
+<body spellcheck="false">
+    <input name="__RequestVerificationToken" type="hidden" value="CfDJ8FWeoQs4wh1Lk1NUvJfW59JmRkK7sJIgxA9jB6Ay2yf-O_YPTWp1H3y7j_J5QnFHCiD-lAp_Rc2mDU13_VqAtANkyP30UJOZuCREox7Umq_eU4YgI7UoyaPGP-aOo6AhiRJG5YIweZ7YIbbanoc059Q" />
+    <iframe id="frmFileBuffer" style="display: none" width="600" height="100"></iframe>
+
+    <button type="button" class="skip-link" data-jump="#wcag-nav">
+        跳到主導覽列
+    </button>
+
+    <button type="button" class="skip-link" data-jump="#wcag-main">
+        跳到主內容
+    </button>
+
+    <button type="button" class="skip-link" data-jump="#wcag-footer">
+        跳到頁尾
+    </button>
+
+    <header class="sticky inset-x-0 top-0 z-20 bg-white shadow-md">
+        <div class="mx-auto max-w-screen-2xl grid grid-cols-[1fr_auto_1fr] content-center md:flex justify-between items-center h-16 md:h-32 p-4">
+            <button class="w-5 h-5 md:hidden"
+                    data-toggle="nav-panel"
+                    type="button"
+                    aria-label="展開導覽選單"
+                    aria-expanded="false"
+                    aria-controls="wcag-01-panel">
+                <div class="grid size-5" aria-hidden>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         aria-hidden="true"
+                         viewBox="0 0 20 20">
+                        <path fill="currentColor"
+                              fill-rule="evenodd"
+                              d="M6.5 16a1.5 1.5 0 0 1 0 3h-4a1.5 1.5 0 0 1 0-3zm5-8a1.5 1.5 0 0 1 0 3h-9a1.5 1.5 0 0 1 0-3zm6-7a1.5 1.5 0 0 1 0 3h-15a1.5 1.5 0 0 1 0-3z" />
+                    </svg>
+                </div>
+            </button>
+            <a href="/" aria-label="前往首頁">
+                <img class="w-[196px] h-[40px] md:w-[471px] md:h-[100px]" src="/logo.svg" alt="" />
+            </a>
+            <!--
+            Please add attribute `aria-current="page"` to the `<a>` tag of current page,
+            and add class `active` to `<button>` tag of the same group;
+            It will also change style accordingly.
+            -->
+            <nav id="wcag-nav" aria-label="主導覽列" class="main-nav-container">
+                <ul class="main-nav-list">
+                    <li class="main-nav-item">
+                        <button id="wcag-05-label"
+                                aria-controls="wcag-05-panel"
+                                aria-expanded="false"
+                                data-dropmenu-button="menu1"
+                                class="menu-dropdown-button active">
+                            篩檢介紹
+                            <div class="grid size-4 transition-transform"
+                                 aria-hidden
+                                 data-dropmenu-arrow>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     aria-hidden="true"
+                                     viewBox="0 0 16 16">
+                                    <g fill="currentColor" fill-rule="evenodd">
+                                        <path fill="none" d="M0 0h16v16H0z" />
+                                        <path d="m10.388 13.287 5.079-7.21a2.92 2.92 0 0 0-2.388-4.602H2.92A2.92 2.92 0 0 0 .533 6.078l5.08 7.209a2.92 2.92 0 0 0 4.775 0" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </button>
+                        <span id="wcag-05-panel"
+                              aria-hidden="true"
+                              aria-labelledby="wcag-05-label"
+                              data-dropmenu-panel="menu1"
+                              class="opacity-0 pointer-events-none menu-dropdown-panel-outer">
+                            <ul class="menu-dropdown-panel-inner">
+                                <li>
+                                    <a tabindex="-1"
+                                       href="https://health.gov.taipei/News.aspx?n=7AAC649DC5FA7E15"
+                                       aria-current="page">成人健檢</a>
+                                </li>
+                                <li>
+                                    <a tabindex="-1"
+                                       href="https://health.gov.taipei/cp.aspx?n=70B2EC9E4FB30F7E">大腸癌篩檢</a>
+                                </li>
+                                <li>
+                                    <a tabindex="-1"
+                                       href="https://health.gov.taipei/cp.aspx?n=07816394F7975FB0">乳癌篩檢</a>
+                                </li>
+                                <li>
+                                    <a tabindex="-1"
+                                       href="https://health.gov.taipei/cp.aspx?n=2F4A2CF228C9EB3A">子宮頸癌篩檢</a>
+                                </li>
+                                <li>
+                                    <a tabindex="-1"
+                                       href="https://health.gov.taipei/cp.aspx?n=7622A216FCC93D8A">口腔癌篩檢</a>
+                                </li>
+                                <li>
+                                    <a tabindex="-1"
+                                       href="https://health.gov.taipei/cp.aspx?n=895D068DBA6F54A5">肺癌篩檢</a>
+                                </li>
+                                <li>
+                                    <a tabindex="-1"
+                                       href="https://health.gov.taipei/cp.aspx?n=A006B1E45D7C538B&s=8303A3772630982C">胃癌篩檢</a>
+                                </li>
+                                <li>
+                                    <a tabindex="-1"
+                                       href="https://health.gov.taipei/News.aspx?n=050E6DF2754BE98A">B、C型肝炎篩檢</a>
+                                </li>
+                            </ul>
+                        </span>
+                    </li>
+                    <li class="main-nav-item">
+                        <button id="wcag-06-label"
+                                aria-controls="wcag-06-panel"
+                                aria-expanded="false"
+                                data-dropmenu-button="menu2"
+                                class="menu-dropdown-button active">
+                            獎勵方案
+                            <div class="grid size-4 transition-transform"
+                                 aria-hidden
+                                 data-dropmenu-arrow>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     aria-hidden="true"
+                                     viewBox="0 0 16 16">
+                                    <g fill="currentColor" fill-rule="evenodd">
+                                        <path fill="none" d="M0 0h16v16H0z" />
+                                        <path d="m10.388 13.287 5.079-7.21a2.92 2.92 0 0 0-2.388-4.602H2.92A2.92 2.92 0 0 0 .533 6.078l5.08 7.209a2.92 2.92 0 0 0 4.775 0" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </button>
+                            <span id="wcag-06-panel"
+                                  aria-hidden="true"
+                                  aria-labelledby="wcag-06-label"
+                                  data-dropmenu-panel="menu2"
+                                  class="opacity-0 menu-dropdown-panel-outer">
+                                <ul class="menu-dropdown-panel-inner">
+                                        <li>
+                                            <a tabindex="-1"
+                                               href="https://taipeincds.health.gov.taipei/#/"
+                                               class="menu-link">&#x81FA;&#x5317;&#x5065;&#x5EB7;&#x990A;&#x6210;&#x8A18;</a>
+                                        </li>
+                                </ul>
+                            </span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div id="wcag-01-panel"
+         role="dialog"
+         aria-label="導覽選單"
+         aria-modal="true"
+         class="invisible opacity-0 transition-opacity modal-backdrop"
+         data-modal="nav-panel">
+        <div class="sticky inset-x-0 top-0 flex justify-end">
+            <button type="button" aria-label="關閉導覽選單" data-toggle="nav-panel">
+                <div class="grid w-6" aria-hidden>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         aria-hidden="true"
+                         viewBox="0 0 20 20">
+                        <path fill="none"
+                              stroke="currentColor"
+                              stroke-linecap="round"
+                              stroke-width="2.5"
+                              d="m3 3 14 14m0-14L3 17" />
+                    </svg>
+                </div>
+            </button>
+        </div>
+        <nav aria-label="主導覽列" class="mt-18">
+            <!--
+            Please add attribute `aria-current="page"` to the `<a>` tag of current page;
+            It will also change style accordingly.
+            -->
+            <ul class="text-2xl text-center grid gap-10">
+                <li>
+                    <button type="button"
+                            id="wcag-03-label"
+                            aria-controls="wcag-03-panel"
+                            aria-expanded="false"
+                            data-accordion-button="panel1"
+                            class="menu-accordion-button">
+                        篩檢介紹
+                        <div class="grid size-4 transition-transform"
+                             aria-hidden
+                             data-accordion-arrow>
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 aria-hidden="true"
+                                 viewBox="0 0 16 16">
+                                <g fill="currentColor" fill-rule="evenodd">
+                                    <path fill="none" d="M0 0h16v16H0z" />
+                                    <path d="m10.388 13.287 5.079-7.21a2.92 2.92 0 0 0-2.388-4.602H2.92A2.92 2.92 0 0 0 .533 6.078l5.08 7.209a2.92 2.92 0 0 0 4.775 0" />
+                                </g>
+                            </svg>
+                        </div>
+                    </button>
+                    <span id="wcag-03-panel"
+                          aria-hidden="true"
+                          aria-labelledby="wcag-03-label"
+                          data-accordion-panel="panel1"
+                          class="menu-accordion-panel-outer grid-rows-[0fr] opacity-0">
+                        <ul class="menu-accordion-panel-inner">
+                            <li>
+                                <a href="https://health.gov.taipei/News.aspx?n=7AAC649DC5FA7E15"
+                                   tabindex="-1"
+                                   class="menu-link">成人健檢</a>
+                            </li>
+                            <li>
+                                <a href="https://health.gov.taipei/cp.aspx?n=70B2EC9E4FB30F7E"
+                                   tabindex="-1"
+                                   class="menu-link">大腸癌篩檢</a>
+                            </li>
+                            <li>
+                                <a href="https://health.gov.taipei/cp.aspx?n=07816394F7975FB0"
+                                   tabindex="-1"
+                                   class="menu-link">乳癌篩檢</a>
+                            </li>
+                            <li>
+                                <a href="https://health.gov.taipei/cp.aspx?n=2F4A2CF228C9EB3A"
+                                   tabindex="-1"
+                                   class="menu-link">子宮頸癌篩檢</a>
+                            </li>
+                            <li>
+                                <a href="https://health.gov.taipei/cp.aspx?n=7622A216FCC93D8A"
+                                   tabindex="-1"
+                                   class="menu-link">口腔癌篩檢</a>
+                            </li>
+                            <li>
+                                <a href="https://health.gov.taipei/cp.aspx?n=895D068DBA6F54A5"
+                                   tabindex="-1"
+                                   class="menu-link">肺癌篩檢</a>
+                            </li>
+                            <li>
+                                <a href="https://health.gov.taipei/cp.aspx?n=A006B1E45D7C538B&s=8303A3772630982C"
+                                   tabindex="-1"
+                                   class="menu-link">胃癌篩檢</a>
+                            </li>
+                            <li>
+                                <a href="https://health.gov.taipei/News.aspx?n=050E6DF2754BE98A&sms=E76705A670C29808"
+                                   tabindex="-1"
+                                   class="menu-link">B、C型肝炎篩檢</a>
+                            </li>
+                        </ul>
+                    </span>
+                </li>
+                <li>
+                    <button type="button"
+                            id="wcag-04-label"
+                            aria-controls="wcag-04-panel"
+                            aria-expanded="false"
+                            data-accordion-button="panel2"
+                            class="menu-accordion-button">
+                        獎勵方案
+                        <div class="grid size-4 transition-transform"
+                             aria-hidden
+                             data-accordion-arrow>
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 aria-hidden="true"
+                                 viewBox="0 0 16 16">
+                                <g fill="currentColor" fill-rule="evenodd">
+                                    <path fill="none" d="M0 0h16v16H0z" />
+                                    <path d="m10.388 13.287 5.079-7.21a2.92 2.92 0 0 0-2.388-4.602H2.92A2.92 2.92 0 0 0 .533 6.078l5.08 7.209a2.92 2.92 0 0 0 4.775 0" />
+                                </g>
+                            </svg>
+                        </div>
+                    </button>
+                        <span id="wcag-04-panel"
+                              aria-hidden="true"
+                              aria-labelledby="wcag-04-label"
+                              data-accordion-panel="panel2"
+                              class="menu-accordion-panel-outer grid-rows-[0fr] opacity-0">
+                            <ul class="menu-accordion-panel-inner">
+                                    <li>
+                                        <a tabindex="-1"
+                                           href="https://taipeincds.health.gov.taipei/#/"
+                                           class="menu-link">&#x81FA;&#x5317;&#x5065;&#x5EB7;&#x990A;&#x6210;&#x8A18;</a>
+                                    </li>
+                            </ul>
+                        </span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    
+<form id="frmPage" method="post">
+
+    <main>
+        <div class="w-full h-[266px] md:h-[567px] overflow-hidden relative isolate">
+            <swiper-container id="wcag-03"
+                              effect="fade"
+                              navigation='{"nextEl":".nextEl","prevEl":".prevEl","disabledClass":"opacity-25"}'
+                              pagination='{"el":".pg-container","bulletClass":"pg-bullet","bulletActiveClass":"pg-bullet-active"}'
+                              keyboard="true"
+                              a11y='{
+      "id": "wcag-03",
+      "containerMessage": "橫版視覺輪播圖區塊",
+      "firstSlideMessage": "這是第一張",
+      "lastSlideMessage": "這是最後一張",
+      "prevSlideMessage": "上一張",
+      "nextSlideMessage": "下一張"
+    }'>
+                <swiper-slide>
+                    <div class="relative isolate">
+                        <picture>
+                            <source type="image/jpeg"
+                                    media="(max-width: 767px)"
+                                    srcset="/hero/banner1-mb.jpg, /hero/banner1-mb@2x.jpg 2x" />
+                            <source type="image/jpeg"
+                                    media="(min-width: 768px)"
+                                    srcset="/hero/banner1.jpg, /hero/banner1@2x.jpg 2x" />
+                            <img class="h-[266px] md:h-[567px] w-full object-cover"
+                                 src="/hero/banner1.jpg"
+                                 alt="年輕女子關懷長輩，長輩面帶微笑" />
+                        </picture>
+                        <span class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white/[.54] text-blue px-6 py-4 md:px-21 md:py-12 text-2.5xl md:text-6.5xl whitespace-nowrap">
+                            整合性預約篩檢
+                        </span>
+                    </div>
+                </swiper-slide>
+                <swiper-slide>
+                    <div class="relative isolate">
+                        <picture>
+                            <source type="image/jpeg"
+                                    media="(max-width: 767px)"
+                                    srcset="/hero/banner2-mb.jpg, /hero/banner2-mb@2x.jpg 2x" />
+                            <source type="image/jpeg"
+                                    media="(min-width: 768px)"
+                                    srcset="/hero/banner2.jpg, /hero/banner2@2x.jpg 2x" />
+                            <img class="h-[266px] md:h-[567px] w-full object-cover"
+                                 src="/hero/banner2.jpg"
+                                 alt="年輕男子向長輩說明文件，長輩面帶微笑" />
+                        </picture>
+                        <span class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white/[.54] text-blue px-6 py-4 md:px-21 md:py-12 text-2.5xl md:text-6.5xl whitespace-nowrap">
+                            整合性預約篩檢
+                        </span>
+                    </div>
+                </swiper-slide>
+            </swiper-container>
+            <button type="button"
+                    class="prevEl absolute top-1/2 left-4 md:left-16 z-10 -translate-y-1/2 size-[37px] md:size-[93px] bg-blue text-white grid justify-center items-center rounded-full">
+                <div class="grid rotate-180 size-3 md:size-6.5" aria-hidden>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         aria-hidden="true"
+                         viewBox="0 0 26 26">
+                        <g fill="none" fill-rule="evenodd">
+                            <path d="M0 0h26v26H0z" />
+                            <path fill="currentColor"
+                                  fill-rule="nonzero"
+                                  d="M20.484 14.233 9.017 25.493c-.69.676-1.81.676-2.5 0a1.715 1.715 0 0 1 0-2.455L16.74 13 6.517 2.962a1.715 1.715 0 0 1 0-2.454 1.79 1.79 0 0 1 2.5 0l11.467 11.26c.346.34.516.784.516 1.232s-.17.892-.516 1.233" />
+                        </g>
+                    </svg>
+                </div>
+            </button>
+            <button type="button"
+                    class="nextEl absolute top-1/2 right-4 md:right-16 z-10 -translate-y-1/2 size-[37px] md:size-[93px] bg-blue text-white grid justify-center items-center rounded-full">
+                <div class="grid size-3 md:size-6.5" aria-hidden>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         aria-hidden="true"
+                         viewBox="0 0 26 26">
+                        <g fill="none" fill-rule="evenodd">
+                            <path d="M0 0h26v26H0z" />
+                            <path fill="currentColor"
+                                  fill-rule="nonzero"
+                                  d="M20.484 14.233 9.017 25.493c-.69.676-1.81.676-2.5 0a1.715 1.715 0 0 1 0-2.455L16.74 13 6.517 2.962a1.715 1.715 0 0 1 0-2.454 1.79 1.79 0 0 1 2.5 0l11.467 11.26c.346.34.516.784.516 1.232s-.17.892-.516 1.233" />
+                        </g>
+                    </svg>
+                </div>
+            </button>
+            <div class="pg-container"></div>
+        </div>
+
+        <h1 id="wcag-main" tabindex="-1" class="mt-8 md:mt-13 title">篩檢項目</h1>
+
+        <ul class="grid md:grid-cols-2 gap-x-9 gap-y-12 md:gap-y-15 mx-auto max-w-screen-2xl px-4 mt-8 md:mt-13">
+            <li class="">
+                <article class="flex flex-col gap-4">
+                    <a href="https://health.gov.taipei/News.aspx?n=7AAC649DC5FA7E15"
+                       class="relative isolate">
+                        <picture>
+                            <source type="image/jpeg"
+                                    srcset="
+                    /images/homepage/img-1.jpg,
+                    /images/homepage/img-1@2x.jpg 2x
+                  " />
+                            <img class="w-full h-[187px] md:h-[375px] object-cover rounded-2xl shadow-md"
+                                 src="/images/homepage/img-1.jpg"
+                                 alt="醫師幫患者測量血壓" />
+                        </picture>
+                        <div class="bg-blue text-white flex justify-center items-center size-10 md:size-15.5 rounded-full absolute right-4 bottom-4 md:right-6 md:bottom-6 border border-white">
+                            <div class="grid size-4 md:size-6.5" aria-hidden>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     aria-hidden="true"
+                                     viewBox="0 0 26 26">
+                                    <g fill="none" fill-rule="evenodd">
+                                        <path d="M0 0h26v26H0z" />
+                                        <path fill="currentColor"
+                                              fill-rule="nonzero"
+                                              d="M20.484 14.233 9.017 25.493c-.69.676-1.81.676-2.5 0a1.715 1.715 0 0 1 0-2.455L16.74 13 6.517 2.962a1.715 1.715 0 0 1 0-2.454 1.79 1.79 0 0 1 2.5 0l11.467 11.26c.346.34.516.784.516 1.232s-.17.892-.516 1.233" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="sr-only">前往成人健檢申請頁</span>
+                    </a>
+                    <h2 class="mx-4 text-2xl md:text-4xl font-semibold md:col-span-2">
+                        成人健檢
+                    </h2>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        30-39歲民眾，每5年補助1次成人健檢
+                    </p>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        40-64歲民眾，每3年補助1次成人健檢
+                    </p>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        65歲以上民眾，每年補助1次成人健檢
+                    </p>
+                </article>
+            </li>
+
+            <li class="">
+                <article class="flex flex-col gap-4">
+                    <a href="https://health.gov.taipei/cp.aspx?n=70B2EC9E4FB30F7E"
+                       class="relative isolate">
+                        <picture>
+                            <source type="image/jpeg"
+                                    srcset="
+                    /images/homepage/img-2.jpg,
+                    /images/homepage/img-2@2x.jpg 2x
+                  " />
+                            <img class="w-full h-[187px] md:h-[375px] object-cover rounded-2xl shadow-md"
+                                 src="/images/homepage/img-2.jpg"
+                                 alt="醫師藉由大腸模型向患者說明" />
+                        </picture>
+                        <div class="bg-blue text-white flex justify-center items-center size-10 md:size-15.5 rounded-full absolute right-4 bottom-4 md:right-6 md:bottom-6 border border-white">
+                            <div class="grid size-4 md:size-6.5" aria-hidden>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     aria-hidden="true"
+                                     viewBox="0 0 26 26">
+                                    <g fill="none" fill-rule="evenodd">
+                                        <path d="M0 0h26v26H0z" />
+                                        <path fill="currentColor"
+                                              fill-rule="nonzero"
+                                              d="M20.484 14.233 9.017 25.493c-.69.676-1.81.676-2.5 0a1.715 1.715 0 0 1 0-2.455L16.74 13 6.517 2.962a1.715 1.715 0 0 1 0-2.454 1.79 1.79 0 0 1 2.5 0l11.467 11.26c.346.34.516.784.516 1.232s-.17.892-.516 1.233" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="sr-only">前往大腸癌篩檢申請頁</span>
+                    </a>
+                    <h2 class="mx-4 text-2xl md:text-4xl font-semibold md:col-span-2">
+                        大腸癌篩檢
+                    </h2>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        45-74歲民眾，每2年補助1次糞便潛血檢查
+                    </p>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        40-44歲且其父母、兄弟姐妹、子女曾患有大腸癌者，每2年補助1次糞便潛血檢查
+                    </p>
+                </article>
+            </li>
+
+            <li class="">
+                <article class="flex flex-col gap-4">
+                    <a href="https://health.gov.taipei/cp.aspx?n=07816394F7975FB0"
+                       class="relative isolate">
+                        <picture>
+                            <source type="image/jpeg"
+                                    srcset="
+                    /images/homepage/img-3.jpg,
+                    /images/homepage/img-3@2x.jpg 2x
+                  " />
+                            <img class="w-full h-[187px] md:h-[375px] object-cover rounded-2xl shadow-md"
+                                 src="/images/homepage/img-3.jpg"
+                                 alt="醫師檢視著乳房X光片" />
+                        </picture>
+                        <div class="bg-blue text-white flex justify-center items-center size-10 md:size-15.5 rounded-full absolute right-4 bottom-4 md:right-6 md:bottom-6 border border-white">
+                            <div class="grid size-4 md:size-6.5" aria-hidden>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     aria-hidden="true"
+                                     viewBox="0 0 26 26">
+                                    <g fill="none" fill-rule="evenodd">
+                                        <path d="M0 0h26v26H0z" />
+                                        <path fill="currentColor"
+                                              fill-rule="nonzero"
+                                              d="M20.484 14.233 9.017 25.493c-.69.676-1.81.676-2.5 0a1.715 1.715 0 0 1 0-2.455L16.74 13 6.517 2.962a1.715 1.715 0 0 1 0-2.454 1.79 1.79 0 0 1 2.5 0l11.467 11.26c.346.34.516.784.516 1.232s-.17.892-.516 1.233" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="sr-only">前往乳癌篩檢申請頁</span>
+                    </a>
+                    <h2 class="mx-4 text-2xl md:text-4xl font-semibold md:col-span-2">
+                        乳癌篩檢
+                    </h2>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        40-74歲女性，每2年補助1次乳房X光攝影
+                    </p>
+                </article>
+            </li>
+
+            <li class="">
+                <article class="flex flex-col gap-4">
+                    <a href="https://health.gov.taipei/cp.aspx?n=A006B1E45D7C538B&s=8303A3772630982C"
+                       class="relative isolate">
+                        <picture>
+                            <source type="image/jpeg"
+                                    srcset="
+                    /images/homepage/img-8.jpg,
+                    /images/homepage/img-8@2x.jpg 2x
+                  " />
+                            <img class="w-full h-[187px] md:h-[375px] object-cover rounded-2xl shadow-md"
+                                 src="/images/homepage/img-8.jpg"
+                                 alt="胃癌篩檢" />
+                        </picture>
+                        <div class="bg-blue text-white flex justify-center items-center size-10 md:size-15.5 rounded-full absolute right-4 bottom-4 md:right-6 md:bottom-6 border border-white">
+                            <div class="grid size-4 md:size-6.5" aria-hidden>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     aria-hidden="true"
+                                     viewBox="0 0 26 26">
+                                    <g fill="none" fill-rule="evenodd">
+                                        <path d="M0 0h26v26H0z" />
+                                        <path fill="currentColor"
+                                              fill-rule="nonzero"
+                                              d="M20.484 14.233 9.017 25.493c-.69.676-1.81.676-2.5 0a1.715 1.715 0 0 1 0-2.455L16.74 13 6.517 2.962a1.715 1.715 0 0 1 0-2.454 1.79 1.79 0 0 1 2.5 0l11.467 11.26c.346.34.516.784.516 1.232s-.17.892-.516 1.233" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="sr-only">前往胃癌篩檢申請頁</span>
+                    </a>
+                    <h2 class="mx-4 text-2xl md:text-4xl font-semibold md:col-span-2">
+                        胃癌篩檢
+                    </h2>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        45-74歲民眾，終身補助1次糞便抗原檢測胃幽門螺旋桿菌服務
+                    </p>
+                </article>
+            </li>
+
+            <li class="">
+                <article class="flex flex-col gap-4">
+                    <a href="https://health.gov.taipei/cp.aspx?n=2F4A2CF228C9EB3A"
+                       class="relative isolate">
+                        <picture>
+                            <source type="image/jpeg"
+                                    srcset="
+                    /images/homepage/img-4.jpg,
+                    /images/homepage/img-4@2x.jpg 2x
+                  " />
+                            <img class="w-full h-[187px] md:h-[375px] object-cover rounded-2xl shadow-md"
+                                 src="/images/homepage/img-4.jpg"
+                                 alt="醫師拿著子宮模型向患者說明" />
+                        </picture>
+                        <div class="bg-blue text-white flex justify-center items-center size-10 md:size-15.5 rounded-full absolute right-4 bottom-4 md:right-6 md:bottom-6 border border-white">
+                            <div class="grid size-4 md:size-6.5" aria-hidden>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     aria-hidden="true"
+                                     viewBox="0 0 26 26">
+                                    <g fill="none" fill-rule="evenodd">
+                                        <path d="M0 0h26v26H0z" />
+                                        <path fill="currentColor"
+                                              fill-rule="nonzero"
+                                              d="M20.484 14.233 9.017 25.493c-.69.676-1.81.676-2.5 0a1.715 1.715 0 0 1 0-2.455L16.74 13 6.517 2.962a1.715 1.715 0 0 1 0-2.454 1.79 1.79 0 0 1 2.5 0l11.467 11.26c.346.34.516.784.516 1.232s-.17.892-.516 1.233" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="sr-only">前往子宮頸癌篩檢申請頁</span>
+                    </a>
+                    <h2 class="mx-4 text-2xl md:text-4xl font-semibold md:col-span-2">
+                        子宮頸癌篩檢
+                    </h2>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        25-29歲女性，每3年補助1次子宮頸抹片檢查
+                    </p>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        30歲以上女性，每年補助1次子宮頸抹片檢查
+                    </p>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        35歲、45歲、65歲女性，當年齡補助1次人類乳突病毒檢測
+                    </p>
+                </article>
+            </li>
+
+            <li class="">
+                <article class="flex flex-col gap-4">
+                    <a href="https://health.gov.taipei/cp.aspx?n=7622A216FCC93D8A"
+                       class="relative isolate">
+                        <picture>
+                            <source type="image/jpeg"
+                                    srcset="
+                    /images/homepage/img-5.jpg,
+                    /images/homepage/img-5@2x.jpg 2x
+                  " />
+                            <img class="w-full h-[187px] md:h-[375px] object-cover rounded-2xl shadow-md"
+                                 src="/images/homepage/img-5.jpg"
+                                 alt="醫師正在檢查患者口腔" />
+                        </picture>
+                        <div class="bg-blue text-white flex justify-center items-center size-10 md:size-15.5 rounded-full absolute right-4 bottom-4 md:right-6 md:bottom-6 border border-white">
+                            <div class="grid size-4 md:size-6.5" aria-hidden>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     aria-hidden="true"
+                                     viewBox="0 0 26 26">
+                                    <g fill="none" fill-rule="evenodd">
+                                        <path d="M0 0h26v26H0z" />
+                                        <path fill="currentColor"
+                                              fill-rule="nonzero"
+                                              d="M20.484 14.233 9.017 25.493c-.69.676-1.81.676-2.5 0a1.715 1.715 0 0 1 0-2.455L16.74 13 6.517 2.962a1.715 1.715 0 0 1 0-2.454 1.79 1.79 0 0 1 2.5 0l11.467 11.26c.346.34.516.784.516 1.232s-.17.892-.516 1.233" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="sr-only">前往口腔癌篩檢申請頁</span>
+                    </a>
+                    <h2 class="mx-4 text-2xl md:text-4xl font-semibold md:col-span-2">
+                        口腔癌篩檢
+                    </h2>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        30歲以上嚼檳榔(含已戒檳榔)或吸菸民眾，每2年補助1次口腔黏膜檢查
+                    </p>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        18歲以上至未滿30歲有嚼檳榔（含已戒檳榔）之原住民，每2年補助1次口腔黏膜檢查
+                    </p>
+                </article>
+            </li>
+
+            <li class="">
+                <article class="flex flex-col gap-4">
+                    <a href="https://health.gov.taipei/cp.aspx?n=895D068DBA6F54A5"
+                       class="relative isolate">
+                        <picture>
+                            <source type="image/jpeg"
+                                    srcset="
+                    /images/homepage/img-6.jpg,
+                    /images/homepage/img-6@2x.jpg 2x
+                  " />
+                            <img class="w-full h-[187px] md:h-[375px] object-cover rounded-2xl shadow-md"
+                                 src="/images/homepage/img-6.jpg"
+                                 alt="醫師雙手間顯示著肺臟圖像" />
+                        </picture>
+                        <div class="bg-blue text-white flex justify-center items-center size-10 md:size-15.5 rounded-full absolute right-4 bottom-4 md:right-6 md:bottom-6 border border-white">
+                            <div class="grid size-4 md:size-6.5" aria-hidden>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     aria-hidden="true"
+                                     viewBox="0 0 26 26">
+                                    <g fill="none" fill-rule="evenodd">
+                                        <path d="M0 0h26v26H0z" />
+                                        <path fill="currentColor"
+                                              fill-rule="nonzero"
+                                              d="M20.484 14.233 9.017 25.493c-.69.676-1.81.676-2.5 0a1.715 1.715 0 0 1 0-2.455L16.74 13 6.517 2.962a1.715 1.715 0 0 1 0-2.454 1.79 1.79 0 0 1 2.5 0l11.467 11.26c.346.34.516.784.516 1.232s-.17.892-.516 1.233" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="sr-only">前往肺癌篩檢申請頁</span>
+                    </a>
+                    <h2 class="mx-4 text-2xl md:text-4xl font-semibold md:col-span-2">
+                        肺癌篩檢
+                    </h2>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        具肺癌家族史及具重度吸菸史之民眾
+                    </p>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        (1)具肺癌家族史：45-74歲男性或40-74歲女性，且其有血緣關係之父母、子女或兄弟姊妹經診斷為肺癌之民眾。
+                    </p>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        (2)重度吸菸者：50-74歲吸菸史達20包-年以上，仍在吸菸或戒菸未達15年之重度吸菸者。
+                    </p>
+                </article>
+            </li>
+
+            <li class="">
+                <article class="flex flex-col gap-4">
+                    <a href="https://health.gov.taipei/News.aspx?n=050E6DF2754BE98A"
+                       class="relative isolate">
+                        <picture>
+                            <source type="image/jpeg"
+                                    srcset="
+                    /images/homepage/img-7.jpg,
+                    /images/homepage/img-7@2x.jpg 2x
+                  " />
+                            <img class="w-full h-[187px] md:h-[375px] object-cover rounded-2xl shadow-md"
+                                 src="/images/homepage/img-7.jpg"
+                                 alt="醫師雙手間顯示著肝臟圖像" />
+                        </picture>
+                        <div class="bg-blue text-white flex justify-center items-center size-10 md:size-15.5 rounded-full absolute right-4 bottom-4 md:right-6 md:bottom-6 border border-white">
+                            <div class="grid size-4 md:size-6.5" aria-hidden>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     aria-hidden="true"
+                                     viewBox="0 0 26 26">
+                                    <g fill="none" fill-rule="evenodd">
+                                        <path d="M0 0h26v26H0z" />
+                                        <path fill="currentColor"
+                                              fill-rule="nonzero"
+                                              d="M20.484 14.233 9.017 25.493c-.69.676-1.81.676-2.5 0a1.715 1.715 0 0 1 0-2.455L16.74 13 6.517 2.962a1.715 1.715 0 0 1 0-2.454 1.79 1.79 0 0 1 2.5 0l11.467 11.26c.346.34.516.784.516 1.232s-.17.892-.516 1.233" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="sr-only">前往B、C型肝炎篩檢申請頁</span>
+                    </a>
+                    <h2 class="mx-4 text-2xl md:text-4xl font-semibold md:col-span-2">
+                        B、C型肝炎篩檢
+                    </h2>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        民國75年（含）以前出生-79歲民眾，終身補助1次B型肝炎抗原、C型肝炎抗體檢查
+                    </p>
+                    <p class="mx-4 text-lg md:text-[1.375rem] font-medium leading-9">
+                        40-79歲原住民族，終身補助1次B型肝炎抗原、C型肝炎抗體檢查
+                    </p>
+                </article>
+            </li>
+        </ul>
+
+        <div data-call-to-action
+             class="mt-7.5 md:mt-18 flex justify-center p-4 sticky bottom-0 z-10 pointer-events-none md:opacity-0 transition-opacity focus-within:opacity-100">
+            <nav aria-label="預約快捷"
+                 class="rounded-1.5xl md:rounded-7xl bg-blue-dark border-black border-2 text-white texl-lg md:text-xl w-full max-w-[18rem] md:max-w-[22rem] pointer-events-auto">
+                <ul class="grid grid-cols-2">
+                    <li class="flex items-center after:block after:h-[4.375rem] md:after:h-[5.375rem] after:border-l after:border-white/25">
+                        <a href="/Consultation" id="btnBook" class="flex flex-col items-center gap-1 md:gap-2 mx-auto p-2 md:p-3 w-fit">
+                            <span class="grid w-[34px] md:w-[54px]" aria-hidden>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     aria-hidden="true"
+                                     viewBox="0 0 55 54">
+                                    <path fill="currentColor"
+                                          fill-rule="evenodd"
+                                          d="M51.312 21.322v27.417H3.468l-.001-27.417zM15.434 40.08h-2.185a1.082 1.082 0 0 0-.118 2.158l.118.006h2.185a1.082 1.082 0 0 0 0-2.164m8.699 0h-2.185a1.082 1.082 0 0 0-.118 2.158l.118.006h2.185a1.082 1.082 0 0 0 0-2.164m8.699 0h-2.185a1.082 1.082 0 0 0-.118 2.158l.118.006h2.185a1.082 1.082 0 0 0 0-2.164m8.699 0h-2.185a1.082 1.082 0 0 0-.118 2.158l.118.006h2.185a1.082 1.082 0 1 0 0-2.164m-26.097-6.494h-2.185a1.082 1.082 0 0 0-.118 2.159l.118.006h2.185a1.082 1.082 0 0 0 0-2.165m8.699 0h-2.185a1.082 1.082 0 0 0-.118 2.159l.118.006h2.185a1.082 1.082 0 0 0 0-2.165m8.699 0h-2.185a1.082 1.082 0 0 0-.118 2.159l.118.006h2.185a1.082 1.082 0 0 0 0-2.165m8.699 0h-2.185a1.082 1.082 0 0 0-.118 2.159l.118.006h2.185a1.082 1.082 0 1 0 0-2.165m-26.097-6.493h-2.185a1.082 1.082 0 0 0-.118 2.158l.118.006h2.185a1.082 1.082 0 1 0 0-2.164m8.699 0h-2.185a1.082 1.082 0 0 0-.118 2.158l.118.006h2.185a1.082 1.082 0 1 0 0-2.164m8.699 0h-2.185a1.082 1.082 0 0 0-.118 2.158l.118.006h2.185a1.082 1.082 0 1 0 0-2.164m8.699 0h-2.185a1.082 1.082 0 0 0-.118 2.158l.118.006h2.185a1.082 1.082 0 1 0 0-2.164m11.23-7.937H2.019V8.335h9.423v5.05h6.525v-5.05h18.847v5.05h6.525v-5.05h9.424v10.822zM16.517 4.006v7.936h-3.625V4.006zm25.372 0v7.936h-3.625V4.006z" />
+                                </svg>
+                            </span>
+                            <span>活動報名</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/SessionQuery" id="btnLog" class="flex flex-col items-center gap-1 md:gap-2 mx-auto p-2 md:p-3 w-fit">
+                            <span class="grid w-[34px] md:w-[54px]" aria-hidden>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     fill="currentColor"
+                                     aria-hidden="true"
+                                     viewBox="0 0 67 67">
+                                    <path fill-rule="evenodd"
+                                          d="m43.675 37.026 18.51 18.51c4.457 4.382-2.267 11.106-6.65 6.648l-18.509-18.51c-8.461 5.44-19.87 4.458-27.273-2.946-8.537-8.537-8.537-22.438 0-30.975s22.438-8.537 30.975 0c7.404 7.404 8.386 18.812 2.947 27.273m-22.39-1.875c1.938.534 1.118 3.58-.82 3.047-6.931-1.904-11.03-11.349-7.155-18.204.969-1.752 3.652-.228 2.609 1.524-2.833 5.179-.298 12.11 5.366 13.633m2.63.4a1.588 1.588 0 0 1 2.244 2.245 1.588 1.588 0 0 1-2.245-2.245zm-9.603-21.24c-6.153 6.228-6.153 16.282 0 22.509 6.227 6.152 16.28 6.152 22.508 0 6.152-6.227 6.152-16.281 0-22.508-6.227-6.153-16.281-6.153-22.508 0zm42.224 42.225c1.416-1.336 5.033 2.28 3.618 3.618-1.337 1.415-4.954-2.202-3.618-3.618" />
+                                </svg>
+                            </span>
+                            <span>預約查詢</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </main>
+
+    <div id="explain1"
+         role="alertdialog"
+         aria-label="提示"
+         aria-modal="true"
+         aria-live="assertive"
+         class="invisible opacity-0 transition-opacity modal-backdrop modal-center"
+         data-modal="explain1">
+        <div class="modal-container-outer">
+            <div class="modal-close-button-container">
+                <button type="button"
+                        aria-label="關閉提示視窗"
+                        data-toggle="explain1">
+                    <div class="modal-close-button" aria-hidden>
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor"
+                             aria-hidden="true"
+                             viewBox="0 0 10 10">
+                            <path fill-rule="evenodd"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-width="2.5"
+                                  d="m1.5 1.5 7 7m0-7-7 7" />
+                        </svg>
+                    </div>
+                </button>
+            </div>
+            <div class="modal-container-inner">
+                <h2 class="title">提示</h2>
+                <p class="bulletin-msg"></p>
+                <div class="mt-6 ui-button-container md:w-64">
+                    <button type="button" data-toggle="explain1" class="ui-button">
+                        確認
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<input name="__RequestVerificationToken" type="hidden" value="CfDJ8FWeoQs4wh1Lk1NUvJfW59JmRkK7sJIgxA9jB6Ay2yf-O_YPTWp1H3y7j_J5QnFHCiD-lAp_Rc2mDU13_VqAtANkyP30UJOZuCREox7Umq_eU4YgI7UoyaPGP-aOo6AhiRJG5YIweZ7YIbbanoc059Q" /></form>
+
+
+
+
+    <footer class="mt-7.5 md:mt-13">
+        
+    <h2 class="sr-only" id="wcag-footer" tabindex="-1">頁尾、網站資訊</h2>
+    <div class="bg-blue-light text-white text-lg text-center space-y-4 py-6.5 md:py-12">
+        <ul class="px-4 mx-auto grid md:grid-cols-4 gap-4 max-w-screen-2xl">
+            <li>
+                <a href="https://health.gov.taipei/" target="_blank">臺北市政府衛生局官網</a>
+            </li>
+            <li>
+                <a href="https://health.gov.taipei/cp.aspx?n=43D2F011F36207ED"
+                   target="_blank">本市十二區健康服務中心</a>
+            </li>
+            <li>
+                <a href="https://health.gov.taipei/cp.aspx?n=06AF6414B09FEAA2&s=2299B40A2C41AC9F"
+                   target="_blank">篩檢活動場次資訊</a>
+            </li>
+            <li>
+                <a href="https://health.gov.taipei/cp.aspx?n=6999DDBAB2F8900E&s=A7011868F82A0B6B"
+                   target="_blank">台北通集兌點</a>
+            </li>
+            <li>
+                <a href="https://health.gov.taipei/Content_List.aspx?n=A9B0D9BC164C5F3F"
+                   target="_blank">癌症防治專區</a>
+            </li>
+            <li>
+                <a href="https://health.gov.taipei/cp.aspx?n=56C9B8DB78F62401"
+                   target="_blank">癌篩院所資訊</a>
+            </li>
+            <li>
+                <a href="https://health.gov.taipei/cp.aspx?n=DA5D3E3550D79DF5"
+                   target="_blank">隱私權及資訊安全政策</a>
+            </li>
+            <li>
+                <a href="https://health.gov.taipei/cp.aspx?n=5758A5944BF197D6"
+                   target="_blank">政府網站資料開放宣告</a>
+            </li>
+        </ul>
+    </div>
+
+
+        <div class="text-lg text-white bg-blue-dark py-7">
+            <div class="px-4 mx-auto grid md:gap-4 max-w-screen-2xl">
+                <p>瀏覽人次： 148,635</p>
+                <p>地址：110204 台北市信義區市府路1號</p>
+                <p>
+                    電話：臺北市民當家熱線
+                    <a class="underline" href="tel:1999">1999</a>，外縣市請撥
+                    <a class="underline" href="tel:+886227208889#1813">02-2720-8889</a>
+                    (分機1813、1846、1828)
+                </p>
+                <p>服務時間：週一至週五 上午8:30至下午5:30，例假日及國定假日休息</p>
+                <p>版權所有 臺北市政府衛生局</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+
+    <script language="javascript">
+
+        function DoFunc(func, keyValue, keyValueB) {
+            if (typeof (keyValue) == 'undefined') { keyValue = ''; }
+            if (typeof (keyValueB) == 'undefined') { keyValueB = ''; }
+
+            if (func.indexOf(',') != -1) {
+                var vars = InitPageVars(func, 5);
+                if (vars == null) { return; }
+            } else {
+                switch (func) {
+                    case "View":
+                        break;
+                }
+            }
+        }
+
+        function SetValue() {
+            Sys.Exec("InitPage");
+        }
+
+        SetValue();
+
+    </script>
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1FCXHS8V4C"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-1FCXHS8V4C');
+    </script>
+<script language="javascript">
+
+    InitPageEvents();
+
+</script>
+

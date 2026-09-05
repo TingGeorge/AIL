@@ -31,7 +31,7 @@ export function summarizeCatalog(records: Rec[], now = Date.now()): CatalogSumma
     pending: records.length - rankable,
     demonstration: records.filter(isDemoRecord).length,
     latest_verified_at: dates.sort((a, b) => Date.parse(a) - Date.parse(b)).at(-1) ?? null,
-    scope: "圓山站／大龍峒／花博周邊，活動另含明示的士林科教館／天文館延伸選項；另有線上配送與全臺公共服務；資料是來源查核快照，不代表即時庫存。",
+    scope: "涵蓋臺北及各筆明示地區的商家／場館、線上商品與全臺公共服務；不全在圓山步行圈內，請依個別地點、配送、時段與資格確認。資料是來源查核快照，不代表即時庫存、名額或班次。",
     categories: CATEGORIES.map(category => {
       const selected = records.filter(record => record.category === category);
       const eligible = selected.filter(record => truthfullyVerified(record, now)).length;

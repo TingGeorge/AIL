@@ -1,0 +1,1010 @@
+[
+  {
+    "id": "d_ix01",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "LÄSKIS 掃帚組, 透明",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 39,
+    "mandatory_fees_twd": 59,
+    "discount_twd": 0,
+    "price_unit": "每組",
+    "quantity_or_servings": "畚箕及刷子1組（畚箕寬16.5公分、長20.5公分；刷子寬16公分、長19.2公分）",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；超商取貨；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/laskis-art-10307542",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 39",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/laskis-art-10307542",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含：畚箕(寬16.5公分，長20.5公分)及刷子(寬16公分，長19.2公分)",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/laskis-art-10307542",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/laskis-art-10307542",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/laskis-art-10307542",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／超商取貨候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價39元；比較採單項商品單獨使用超商取貨，必要運費59元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "超商取貨",
+        "mandatory_fee_twd": 59,
+        "quote": "適用超商取貨，運費$59/箱",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/laskis-art-10307542",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix02",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "PEPPRIG 噴式澆水瓶, 55厘升",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 49,
+    "mandatory_fees_twd": 59,
+    "discount_twd": 0,
+    "price_unit": "每個（0.55公升）",
+    "quantity_or_servings": "容積0.55公升",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；超商取貨；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90501432",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 49",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90501432",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "容積:0.55 公升",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90501432",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90501432",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90501432",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／超商取貨候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價49元；比較採單項商品單獨使用超商取貨，必要運費59元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "超商取貨",
+        "mandatory_fee_twd": 59,
+        "quote": "適用超商取貨，運費$59/箱",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90501432",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix03",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "PEPPRIG 畚箕掃把組, 灰色/綠色",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 299,
+    "mandatory_fees_twd": 150,
+    "discount_twd": 0,
+    "price_unit": "每組",
+    "quantity_or_servings": "1包裝（畚箕掃把組）",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；便利箱宅配到府；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-70567631",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 299",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-70567631",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "1 x PEPPRIG 畚箕掃把組 產品編號： 705.676.31 1 包裝",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-70567631",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-70567631",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-70567631",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／便利箱宅配到府候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價299元；比較採單項商品單獨使用便利箱宅配到府，必要運費150元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "便利箱宅配到府",
+        "mandatory_fee_twd": 150,
+        "quote": "適用便利箱宅配到府服務，運費$150/箱",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-70567631",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix04",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "PEPPRIG 臉盆, 折疊式/黃色, 27 公分",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 99,
+    "mandatory_fees_twd": 59,
+    "discount_twd": 0,
+    "price_unit": "每個（27公分）",
+    "quantity_or_servings": "折疊式臉盆，27公分",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；超商取貨；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-40567722",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 99",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-40567722",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "臉盆, 折疊式/黃色, 27 公分",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-40567722",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-40567722",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-40567722",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／超商取貨候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價99元；比較採單項商品單獨使用超商取貨，必要運費59元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "超商取貨",
+        "mandatory_fee_twd": 59,
+        "quote": "適用超商取貨，運費$59/箱",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-40567722",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix05",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "PEPPRIG 刷子 兩件組, 綠色",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 79,
+    "mandatory_fees_twd": 59,
+    "discount_twd": 0,
+    "price_unit": "每2件組",
+    "quantity_or_servings": "2件組",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；超商取貨；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90567649",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 79",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90567649",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "刷子 兩件組, 綠色",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90567649",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90567649",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90567649",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／超商取貨候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價79元；比較採單項商品單獨使用超商取貨，必要運費59元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "超商取貨",
+        "mandatory_fee_twd": 59,
+        "quote": "適用超商取貨，運費$59/箱",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-90567649",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix06",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "PEPPRIG 臉盆, 折疊式/綠色, 10 公升",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 199,
+    "mandatory_fees_twd": 150,
+    "discount_twd": 0,
+    "price_unit": "每個（10公升）",
+    "quantity_or_servings": "折疊式臉盆，10公升",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；便利箱宅配到府；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50572964",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 199",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50572964",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "臉盆, 折疊式/綠色, 10 公升",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50572964",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50572964",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50572964",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／便利箱宅配到府候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價199元；比較採單項商品單獨使用便利箱宅配到府，必要運費150元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "便利箱宅配到府",
+        "mandatory_fee_twd": 150,
+        "quote": "適用便利箱宅配到府服務，運費$150/箱",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50572964",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix07",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "PEPPRIG 縫隙清潔套, 綠色, 45x7 公分",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 39,
+    "mandatory_fees_twd": 150,
+    "discount_twd": 0,
+    "price_unit": "每套",
+    "quantity_or_servings": "縫隙清潔套，45x7公分",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；便利箱宅配到府；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-60567636",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 39",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-60567636",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "縫隙清潔套, 綠色, 45x7 公分",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-60567636",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-60567636",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-60567636",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／便利箱宅配到府候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價39元；比較採單項商品單獨使用便利箱宅配到府，必要運費150元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "便利箱宅配到府",
+        "mandatory_fee_twd": 150,
+        "quote": "適用便利箱宅配到府服務，運費$150/箱",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-60567636",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix08",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "FRUKTPLOCKARE 除毛刷, 黑／淺灰, 12x6x4 公分",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 69,
+    "mandatory_fees_twd": 59,
+    "discount_twd": 0,
+    "price_unit": "每個",
+    "quantity_or_servings": "除毛刷，12x6x4公分",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；超商取貨；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/fruktplockare-art-00528389",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 69",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/fruktplockare-art-00528389",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "除毛刷, 黑／淺灰, 12x6x4 公分",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/fruktplockare-art-00528389",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/fruktplockare-art-00528389",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/fruktplockare-art-00528389",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／超商取貨候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價69元；比較採單項商品單獨使用超商取貨，必要運費59元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "超商取貨",
+        "mandatory_fee_twd": 59,
+        "quote": "適用超商取貨，運費$59/箱",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/fruktplockare-art-00528389",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix09",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "PEPPRIG 平板拖把用纖維墊, 灰色, 10x29 公分",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 79,
+    "mandatory_fees_twd": 59,
+    "discount_twd": 0,
+    "price_unit": "每2件裝",
+    "quantity_or_servings": "2件裝，每件10x29公分",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；超商取貨；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-80567616",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 79 / 2 件裝",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-80567616",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "平板拖把用纖維墊, 灰色, 10x29 公分",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-80567616",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-80567616",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-80567616",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／超商取貨候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價79元；比較採單項商品單獨使用超商取貨，必要運費59元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "超商取貨",
+        "mandatory_fee_twd": 59,
+        "quote": "適用超商取貨，運費$59/箱",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-80567616",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix10",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "PEPPRIG 清潔伸縮桿, 灰色, 76-128 公分",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 99,
+    "mandatory_fees_twd": 150,
+    "discount_twd": 0,
+    "price_unit": "每支",
+    "quantity_or_servings": "清潔伸縮桿，76-128公分",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；便利箱宅配到府；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-10567747",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 99",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-10567747",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "清潔伸縮桿, 灰色, 76-128 公分",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-10567747",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-10567747",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-10567747",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／便利箱宅配到府候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價99元；比較採單項商品單獨使用便利箱宅配到府，必要運費150元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "便利箱宅配到府",
+        "mandatory_fee_twd": 150,
+        "quote": "適用便利箱宅配到府服務，運費$150/箱",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-10567747",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix11",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "RINNIG 洗滌刷, 亮黃色/淺乳白色",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 39,
+    "mandatory_fees_twd": 150,
+    "discount_twd": 0,
+    "price_unit": "每支",
+    "quantity_or_servings": "1包裝（洗滌刷）",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；便利箱宅配到府；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-00565857",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 39",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-00565857",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "1 x RINNIG 洗滌刷 產品編號： 005.658.57 1 包裝",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-00565857",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-00565857",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-00565857",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／便利箱宅配到府候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價39元；比較採單項商品單獨使用便利箱宅配到府，必要運費150元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "便利箱宅配到府",
+        "mandatory_fee_twd": 150,
+        "quote": "適用便利箱宅配到府服務，運費$150/箱",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-00565857",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix12",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "RINNIG 置盤架",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 149,
+    "mandatory_fees_twd": 59,
+    "discount_twd": 0,
+    "price_unit": "每個",
+    "quantity_or_servings": "可同時瀝乾9個碟子",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；超商取貨；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-40387269",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 149",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-40387269",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "可同時瀝乾9個碟子。",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-40387269",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-40387269",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-40387269",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／超商取貨候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價149元；比較採單項商品單獨使用超商取貨，必要運費59元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "超商取貨",
+        "mandatory_fee_twd": 59,
+        "quote": "適用超商取貨，運費$59/箱",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-40387269",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix13",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "PEPPRIG 百潔布, 綠色 藍色/黃色",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 29,
+    "mandatory_fees_twd": 59,
+    "discount_twd": 0,
+    "price_unit": "每3件裝",
+    "quantity_or_servings": "3件裝",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；超商取貨；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50567651",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 29 / 3 件裝",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50567651",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "3 件裝",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50567651",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50567651",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50567651",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／超商取貨候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價29元；比較採單項商品單獨使用超商取貨，必要運費59元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "超商取貨",
+        "mandatory_fee_twd": 59,
+        "quote": "適用超商取貨，運費$59/箱",
+        "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-50567651",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  },
+  {
+    "id": "d_ix14",
+    "category": "日用品",
+    "agent": "paid",
+    "title": "RINNIG 碗盤瀝乾墊, 米色, 51x42 公分",
+    "provider": "IKEA 台灣",
+    "price_total_twd": 149,
+    "mandatory_fees_twd": 150,
+    "discount_twd": 0,
+    "price_unit": "每個（51x42公分）",
+    "quantity_or_servings": "1包裝（碗盤瀝乾墊）",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 查核時，官方商品頁顯示「有庫存於線上購物」；庫存可變動，下單前須重查。",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "線上購買；便利箱宅配到府；不主張實體門市現貨",
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-30595443",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 149",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-30595443",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "1 x RINNIG 碗盤瀝乾墊 產品編號： 305.954.43 1 包裝",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-30595443",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "有庫存於線上購物",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-30595443",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:35:17+08:00",
+    "verified_at": "2026-09-05T23:35:17+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-30595443",
+    "action_label": "查看線上商品",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA 台灣線上／便利箱宅配到府候選；未聲稱任何實體門市現貨或圓山距離",
+      "pricing_context": "商品價149元；比較採單項商品單獨使用便利箱宅配到府，必要運費150元/箱；此為資料整理的比較前提，不是來源逐字句；未套用會員、折扣或合併購物車分攤。",
+      "fulfillment_evidence": {
+        "method": "便利箱宅配到府",
+        "mandatory_fee_twd": 150,
+        "quote": "適用便利箱宅配到府服務，運費$150/箱",
+        "url": "https://www.ikea.com.tw/zh/products/storing/organisers-and-washing-up/rinnig-art-30595443",
+        "checked_at": "2026-09-05T23:35:17+08:00"
+      },
+      "review_notes": [
+        "evidence.quote 僅保存本次官方商品頁可逐字找到的短摘錄；價格、份量、配送與庫存不拼接成假原文。",
+        "商品價格、運費與庫存會變動，請於下單前重新確認；「有庫存於線上購物」只代表本次查核快照。",
+        "quantity_or_servings 與 pricing_context 是結構化整理欄位；如整合尺寸、件數或商品價加必要運費，並不宣稱是來源逐字句。",
+        "未提供實體門市座標，不推估圓山距離，也不主張任何實體門市現貨。",
+        "來源未列價格有效期限，valid_until 保持 null。",
+        "沒有完全相同 SKU 與份量的 Costco 官方比較證據，不建立或推算 Costco baseline。"
+      ],
+      "source_coordinates": null
+    }
+  }
+]

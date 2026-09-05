@@ -1,0 +1,1239 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-60529020-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-60529020-1');
+</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NMZPMDT');</script>
+<!-- End Google Tag Manager -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Site" content="勞動部全球資訊網">
+    <meta name="Version" content="中文網">
+    <meta name="PageType" content="內容頁">
+    <meta name="TreeNode" content="我可以找誰幫忙?">
+    <meta name="ContentTitle" content="勞資爭議調解 / 仲裁 / 訴訟扶助">
+
+    <meta property="og:title" content="勞資爭議調解 / 仲裁 / 訴訟扶助">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.mol.gov.tw/1607/28162/28296/81778/81802/81951/" />
+    <meta property="og:image" content="https://www.mol.gov.tw/media/ksbp31yo/救濟途徑比較表0629.jpeg">
+    <meta property="og:image:width" content="50%">
+    <meta property="og:image:height" content="50%">
+    <meta property="og:site_name" content="勞動部全球資訊網">
+    <meta property="og:description" content="勞資爭議調解 / 仲裁 / 訴訟扶助" />
+
+    <meta name="DC.Title" content="勞資爭議調解 / 仲裁 / 訴訟扶助" />
+    <meta name="DC.Creator" content="勞動部全球資訊網" />
+    <meta name="DC.Subject" content="勞資爭議調解 / 仲裁 / 訴訟扶助" />
+    <meta name="DC.Description" content="我可以找誰幫忙?" />
+    <meta name="DC.Contributor" content="勞動部全球資訊網" />
+    <meta name="DC.Type" content="文字" />
+    <meta name="DC.Format" content="text" />
+    <meta name="DC.Source" content="勞動部全球資訊網" />
+    <meta name="DC.Language" content="中文" />
+    <meta name="DC.coverage.t.min" content="2025-08-05" />
+    <meta name="DC.coverage.t.max" content="2045-08-05" />
+    <meta name="DC.Publisher" content="勞動部全球資訊網" />
+    <meta name="DC.Date" content="2025-08-05" />
+    <meta name="DC.Identifier" content="A55000100A" />
+    <meta name="DC.Relation" content="勞動部全球資訊網" />
+    <meta name="DC.Rights" content="勞動部全球資訊網" />
+
+    <meta name="Category.Theme" content="300" />
+    <meta name="Category.Cake" content="600" />
+    <meta name="Category.Service" content="I00" />
+
+    <meta name="keywords" />
+
+    <title>勞資爭議調解 / 仲裁 / 訴訟扶助-勞動部全球資訊網中文網</title>
+    <!-- animate css-->
+    <link rel="stylesheet" href="/Content/main//css/animate.css">
+    <!-- swiper css -->
+    <link rel="stylesheet" type="text/css" href="/Content/main//vendor/swiper/swiper-bundle.min.css" />
+    <!-- hyUI css -->
+    <link rel="stylesheet" href="/Content/main//css/hyui.css">
+
+    <!-- favicon -->
+    <link href="/Content/main//images/favicon.png" rel="icon" type="image/x-icon">
+
+    
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NMZPMDT"
+height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager "></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+    <!-- 直接跳主內容區 -->
+    <a class="goCenter" href="#aC" tabindex="1">按Enter到主內容區</a>
+
+    
+<div class="wrapper">
+    <!-- header Start -->
+    <header class="header ">
+        
+
+<div class="container">
+    <a class="accesskey" href="#aU" id="aU" accesskey="U" title="網站標題" tabindex="2">:::</a>
+    <!-- navigation Start -->
+    <nav class="navigation" role="navigation" aria-label="頁首功能列">
+                <!-- 新增div navlist -->
+                <div class="navlist">
+                    <ul>
+                            <li>
+                                <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=27414" title="政府資訊公開" target=""  id="home" sec="header" rel="noopener noreferrer">政府資訊公開</a>
+                            </li>
+                            <li>
+                                <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=3275" title="常見問答" target=""  id="home" sec="header" rel="noopener noreferrer">常見問答</a>
+                            </li>
+                            <li>
+                                <a href="/2578/2582/3271/post" title="RSS" target="_self"  id="home" sec="header" rel="noopener noreferrer">RSS</a>
+                            </li>
+                            <li>
+                                <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=3267" title="回首頁" target=""  id="home" sec="header" rel="noopener noreferrer">回首頁</a>
+                            </li>
+                            <li>
+                                <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=3274" title="勞動法令(另開新視窗)" target="_blank"  id="home" sec="header" rel="noopener noreferrer">勞動法令</a>
+                            </li>
+                            <li>
+                                <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=3273" title="English" target=""  id="home" sec="header" rel="noopener noreferrer">English</a>
+                            </li>
+                            <li>
+                                <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=3272" title="民意信箱(另開新視窗)" target="_blank"  id="home" sec="header" rel="noopener noreferrer">民意信箱</a>
+                            </li>
+                            <li>
+                                <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=3268" title="網站導覽" target=""  id="home" sec="header" rel="noopener noreferrer">網站導覽</a>
+                            </li>
+                    </ul>
+                </div>
+            <!-- font_size -->
+            <div class="font_size">
+                <span>字級：</span>
+                <!-- 英文用<span>font-size：</span> -->
+                <ul>
+                    <li><a href="#" class="small" title="大" role="button" rel="noopener noreferrer" aria-pressed="false">A-</a></li>
+                    <li><a href="#" class="medium" title="中" role="button" rel="noopener noreferrer" aria-pressed="false">A</a></li>
+                    <li><a href="#" class="large" title="小" role="button" rel="noopener noreferrer" aria-pressed="false">A+</a></li>
+                </ul>
+            </div>
+    </nav>
+
+    <!-- navigation End -->
+    <h1>
+        <a title="勞動部全球資訊網中文網" href="/"  id="home" sec="header"><img src="/media/4nigpaij/logo.svg" alt="勞動部全球資訊網中文網 Logo" /></a>
+    </h1>
+    <div class="functionbtn_block">
+        <!-- <button type="button" class="menu_btn">選單</button> -->
+        <button type="button" class="search_btn" title="搜尋功能" id="home" sec="header">查詢</button>
+        <div class="searchname">搜尋功能</div>
+        <!-- Search Start -->
+        <div class="search" role="search">
+            <form class="leftblock" action="/2578/2597/">
+                <div class="form_grp">
+                    <label for="mustSameAsId">搜尋</label>
+                    <input name="q" id="mustSameAsId" type="text" placeholder="請輸入文字" accesskey="S" title="請輸入文字" aria-label="搜尋網站內容">
+                    <input name="" type="submit" value="查詢" class="btn btn-search" title="搜尋功能" />
+                </div>
+                <div class="btn_grp">
+                    <input name="" type="submit" onclick="window.open('https://www.google.com.tw/advanced_search?hl=zh-TW&as_q=&num=100&as_sitesearch='+location.hostname);" value="進階搜尋" class="btn btn-green" />
+                </div>
+                        <div class="keywordHot">
+                            <div class="title">熱門關鍵字：</div>
+                            <ul>
+                                    <li>
+                                        <a href="/2578/2597/?q=勞工申訴" title="勞工申訴" id="home" sec="header" rel="noopener noreferrer">勞工申訴</a>
+                                    </li>
+                                    <li>
+                                        <a href="/2578/2597/?q=年金" title="年金" id="home" sec="header" rel="noopener noreferrer">年金</a>
+                                    </li>
+                                    <li>
+                                        <a href="/2578/2597/?q=勞動檢查" title="勞動檢查" id="home" sec="header" rel="noopener noreferrer">勞動檢查</a>
+                                    </li>
+                            </ul>
+                        </div>
+            </form>
+            <div class="rightblock">
+                <div class="important_link">
+                            <div>
+                                <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=23486" title="勞動基準法修法" target="" id="home" sec="header" rel="noopener noreferrer">
+                                        <img src="/media/kxre0wm1/search_icon02.svg" alt="">
+                                    勞動基準法修法
+                                </a>
+                            </div>
+                </div>
+            </div>
+        </div>
+        <!-- Search End -->
+        <button type="button" class="customer_service_btn" title="文字客服" id="home" sec="header">文字客服</button>
+        <div class="customername">文字客服</div>
+        <!-- 客服 start -->
+        <div class="customer_service_block">
+            <div>
+                <span>有任何問題嗎？</span> 歡迎試試智能機器人: 樂博<br />
+            </div>
+            <button type="button" class="service_btn" onclick="window.open('https://1955rb.mol.gov.tw/', '_blank')" title="文字客服" id="home" sec="header">文字客服</button>
+        </div>
+        <!-- 客服 end -->
+    </div>
+
+    <!-- noscript -->
+    <noscript>
+您的瀏覽器不支援JavaScript語法，JavaScript語法並不影響內容的陳述。您可使用按鍵盤上的Ctrl鍵+ (+)鍵放大/(-)鍵縮小來改變字型大小；回到上一頁可使用瀏覽器提供的 Alt+左方向鍵(←) 快速鍵功能；列印可使用瀏覽器提供的(Ctrl+P)功能。您的瀏覽器，不支援script語法，若您的瀏覽器無法支援請點選此超連結        <a href="#" rel="noopener noreferrer">網站導覽</a>
+    </noscript>
+
+        <!-- menu Start -->
+        <nav class="megamenu" role="navigation" aria-label="主選單">
+            <ul>
+                    <li>
+                        <a href="https://www.mol.gov.tw/1607/1608/normalnodelist" title="本部簡介" target="_self" rel="noopener noreferrer">本部簡介</a>
+                            <ul>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/1608/80563/lpsimplelist" title="正副首長介紹" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">正副首長介紹</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/1608/1614/nodelist" title="職掌及組織" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">職掌及組織</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/1608/1620/lpsimplelist" title="勞動大事紀" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">勞動大事紀</a>
+                                    </li>
+                                    <li>
+                                        <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=2973" title="勞動部辦公位置地圖點位(另開新視窗)" target="_blank" class="" id="home" sec="header" rel="noopener noreferrer">勞動部辦公位置地圖點位</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/1608/1624/2976/post" title="聯絡資訊" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">聯絡資訊</a>
+                                    </li>
+                            </ul>
+                    </li>
+                    <li>
+                        <a href="https://www.mol.gov.tw/1607/1632/normalnodelist" title="新聞公告" target="_self" rel="noopener noreferrer">新聞公告</a>
+                            <ul>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/1632/1633/lpsimplelist" title="新聞稿" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">新聞稿</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/1632/2660/lpsimplelist" title="即時新聞澄清" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">即時新聞澄清</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/1632/2665/lpsimplelist" title="公布欄" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">公布欄</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/1632/1638/lpsimplelist" title="就業資訊" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">就業資訊</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/1632/1640/lpsimplelist" title="歷史新聞" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">歷史新聞</a>
+                                    </li>
+                            </ul>
+                    </li>
+                    <li>
+                        <a href="https://www.mol.gov.tw/1607/28162/normalnodelist" title="業務專區" target="_self" rel="noopener noreferrer">業務專區</a>
+                            <ul>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28162/28600/nodelist" title="勞動政策、國際事務" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">勞動政策、國際事務</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28162/28296/nodelist" title="勞動關係" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">勞動關係</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28162/28166/nodelist" title="勞動條件、就業平等" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">勞動條件、就業平等</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28162/28472/nodelist" title="勞動保險" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">勞動保險</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28162/28540/nodelist" title="勞動福祉、退休" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">勞動福祉、退休</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28162/28598/lpsimplelist" title="職業安全衛生及勞動檢查" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">職業安全衛生及勞動檢查</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28162/86024/nodelist" title="就業服務、職業訓練、外國人才事務" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">就業服務、職業訓練、外國人才事務</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28162/28652/nodelist" title="其他重要專區" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">其他重要專區</a>
+                                    </li>
+                            </ul>
+                    </li>
+                    <li>
+                        <a href="https://www.mol.gov.tw/1607/28690/normalnodelist" title="便民服務" target="_self" rel="noopener noreferrer">便民服務</a>
+                            <ul>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/82567/nodelist" title="線上服務系統" target="_self" class="specialZonebg" id="home" sec="header" rel="noopener noreferrer">線上服務系統</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/28700/nodelist" title="行政救濟/申訴專區" target="_self" class="specialZonebg" id="home" sec="header" rel="noopener noreferrer">行政救濟/申訴專區</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/2282/nodeListSearch" title="常見問答" target="_self" class="specialZonebg" id="home" sec="header" rel="noopener noreferrer">常見問答</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/86491/86498/lpsimplelist" title="因應天災之勞工協助措施" target="_self" class="specialZonebg" id="home" sec="header" rel="noopener noreferrer">因應天災之勞工協助措施</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/82752/nodelist" title="從懷孕到養育子女，有什麼保障?" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">從懷孕到養育子女，有什麼保障?</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/82833/nodelist" title="我要退休了，有什麼保障與權利?" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">我要退休了，有什麼保障與權利?</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/83363/nodelist" title="受到關稅衝擊了該怎麼辦?" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">受到關稅衝擊了該怎麼辦?</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/83030/nodelist" title="就業安定費怎麼繳？繳多少？" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">就業安定費怎麼繳？繳多少？</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/83093/nodelist" title="我要找外籍家庭看護 / 幫傭" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">我要找外籍家庭看護 / 幫傭</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/83306/nodelist" title="從上班到休假，我該瞭解的權益有哪些?" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">從上班到休假，我該瞭解的權益有哪些?</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/83245/nodelist" title="被資遣（解僱），我的權益要注意什麼？" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">被資遣（解僱），我的權益要注意什麼？</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/83284/nodelist" title="發生職災怎麼辦?" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">發生職災怎麼辦?</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/82583/nodelist" title="我失業了該怎麼辦?" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">我失業了該怎麼辦?</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/85011/nodelist" title="青年就業協助" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">青年就業協助</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/85508/nodelist" title="我想聘僱外國專業人士(白領)該怎麼做？" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">我想聘僱外國專業人士(白領)該怎麼做？</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/85770/nodelist" title="移工聘僱後管理" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">移工聘僱後管理</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/86099/nodelist" title="發生職場霸凌怎麼辦?" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">發生職場霸凌怎麼辦?</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/87707/nodelist" title="我想要參加職業訓練" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">我想要參加職業訓練</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/87756/nodelist" title="部分工時／工讀生，我該瞭解的權益有哪些?" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">部分工時／工讀生，我該瞭解的權益有哪些?</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/87626/nodelist" title="我有工作了，勞、就、災保應如何處理?" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">我有工作了，勞、就、災保應如何處理?</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/87973/nodelist" title="職場性騷擾預防及處理" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">職場性騷擾預防及處理</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/88598/nodelist" title="勞工若生病或受傷，有什麼保障？" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">勞工若生病或受傷，有什麼保障？</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/89680/nodelist" title="發生勞資爭議怎麼辦？" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">發生勞資爭議怎麼辦？</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28690/89764/nodelist" title="我不服勞動法令之行政處分，如何提起救濟？" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">我不服勞動法令之行政處分，如何提起救濟？</a>
+                                    </li>
+                            </ul>
+                    </li>
+                    <li>
+                        <a href="https://www.mol.gov.tw/1607/28752/normalnodelist" title="政府資訊公開" target="_self" rel="noopener noreferrer">政府資訊公開</a>
+                            <ul>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/79749/79773/post" title="勞動部因應美國關稅我國出口供應鏈支持方案" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">勞動部因應美國關稅我國出口供應鏈支持方案</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28754/nodelist" title="預算、決算書及會計月報" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">預算、決算書及會計月報</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28764/nodelist" title="研究報告與出版品" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">研究報告與出版品</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28774/nodelist" title="捐補助專區" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">捐補助專區</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28798/nodelist" title="性別平等專區" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">性別平等專區</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28820/nodelist" title="廉政專區" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">廉政專區</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28856/nodelist" title="人權專區" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">人權專區</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28862/lpsimplelist" title="書面之公共工程及採購契約" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">書面之公共工程及採購契約</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28864/30071/post" title="人民申請提供政府資訊案件統計" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">人民申請提供政府資訊案件統計</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28866/lpsimplelist" title="公共設施維護管理資訊" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">公共設施維護管理資訊</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28868/lpsimplelist" title="本部及所屬機關行動服務發展現況" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">本部及所屬機關行動服務發展現況</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28870/30082/post" title="開放資料" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">開放資料</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28872/lpsimplelist" title="辦理政策宣導相關廣告執行情形" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">辦理政策宣導相關廣告執行情形</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/54697/nodelist" title="主管勞動業務財團法人" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">主管勞動業務財團法人</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28876/30107/post" title="內部控制聲明書" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">內部控制聲明書</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/65417/nodelist" title="法規命令草案年度立法計畫專區" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">法規命令草案年度立法計畫專區</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/68738/68898/post" title="本部辦理所屬機關員額評鑑專區" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">本部辦理所屬機關員額評鑑專區</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28726/nodelist" title="遊說法專區" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">遊說法專區</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28732/nodelist" title="個人資料管理" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">個人資料管理</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28744/nodelist" title="國家賠償
+" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">國家賠償
+</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/28712/nodelist" title="勞動部檔案資訊應用申請區
+" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">勞動部檔案資訊應用申請區
+</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/86364/lpsimplelist" title="因公派員出國計畫考察費用執行情形" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">因公派員出國計畫考察費用執行情形</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/28752/87344/lpsimplelist" title="安全防護專區" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">安全防護專區</a>
+                                    </li>
+                                    <li>
+                                        <a href="/media/h2mlv024/勞動部人民申請案件處理時限表.pdf?mediaDL=true" title="勞動部人民申請案件處理時限表.pdf(另開新視窗)" target="_blank" class="" id="home" sec="header" rel="noopener noreferrer">勞動部人民申請案件處理時限表</a>
+                                    </li>
+                            </ul>
+                    </li>
+                    <li>
+                        <a href="https://www.mol.gov.tw/1607/71771/normalnodelist" title="勞動統計專網" target="_self" rel="noopener noreferrer">勞動統計專網</a>
+                            <ul>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/71771/71774/76068/nodelist" title="最新消息" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">最新消息</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/71771/71799/nodelist" title="統計查詢" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">統計查詢</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/71771/72772/statisticalReportList" title="統計專刊" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">統計專刊</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/71771/72867/nodelist" title="統計調查" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">統計調查</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/71771/72956/nodelist" title="薪資統計" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">薪資統計</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/71771/73009/nodelist" title="族群統計" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">族群統計</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/71771/73363/nodelist" title="性別統計專區" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">性別統計專區</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/71771/73495/nodelist" title="統計名詞與分類" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">統計名詞與分類</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/71771/73514/nodelist" title="網路填報" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">網路填報</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/71771/73524/nodelist" title="關於勞動統計" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">關於勞動統計</a>
+                                    </li>
+                            </ul>
+                    </li>
+                    <li>
+                        <a href="https://www.mol.gov.tw/1607/2566/normalnodelist" title="相關連結" target="_self" rel="noopener noreferrer">相關連結</a>
+                            <ul>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/2566/2567/lpsimplelist" title="國外勞工業務網站" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">國外勞工業務網站</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.mol.gov.tw/1607/2566/2570/lpsimplelist" title="消費者保護" target="_self" class="" id="home" sec="header" rel="noopener noreferrer">消費者保護</a>
+                                    </li>
+                                    <li>
+                                        <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=3439" title="勞工體格及健康檢查認可醫療機構名單(另開新視窗)" target="_blank" class="" id="home" sec="header" rel="noopener noreferrer">勞工體格及健康檢查認可醫療機構名單</a>
+                                    </li>
+                                    <li>
+                                        <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=26923" title="公文附件下載(另開新視窗)" target="_blank" class="" id="home" sec="header" rel="noopener noreferrer">公文附件下載</a>
+                                    </li>
+                                    <li>
+                                        <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=61684" title="外部連結" target="" class="" id="home" sec="header" rel="noopener noreferrer">外部連結</a>
+                                    </li>
+                            </ul>
+                    </li>
+            </ul>
+        </nav>
+        <!-- menu End -->
+</div>
+
+
+    </header>
+    <!-- header End -->
+    <!-- main Start -->
+    <div id="center" class="main innerpage">
+        <noscript>
+            您的瀏覽器不支援 JavaScript 或 JavaScript已停用
+        </noscript>
+        <a class="accesskey" href="#aC" id="aC" accesskey="C" title="主要內容區">:::</a>
+        <div class="container">
+                <!-- 左側 -->
+                <div class="left_block">
+                    <div class="leftmenu" aria-label="次選單">
+                                <div class="title">被資遣(解僱)，我的權益要注意什麼?</div>
+                                <ul>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28296/81778/81781/82213/post" target="_self" title="試用期相關保障" rel="noopener noreferrer" class="">
+                                                試用期相關保障
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28296/81778/81784/lpsimplelist" target="_self" title="資遣(解僱)是否合法" rel="noopener noreferrer" class="">
+                                                資遣(解僱)是否合法
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28296/81778/81787/lpsimplelist" target="_self" title="預告期間、預告工資" rel="noopener noreferrer" class="">
+                                                預告期間、預告工資
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28296/81778/81790/81928/post" target="_self" title="謀職假怎麼算?" rel="noopener noreferrer" class="">
+                                                謀職假怎麼算?
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28296/81778/81793/lpsimplelist" target="_self" title="資遣費怎麼算?" rel="noopener noreferrer" class="">
+                                                資遣費怎麼算?
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28296/81778/81796/81939/post" target="_self" title="服務證明書" rel="noopener noreferrer" class="">
+                                                服務證明書
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28296/81778/81799/lpsimplelist" target="_self" title="離職證明書" rel="noopener noreferrer" class="">
+                                                離職證明書
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28296/81778/81802/lpsimplelist" target="_self" title="我可以找誰幫忙?" rel="noopener noreferrer" class="">
+                                                我可以找誰幫忙?
+                                            </a>
+                                        </li>
+                                </ul>
+
+                    </div>
+
+
+                            <!--勞動部所屬機關 start -->
+                            <div class="agency_inblock">
+                                <div class="title">勞動部所屬機關</div>
+                                <ul>
+                                        <li>
+                                            <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=23460" target="_blank" title="勞動及職業安全衛生研究所(另開新視窗)" rel="noopener noreferrer">
+                                                    <img src="/media/glqlbc1n/agency01.png" alt="勞動及職業安全衛生研究所">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=23464" target="_blank" title="職業安全衛生署(另開新視窗)" rel="noopener noreferrer">
+                                                    <img src="/media/wr5lo5w1/agency02.png" alt="職業安全衛生署">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=23468" target="_blank" title="勞動力發展署(另開新視窗)" rel="noopener noreferrer">
+                                                    <img src="/media/ygobuapc/勞發署.png" alt="勞動力發展署">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=23472" target="_blank" title="勞動基金運用局(另開新視窗)" rel="noopener noreferrer">
+                                                    <img src="/media/thpnyq1y/agency04.png" alt="勞動基金運用局">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=23476" target="_blank" title="勞工保險局(另開新視窗)" rel="noopener noreferrer">
+                                                    <img src="/media/aqinkpp2/agency05.png" alt="勞工保險局">
+                                            </a>
+                                        </li>
+                                </ul>
+                            </div>
+                            <!--勞動部所屬機關end -->
+
+                </div>
+            <!-- 主要內容區 -->
+            <div class="center_block">
+                <!-- breadcrumb路徑 -->
+                
+
+
+    <div class="breadcrumb">
+        <ul>
+                    <li>
+                        <a href="/" title="首頁" target="_self" rel="noopener noreferrer">首頁</a>
+                    </li>
+                        <li>
+                            <a href="https://www.mol.gov.tw/1607/28162/normalnodelist" title="業務專區" target="_self" rel="noopener noreferrer">業務專區</a>
+                        </li>
+                        <li>
+                            <a href="https://www.mol.gov.tw/1607/28162/28296/nodelist" title="勞動關係" target="_self" rel="noopener noreferrer">勞動關係</a>
+                        </li>
+                        <li>
+                            <a href="https://www.mol.gov.tw/1607/28162/28296/81778/nodelist" title="被資遣(解僱)，我的權益要注意什麼?" target="_self" rel="noopener noreferrer">被資遣(解僱)，我的權益要注意什麼?</a>
+                        </li>
+                        <li>
+                            <a href="https://www.mol.gov.tw/1607/28162/28296/81778/81802/lpsimplelist" title="我可以找誰幫忙?" target="_self" rel="noopener noreferrer">我可以找誰幫忙?</a>
+                        </li>
+        </ul>
+    </div>
+
+                <!-- h2節點 -->
+                    <h2 class="title">勞資爭議調解 / 仲裁 / 訴訟扶助</h2>
+                                    <div class="function_panel_block">
+                            <!-- publish_info end -->
+                            <div class="share">
+                                <ul>
+                                    <li>
+                                        <a target="_blank" rel="noopener noreferrer" title="分享到 facebook (另開新視窗)" href="https://www.facebook.com/share.php?u=https://www.mol.gov.tw/1607/28162/28296/81778/81802/81951/">
+                                            <img src="/Content/main//images/basic/icon_facebook.png" alt="facebook">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a target="_blank" rel="noopener noreferrer" title="分享到 Twitter (另開新視窗)" href="https://twitter.com/home/?status=https://www.mol.gov.tw/1607/28162/28296/81778/81802/81951/">
+                                            <img src="/Content/main//images/basic/icon_twitter.png" alt="twitter">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a title="分享到 LINE(另開新視窗)" href="https://social-plugins.line.me/lineit/share?url=https://www.mol.gov.tw/1607/28162/28296/81778/81802/81951/&text=勞資爭議調解 / 仲裁 / 訴訟扶助&from=line_scheme" target="_blank" rel="noopener noreferrer">
+                                            <img src="/Content/main//images/basic/icon_line.png" alt="line">
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        <!-- function功能區塊 -->
+                        <div class="function">
+                            <ul>
+                                <li class="back">
+                                    <a href="javascript:history.back();" title="回上一頁" rel="noopener noreferrer">回上一頁</a>
+                                </li>
+                                <li class="print">
+                                    <a href="/1607/28162/28296/81778/81802/81951/?cprint=pt" target="_blank" title="友善列印 另開新視窗" rel="noopener noreferrer">友善列印</a>
+                                </li>
+                                    <li class="forward">
+                                        <a href="?forward=Y" title="轉寄友人" rel="noopener noreferrer">轉寄友人</a>
+                                    </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                
+<style>
+    .file_download_custom {
+        width: 100%;
+        margin: 0 auto;
+        overflow: hidden;
+        *zoom: 1
+    }
+
+        .file_download_custom h3 {
+            font-size: 1.5em;
+            padding: 12px 0px 15px 0px;
+            margin: 0.5em 0px 0.2em;
+            border-bottom: 1px solid #642303
+        }
+
+        .file_download_custom ul {
+            counter-reset: counter;
+            list-style-type: none;
+            padding: 0;
+            margin-left: 1em
+        }
+
+
+        .file_download_custom li {
+            position: relative;
+            margin-bottom: 10px;
+            padding-left: 1em;
+            border-bottom: 1px dashed #AAA;
+            clear: both;
+            overflow: hidden;
+            padding-bottom: .5em
+        }
+
+            .file_download_custom li:before {
+                position: absolute;
+                top: .8em;
+                left: .2em;
+                text-align: right;
+                width: 30px;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: #999;
+                content: ""
+            }
+
+            .file_download_custom li .update,
+            .file_download_custom li .file_view {
+                font-size: .813em;
+                color: #AAA;
+                width: 120px;
+                padding-left: 35px;
+                float: none;
+                margin-top: 5px
+            }
+
+            .file_download_custom li .update {
+                width: 150px
+            }
+
+            .file_download_custom li a {
+                padding: 0px;
+                position: relative;
+                height: auto;
+                line-height: 20px;
+                display: inline-block;
+                vertical-align: middle;
+                margin: 0px .2em;
+                min-width: 32px;
+                text-align: center;
+                text-indent: -9999px;
+                height: 34px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+                margin-bottom: .1em;
+            }
+
+                .file_download_custom li a:after {
+                    content: "";
+                    background: url('');
+                }
+
+                .file_download_custom li a img {
+                    width: 26px;
+                    height: 28px;
+                    position: absolute;
+                    top: 3px;
+                    left: 3px;
+                    text-align: right;
+                }
+</style>
+
+        <section class="cp">
+                <ul class="publish_info_top">
+                    <li>更新日期:2026-09-03</li>
+                </ul>
+
+                        <div class="pic">
+                            <!-- 請用系統做縮圖四個尺寸，依照尺寸依序放入 -->
+                            <picture>
+                                <source media="(min-width: 1200px)" data-srcset="/media/ksbp31yo/救濟途徑比較表0629.jpeg?width=1200">
+                                <source media="(min-width: 992px)" data-srcset="/media/ksbp31yo/救濟途徑比較表0629.jpeg?width=992">
+                                <source media="(min-width: 576px)" data-srcset="/media/ksbp31yo/救濟途徑比較表0629.jpeg?width=576">
+                                <source media="(max-width: 575px)" data-srcset="/media/ksbp31yo/救濟途徑比較表0629.jpeg?width=575">
+                                <img data-src="/media/ksbp31yo/救濟途徑比較表0629.jpeg" class="lazy" alt="勞資爭議調解 / 仲裁 / 訴訟扶助 展示圖">
+                                <noscript><img src="/media/ksbp31yo/救濟途徑比較表0629.jpeg" alt="勞資爭議調解 / 仲裁 / 訴訟扶助 展示圖"></noscript>
+                            </picture>
+                            <span class="caption">救濟途徑比較表</span>
+                        </div>
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<ol>
+<li><strong>調解（免費、迅速）<br /></strong><br />勞工與雇主發生勞資爭議，可以『<strong>由勞工或雇主任一方』</strong>向勞工提供勞務之所在地之<u>勞工行政主管機關【地方政府勞工局（處）或社會局（處）】</u>申請調解（需填寫「調解申請書」），並自由選擇由「調解人」或「調解委員會」召開調解會議。<br /><br /></li>
+<li><strong>合意仲裁（免費）<br /></strong><br />勞資爭議如果經調解不成立，且『<strong>雙方當事人皆同意』</strong>向勞工提供勞務之所在地之<u>勞工行政主管機關【地方政府勞工局（處）或社會局（處）】</u>交付仲裁；雙方也可以於事前以書面同意，不經調解程序直接交付仲裁。<br /><br /></li>
+<li><strong>訴訟（費用扶助）<br /></strong><br />為排除勞工訴訟上之障礙，<a href="https://www.mol.gov.tw/1607/28752/28774/28776/28778/30712/">勞動部及部分地方政府提供勞工各類訴訟扶助</a>（例：律師費、訴訟費、訴訟期間生活費用補助），以期達到維護勞工訴訟權益之目標。</li>
+</ol>
+</body>
+</html>    <ul class="publish_info_down">
+        
+                <li>發布單位:勞動關係司</li>
+                    <li>發布日期:2025-08-05</li>
+        <li>點閱次數:<text data-nodeId="81951"></text></li>
+
+                <li></li>
+    </ul>
+                <!-- file download 檔案下載 -->
+                    <div class="file_download">
+                        <h3>檔案下載</h3>
+                        <ul>
+                                <li>
+                                    <span class="file_name">勞資爭議調解仲裁申請 承辦單位聯繫資訊一覽表</span>
+                                        <span class="file_pdf">
+                                            <a data-collect-nodeId="81951,98924" href="/media/y4cidmi2/勞資爭議調解仲裁申請-承辦單位聯繫資訊一覽表.pdf?mediaDL=true" title="勞資爭議調解仲裁申請-承辦單位聯繫資訊一覽表.pdf (另開新視窗)" target="_blank" rel="noopener noreferrer">
+                                                pdf
+                                            </a>
+                                        </span>
+                                </li>
+                                <li>
+                                    <span class="file_name">救濟途徑比較表</span>
+                                        <span class="file_pdf">
+                                            <a data-collect-nodeId="81951,86015" href="/media/r2zbdm4r/救濟途徑比較表0629更新.pdf?mediaDL=true" title="救濟途徑比較表0629更新.pdf (另開新視窗)" target="_blank" rel="noopener noreferrer">
+                                                pdf
+                                            </a>
+                                        </span>
+                                </li>
+                        </ul>
+                    </div>
+                    <!-- 相關圖檔 start-->
+        </section>
+
+
+
+
+
+
+            </div>
+        </div>
+        
+
+<section class="fatfooter">
+    <div class="container">
+        <button type="button" name="展開選單/OPEN" id="FatFooterBtn" aria-label="導覽選單展開/收合" class="btn btn-fatfooter">收合</button>
+            <nav aria-label="頁尾網站導覽">
+                <ul>
+                        <li>
+                            <a href="https://www.mol.gov.tw/1607/1608/normalnodelist" title="本部簡介" target="_self"  id="home" sec="footer" rel="noopener noreferrer">本部簡介</a>
+                                <ul>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/1608/80563/lpsimplelist" title="正副首長介紹" target="_self"  id="home" sec="footer" rel="noopener noreferrer">正副首長介紹</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/1608/1614/nodelist" title="職掌及組織" target="_self"  id="home" sec="footer" rel="noopener noreferrer">職掌及組織</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/1608/1620/lpsimplelist" title="勞動大事紀" target="_self"  id="home" sec="footer" rel="noopener noreferrer">勞動大事紀</a>
+                                        </li>
+                                        <li>
+                                            <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=2973" title="勞動部辦公位置地圖點位(另開新視窗)" target="_blank"  id="home" sec="footer" rel="noopener noreferrer">勞動部辦公位置地圖點位</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/1608/1624/2976/post" title="聯絡資訊" target="_self"  id="home" sec="footer" rel="noopener noreferrer">聯絡資訊</a>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li>
+                            <a href="https://www.mol.gov.tw/1607/1632/normalnodelist" title="新聞公告" target="_self"  id="home" sec="footer" rel="noopener noreferrer">新聞公告</a>
+                                <ul>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/1632/1633/lpsimplelist" title="新聞稿" target="_self"  id="home" sec="footer" rel="noopener noreferrer">新聞稿</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/1632/2660/lpsimplelist" title="即時新聞澄清" target="_self"  id="home" sec="footer" rel="noopener noreferrer">即時新聞澄清</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/1632/2665/lpsimplelist" title="公布欄" target="_self"  id="home" sec="footer" rel="noopener noreferrer">公布欄</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/1632/1638/lpsimplelist" title="就業資訊" target="_self"  id="home" sec="footer" rel="noopener noreferrer">就業資訊</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/1632/1640/lpsimplelist" title="歷史新聞" target="_self"  id="home" sec="footer" rel="noopener noreferrer">歷史新聞</a>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li>
+                            <a href="https://www.mol.gov.tw/1607/28162/normalnodelist" title="業務專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">業務專區</a>
+                                <ul>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28600/nodelist" title="勞動政策、國際事務" target="_self"  id="home" sec="footer" rel="noopener noreferrer">勞動政策、國際事務</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28296/nodelist" title="勞動關係" target="_self"  id="home" sec="footer" rel="noopener noreferrer">勞動關係</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28166/nodelist" title="勞動條件、就業平等" target="_self"  id="home" sec="footer" rel="noopener noreferrer">勞動條件、就業平等</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28472/nodelist" title="勞動保險" target="_self"  id="home" sec="footer" rel="noopener noreferrer">勞動保險</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28540/nodelist" title="勞動福祉、退休" target="_self"  id="home" sec="footer" rel="noopener noreferrer">勞動福祉、退休</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28598/lpsimplelist" title="職業安全衛生及勞動檢查" target="_self"  id="home" sec="footer" rel="noopener noreferrer">職業安全衛生及勞動檢查</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/86024/nodelist" title="就業服務、職業訓練、外國人才事務" target="_self"  id="home" sec="footer" rel="noopener noreferrer">就業服務、職業訓練、外國人才事務</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28162/28652/nodelist" title="其他重要專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">其他重要專區</a>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li>
+                            <a href="https://www.mol.gov.tw/1607/28690/normalnodelist" title="便民服務" target="_self"  id="home" sec="footer" rel="noopener noreferrer">便民服務</a>
+                                <ul>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/82567/nodelist" title="線上服務系統" target="_self"  id="home" sec="footer" rel="noopener noreferrer">線上服務系統</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/28700/nodelist" title="行政救濟/申訴專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">行政救濟/申訴專區</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/2282/nodeListSearch" title="常見問答" target="_self"  id="home" sec="footer" rel="noopener noreferrer">常見問答</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/86491/86498/lpsimplelist" title="因應天災之勞工協助措施" target="_self"  id="home" sec="footer" rel="noopener noreferrer">因應天災之勞工協助措施</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/82752/nodelist" title="從懷孕到養育子女，有什麼保障?" target="_self"  id="home" sec="footer" rel="noopener noreferrer">從懷孕到養育子女，有什麼保障?</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/82833/nodelist" title="我要退休了，有什麼保障與權利?" target="_self"  id="home" sec="footer" rel="noopener noreferrer">我要退休了，有什麼保障與權利?</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/83363/nodelist" title="受到關稅衝擊了該怎麼辦?" target="_self"  id="home" sec="footer" rel="noopener noreferrer">受到關稅衝擊了該怎麼辦?</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/83030/nodelist" title="就業安定費怎麼繳？繳多少？" target="_self"  id="home" sec="footer" rel="noopener noreferrer">就業安定費怎麼繳？繳多少？</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/83093/nodelist" title="我要找外籍家庭看護 / 幫傭" target="_self"  id="home" sec="footer" rel="noopener noreferrer">我要找外籍家庭看護 / 幫傭</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/83306/nodelist" title="從上班到休假，我該瞭解的權益有哪些?" target="_self"  id="home" sec="footer" rel="noopener noreferrer">從上班到休假，我該瞭解的權益有哪些?</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/83245/nodelist" title="被資遣（解僱），我的權益要注意什麼？" target="_self"  id="home" sec="footer" rel="noopener noreferrer">被資遣（解僱），我的權益要注意什麼？</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/83284/nodelist" title="發生職災怎麼辦?" target="_self"  id="home" sec="footer" rel="noopener noreferrer">發生職災怎麼辦?</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/82583/nodelist" title="我失業了該怎麼辦?" target="_self"  id="home" sec="footer" rel="noopener noreferrer">我失業了該怎麼辦?</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/85011/nodelist" title="青年就業協助" target="_self"  id="home" sec="footer" rel="noopener noreferrer">青年就業協助</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/85508/nodelist" title="我想聘僱外國專業人士(白領)該怎麼做？" target="_self"  id="home" sec="footer" rel="noopener noreferrer">我想聘僱外國專業人士(白領)該怎麼做？</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/85770/nodelist" title="移工聘僱後管理" target="_self"  id="home" sec="footer" rel="noopener noreferrer">移工聘僱後管理</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/86099/nodelist" title="發生職場霸凌怎麼辦?" target="_self"  id="home" sec="footer" rel="noopener noreferrer">發生職場霸凌怎麼辦?</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/87707/nodelist" title="我想要參加職業訓練" target="_self"  id="home" sec="footer" rel="noopener noreferrer">我想要參加職業訓練</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/87756/nodelist" title="部分工時／工讀生，我該瞭解的權益有哪些?" target="_self"  id="home" sec="footer" rel="noopener noreferrer">部分工時／工讀生，我該瞭解的權益有哪些?</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/87626/nodelist" title="我有工作了，勞、就、災保應如何處理?" target="_self"  id="home" sec="footer" rel="noopener noreferrer">我有工作了，勞、就、災保應如何處理?</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/87973/nodelist" title="職場性騷擾預防及處理" target="_self"  id="home" sec="footer" rel="noopener noreferrer">職場性騷擾預防及處理</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/88598/nodelist" title="勞工若生病或受傷，有什麼保障？" target="_self"  id="home" sec="footer" rel="noopener noreferrer">勞工若生病或受傷，有什麼保障？</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/89680/nodelist" title="發生勞資爭議怎麼辦？" target="_self"  id="home" sec="footer" rel="noopener noreferrer">發生勞資爭議怎麼辦？</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28690/89764/nodelist" title="我不服勞動法令之行政處分，如何提起救濟？" target="_self"  id="home" sec="footer" rel="noopener noreferrer">我不服勞動法令之行政處分，如何提起救濟？</a>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li>
+                            <a href="https://www.mol.gov.tw/1607/28752/normalnodelist" title="政府資訊公開" target="_self"  id="home" sec="footer" rel="noopener noreferrer">政府資訊公開</a>
+                                <ul>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/79749/79773/post" title="勞動部因應美國關稅我國出口供應鏈支持方案" target="_self"  id="home" sec="footer" rel="noopener noreferrer">勞動部因應美國關稅我國出口供應鏈支持方案</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28754/nodelist" title="預算、決算書及會計月報" target="_self"  id="home" sec="footer" rel="noopener noreferrer">預算、決算書及會計月報</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28764/nodelist" title="研究報告與出版品" target="_self"  id="home" sec="footer" rel="noopener noreferrer">研究報告與出版品</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28774/nodelist" title="捐補助專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">捐補助專區</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28798/nodelist" title="性別平等專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">性別平等專區</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28820/nodelist" title="廉政專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">廉政專區</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28856/nodelist" title="人權專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">人權專區</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28862/lpsimplelist" title="書面之公共工程及採購契約" target="_self"  id="home" sec="footer" rel="noopener noreferrer">書面之公共工程及採購契約</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28864/30071/post" title="人民申請提供政府資訊案件統計" target="_self"  id="home" sec="footer" rel="noopener noreferrer">人民申請提供政府資訊案件統計</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28866/lpsimplelist" title="公共設施維護管理資訊" target="_self"  id="home" sec="footer" rel="noopener noreferrer">公共設施維護管理資訊</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28868/lpsimplelist" title="本部及所屬機關行動服務發展現況" target="_self"  id="home" sec="footer" rel="noopener noreferrer">本部及所屬機關行動服務發展現況</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28870/30082/post" title="開放資料" target="_self"  id="home" sec="footer" rel="noopener noreferrer">開放資料</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28872/lpsimplelist" title="辦理政策宣導相關廣告執行情形" target="_self"  id="home" sec="footer" rel="noopener noreferrer">辦理政策宣導相關廣告執行情形</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/54697/nodelist" title="主管勞動業務財團法人" target="_self"  id="home" sec="footer" rel="noopener noreferrer">主管勞動業務財團法人</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28876/30107/post" title="內部控制聲明書" target="_self"  id="home" sec="footer" rel="noopener noreferrer">內部控制聲明書</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/65417/nodelist" title="法規命令草案年度立法計畫專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">法規命令草案年度立法計畫專區</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/68738/68898/post" title="本部辦理所屬機關員額評鑑專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">本部辦理所屬機關員額評鑑專區</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28726/nodelist" title="遊說法專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">遊說法專區</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28732/nodelist" title="個人資料管理" target="_self"  id="home" sec="footer" rel="noopener noreferrer">個人資料管理</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28744/nodelist" title="國家賠償
+" target="_self"  id="home" sec="footer" rel="noopener noreferrer">國家賠償
+</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/28712/nodelist" title="勞動部檔案資訊應用申請區
+" target="_self"  id="home" sec="footer" rel="noopener noreferrer">勞動部檔案資訊應用申請區
+</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/86364/lpsimplelist" title="因公派員出國計畫考察費用執行情形" target="_self"  id="home" sec="footer" rel="noopener noreferrer">因公派員出國計畫考察費用執行情形</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/28752/87344/lpsimplelist" title="安全防護專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">安全防護專區</a>
+                                        </li>
+                                        <li>
+                                            <a href="/media/h2mlv024/勞動部人民申請案件處理時限表.pdf?mediaDL=true" title="勞動部人民申請案件處理時限表.pdf(另開新視窗)" target="_blank"  id="home" sec="footer" rel="noopener noreferrer">勞動部人民申請案件處理時限表</a>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li>
+                            <a href="https://www.mol.gov.tw/1607/71771/normalnodelist" title="勞動統計專網" target="_self"  id="home" sec="footer" rel="noopener noreferrer">勞動統計專網</a>
+                                <ul>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/71771/71774/76068/nodelist" title="最新消息" target="_self"  id="home" sec="footer" rel="noopener noreferrer">最新消息</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/71771/71799/nodelist" title="統計查詢" target="_self"  id="home" sec="footer" rel="noopener noreferrer">統計查詢</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/71771/72772/statisticalReportList" title="統計專刊" target="_self"  id="home" sec="footer" rel="noopener noreferrer">統計專刊</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/71771/72867/nodelist" title="統計調查" target="_self"  id="home" sec="footer" rel="noopener noreferrer">統計調查</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/71771/72956/nodelist" title="薪資統計" target="_self"  id="home" sec="footer" rel="noopener noreferrer">薪資統計</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/71771/73009/nodelist" title="族群統計" target="_self"  id="home" sec="footer" rel="noopener noreferrer">族群統計</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/71771/73363/nodelist" title="性別統計專區" target="_self"  id="home" sec="footer" rel="noopener noreferrer">性別統計專區</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/71771/73495/nodelist" title="統計名詞與分類" target="_self"  id="home" sec="footer" rel="noopener noreferrer">統計名詞與分類</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/71771/73514/nodelist" title="網路填報" target="_self"  id="home" sec="footer" rel="noopener noreferrer">網路填報</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/71771/73524/nodelist" title="關於勞動統計" target="_self"  id="home" sec="footer" rel="noopener noreferrer">關於勞動統計</a>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li>
+                            <a href="https://www.mol.gov.tw/1607/2566/normalnodelist" title="相關連結" target="_self"  id="home" sec="footer" rel="noopener noreferrer">相關連結</a>
+                                <ul>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/2566/2567/lpsimplelist" title="國外勞工業務網站" target="_self"  id="home" sec="footer" rel="noopener noreferrer">國外勞工業務網站</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mol.gov.tw/1607/2566/2570/lpsimplelist" title="消費者保護" target="_self"  id="home" sec="footer" rel="noopener noreferrer">消費者保護</a>
+                                        </li>
+                                        <li>
+                                            <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=3439" title="勞工體格及健康檢查認可醫療機構名單(另開新視窗)" target="_blank"  id="home" sec="footer" rel="noopener noreferrer">勞工體格及健康檢查認可醫療機構名單</a>
+                                        </li>
+                                        <li>
+                                            <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=26923" title="公文附件下載(另開新視窗)" target="_blank"  id="home" sec="footer" rel="noopener noreferrer">公文附件下載</a>
+                                        </li>
+                                        <li>
+                                            <a href="/umbraco/surface/Ini/CountAndRedirectUrl?nodeId=61684" title="外部連結" target=""  id="home" sec="footer" rel="noopener noreferrer">外部連結</a>
+                                        </li>
+                                </ul>
+                        </li>
+                </ul>
+            </nav>
+    </div>
+</section>
+<!-- footer Start-->
+<footer>
+    <div class="container">
+        <a class="accesskey" href="#aZ" id="aZ" accesskey="Z" title="頁尾區">:::</a>
+        <div class="footer_group">
+            <div class="footer_logo">
+                        <img src="/media/0malt5vd/勞動部logo.svg" alt="勞動部logo">
+            </div>
+            <div class="footer_data">
+                <p><span>本部總機：(02)8995-6866</span><span>本部傳真：(02)8590-2960</span><br />勞工諮詢申訴專線：1955<br /> 104472 臺北市中山區松江路207號</p>
+            </div>
+            <div class="footer_info">
+                <ul class="footer_link">
+                                <li><a href="/2578/2584/3276/post" title="政府網站資料開放宣告" target="_self" id="home" sec="footer" rel="noopener noreferrer">政府網站資料開放宣告</a></li>
+                                <li><a href="/2578/2584/3277/post" title="隱私權政策及網站安全政策" target="_self" id="home" sec="footer" rel="noopener noreferrer">隱私權政策及網站安全政策</a></li>
+                </ul>
+                <p>
+                    本部網址：https://www.mol.gov.tw/
+為提供更為穩定的瀏覽品質與使用體驗，建議更新瀏覽器至以下版本：IE10(含)以上、最新版本Chrome、最新版本Firefox 最佳解析度1024*768
+                </p>
+                    <span class="update">更新日期:<em>115-09-04</em></span>
+                                    <span class="counter">累計瀏覽人次:<em data-nodeId="__total"></em></span>
+
+            </div>
+        </div>
+        <div class="footer_icon">
+                <a target="_blank" href="https://accessibility.moda.gov.tw/Applications/Detail?category=20250116134214" title="通過AA優先等級無障礙網頁檢測,另開新視窗"  id="home" sec="footer" rel="noopener noreferrer">
+                    <img src="/media/tg3b4crj/aa.jpg" alt="通過AA優先等級無障礙網頁檢測,另開新視窗">
+                </a>
+                            <a target="_blank" href="https://www.gov.tw/" title="我的e政府,另開新視窗"  id="home" sec="footer" rel="noopener noreferrer">
+                    <img src="/media/qejffqcm/egov.png" alt="我的e政府,另開新視窗">
+                </a>
+        </div>
+    </div>
+</footer>
+<!-- footer End -->
+
+
+    </div>
+</div>
+
+
+
+
+    <a role="button" href="javascript:;" class="scrollToTop" title="回頁首">回頁首</a>
+    <!-- JQ -->
+    <script src="/Content/main//js/jquery-3.5.1.min.js"></script>
+    <!-- 外掛 plugin js -->
+    <script src="/Content/main//vendor/jquery.easing.min.js"></script><!-- ease -->
+    <script src="/Content/main//vendor/slick/slick.min.js "></script><!-- slick -->
+    <script src="/Content/main//vendor/slick/slick-lightbox.js "></script><!-- slick lightbox -->
+    <script src="/Content/main//vendor/lazyload/lazyload.js"></script><!-- lazyload -->
+    <script src="/Content/main//vendor/picturefill/picturefill.min.js" async></script><!-- picturefill -->
+    <script src="/Content/main//vendor/scrolltable/jquery.scroltable.min.js"></script><!-- scrolltable -->
+    <script src="/Content/main//vendor/swiper/swiper-bundle.min.js"></script><!-- swiper js -->
+    <!-- hyUI -->
+    <script src="/Content/main//js/hyui.js"></script>
+    <!-- 客製js -->
+    <script src="/Content/main//js/customize.js"></script>
+    <!-- wow -->
+    <script src="/Content/main//js/wow.min.js"></script>
+    <!-- hywebga -->
+    <script src="/Content/ga/ha.js"></script>
+    <script src="/Content/ga/ha.xxx.js"></script>
+    <script>
+        $(function () {
+            ha(81951);
+			getPVs('data-nodeid');
+        });
+        $(document).on("click", "[data-collect-nodeId]", function () {
+            var nodeId = $(this).attr('data-collect-nodeId');
+            if (nodeId != null && nodeId.indexOf(",") > -1) {
+                var nodeIds = nodeId.split(',');
+                _hyweba.collect({ "nIds": nodeIds });
+            } else {
+                _hyweba.collect({ "nId": nodeId });
+            }
+        });
+    </script>
+    <script>
+        new WOW().init();
+
+        function SearchData(nodeId, attribute, divId) {
+            $.ajax({
+                url: '/umbraco/Surface/MacroView/SearchData',
+                type: 'POST',
+                data: {
+                    nodeId: nodeId,
+                    attribute: $("#" + attribute).val()
+                },
+                success: function (res) {
+                    $("#" + divId).html(res);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        function QASearchData(nodeId, attribute, divId) {
+            $.ajax({
+                url: '/umbraco/Surface/MacroView/QASearchData',
+                type: 'POST',
+                data: {
+                    nodeId: nodeId,
+                    attribute: $("#" + attribute).val()
+                },
+                success: function (res) {
+                    $("#" + divId).html(res);
+                    $('.frequentlyQA_tab .tabContent .QAblock ').each(function() {
+                        $(this).find('.Answer').first().show();
+                    });
+                    $('.QAblock .Question').click(function() {
+                        $(this).siblings('.Answer').hide();
+                        $(this).siblings('.Question').removeClass('active');
+                        $(this).next('.Answer').show();
+                        $(this).addClass('active');
+                    })
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    </script>
+
+    
+        
+
+
+
+    <!-- CDF: No JS dependencies were declared //-->
+</body>
+</html>

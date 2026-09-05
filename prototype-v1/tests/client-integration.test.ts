@@ -50,7 +50,6 @@ const searchBody = {
   need: { ...EMPTY_NEED, need: "晚餐" },
   exclude: [],
   location: null,
-  costco_ok: false,
 };
 
 const streamResponse = (parts: Uint8Array[], contentType = "text/event-stream; charset=utf-8") =>
@@ -157,13 +156,13 @@ describe("search", () => {
 
   test("preserves API status and server-safe message for HTTP errors", async () => {
     globalThis.fetch = (() => Promise.resolve(Response.json(
-      { error: "search_failed", message: "資料庫未設定" },
+      { error: "search_failed", message: "搜尋服務目前無法使用，請稍後重試。" },
       { status: 503 },
     ))) as unknown as typeof fetch;
 
     const error = await caughtApiError(search(searchBody, () => {}));
 
-    expect(error).toMatchObject({ kind: "failed", status: 503, message: "資料庫未設定" });
+    expect(error).toMatchObject({ kind: "failed", status: 503, message: "搜尋服務目前無法使用，請稍後重試。" });
   });
 
   test("normalizes fetch failures without attempting a real network request", async () => {
@@ -296,7 +295,7 @@ describe("search state integration", () => {
       category: "交通",
       status: "failed",
       records: fallback,
-      error: "推薦排序失敗，已改依總可比成本排列",
+      error: "推薦排序失敗，已改依預估總費用排列",
     });
 
     expect(state.groups["paid:交通"]).toMatchObject({ status: "failed", records: fallback });
@@ -307,7 +306,7 @@ describe("search state integration", () => {
 test("ranking fallback preserves safe provider diagnostics for the results banner", () => {
   const state = reduceSearch(initialSearch(), {
     agent: "paid", category: "食品", status: "failed", records: [],
-    error: "Gemini 配額或速率限制（429）",
+    error: "智慧排序目前忙碌中，已改用基本排序（429）",
   });
-  expect(state.warnings).toContain("食品：Gemini 配額或速率限制（429）");
+  expect(state.warnings).toContain("食品：智慧排序目前忙碌中，已改用基本排序（429）");
 });

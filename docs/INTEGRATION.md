@@ -31,14 +31,14 @@ flowchart LR
   DB --> FILTER[一次 deterministic 篩選<br/>來源狀態 / 已知限制 / 成本]
   FILTER --> PAID[付費選項 Agent<br/>按類別 Gemini 排序]
   FILTER --> FREE[免費資源 Agent<br/>按類別 Gemini 排序]
-  PAID --> SSE[SSE 串流<br/>失敗群組改成本排序]
+  PAID --> SSE[SSE 串流<br/>失敗群組改預設 deterministic 排序]
   FREE --> SSE
   SSE --> UI
   FILES[事先收集的 JSON + 證據] --> IMPORT[驗證 + transaction upsert]
   IMPORT --> DB
 ```
 
-搜尋不即時爬網頁；模型不能新增、刪除或假造候選。伺服器驗證模型 id、補回遺漏項目、拒絕不可信理由。前端按類別、paid/free 群組接收事件，不依完成時間排列；同類別預設名次交錯，生存模式免費在前。
+搜尋不即時爬網頁；模型不能新增、刪除或假造候選。伺服器驗證模型 id、補回遺漏項目、拒絕不可信理由。前端按類別、paid/free 群組接收事件，不依完成時間排列；推薦順序在生存模式下先免費，再於各段套用食品份量接近度。使用者手動選成本、距離或資料日期時依該控制排序，不再套推薦順序；pending 一律接在 main 後面。
 
 ## 3. 畫面 → API → 持久資料
 
@@ -49,13 +49,14 @@ flowchart LR
 | 語音按鈕 | `POST /api/voice` | multipart 單一 `audio` File → `{transcript,need}`；5 MiB 檔案／6 MiB 請求，前端錄音上限 30 秒；立即進入人工確認，不再自動 parse |
 | 文字解析、修正 | `POST /api/parse` | JSON `{transcript,current}` → Need；`current:null` 全新解析，非 null 只修正提到的欄位；使用者主動送出 |
 | 確認搜尋 | `POST /api/search` | `{need,exclude,location,costco_ok}`；`text/event-stream` |
-| 詳情／收藏還原 | `GET /api/candidates?ids=...`；`GET /api/candidates/:id` | 使用候選真實 id；不存在項目明示，可移除；單次最多 200 ids |
+| 詳情／已存項目還原 | `GET /api/candidates?ids=...`；`GET /api/candidates/:id` | 使用候選真實 id；不存在項目明示，可移除；單次最多 200 ids |
 | 註冊／登入 | `POST /api/auth/register`、`login` | Argon2id；回 user/data/session_token/expires_at |
 | 登入還原／登出 | `GET /api/auth/me`；`POST /api/auth/logout` | Bearer token；固定 30 分鐘、DB 只存 SHA-256 token hash |
 | 改密碼 | `POST /api/auth/change-password` | 驗證舊密碼、鎖定使用者並重驗工作階段；撤銷所有 session |
-| 收藏／清單／設定 | `GET`、`PUT /api/me/data` | 只允許 list/favs/settings/profile 與 revision／updated_at；revision 是寫入前置條件，nickname 以 users 為唯一來源 |
+| 收藏／清單／設定 | `GET`、`PUT /api/me/data` | 愛心／加入清單對應 `list`，書籤／收藏對應 `favs`；兩者獨立切換，只允許 list/favs/settings/profile 與 revision／updated_at |
 | 回報 | `GET`、`POST /api/candidates/:id/reports` | 可公開讀取，寫入需登入；七種原因，不自動改資料狀態 |
-| 團體優惠 | 候選 `group_offer` | 真實碼、門檻與試算；沒有 join/team-members 假 API |
+| 團體優惠目錄／進度 | 候選 `group_offer`；`GET /api/group-offers/status` | 公開顯示真實條件與共享名額進度，不公開成員身分 |
+| 團購加入／成員 | `GET /api/group-offers/mine`；`POST`、`DELETE /api/group-offers/:id/join` | 需登入；同帳號每團一席、交易鎖防超賣；只有團員能看 nickname／username；優惠失效後原團員仍可看到並退出 |
 
 ### 語音與設定契約（2026-09-05）
 
@@ -70,7 +71,7 @@ flowchart LR
 
 1. `step: filter`：總候選、通過數、各限制排除計數、paid/free 群組數與 warnings。
 2. `(agent, category, status: ranking)`：某群組开始。
-3. `(agent, category, status: done | failed, records)`：可交錯完成；failed 保留成本排序與空推薦理由。
+3. `(agent, category, status: done | failed, records)`：可交錯完成；failed 使用預設 deterministic 排序與空推薦理由；食品有份量需求時仍先按份量接近度。
 4. `step: done`：pending、excluded 與完整警告；缺 final done 的串流視為部分結果。
 
 唯一事件型別在 `src/shared/search.ts`。Warnings 是 `{code,fields,message}` 物件，不是字串；UI 顯示 `message`，避免把物件直接當 React child。
@@ -85,8 +86,8 @@ flowchart LR
 | 假計時器／CP 分數 vs 真實搜尋 | 真正 SSE 進度、分組 LLM 排序／fallback；不呈現虛構 CP 數字 | 外部模型品質仍需 live provider 驗收 |
 | 匿名收藏 vs 私有帳號資料 | 收藏／清單需登入；匿名只有 sessionStorage 設定，登入不合併匿名資料 | revision CAS；獨立欄位三方合併，同欄位衝突不覆蓋 |
 | 假支出圖 vs 有證據支出 | 自填月支出；非 demo 且成本已知時可「標記已買」，不是付款 | 無銀行連接、無交易歷史 |
-| 揪團加入／假成員數 vs 商家優惠 | 顯示商家條件、兌換碼、試算；不假裝已加入團體 | 無真正團隊／聊天／付款系統 |
-| 無法確定人數／日期／資格／過敏原 | 已知不符排除；缺少符合證據待確認，不進主要推薦 | 需擴充資料欄位與來源證據才能精準篩選 |
+| 假成員數 vs 共享團購加入 | PostgreSQL 保存真實加入狀態；公開人數、登入加入／退出，團員可看成員名單 | 每筆優惠只有一個目前團；無聊天、代訂、付款或新團輪替 |
+| 無法確定食品份量／日期／資格／過敏原 | 食品需求 N 只接受明示最大份量 1..N，超過 N 排除；其餘缺少符合證據者標示待確認並後置 | 需擴充資料欄位與來源證據才能精準篩選 |
 | 範例資料有「已驗證」欄位 | 原有 fixture 保留但 API 預設隱藏；demo 模式需明確開啟且禁止導購/地圖/兌換/標記已買 | 真實資料的來源與必要費用另做匯入驗證 |
 | localhost session 與 service worker | API no-store；只快取公開 app shell；拒絕未完成 SSE；加入 ErrorBoundary | 未做完整跨瀏覽器 PWA 安裝驗收 |
 | 密碼變更與登入並行 | 使用者 row lock、重驗 password hash/session，防止舊密碼在撤銷後建立新 session | 公開環境需邊界限流、監控與備份 |
@@ -94,7 +95,7 @@ flowchart LR
 
 ## 5. 隱私及部署邊界
 
-- 只存帳號、清單／收藏 ids、設定、暱稱／顏色與回報。不存錄音、逐字稿、Need、搜尋歷史與使用者座標。
+- 只存帳號、清單／收藏 ids、設定、暱稱／顏色、回報與團購加入關係。不存錄音、逐字稿、Need、搜尋歷史與使用者座標。公開 API 只回人數；nickname／username 只回給同團成員。
 - token 在 sessionStorage；匿名設定也只在該分頁 sessionStorage。沒有 guest → account 自動合併。
 - 錄音按鈕事前揭露「停止後音訊會傳送給 Gemini 解析」。音訊、使用者主動送出的文字／修正、必要候選內容會送到 Gemini；逐字稿與 Need 的草稿只在前端記憶體。`store:false` 只控制 Interaction 儲存，不代表整體零保留或不作訓練；仍須核對 Google 條款／帳號計費與地區。座標只在 deterministic 距離計算使用。
 - 同源 API 不使用 cookie，不需要開放任意 origin CORS。Bun production 在 `prototype-v1` 工作目錄執行，靜態檔案為 `dist`。
@@ -155,9 +156,20 @@ flowchart LR
 
 ## 8. 嚴格需求與帳號衝突修復（2026-09-05）
 
-- `request_match` 是搜尋回應的暫時 metadata，包含 pending／excluded 及原因；不改寫資料庫原本的 `data_status`。排名僅接收主要候選，不能把待確認者重新放回。
-- 人數／日期／時間／資格的證據只接受目前支援的有限明確格式；不能判定就待確認。店家 24H 不代表早餐全天供應；×2 套餐不當作三人餐，也不自動乘價。結果可以為空。
+- `request_match` 是搜尋回應的暫時 metadata，包含 pending／excluded 及原因；不改寫資料庫原本的 `data_status`。LLM 排名僅接收 main，不能把待確認者改判成符合。前端將 pending 接在 main 後面，合併為同一個可見清單，所有排序模式都保留待確認後置；分類數字與候選總數包含兩者。待確認狀態、原因與未知費用提示保留，不再有獨立待確認區塊；已排除區塊不變。
+- 食品且需求指定 N 人／份時，只把明示最大份量 1..N 視為候選，推薦順序為恰好 N、再到最接近的較小份量；明示區間用最大值，超過 N 直接 excluded，即使該筆同時未過證據閘門或價格未知也不降為 pending。份量未知才 pending；件數、重量、餐名或單價不推導份量，不自動乘數量或價格。預算、成分／過敏原、會員、登記、日期、時段與資格硬限制維持既有規則。
+- `portion_match` 只存在本次搜尋結果，提供 `requested/min/max` 給 deterministic 排序與安全推薦理由；不持久化、不回寫候選資料，也不把較小份量描述成足夠全員食用。
+- 愛心與「加入清單」讀寫 `account.data.list`；詳情書籤讀寫 `account.data.favs`。結果頁、預設瀏覽與詳情各自顯示對應狀態，兩個集合獨立切換，不批次遷移既有資料；愛心選取態只將圖示填紅，不改成紅色按鈕背景。
 - 對未知成分的食品不宣稱「不含牛／無過敏原」。非食品不會僅因缺少食品標籤而被判待確認。
 - 新增 `account_data.revision bigint not null default 0`；PUT 的 revision 失配回 409，canonical nickname 與帳號內容同交易更新。前端保存同步基準，最多三次 CAS；明確衝突保留本機變更，允許使用者重載。
 - Gemini 502 錯誤回傳固定 `gemini_auth`／`gemini_quota`／`gemini_unavailable`／`gemini_request`／`gemini_network`／`gemini_invalid_response` 類別，可帶安全數字 `upstream_status`；不暴露上游 body、URL、key。排序群組備援保留安全診斷供 UI 顯示。
 - 本輪只遷移隔離測試 DB，未部署到原本 3100 服務或真實 DB。詳細通過與缺口見 [驗收報告](testing/full-app-acceptance-2026-09-05.md)。
+
+
+### 2026-09-05：未搜尋時的預設瀏覽
+
+- 新進入 App／重新整理／登入或註冊後，尚未執行搜尋就點「結果」：透過唯讀 `GET /api/browse` 載入公開 catalog，不需要先設定需求，也不呼叫 Gemini。
+- 預設選「全部」類別及「成本低到高」，五類可各自切換。排序使用價格＋必要費用−明確折扣；main 與 pending 各自排序、pending 接於後段，未知費用不當作零；已排除區塊保留。
+- 瀏覽不套用帳號預算、排除偏好、會員、登記或定位條件，資格與資料不確定性仍揭露，不宣稱適用於每個人。沿用公開 catalog 的隱藏示範／封存／不安全來源與降級未充分驗證資料規則。
+- 已經送出的搜尋（包含零筆、錯誤或中途取消）不改成全部瀏覽；保留原搜尋結果／錯誤，避免顯示不符合條件的選項。
+- 載入中、真正空 catalog、連線失敗是不同畫面；失敗可以重新載入。預設瀏覽卡片的愛心沿用清單流程；進入詳情後，加入清單與書籤收藏仍是兩個獨立動作。

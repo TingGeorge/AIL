@@ -50,7 +50,7 @@ test("account update schema is strict and caps unique list/favorite IDs", () => 
 test("report route rejects an invalid candidate id before database access", async () => {
   const response = await request("/api/candidates/not%20valid/reports");
   expect(response.status).toBe(400);
-  expect(await response.json()).toEqual({ error: "invalid_request", message: "候選紀錄格式錯誤" });
+  expect(await response.json()).toEqual({ error: "invalid_request", message: "選項資料格式錯誤，請重新整理後再試。" });
 });
 
 const live = Boolean(databaseUrl);
@@ -127,7 +127,6 @@ describe.skipIf(!live)("account data and reports with isolated PostgreSQL rows",
     update.settings.survival = true;
     update.settings.exclude = ["牛"];
     update.settings.prefs = ["可外帶"];
-    update.settings.costco_ok = true;
 
     const saved = await request("/api/me/data", "PUT", update, session.session_token);
     expect(saved.status).toBe(200);

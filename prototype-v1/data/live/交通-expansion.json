@@ -1,0 +1,1300 @@
+[
+  {
+    "id": "t_p120",
+    "category": "交通",
+    "agent": "paid",
+    "title": "基北北桃都會通定期票",
+    "provider": "交通部公路局 TPASS 行政服務",
+    "price_total_twd": 1200,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張／每人",
+    "quantity_or_servings": "一張定期票，啟用當日含起連續30日，於基北北桃方案適用範圍搭乘；不表示所有跨區路線均可用",
+    "eligibility": [
+      "已持可設定基北北桃都會通的一般實體悠遊卡普通卡；本筆不含另購票卡"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "購買設定後30日內啟用；自啟用當日（含）起連續30日，搭乘依各營運者班次",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "涵蓋基北北桃指定捷運、公車、臺鐵與輕軌；公共自行車另受會員及綁卡條件限制",
+    "tags": null,
+    "source_url": "https://www.ntmetro.com.tw/basic/?node=10102",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "基北北桃跨城際定期票(1,200元)",
+        "url": "https://www.tpass.tw/faq",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "基隆市、新北市、臺北市、桃園市",
+        "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "一般實體悠遊卡，包含普通卡",
+        "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "連續30日",
+        "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ntmetro.com.tw/basic/?node=10102",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "使用已持有的一般實體悠遊卡普通卡，在車站設定1,200元定期票；比較核心大眾運輸方案，不把公共自行車優惠當作無條件取得的服務。",
+      "pricing_context": "1,200元為定期票價格；已持相容票卡，因此本筆不另購卡。另購TPASS實體卡的100元為卡片售價，不是可退押金，也不是儲值金。購卡補助需另符官方條件，未預先扣除。",
+      "review_notes": [
+        "修正舊引文把一卡通、愛金卡一概視為本生活圈可設定載具的錯誤；本筆僅採官方列出的既有悠遊卡普通卡。",
+        "設定後30日內須啟用，與啟用後連續30日是兩個不同期限。",
+        "公車、臺鐵、公路與國道客運仍限官方方案範圍；YouBike須另符合註冊、票卡綁定、保險及各縣市優惠規則。",
+        "100元購卡補助不當成每位旅客都適用的即時減價，也不列成可退押金。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "fee_evidence": [
+        {
+          "field": "費用",
+          "quote": "民眾可以使用原有卡片購買公共運輸定期票",
+          "url": "https://www.tpass.tw/faq",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t_fp1d",
+    "category": "交通",
+    "agent": "paid",
+    "title": "北北基好玩卡|交通暢遊卡（一日券）",
+    "provider": "豐趣科技股份有限公司（Taipei FunPASS 北北基好玩卡）",
+    "price_total_twd": 210,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張",
+    "quantity_or_servings": "一張票卡限一人，自啟用當日起連續1日，於列明交通範圍不限次數搭乘",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "自第一次使用當日（含）起連續1個日曆日，至到期日臺北捷運、公車營業截止時間；不是24小時票",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "台北捷運、北北基市區公車及產品頁列明之6條台灣好行；不含桃園機場捷運",
+    "tags": null,
+    "source_url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "一日券210元",
+        "url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "一張票卡僅限一人使用。",
+        "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "以票卡正面標示之天數為有效天數，必須連續使用",
+        "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "臺北捷運各站詢問處或悠遊卡市府轉運站客服中心現場購買交通暢遊實體卡；不含宅配、貓纜版、景點卡或無限暢遊卡。",
+      "pricing_context": "政府FAQ公告一日券210元，為包含實體票卡的售價；現場購買無宅配費，卡不含押金且不可加值。未將退款手續費或可選服務當成必要費，也未重複扣折扣。",
+      "review_notes": [
+        "原商品頁直接HTTP取得403，已改用臺北市政府FAQ價格及發卡方悠遊卡使用條款；不是將未取得內容改寫成引文。",
+        "本筆採現場購票，無須預先官網訂購、帳號或自取預約；移除原本混入的網購資格。",
+        "適用臺北捷運、臺北市／新北市／基隆市公車，以及九份金瓜石、北投竹子湖、木柵平溪、皇冠北海岸、黃金福隆、濱海奇基6條台灣好行；不包含編碼4碼公路客運及專車。",
+        "不含桃園機場捷運；效期按連續日曆日，不按24小時計。",
+        "官方僅寫超過50張可洽詢團購，未明列實際折扣，且張數不等於人數；不設定group_offer。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "fee_evidence": [
+        {
+          "field": "費用",
+          "quote": "本卡不含押金、不具再加值功能。",
+          "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t_fp2d",
+    "category": "交通",
+    "agent": "paid",
+    "title": "北北基好玩卡|交通暢遊卡（二日券）",
+    "provider": "豐趣科技股份有限公司（Taipei FunPASS 北北基好玩卡）",
+    "price_total_twd": 340,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張",
+    "quantity_or_servings": "一張票卡限一人，自啟用當日起連續2日，於列明交通範圍不限次數搭乘",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "自第一次使用當日（含）起連續2個日曆日，至到期日臺北捷運、公車營業截止時間；不是48小時票",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "台北捷運、北北基市區公車及產品頁列明之6條台灣好行；不含桃園機場捷運",
+    "tags": null,
+    "source_url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "二日券340元",
+        "url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "一張票卡僅限一人使用。",
+        "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "以票卡正面標示之天數為有效天數，必須連續使用",
+        "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "臺北捷運各站詢問處或悠遊卡市府轉運站客服中心現場購買交通暢遊實體卡；不含宅配、貓纜版、景點卡或無限暢遊卡。",
+      "pricing_context": "政府FAQ公告二日券340元，為包含實體票卡的售價；現場購買無宅配費，卡不含押金且不可加值。未將退款手續費或可選服務當成必要費，也未重複扣折扣。",
+      "review_notes": [
+        "原商品頁直接HTTP取得403，已改用臺北市政府FAQ價格及發卡方悠遊卡使用條款；不是將未取得內容改寫成引文。",
+        "本筆採現場購票，無須預先官網訂購、帳號或自取預約；移除原本混入的網購資格。",
+        "適用臺北捷運、臺北市／新北市／基隆市公車，以及九份金瓜石、北投竹子湖、木柵平溪、皇冠北海岸、黃金福隆、濱海奇基6條台灣好行；不包含編碼4碼公路客運及專車。",
+        "不含桃園機場捷運；效期按連續日曆日，不按24小時計。",
+        "官方僅寫超過50張可洽詢團購，未明列實際折扣，且張數不等於人數；不設定group_offer。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "fee_evidence": [
+        {
+          "field": "費用",
+          "quote": "本卡不含押金、不具再加值功能。",
+          "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t_fp3d",
+    "category": "交通",
+    "agent": "paid",
+    "title": "北北基好玩卡|交通暢遊卡（三日券）",
+    "provider": "豐趣科技股份有限公司（Taipei FunPASS 北北基好玩卡）",
+    "price_total_twd": 470,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張",
+    "quantity_or_servings": "一張票卡限一人，自啟用當日起連續3日，於列明交通範圍不限次數搭乘",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "自第一次使用當日（含）起連續3個日曆日，至到期日臺北捷運、公車營業截止時間；不是72小時票",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "台北捷運、北北基市區公車及產品頁列明之6條台灣好行；不含桃園機場捷運",
+    "tags": null,
+    "source_url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "三日券470元",
+        "url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "一張票卡僅限一人使用。",
+        "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "以票卡正面標示之天數為有效天數，必須連續使用",
+        "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "臺北捷運各站詢問處或悠遊卡市府轉運站客服中心現場購買交通暢遊實體卡；不含宅配、貓纜版、景點卡或無限暢遊卡。",
+      "pricing_context": "政府FAQ公告三日券470元，為包含實體票卡的售價；現場購買無宅配費，卡不含押金且不可加值。未將退款手續費或可選服務當成必要費，也未重複扣折扣。",
+      "review_notes": [
+        "原商品頁直接HTTP取得403，已改用臺北市政府FAQ價格及發卡方悠遊卡使用條款；不是將未取得內容改寫成引文。",
+        "本筆採現場購票，無須預先官網訂購、帳號或自取預約；移除原本混入的網購資格。",
+        "適用臺北捷運、臺北市／新北市／基隆市公車，以及九份金瓜石、北投竹子湖、木柵平溪、皇冠北海岸、黃金福隆、濱海奇基6條台灣好行；不包含編碼4碼公路客運及專車。",
+        "不含桃園機場捷運；效期按連續日曆日，不按24小時計。",
+        "官方僅寫超過50張可洽詢團購，未明列實際折扣，且張數不等於人數；不設定group_offer。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "fee_evidence": [
+        {
+          "field": "費用",
+          "quote": "本卡不含押金、不具再加值功能。",
+          "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t_fp5d",
+    "category": "交通",
+    "agent": "paid",
+    "title": "北北基好玩卡|交通暢遊卡（五日券）",
+    "provider": "豐趣科技股份有限公司（Taipei FunPASS 北北基好玩卡）",
+    "price_total_twd": 730,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張",
+    "quantity_or_servings": "一張票卡限一人，自啟用當日起連續5日，於列明交通範圍不限次數搭乘",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "自第一次使用當日（含）起連續5個日曆日，至到期日臺北捷運、公車營業截止時間；不是120小時票",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "台北捷運、北北基市區公車及產品頁列明之6條台灣好行；不含桃園機場捷運",
+    "tags": null,
+    "source_url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "五日券730元",
+        "url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "一張票卡僅限一人使用。",
+        "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "以票卡正面標示之天數為有效天數，必須連續使用",
+        "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "臺北捷運各站詢問處或悠遊卡市府轉運站客服中心現場購買交通暢遊實體卡；不含宅配、貓纜版、景點卡或無限暢遊卡。",
+      "pricing_context": "政府FAQ公告五日券730元，為包含實體票卡的售價；現場購買無宅配費，卡不含押金且不可加值。未將退款手續費或可選服務當成必要費，也未重複扣折扣。",
+      "review_notes": [
+        "原商品頁直接HTTP取得403，已改用臺北市政府FAQ價格及發卡方悠遊卡使用條款；不是將未取得內容改寫成引文。",
+        "本筆採現場購票，無須預先官網訂購、帳號或自取預約；移除原本混入的網購資格。",
+        "適用臺北捷運、臺北市／新北市／基隆市公車，以及九份金瓜石、北投竹子湖、木柵平溪、皇冠北海岸、黃金福隆、濱海奇基6條台灣好行；不包含編碼4碼公路客運及專車。",
+        "不含桃園機場捷運；效期按連續日曆日，不按24小時計。",
+        "官方僅寫超過50張可洽詢團購，未明列實際折扣，且張數不等於人數；不設定group_offer。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "fee_evidence": [
+        {
+          "field": "費用",
+          "quote": "本卡不含押金、不具再加值功能。",
+          "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t_tm1d",
+    "category": "交通",
+    "agent": "paid",
+    "title": "桃園機場捷運一日票",
+    "provider": "桃園大眾捷運股份有限公司",
+    "price_total_twd": 320,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張／每人",
+    "quantity_or_servings": "每人一張一日票；啟用當日不限區間、次數及車種搭乘桃園機場捷運",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "啟用後至當日營運結束有效；不是連續24小時，搭乘以車站實際班次為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "桃園機場捷運全線一日不限次數搭乘",
+    "tags": null,
+    "source_url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "優惠價 320元/張",
+        "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "不限區間、不限次數、不限車種搭乘",
+        "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "啟用後於當日營運結束前",
+        "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "車站詢問處購買普通一日票單張，不含聯名、贈品或多人套票組。",
+      "pricing_context": "單張320元為官方現行優惠售價；票卡不含押金、不可加值，無另購卡費。discount_twd維持0，不把售價中的優惠再扣一次。",
+      "review_notes": [
+        "4張1,280元等於每張320元，並無人數折扣，不建立團購。",
+        "同頁混列歷年聯名促銷；不採用已過期的2020年雙張75折等活動。",
+        "票價可比較的是一日票本體，不含未列明之加購服務。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "fee_evidence": [
+        {
+          "field": "費用",
+          "quote": "本票卡不具加值功能且不含押金。",
+          "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t_tm48",
+    "category": "交通",
+    "agent": "paid",
+    "title": "機捷來回票+北捷48小時票",
+    "provider": "桃園大眾捷運股份有限公司",
+    "price_total_twd": 520,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每組／每人",
+    "quantity_or_servings": "一人套票，含機場捷運任選起訖站2次搭乘及臺北捷運連續48小時不限次搭乘",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "北捷票自首次刷卡進站起連續48小時；機捷部分限2次，來源未明示60日使用限制，各運具依班次營運",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "桃捷二次單程（不限往返方向）＋臺北捷運連續48小時不限次數搭乘",
+    "tags": null,
+    "source_url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "機捷來回票+北捷48小時票：520元",
+        "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "搭乘2次桃園機場捷運",
+        "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "自首次刷卡進入臺北捷運車站之時間起計連續48/72小時",
+        "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "在桃園機場捷運A1台北車站、A12機場第一航廈站或A13機場第二航廈站以現金購買整套票；不是兩個人的團體票。",
+      "pricing_context": "官方整套售價520元，包含機捷票卡與北捷票卡；比較站內現金售出的完整套票，無須另備儲值載具。未使用成套退票時的20元手續費是可選退款成本，不加在必要購票費；未主張票卡具有可退押金。",
+      "review_notes": [
+        "刪除先前無來源支持的「60日內」條件；機捷兩趟的額外啟用截止未在本頁明示，不自行推定。",
+        "機捷兩趟都可任選起訖站，不強制同路線往返；北捷時數從首次刷卡進站起算。",
+        "北捷48/72小時票與機捷來回票是同一套商品，不是兩人優惠；未設定group_offer。",
+        "20元只在未使用票卡成套退票時收取；原「套票不含押金」斷言改為實際整套票卡售價的費用依據。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "fee_evidence": [
+        {
+          "field": "費用",
+          "quote": "本套票以優惠價格出售，套票內之票卡不得轉售予他人。",
+          "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t_tm72",
+    "category": "交通",
+    "agent": "paid",
+    "title": "機捷來回票+北捷72小時票",
+    "provider": "桃園大眾捷運股份有限公司",
+    "price_total_twd": 600,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每組／每人",
+    "quantity_or_servings": "一人套票，含機場捷運任選起訖站2次搭乘及臺北捷運連續72小時不限次搭乘",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "北捷票自首次刷卡進站起連續72小時；機捷部分限2次，來源未明示60日使用限制，各運具依班次營運",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "桃捷二次單程（不限往返方向）＋臺北捷運連續72小時不限次數搭乘",
+    "tags": null,
+    "source_url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "機捷來回票+北捷72小時票：600元",
+        "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "搭乘2次桃園機場捷運",
+        "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "自首次刷卡進入臺北捷運車站之時間起計連續48/72小時",
+        "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "在桃園機場捷運A1台北車站、A12機場第一航廈站或A13機場第二航廈站以現金購買整套票；不是兩個人的團體票。",
+      "pricing_context": "官方整套售價600元，包含機捷票卡與北捷票卡；比較站內現金售出的完整套票，無須另備儲值載具。未使用成套退票時的20元手續費是可選退款成本，不加在必要購票費；未主張票卡具有可退押金。",
+      "review_notes": [
+        "刪除先前無來源支持的「60日內」條件；機捷兩趟的額外啟用截止未在本頁明示，不自行推定。",
+        "機捷兩趟都可任選起訖站，不強制同路線往返；北捷時數從首次刷卡進站起算。",
+        "北捷48/72小時票與機捷來回票是同一套商品，不是兩人優惠；未設定group_offer。",
+        "20元只在未使用票卡成套退票時收取；原「套票不含押金」斷言改為實際整套票卡售價的費用依據。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "fee_evidence": [
+        {
+          "field": "費用",
+          "quote": "本套票以優惠價格出售，套票內之票卡不得轉售予他人。",
+          "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t_a1a3",
+    "category": "交通",
+    "agent": "paid",
+    "title": "桃園機場捷運單程票（A1台北車站→A13機場第二航廈站）",
+    "provider": "桃園大眾捷運股份有限公司",
+    "price_total_twd": 160,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人／每張單程票",
+    "quantity_or_servings": "一人由A1台北車站至A13機場第二航廈站單程全票一次；160元不是全團總價",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "發售當日營運時間內有效；直達車與普通車依搭乘日班次，不把車站05:00開門視為此行程首班車",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "A1台北車站至A13機場第二航廈站單程",
+    "tags": null,
+    "source_url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "160",
+        "url": "https://www.tymetro.com.tw/tymetro-new/upload/ckupload/20241213_11052534.pdf",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "單程票",
+        "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "發售當日營運時間內有效。",
+        "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": {
+      "min_people": 10,
+      "discount_pct": 20,
+      "redeem_code": null,
+      "note": "現場團體購票：10人以上於車站詢問處購買當日團體票，不可預購、不予退票；全團須同一起訖、團進團出並由公務門進出站。A1→A13一般全票160元的8折為每人128元，不是全團總價，亦不與其他票種優惠重複套用。"
+    },
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "A1台北車站至A13機場第二航廈站，單程一般全票；不含敬老、身障、兒童或市民卡補助。團體另依group_offer條件。",
+      "pricing_context": "一般全票160元／人，購買一次使用的單程票，出站回收，不需另購電子票證或儲值。基本價格與discount_twd=0不預先套用團體優惠。",
+      "review_notes": [
+        "官方PDF第1頁三角票價表：A13機場第二航廈站橫列與A1臺北車站直欄交格為160；價格引文只摘實際儲存格「160」，站別判讀是推導，不冒充完整原文。",
+        "PDF標示114年1月2日起實施，這是票價生效日，不是本次HTTP查核時間。",
+        "未將A1車站開放時間05:00~末班車誤當A1→A13列車時刻。",
+        "160元為每人單程；10人以上當日同進同出現場團體購票可用8折，不與其他資格優惠重疊。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "fare_cell": {
+        "page": 1,
+        "row": "A13機場第二航廈站",
+        "column": "A1臺北車站",
+        "cell_text": "160",
+        "image": "tyfare-page.png"
+      },
+      "group_offer_evidence": [
+        {
+          "field": "人數",
+          "quote": "10人以上團體",
+          "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        },
+        {
+          "field": "折扣",
+          "quote": "依公告票價之8折收費",
+          "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        },
+        {
+          "field": "兌換",
+          "quote": "車站詢問處",
+          "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        },
+        {
+          "field": "購票限制",
+          "quote": "不可預購。",
+          "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        },
+        {
+          "field": "同行條件",
+          "quote": "旅客須團進團出，由公務門進出站。",
+          "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        },
+        {
+          "field": "期限",
+          "quote": "發售當日營運時間內有效",
+          "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        },
+        {
+          "field": "退票",
+          "quote": "不予退票",
+          "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        }
+      ],
+      "group_offer_terms": {
+        "redemption_method": "現場團體購票：10人以上於車站詢問處購買同日起訖站一致的團體票，不可預購，須團進團出由公務門通行，出站由站務人員回收；無兌換碼。",
+        "valid_until": null,
+        "valid_from": null,
+        "ticket_validity": "發售當日營運時間內有效",
+        "source_url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "price_basis": "一般公告全票160元×0.8＝128元／人；此計算為推導，非引文。"
+      },
+      "fee_evidence": [
+        {
+          "field": "費用",
+          "quote": "出站時由自動收費閘門回收。",
+          "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+          "checked_at": "2026-09-05T23:46:54+08:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t_nt1d",
+    "category": "交通",
+    "agent": "paid",
+    "title": "新北捷運輕軌一日票（紙票）",
+    "provider": "新北大眾捷運股份有限公司",
+    "price_total_twd": 50,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張／每人",
+    "quantity_or_servings": "一張紙票限一人，發售或啟用當日於新北捷運輕軌系統營運區間不限次數搭乘",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "發售或啟用當日營運時間內有效；使用時須蓋日期戳章，首末班依搭乘車站時刻表",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "新北捷運淡海輕軌、安坑輕軌等官方票種所稱輕軌系統營運區間",
+    "tags": null,
+    "source_url": "https://www.ntmetro.com.tw/basic/?node=10102",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "50元",
+        "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "限1人使用。",
+        "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "本票限發售或啟用當日營運時間內有效，當天營運時間內可不限次數搭乘。",
+        "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ntmetro.com.tw/basic/?node=10102",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "僅車站詢問處出售的50元紙本一日票；限新北捷運輕軌系統，不擴張至環狀線等一般捷運。",
+      "pricing_context": "紙本一日票完整售價50元，紙票為搭乘憑證，無須另買儲值卡；合作APP的QR Code票另依合作方案收費，不宣稱一律50元。",
+      "review_notes": [
+        "修正失效來源node=10022為票價與票種node=10102。",
+        "紙票使用時須蓋印日期戳章；發售或啟用當日有效，不是連續24小時。",
+        "刪除無來源支持的06:00–24:00；頁尾07:00–23:00是客服時間，不是列車時刻。",
+        "官方團體票是單次使用之另一票種，不能把其10人8折套用在此一日票。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      }
+    }
+  },
+  {
+    "id": "t_ntbk",
+    "category": "交通",
+    "agent": "paid",
+    "title": "新北捷運輕軌自行車單程票",
+    "provider": "新北大眾捷運股份有限公司",
+    "price_total_twd": 50,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人連同自行車／每張",
+    "quantity_or_servings": "一名旅客與一輛自行車人車合併計費，單趟不限里程；不可把50元當成自行車附加費再加一次人票",
+    "eligibility": [
+      "攜帶長180公分、高120公分、寬70公分以下非動力式腳踏車；人車同進同出，依指定車廂及位置搭乘"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "發售1小時內有效；輕軌營運時段開放，但上班日07–09、17–19及公告特定疏運日期除外",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "指定新北捷運輕軌區間的一次自行車隨行單程",
+    "tags": null,
+    "source_url": "https://www.ntmetro.com.tw/basic/?node=10102",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "單一票價收費新台幣50元",
+        "url": "https://www.ntmetro.com.tw/basic/?mode=detail&node=3",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "人車須一同進出車站",
+        "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "長180公分、高120公分、寬70公分以下非動力式腳踏車",
+        "url": "https://www.ntmetro.com.tw/basic/?mode=detail&node=3",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "車票限發售1小時內有效，逾期作廢。",
+        "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ntmetro.com.tw/basic/?node=10102",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "旅客攜帶未包裝的一般非動力自行車，在新北捷運輕軌開放時段單次搭乘；不混同包裝完整折疊車的隨身攜帶物規則。",
+      "pricing_context": "50元已合併人與車的單趟費用；售票機購票，不必另買電子卡、付押金或儲值。",
+      "review_notes": [
+        "修正失效來源，增加自行車服務正式規定頁mode=detail&node=3。",
+        "補上發售1小時內有效，以及上班日07–09、17–19禁帶自行車時段。",
+        "只可停放第2、第4車多功能區，各區2輛、每列車共4輛；擁擠時須等下一班，特殊疏運可暫停。",
+        "不得騎乘或滑乘、不得搭電扶梯；使用旅客通道、無障礙坡道或電梯進出。",
+        "不把普通旅客團體票折扣推定適用人車合併票；group_offer維持null。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      }
+    }
+  },
+  {
+    "id": "t_dd24",
+    "category": "交通",
+    "agent": "paid",
+    "title": "台北市雙層觀光巴士24小時票",
+    "provider": "三重汽車客運股份有限公司",
+    "price_total_twd": 660,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人／每張",
+    "quantity_or_servings": "一人一票；官網此票說明為首次搭乘日及次日營業時間內不限次數上下車，紅藍線可搭",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "首次搭乘日及次日有效，僅營業時間內；依官方此票說明，不自行改成首次使用後精確24小時",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "台北市雙層觀光巴士紅線／藍線；依票種規則搭乘",
+    "tags": null,
+    "source_url": "https://taipeisightseeing.com.tw/",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 660",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "可不限次數上下車使用",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "首次搭乘日及次日有效",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://taipeisightseeing.com.tw/",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "每人一張24小時票、現場購票，使用台北市雙層觀光巴士紅／藍線適用班次；不是其他市區公車通用票，也不保證所有班次都使用雙層車。",
+      "pricing_context": "現行一般票價660元／人，未重複扣優惠；scope限定現場購入一次票券本體，不以儲值卡購卡費、錢包儲值金或敬老補助充當車資。",
+      "review_notes": [
+        "引文由本次下載的官方公開網站前端資源bus-app.js逐字取得；新站版本與主agent直接開啟的版本文字不同，未把改寫或QA轉述冒充同一份來源原文。",
+        "本筆按現場向車服人員購票的票種本體比較；不混入官網線上購票或電話團體預訂規則，也不推定班次保證有座。",
+        "一般票價未套用65歲、兒童、身障或臺北市敬老悠遊卡點數補助；這些限定資格的金額不是本筆通用售價。",
+        "雖名為24小時票，目前前端原文寫「首次搭乘日及次日有效」；按官方這段期限記錄，刪除原先精確24小時計時的推論。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "evidence_resource": {
+        "page_url": "https://taipeisightseeing.com.tw/",
+        "resource_url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "snapshot": "snapshots/bus-app.js"
+      }
+    }
+  },
+  {
+    "id": "t_dd48",
+    "category": "交通",
+    "agent": "paid",
+    "title": "台北市雙層觀光巴士48小時票",
+    "provider": "三重汽車客運股份有限公司",
+    "price_total_twd": 1100,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人／每張",
+    "quantity_or_servings": "一人一票，首次搭乘起48小時內紅藍線不限次數上下車；排除公告不適用班次",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "首次搭乘起48小時內有效，仍限營業班次；不是巴士全日24小時營運",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "台北市雙層觀光巴士紅線／藍線；依票種規則搭乘",
+    "tags": null,
+    "source_url": "https://taipeisightseeing.com.tw/",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 1100",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "可不限次數上下車使用",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "首次搭乘起，48小時內有效",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://taipeisightseeing.com.tw/",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "每人一張48小時票、現場購票，使用台北市雙層觀光巴士紅／藍線適用班次；不是其他市區公車通用票，也不保證所有班次都使用雙層車。",
+      "pricing_context": "現行一般票價1100元／人，未重複扣優惠；scope限定現場購入一次票券本體，不以儲值卡購卡費、錢包儲值金或敬老補助充當車資。",
+      "review_notes": [
+        "引文由本次下載的官方公開網站前端資源bus-app.js逐字取得；新站版本與主agent直接開啟的版本文字不同，未把改寫或QA轉述冒充同一份來源原文。",
+        "本筆按現場向車服人員購票的票種本體比較；不混入官網線上購票或電話團體預訂規則，也不推定班次保證有座。",
+        "一般票價未套用65歲、兒童、身障或臺北市敬老悠遊卡點數補助；這些限定資格的金額不是本筆通用售價。",
+        "主agent直接開啟官網的QA補充：部分hihi bus班次為單層巴士且不適用48小時票、4小時票及日間票。保留此限制並排除此類班次；本次前端快照未包含hihi文字，不能把QA轉述放進evidence.quote。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "evidence_resource": {
+        "page_url": "https://taipeisightseeing.com.tw/",
+        "resource_url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "snapshot": "snapshots/bus-app.js"
+      },
+      "qa_addendum": {
+        "source_url": "https://taipeisightseeing.com.tw/",
+        "provenance": "本task主agent官方頁面交叉QA訊息；不是本次HTTP資源的逐字引文",
+        "checked_at": null,
+        "condition": "部分hihi bus班次為單層巴士，不適用48小時票、4小時票及日間票。",
+        "handling": "本筆scope排除這些班次；搭乘前須依官網時刻表確認。"
+      }
+    }
+  },
+  {
+    "id": "t_dddy",
+    "category": "交通",
+    "agent": "paid",
+    "title": "台北市雙層觀光巴士日間票",
+    "provider": "三重汽車客運股份有限公司",
+    "price_total_twd": 550,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人／每張",
+    "quantity_or_servings": "一人一票，當日營業時間內紅藍線不限次數搭乘；排除公告不適用班次",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "當日營運時間內有效；沒有16:00前班次的限制，依當日適用紅藍線時刻表",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "台北市雙層觀光巴士紅線／藍線；依票種規則搭乘",
+    "tags": null,
+    "source_url": "https://taipeisightseeing.com.tw/",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 550",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "營業時間內紅、藍線任意搭乘",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "當天有效",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://taipeisightseeing.com.tw/",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "每人一張日間票、現場購票，使用台北市雙層觀光巴士紅／藍線適用班次；不是其他市區公車通用票，也不保證所有班次都使用雙層車。",
+      "pricing_context": "現行一般票價550元／人，未重複扣優惠；scope限定現場購入一次票券本體，不以儲值卡購卡費、錢包儲值金或敬老補助充當車資。",
+      "review_notes": [
+        "引文由本次下載的官方公開網站前端資源bus-app.js逐字取得；新站版本與主agent直接開啟的版本文字不同，未把改寫或QA轉述冒充同一份來源原文。",
+        "本筆按現場向車服人員購票的票種本體比較；不混入官網線上購票或電話團體預訂規則，也不推定班次保證有座。",
+        "一般票價未套用65歲、兒童、身障或臺北市敬老悠遊卡點數補助；這些限定資格的金額不是本筆通用售價。",
+        "修正原先錯寫的16:00前班次；當日營運時間內可不限次數搭乘。這是欄位描述，未冒充本次前端逐字引文。",
+        "主agent直接開啟官網的QA補充：部分hihi bus班次為單層巴士且不適用48小時票、4小時票及日間票。保留此限制並排除此類班次；本次前端快照未包含hihi文字，不能把QA轉述放進evidence.quote。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "evidence_resource": {
+        "page_url": "https://taipeisightseeing.com.tw/",
+        "resource_url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "snapshot": "snapshots/bus-app.js"
+      },
+      "qa_addendum": {
+        "source_url": "https://taipeisightseeing.com.tw/",
+        "provenance": "本task主agent官方頁面交叉QA訊息；不是本次HTTP資源的逐字引文",
+        "checked_at": null,
+        "condition": "部分hihi bus班次為單層巴士，不適用48小時票、4小時票及日間票。",
+        "handling": "本筆scope排除這些班次；搭乘前須依官網時刻表確認。"
+      }
+    }
+  },
+  {
+    "id": "t_dd4h",
+    "category": "交通",
+    "agent": "paid",
+    "title": "台北市雙層觀光巴士4小時票",
+    "provider": "三重汽車客運股份有限公司",
+    "price_total_twd": 330,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人／每張",
+    "quantity_or_servings": "一人一票，啟用4小時內紅藍線任意搭乘；排除公告不適用班次",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "啟用起4小時內有效，仍須符合適用紅藍線營運班次",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "台北市雙層觀光巴士紅線／藍線；依票種規則搭乘",
+    "tags": null,
+    "source_url": "https://taipeisightseeing.com.tw/",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 330",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "紅、藍線任意搭乘",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "啟用4小時內",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://taipeisightseeing.com.tw/",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "每人一張4小時票、現場購票，使用台北市雙層觀光巴士紅／藍線適用班次；不是其他市區公車通用票，也不保證所有班次都使用雙層車。",
+      "pricing_context": "現行一般票價330元／人，未重複扣優惠；scope限定現場購入一次票券本體，不以儲值卡購卡費、錢包儲值金或敬老補助充當車資。",
+      "review_notes": [
+        "引文由本次下載的官方公開網站前端資源bus-app.js逐字取得；新站版本與主agent直接開啟的版本文字不同，未把改寫或QA轉述冒充同一份來源原文。",
+        "本筆按現場向車服人員購票的票種本體比較；不混入官網線上購票或電話團體預訂規則，也不推定班次保證有座。",
+        "一般票價未套用65歲、兒童、身障或臺北市敬老悠遊卡點數補助；這些限定資格的金額不是本筆通用售價。",
+        "主agent直接開啟官網的QA補充：部分hihi bus班次為單層巴士且不適用48小時票、4小時票及日間票。保留此限制並排除此類班次；本次前端快照未包含hihi文字，不能把QA轉述放進evidence.quote。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "evidence_resource": {
+        "page_url": "https://taipeisightseeing.com.tw/",
+        "resource_url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "snapshot": "snapshots/bus-app.js"
+      },
+      "qa_addendum": {
+        "source_url": "https://taipeisightseeing.com.tw/",
+        "provenance": "本task主agent官方頁面交叉QA訊息；不是本次HTTP資源的逐字引文",
+        "checked_at": null,
+        "condition": "部分hihi bus班次為單層巴士，不適用48小時票、4小時票及日間票。",
+        "handling": "本筆scope排除這些班次；搭乘前須依官網時刻表確認。"
+      }
+    }
+  },
+  {
+    "id": "t_dd1x",
+    "category": "交通",
+    "agent": "paid",
+    "title": "台北市雙層觀光巴士單次票（國人／持本國居留證者）",
+    "provider": "三重汽車客運股份有限公司",
+    "price_total_twd": 170,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人／每張",
+    "quantity_or_servings": "每人一張、紅線或藍線一次，下車失效；不論哪一站上車最遠只到臺北車站，不能繞回原上車站",
+    "eligibility": [
+      "中華民國國民，或持本國居留證的外國人"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "僅當次紅線或藍線旅程；票種頁列首末班09:10–18:50，並非兩線每站均以此為首末班，仍以當日各線時刻表為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "台北市雙層觀光巴士紅線／藍線；依票種規則搭乘",
+    "tags": null,
+    "source_url": "https://taipeisightseeing.com.tw/",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$ 170",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "限搭乘紅線或藍線一次，下車失效",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "國人限定，含有本國居留證的外國人亦可。",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "首末班發車時間 09:10-18:50",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:46:54+08:00",
+    "verified_at": "2026-09-05T23:46:54+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://taipeisightseeing.com.tw/",
+    "action_label": "查看官方說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "符合國人／本國居留證資格者，上車購買170元單次票；任一站上車只可搭至臺北車站，下車失效，不涵蓋網路或電話預訂。",
+      "pricing_context": "170元是資格限定的單次票全額，不是無資格旅客的一般價；不套用85元優待票或敬老點數。上車購入當次票券，不加入非必要儲值卡成本。",
+      "review_notes": [
+        "引文由本次下載的官方公開網站前端資源bus-app.js逐字取得；新站版本與主agent直接開啟的版本文字不同，未把改寫或QA轉述冒充同一份來源原文。",
+        "本筆按現場向車服人員購票的票種本體比較；不混入官網線上購票或電話團體預訂規則，也不推定班次保證有座。",
+        "一般票價未套用65歲、兒童、身障或臺北市敬老悠遊卡點數補助；這些限定資格的金額不是本筆通用售價。",
+        "補上上車購票限定，並把任一上車站最遠只至臺北車站、不能搭回原上車點寫入scope及份量。",
+        "原先藍線09:40–16:30的引文未有逐字來源，已刪；本次僅引用票種段落實際列出的09:10–18:50，並說明仍依各線時刻表。",
+        "主agentQA版明示單次票限上車購票；本次新站前端同時有通用購物車與優待票車上購買文字，故採較保守的上車購票scope，不拿通用購物流程當170元線上可買的證據。"
+      ],
+      "correction_audit": {
+        "checked_at": "2026-09-05T23:46:54+08:00",
+        "method": "官方公開HTTP HTML/PDF/網站前端資源逐字比對；web.run開啟官方網址作交叉查核，未將空白回應或搜尋摘要當引文。",
+        "verbatim_quotes_only": true
+      },
+      "evidence_resource": {
+        "page_url": "https://taipeisightseeing.com.tw/",
+        "resource_url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "snapshot": "snapshots/bus-app.js"
+      },
+      "qa_addendum": {
+        "source_url": "https://taipeisightseeing.com.tw/",
+        "provenance": "主agent官方頁面交叉QA；本次前端另可逐字查到終點臺北車站限制",
+        "checked_at": null,
+        "condition": "單次170元限上車購票；不論任何一站上車只能搭乘至臺北車站。"
+      },
+      "terminal_evidence": {
+        "field": "終點限制",
+        "quote": "提醒您終點站為台北車站，並無法搭回原上車點。",
+        "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+        "checked_at": "2026-09-05T23:46:54+08:00"
+      }
+    }
+  }
+]

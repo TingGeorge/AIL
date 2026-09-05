@@ -1,0 +1,784 @@
+    <!DOCTYPE html>
+
+<html  dir="ltr" lang="zh-tw" xml:lang="zh-tw">
+<head>
+    <title>TaiwanLIFE 臺灣全民學習平台</title>
+    <link rel="shortcut icon" href="https://taiwanlife.org/theme/image.php/eguru/theme/1788158701/favicon" />
+    <!-- Google Analytics -->
+  <script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-70749664-3', 'auto');
+    ga('set', {
+      'dimension1':'guest', 'dimension2':'TaiwanLIFE', 'dimension3':'na', 'dimension4':'網站', 'metric1':0, 
+    });
+    ga('send', 'pageview');
+  </script>
+  <script async src='https://www.google-analytics.com/analytics.js'></script>
+  <!-- End Google Analytics -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="moodle, TaiwanLIFE 臺灣全民學習平台" />
+<link rel="stylesheet" type="text/css" href="https://taiwanlife.org/theme/yui_combo.php?rollup/3.17.2/yui-moodlesimple-min.css" /><script id="firstthemesheet" type="text/css">/** Required in order to fix style inclusion problems in IE with YUI **/</script><link rel="stylesheet" type="text/css" href="https://taiwanlife.org/theme/styles.php/eguru/1788158701_1/all" />
+<script type="text/javascript">
+//<![CDATA[
+var M = {}; M.yui = {};
+M.pageloadstarttime = new Date();
+M.cfg = {"wwwroot":"https:\/\/taiwanlife.org","sesskey":"QrudanDzNQ","themerev":"1788158701","slasharguments":1,"theme":"eguru","iconsystemmodule":"core\/icon_system_fontawesome","jsrev":"1781759450","admin":"admin","svgicons":true,"usertimezone":"Asia\/Taipei","contextid":1};var yui1ConfigFn = function(me) {if(/-skin|reset|fonts|grids|base/.test(me.name)){me.type='css';me.path=me.path.replace(/\.js/,'.css');me.path=me.path.replace(/\/yui2-skin/,'/assets/skins/sam/yui2-skin')}};
+var yui2ConfigFn = function(me) {var parts=me.name.replace(/^moodle-/,'').split('-'),component=parts.shift(),module=parts[0],min='-min';if(/-(skin|core)$/.test(me.name)){parts.pop();me.type='css';min=''}
+if(module){var filename=parts.join('-');me.path=component+'/'+module+'/'+filename+min+'.'+me.type}else{me.path=component+'/'+component+'.'+me.type}};
+YUI_config = {"debug":false,"base":"https:\/\/taiwanlife.org\/lib\/yuilib\/3.17.2\/","comboBase":"https:\/\/taiwanlife.org\/theme\/yui_combo.php?","combine":true,"filter":null,"insertBefore":"firstthemesheet","groups":{"yui2":{"base":"https:\/\/taiwanlife.org\/lib\/yuilib\/2in3\/2.9.0\/build\/","comboBase":"https:\/\/taiwanlife.org\/theme\/yui_combo.php?","combine":true,"ext":false,"root":"2in3\/2.9.0\/build\/","patterns":{"yui2-":{"group":"yui2","configFn":yui1ConfigFn}}},"moodle":{"name":"moodle","base":"https:\/\/taiwanlife.org\/theme\/yui_combo.php?m\/1781759450\/","combine":true,"comboBase":"https:\/\/taiwanlife.org\/theme\/yui_combo.php?","ext":false,"root":"m\/1781759450\/","patterns":{"moodle-":{"group":"moodle","configFn":yui2ConfigFn}},"filter":null,"modules":{"moodle-core-actionmenu":{"requires":["base","event","node-event-simulate"]},"moodle-core-blocks":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification"]},"moodle-core-checknet":{"requires":["base-base","moodle-core-notification-alert","io-base"]},"moodle-core-chooserdialogue":{"requires":["base","panel","moodle-core-notification"]},"moodle-core-dock":{"requires":["base","node","event-custom","event-mouseenter","event-resize","escape","moodle-core-dock-loader","moodle-core-event"]},"moodle-core-dock-loader":{"requires":["escape"]},"moodle-core-dragdrop":{"requires":["base","node","io","dom","dd","event-key","event-focus","moodle-core-notification"]},"moodle-core-event":{"requires":["event-custom"]},"moodle-core-formchangechecker":{"requires":["base","event-focus","moodle-core-event"]},"moodle-core-handlebars":{"condition":{"trigger":"handlebars","when":"after"}},"moodle-core-languninstallconfirm":{"requires":["base","node","moodle-core-notification-confirm","moodle-core-notification-alert"]},"moodle-core-lockscroll":{"requires":["plugin","base-build"]},"moodle-core-maintenancemodetimer":{"requires":["base","node"]},"moodle-core-notification":{"requires":["moodle-core-notification-dialogue","moodle-core-notification-alert","moodle-core-notification-confirm","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-core-notification-dialogue":{"requires":["base","node","panel","escape","event-key","dd-plugin","moodle-core-widget-focusafterclose","moodle-core-lockscroll"]},"moodle-core-notification-alert":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-confirm":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-exception":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-ajaxexception":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-popuphelp":{"requires":["moodle-core-tooltip"]},"moodle-core-tooltip":{"requires":["base","node","io-base","moodle-core-notification-dialogue","json-parse","widget-position","widget-position-align","event-outside","cache-base"]},"moodle-core_availability-form":{"requires":["base","node","event","event-delegate","panel","moodle-core-notification-dialogue","json"]},"moodle-backup-backupselectall":{"requires":["node","event","node-event-simulate","anim"]},"moodle-backup-confirmcancel":{"requires":["node","node-event-simulate","moodle-core-notification-confirm"]},"moodle-course-categoryexpander":{"requires":["node","event-key"]},"moodle-course-dragdrop":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification","moodle-course-coursebase","moodle-course-util"]},"moodle-course-formatchooser":{"requires":["base","node","node-event-simulate"]},"moodle-course-management":{"requires":["base","node","io-base","moodle-core-notification-exception","json-parse","dd-constrain","dd-proxy","dd-drop","dd-delegate","node-event-delegate"]},"moodle-course-modchooser":{"requires":["moodle-core-chooserdialogue","moodle-course-coursebase"]},"moodle-course-util":{"requires":["node"],"use":["moodle-course-util-base"],"submodules":{"moodle-course-util-base":{},"moodle-course-util-section":{"requires":["node","moodle-course-util-base"]},"moodle-course-util-cm":{"requires":["node","moodle-course-util-base"]}}},"moodle-form-dateselector":{"requires":["base","node","overlay","calendar"]},"moodle-form-passwordunmask":{"requires":[]},"moodle-form-shortforms":{"requires":["node","base","selector-css3","moodle-core-event"]},"moodle-form-showadvanced":{"requires":["node","base","selector-css3"]},"moodle-question-chooser":{"requires":["moodle-core-chooserdialogue"]},"moodle-question-preview":{"requires":["base","dom","event-delegate","event-key","core_question_engine"]},"moodle-question-qbankmanager":{"requires":["node","selector-css3"]},"moodle-question-searchform":{"requires":["base","node"]},"moodle-availability_completion-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_date-form":{"requires":["base","node","event","io","moodle-core_availability-form"]},"moodle-availability_grade-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_group-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_grouping-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_profile-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-qtype_ddimageortext-dd":{"requires":["node","dd","dd-drop","dd-constrain"]},"moodle-qtype_ddimageortext-form":{"requires":["moodle-qtype_ddimageortext-dd","form_filepicker"]},"moodle-qtype_ddmarker-dd":{"requires":["node","event-resize","dd","dd-drop","dd-constrain","graphics"]},"moodle-qtype_ddmarker-form":{"requires":["moodle-qtype_ddmarker-dd","form_filepicker","graphics","escape"]},"moodle-qtype_ddwtos-dd":{"requires":["node","dd","dd-drop","dd-constrain"]},"moodle-mod_assign-history":{"requires":["node","transition"]},"moodle-mod_attendance-groupfilter":{"requires":["base","node"]},"moodle-mod_forum-subscriptiontoggle":{"requires":["base-base","io-base"]},"moodle-mod_quiz-autosave":{"requires":["base","node","event","event-valuechange","node-event-delegate","io-form"]},"moodle-mod_quiz-dragdrop":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification","moodle-mod_quiz-quizbase","moodle-mod_quiz-util-base","moodle-mod_quiz-util-page","moodle-mod_quiz-util-slot","moodle-course-util"]},"moodle-mod_quiz-modform":{"requires":["base","node","event"]},"moodle-mod_quiz-questionchooser":{"requires":["moodle-core-chooserdialogue","moodle-mod_quiz-util","querystring-parse"]},"moodle-mod_quiz-quizbase":{"requires":["base","node"]},"moodle-mod_quiz-repaginate":{"requires":["base","event","node","io","moodle-core-notification-dialogue"]},"moodle-mod_quiz-toolboxes":{"requires":["base","node","event","event-key","io","moodle-mod_quiz-quizbase","moodle-mod_quiz-util-slot","moodle-core-notification-ajaxexception"]},"moodle-mod_quiz-util":{"requires":["node","moodle-core-actionmenu"],"use":["moodle-mod_quiz-util-base"],"submodules":{"moodle-mod_quiz-util-base":{},"moodle-mod_quiz-util-slot":{"requires":["node","moodle-mod_quiz-util-base"]},"moodle-mod_quiz-util-page":{"requires":["node","moodle-mod_quiz-util-base"]}}},"moodle-message_airnotifier-toolboxes":{"requires":["base","node","io"]},"moodle-filter_glossary-autolinker":{"requires":["base","node","io-base","json-parse","event-delegate","overlay","moodle-core-event","moodle-core-notification-alert","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-filter_mathjaxloader-loader":{"requires":["moodle-core-event"]},"moodle-editor_atto-editor":{"requires":["node","transition","io","overlay","escape","event","event-simulate","event-custom","node-event-html5","node-event-simulate","yui-throttle","moodle-core-notification-dialogue","moodle-core-notification-confirm","moodle-editor_atto-rangy","handlebars","timers","querystring-stringify"]},"moodle-editor_atto-plugin":{"requires":["node","base","escape","event","event-outside","handlebars","event-custom","timers","moodle-editor_atto-menu"]},"moodle-editor_atto-menu":{"requires":["moodle-core-notification-dialogue","node","event","event-custom"]},"moodle-editor_atto-rangy":{"requires":[]},"moodle-report_eventlist-eventfilter":{"requires":["base","event","node","node-event-delegate","datatable","autocomplete","autocomplete-filters"]},"moodle-report_loglive-fetchlogs":{"requires":["base","event","node","io","node-event-delegate"]},"moodle-gradereport_grader-gradereporttable":{"requires":["base","node","event","handlebars","overlay","event-hover"]},"moodle-gradereport_history-userselector":{"requires":["escape","event-delegate","event-key","handlebars","io-base","json-parse","moodle-core-notification-dialogue"]},"moodle-tool_capability-search":{"requires":["base","node"]},"moodle-tool_lp-dragdrop-reorder":{"requires":["moodle-core-dragdrop"]},"moodle-tool_monitor-dropdown":{"requires":["base","event","node"]},"moodle-assignfeedback_editpdf-editor":{"requires":["base","event","node","io","graphics","json","event-move","event-resize","transition","querystring-stringify-simple","moodle-core-notification-dialog","moodle-core-notification-alert","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-atto_accessibilitychecker-button":{"requires":["color-base","moodle-editor_atto-plugin"]},"moodle-atto_accessibilityhelper-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_align-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_bold-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_charmap-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_clear-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_collapse-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_emoticon-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_equation-button":{"requires":["moodle-editor_atto-plugin","moodle-core-event","io","event-valuechange","tabview","array-extras"]},"moodle-atto_html-button":{"requires":["moodle-editor_atto-plugin","event-valuechange"]},"moodle-atto_image-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_indent-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_italic-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_link-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_managefiles-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_managefiles-usedfiles":{"requires":["node","escape"]},"moodle-atto_media-button":{"requires":["moodle-editor_atto-plugin","moodle-form-shortforms"]},"moodle-atto_noautolink-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_orderedlist-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_recordrtc-button":{"requires":["moodle-editor_atto-plugin","moodle-atto_recordrtc-recording"]},"moodle-atto_recordrtc-recording":{"requires":["moodle-atto_recordrtc-button"]},"moodle-atto_rtl-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_strike-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_subscript-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_superscript-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_table-button":{"requires":["moodle-editor_atto-plugin","moodle-editor_atto-menu","event","event-valuechange"]},"moodle-atto_title-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_underline-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_undo-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_unorderedlist-button":{"requires":["moodle-editor_atto-plugin"]}}},"gallery":{"name":"gallery","base":"https:\/\/taiwanlife.org\/lib\/yuilib\/gallery\/","combine":true,"comboBase":"https:\/\/taiwanlife.org\/theme\/yui_combo.php?","ext":false,"root":"gallery\/1781759450\/","patterns":{"gallery-":{"group":"gallery"}}}},"modules":{"core_filepicker":{"name":"core_filepicker","fullpath":"https:\/\/taiwanlife.org\/lib\/javascript.php\/1781759450\/repository\/filepicker.js","requires":["base","node","node-event-simulate","json","async-queue","io-base","io-upload-iframe","io-form","yui2-treeview","panel","cookie","datatable","datatable-sort","resize-plugin","dd-plugin","escape","moodle-core_filepicker","moodle-core-notification-dialogue"]},"core_comment":{"name":"core_comment","fullpath":"https:\/\/taiwanlife.org\/lib\/javascript.php\/1781759450\/comment\/comment.js","requires":["base","io-base","node","json","yui2-animation","overlay","escape"]},"mathjax":{"name":"mathjax","fullpath":"https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/mathjax\/2.7.2\/MathJax.js?delayStartupUntil=configured"}}};
+M.yui.loader = {modules: {}};
+
+//]]>
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-70749664-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-70749664-3');
+</script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body  id="page-site-index" class="format-site course path-site dir-ltr lang-zh_tw yui-skin-sam yui3-skin-sam taiwanlife-org pagelayout-standard course-1 context-1 notloggedin ">
+
+<div id="page-wrapper">
+
+    <div>
+    <a class="sr-only sr-only-focusable" href="#maincontent">跳到主要內容</a>
+</div><script type="text/javascript" src="https://taiwanlife.org/theme/yui_combo.php?rollup/3.17.2/yui-moodlesimple-min.js"></script><script type="text/javascript" src="https://taiwanlife.org/theme/jquery.php/core/jquery-3.6.4.min.js"></script>
+<script type="text/javascript" src="https://taiwanlife.org/lib/javascript.php/1781759450/lib/javascript-static.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+document.body.className += ' jsenabled';
+//]]>
+</script>
+
+
+
+
+<nav id="header" role="banner"  class="fixed-top navbar navbar-light bg-white navbar-expand moodle-has-zindex">
+
+    <!-- LMSACE S.o -->
+    <div class="header-menubar">
+
+        <div class="container">
+            <div class="navbar">
+			<!--moblie menu-->
+			<div class="nav-mobile" style="display: none;">
+				  <div class="menu-container"> 
+					<input id="menu-toggle" type="checkbox">
+					<label for="menu-toggle" class="menu-button">  
+					  <svg class="icon-open" viewBox="0 0 24 24" style="height: 50px;width: 65px;"><path fill="#fff" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+					  <svg class="icon-close" viewBox="0 0 100 100" style="height: 50px;width: 65px;">
+						<path fill="#fff" d="M83.288 88.13c-2.114 2.112-5.575 2.112-7.69 0L53.66 66.188c-2.113-2.112-5.572-2.112-7.686 0l-21.72 21.72c-2.114 2.113-5.572 2.113-7.687 0l-4.693-4.692c-2.114-2.114-2.114-5.573 0-7.688l21.72-21.72c2.112-2.115 2.112-5.574 0-7.687L11.87 24.4c-2.114-2.113-2.114-5.57 0-7.686l4.842-4.842c2.113-2.114 5.57-2.114 7.686 0l21.72 21.72c2.114 2.113 5.572 2.113 7.688 0l21.72-21.72c2.115-2.114 5.574-2.114 7.688 0l4.695 4.695c2.112 2.113 2.112 5.57-.002 7.686l-21.72 21.72c-2.112 2.114-2.112 5.573 0 7.686L88.13 75.6c2.112 2.11 2.112 5.572 0 7.687l-4.842 4.84z"/>
+					  </svg> 
+					</label>      
+					<ul class="menu-sidebar">
+						<li> <input type="checkbox" id="sub-one" class="submenu-toggle">        
+        <label class="submenu-label" for="sub-one"><i class="fa fa-archive"></i><span>課程類別</span></label>
+        <div class="arrow right">&#8250;</div>           
+        <ul class="menu-sub">
+          <li class="menu-sub-title">
+            <label class="submenu-label" for="sub-one"></label>
+            <div class="arrow left">&#8249;</div>              
+          </li> <li><a href="https://taiwanlife.org/category_course_list.php?categoryid=8">藝術創作類(272)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=9">工程類(88)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=0">全英授課(1)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=29">隨選課程(86)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=15">史地類(45)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=30">人文社會類(335)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=6">資訊類(286)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=10">語言文學類(499)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=4">管理類(316)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=22">數學類(37)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=5">醫療類(425)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=13">哲學宗教類(23)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=14">法政類(149)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=7">心理類(125)</a></li><li><a href="https://taiwanlife.org/category_course_list.php?categoryid=3">基礎科學類(461)</a></li></ul></li><li><a href="https://taiwanlife.org/local/school/list.php "><i class="fa fa-users"></i><span>合作夥伴</span></a></li><li><a href="https://taiwanlife.org/mod/forum/view.php?f=11&amp;showall=1 "><i class="fa fa-newspaper-o"></i><span>最新消息</span></a></li><li><a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php "><i class="fa fa-search"></i><span>所有課程</span></a></li>      
+					</ul> 
+				  </div>
+				</div>
+				
+			<!--side menu for admin-->	
+             <div class="navbar-inner">
+        </div>
+		 <div class="header-logo">
+          <a class="navbar-brand" href="https://taiwanlife.org/?redirect=0">
+            <img src="//taiwanlife.org/pluginfile.php/1/theme_eguru/logo/1788158701/Taiwan_Life_logo_new_website-20200320.png" width="183" height="67" alt="Eguru">
+          </a>
+        </div>
+		
+		<!--navbar-->
+		<div class='pc-nav'>
+			<ul class="nav navbar-nav">
+				<li><a href="#" class="dropdown-toggle" data-toggle="dropdown"  aria-expanded="false"><i class="fa fa-archive"></i><span>課程類別</span><b class="caret"></b></a>
+		<div style="position: absolute; margin-top: 10px;width: -webkit-fill-available;"><ul class="dropdown-menu" style="column-count: 2;"><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=8">藝術創作類(272)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=9">工程類(88)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=0">全英授課(1)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=29">隨選課程(86)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=15">史地類(45)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=30">人文社會類(335)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=6">資訊類(286)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=10">語言文學類(499)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=4">管理類(316)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=22">數學類(37)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=5">醫療類(425)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=13">哲學宗教類(23)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=14">法政類(149)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=7">心理類(125)</a></li><li style="padding: 5px;"><a href="https://taiwanlife.org/category_course_list.php?categoryid=3">基礎科學類(461)</a></li></ul></li><li><a href="https://taiwanlife.org/local/school/list.php "><i class="fa fa-users"></i><span>合作夥伴</span></a></li><li><a href="https://taiwanlife.org/mod/forum/view.php?f=11&amp;showall=1 "><i class="fa fa-newspaper-o"></i><span>最新消息</span></a></li><li><a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php "><i class="fa fa-search"></i><span>所有課程</span></a></li>
+			</ul>
+		</div>
+
+     
+          <div id="Mainmenu" class="nav-collapse collapse navbar-responsive-collapse">
+	
+            <li class="dropdown nav-item">
+    <a class="dropdown-toggle nav-link" id="drop-down-6a9c34bb41bcd6a9c34bb38a674" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#" aria-controls="drop-down-menu-6a9c34bb41bcd6a9c34bb38a674">
+        繁體中文 ‎(zh_tw)‎
+    </a>
+    <div class="dropdown-menu" role="menu" id="drop-down-menu-6a9c34bb41bcd6a9c34bb38a674" aria-labelledby="drop-down-6a9c34bb41bcd6a9c34bb38a674">
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=zh_tw" title="繁體中文 ‎(zh_tw)‎">繁體中文 ‎(zh_tw)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=zh_cn" title="简体中文 ‎(zh_cn)‎">简体中文 ‎(zh_cn)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=en" title="English ‎(en)‎">English ‎(en)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=id" title="Indonesian ‎(id)‎">Indonesian ‎(id)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=th" title="Thai ‎(th)‎">Thai ‎(th)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=vi" title="Vietnamese ‎(vi)‎">Vietnamese ‎(vi)‎</a>
+    </div>
+</li>
+
+            <div class="custom-nav-search">
+
+                <form action="https://taiwanlife.org/course/search.php" method="get">
+                    <div class="fields-wrap">
+                        <input type="text" placeholder="<?php echo get_string('searchcourses'); ?>" name="search">
+                        <div class="btn-search fa fa-search"><input type="submit" value="Search"></div>
+                    </div>
+                </form>
+
+            </div>
+          </div>
+		  
+
+        <ul class="nav navbar-nav ml-auto">
+			<!-- search_icon -->
+			<!--	
+			<li class='nav-item'>
+				<div class="popover-region" style='cursor: pointer; ' onclick='location.href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php" '><div class=" nav-link"><i style='color: #fff;' class="fa fa-search"></i></div></div>
+			</li>
+			--}
+		
+			 <!-- user_menu -->
+            <li class="nav-item d-flex align-items-center">
+                <div class="usermenu"><span class="login">您尚未登入 (<a href="https://taiwanlife.org/login/index.php">登入</a>)</span></div>
+            </li>
+        
+			<!-- navbar_plugin_output  // lib/templates/popover_region.mustache-->
+   
+			<li class="nav-item">
+			<!--  	-->
+            </li>
+
+           
+        </ul>
+		
+		<!--language-->
+		<div class="" id="navbarSupportedContent">
+          <div class="language-menu">
+            <ul class="navbar-nav mr-auto">
+              <li class="dropdown nav-item">
+    <a class="dropdown-toggle nav-link" id="drop-down-6a9c34bb41e836a9c34bb38a677" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#" aria-controls="drop-down-menu-6a9c34bb41e836a9c34bb38a677">
+        繁體中文 ‎(zh_tw)‎
+    </a>
+    <div class="dropdown-menu" role="menu" id="drop-down-menu-6a9c34bb41e836a9c34bb38a677" aria-labelledby="drop-down-6a9c34bb41e836a9c34bb38a677">
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=zh_tw" title="繁體中文 ‎(zh_tw)‎">繁體中文 ‎(zh_tw)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=zh_cn" title="简体中文 ‎(zh_cn)‎">简体中文 ‎(zh_cn)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=en" title="English ‎(en)‎">English ‎(en)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=id" title="Indonesian ‎(id)‎">Indonesian ‎(id)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=th" title="Thai ‎(th)‎">Thai ‎(th)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=vi" title="Vietnamese ‎(vi)‎">Vietnamese ‎(vi)‎</a>
+    </div>
+</li>
+              
+            </ul>
+          </div>
+        </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+</nav>
+
+    
+    <div class="header-main">
+    <!--
+      <div class="container">
+        <nav class="navbar navbar-toggleable-md">
+            <div class="header-logo">
+              <a class="navbar-brand" href="https://taiwanlife.org/?redirect=0">
+                <img src="//taiwanlife.org/pluginfile.php/1/theme_eguru/logo/1788158701/Taiwan_Life_logo_new_website-20200320.png" width="183" height="67" alt="Eguru">
+              </a>
+            </div>
+    
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <div class="custom-menu">
+                <ul class="navbar-nav mr-auto">
+                  <li class="dropdown nav-item">
+    <a class="dropdown-toggle nav-link" id="drop-down-6a9c34bb420536a9c34bb38a6710" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#" aria-controls="drop-down-menu-6a9c34bb420536a9c34bb38a6710">
+        繁體中文 ‎(zh_tw)‎
+    </a>
+    <div class="dropdown-menu" role="menu" id="drop-down-menu-6a9c34bb420536a9c34bb38a6710" aria-labelledby="drop-down-6a9c34bb420536a9c34bb38a6710">
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=zh_tw" title="繁體中文 ‎(zh_tw)‎">繁體中文 ‎(zh_tw)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=zh_cn" title="简体中文 ‎(zh_cn)‎">简体中文 ‎(zh_cn)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=en" title="English ‎(en)‎">English ‎(en)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=id" title="Indonesian ‎(id)‎">Indonesian ‎(id)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=th" title="Thai ‎(th)‎">Thai ‎(th)‎</a>
+                <a class="dropdown-item" role="menuitem" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;lang=vi" title="Vietnamese ‎(vi)‎">Vietnamese ‎(vi)‎</a>
+    </div>
+</li>
+                  
+                </ul>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+        </nav>
+      </div>
+      -->
+    </div>
+    
+    
+    <!--E.O.Header-->
+    <div id="page" class="container">
+        <header id="page-header" class="row">
+    <div class="col-12 pt-3 pb-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div class="mr-auto">
+                    <div class="page-context-header"><div class="page-header-headings"><h1>TaiwanLIFE 臺灣全民學習平台</h1></div></div>
+                    </div>
+
+                </div>
+                <div class="d-flex flex-wrap">
+                    <div id="page-navbar">
+                        <nav role="navigation">
+    <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="https://taiwanlife.org/" >首頁</a>
+                </li>
+                <li class="breadcrumb-item">網站頁面</li>
+                <li class="breadcrumb-item">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php" >所有課程</a>
+                </li>
+    </ol>
+</nav>
+                    </div>
+                    <div class="ml-auto d-flex">
+                        
+                    </div>
+                    <div id="course-header">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div id="page-content" class="row">
+            <div id="region-main-box" class="col-12">
+                <section id="region-main" >
+                    <div class="card">
+                        <div class="card-body">
+                            <span class="notifications" id="user-notifications"></span>
+                            <div role="main"><span id="maincontent"></span><form id="coursesearchnavbar" action="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0" method="get"><div class='row'><div class='col-md-2'>
+				<div class='form-group'>
+					<b><label for='menufilter'>課程狀態</label></b>
+					<select style="width:100%;" id="menufilter" class="select custom-select menufilter" name="filter"><option selected="selected" value="4">全部</option><option value="0">近期熱門課程</option><option value="1">開課中</option><option value="2">即將開課</option><option value="3">報名結束</option></select>
+				</div>
+			</div><div class='col-md-2'>
+				<div class='form-group'>
+					<b><label for='menuschoolid'>開課單位</label></b>
+					<select style="width:100%;" id="menuschoolid" class="select custom-select menuschoolid" name="schoolid"><option selected="selected" value="0">全部</option><option value="40">大仁科技大學</option><option value="13">大葉大學</option><option value="56">中山醫學大學</option><option value="23">中原大學</option><option value="95">中國文化大學</option><option value="19">元培醫事科技大學</option><option value="17">中國醫藥大學</option><option value="115">中華民國真美花藝研究會</option><option value="113">中華青年創業家營運募資發展交流協會／VFT未來職業學堂</option><option value="93">中華經濟研究院WTO及RTA中心</option><option value="110">中華穀類食品工業技術研究所</option><option value="45">中華醫事科技大學</option><option value="53">中臺科技大學</option><option value="100">文藻外語大學</option><option value="49">台南應用科技大學</option><option value="21">玄奘大學</option><option value="108">佛光大學</option><option value="58">東吳大學</option><option value="63">亞東技術學院</option><option value="8">東南科技大學</option><option value="52">長榮大學</option><option value="111">社團法人中華國際人力職能教育協會</option><option value="103">社團法人中華數位學習與科技推展協會</option><option value="99">社團法人中華髮學苑交流協會</option><option value="34">美和科技大學</option><option value="7">致理科技大學</option><option value="10">南華大學</option><option value="70">南臺科技大學</option><option value="14">高雄醫學大學</option><option value="38">崑山科技大學</option><option value="20">國立中山大學</option><option value="2">國立中央大學</option><option value="12">國立中正大學</option><option value="98">國立中興大學</option><option value="69">國立成功大學</option><option value="4">國立交通大學</option><option value="5">國立空中大學</option><option value="107">國立空中大學推廣教育處</option><option value="94">國立東華大學</option><option value="25">國立宜蘭大學</option><option value="62">國立政治大學</option><option value="37">國立屏東科技大學</option><option value="9">國立高雄大學</option><option value="68">國立高雄科技大學</option><option value="48">國立高雄餐旅大學</option><option value="3">國立陽明大學</option><option value="96">國立陽明交通大學</option><option value="29">國立雲林科技大學</option><option value="26">國立彰化師範大學</option><option value="109">國立臺北教育大學</option><option value="51">國立臺北藝術大學</option><option value="101">國立暨南國際大學</option><option value="44">國立臺南藝術大學</option><option value="28">國立嘉義大學</option><option value="54">國立臺灣海洋大學</option><option value="27">國立臺灣戲曲學院</option><option value="24">淡江大學</option><option value="35">敏實科技大學</option><option value="64">軟體大學</option><option value="114">新北市土城社區大學</option><option value="71">新北市樹林社區大學</option><option value="6">義守大學</option><option value="97">新竹市竹松社區大學</option><option value="72">新動力公共關係顧問股份有限公司</option><option value="47">慈濟大學</option><option value="116">慈濟傳播人文志業基金會</option><option value="11">輔仁大學</option><option value="105">臺北市內湖社區大學</option><option value="15">臺北醫學大學</option><option value="55">僑光科技大學</option><option value="22">輔英科技大學</option><option value="61">嘉南藥理大學</option><option value="104">實踐大學</option><option value="76">臺灣華語教育資源中心</option><option value="42">醒吾科技大學</option><option value="36">靜宜大學</option><option value="18">龍華科技大學</option></select>
+				</div>
+			</div><div class='col-md-2'>
+				<div class='form-group'>
+					<b><label for='menucategoryid'>課程類別</label></b>
+					<select style="width:100%;" id="menucategoryid" class="select custom-select menucategoryid" name="categoryid"><option selected="selected" value="0">全部</option><option value="3">基礎科學類</option><option value="4">管理類</option><option value="5">醫療類</option><option value="6">資訊類</option><option value="7">心理類</option><option value="8">藝術創作類</option><option value="9">工程類</option><option value="10">語言文學類</option><option value="13">哲學宗教類</option><option value="14">法政類</option><option value="15">史地類</option><option value="22">數學類</option><option value="29">隨選課程</option><option value="30">人文社會類</option></select>
+				</div>
+			</div><div class='col-md-2'>
+				<div class='form-group'>
+					<b><label for='menucourse_filter'>課程型態</label></b>
+					<select style="width:100%;" id="menucourse_filter" class="select custom-select menucourse_filter" name="course_filter"><option selected="selected" value="0">全部</option><option value="1">免費課</option><option value="2">付費課</option><option value="3">專班課</option></select>
+				</div>
+			</div><div class='col-md-2'>
+				<div class='form-group'>
+					<b><label for='searchcoursename'>關鍵字</label></b>
+					<input type="text" id="searchcoursename" size="20" name="search" value="" style="width: 100%; max-width: 100%;" />
+				</div>
+			</div><div class='col-md-2'>
+				<div class='form-group'>
+					<b><label>&nbsp;</label></b>
+					<div><input type="submit" value="搜尋" /></div>
+				</div>
+			</div></div></form><nav aria-label="頁">
+        <ul class="pagination mt-3">
+                <li class="page-item active">
+                    <a href="#" class="page-link">
+                        1
+                            <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=1" class="page-link">
+                        2
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=2" class="page-link">
+                        3
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=3" class="page-link">
+                        4
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=4" class="page-link">
+                        5
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=5" class="page-link">
+                        6
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=6" class="page-link">
+                        7
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=7" class="page-link">
+                        8
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=8" class="page-link">
+                        9
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=9" class="page-link">
+                        10
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">&hellip;</a>
+                </li>
+                <li class="page-item">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=123" class="page-link">124</a>
+                </li>
+                <li class="page-item">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=1" class="page-link">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">往後</span>
+                    </a>
+                </li>
+        </ul>
+    </nav><div id="frontpage-course-list"><div class="courses all-course-list-all"><div class="row-fluid"><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4395"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1009&amp;area=overviewfiles" alt="初級日語-台日自由行(2026秋季班)" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='初級日語-台日自由行(2026秋季班)'>初級日語-台日自由行(2026秋季班)</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄科技大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>葉淑華</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/10/05~2027/01/03</span><div><i class="fa fa-clock-o"></i><span>9時數/10週次</span></div></div></div><div class="course-tag"><a href='  https://taiwanlife.org/local/enterprise/collegepage.php?id=6 ' title='多國語文及文化'><label class='course_ent'>多國語文及文化</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=73 ' title='日語課程'><label class='course_ent'>日語課程</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=25 ' title='磨課師課程'><label class='course_ent'>磨課師課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4395)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/03</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4414"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1028&amp;area=overviewfiles" alt="彩色人生的營養科學" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='彩色人生的營養科學'>彩色人生的營養科學</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>長榮大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>陳妙齡,liyijen,陳芳霈,呂佳陽,陳信宏</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/30~2027/06/30</span><div><i class="fa fa-clock-o"></i><span>8時數/10週次</span></div></div></div><div class="course-tag"><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=25 ' title='磨課師課程'><label class='course_ent'>磨課師課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4414)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/06/30</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4402"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1023&amp;area=overviewfiles" alt="中級越語（二）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='中級越語（二）（2026秋季班）'>中級越語（二）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/10週次</span></div></div></div><div class="course-tag"></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4402)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4401"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1024&amp;area=overviewfiles" alt="高級越語（一）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='高級越語（一）（2026秋季班）'>高級越語（一）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/10週次</span></div></div></div><div class="course-tag"></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4401)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4400"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1025&amp;area=overviewfiles" alt="高級越語（二）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='高級越語（二）（2026秋季班）'>高級越語（二）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/9週次</span></div></div></div><div class="course-tag"></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4400)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4411"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1011&amp;area=overviewfiles" alt="初級泰語（一）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='初級泰語（一）（2026秋季班）'>初級泰語（一）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>潘婉玲</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/9週次</span></div></div></div><div class="course-tag"><a href='  https://taiwanlife.org/local/enterprise/collegepage.php?id=6 ' title='多國語文及文化'><label class='course_ent'>多國語文及文化</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=69 ' title='泰語課程'><label class='course_ent'>泰語課程</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=25 ' title='磨課師課程'><label class='course_ent'>磨課師課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4411)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4410"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1012&amp;area=overviewfiles" alt="初級泰語（二）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='初級泰語（二）（2026秋季班）'>初級泰語（二）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>潘婉玲</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/9週次</span></div></div></div><div class="course-tag"><a href='  https://taiwanlife.org/local/enterprise/collegepage.php?id=6 ' title='多國語文及文化'><label class='course_ent'>多國語文及文化</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=25 ' title='磨課師課程'><label class='course_ent'>磨課師課程</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=69 ' title='泰語課程'><label class='course_ent'>泰語課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4410)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4409"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1013&amp;area=overviewfiles" alt="中級泰語（一）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='中級泰語（一）（2026秋季班）'>中級泰語（一）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>潘婉玲</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/9週次</span></div></div></div><div class="course-tag"><a href='  https://taiwanlife.org/local/enterprise/collegepage.php?id=6 ' title='多國語文及文化'><label class='course_ent'>多國語文及文化</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=25 ' title='磨課師課程'><label class='course_ent'>磨課師課程</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=69 ' title='泰語課程'><label class='course_ent'>泰語課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4409)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4408"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1014&amp;area=overviewfiles" alt="中級泰語（二）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='中級泰語（二）（2026秋季班）'>中級泰語（二）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>潘婉玲</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/9週次</span></div></div></div><div class="course-tag"><a href='  https://taiwanlife.org/local/enterprise/collegepage.php?id=6 ' title='多國語文及文化'><label class='course_ent'>多國語文及文化</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=25 ' title='磨課師課程'><label class='course_ent'>磨課師課程</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=69 ' title='泰語課程'><label class='course_ent'>泰語課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4408)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4407"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1016&amp;area=overviewfiles" alt="高級泰語（一）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='高級泰語（一）（2026秋季班）'>高級泰語（一）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>潘婉玲</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/9週次</span></div></div></div><div class="course-tag"><a href='  https://taiwanlife.org/local/enterprise/collegepage.php?id=6 ' title='多國語文及文化'><label class='course_ent'>多國語文及文化</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=25 ' title='磨課師課程'><label class='course_ent'>磨課師課程</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=69 ' title='泰語課程'><label class='course_ent'>泰語課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4407)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4406"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1018&amp;area=overviewfiles" alt="高級泰語（二）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='高級泰語（二）（2026秋季班）'>高級泰語（二）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>潘婉玲</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/9週次</span></div></div></div><div class="course-tag"><a href='  https://taiwanlife.org/local/enterprise/collegepage.php?id=6 ' title='多國語文及文化'><label class='course_ent'>多國語文及文化</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=25 ' title='磨課師課程'><label class='course_ent'>磨課師課程</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=69 ' title='泰語課程'><label class='course_ent'>泰語課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4406)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4405"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1020&amp;area=overviewfiles" alt="初級越語（一）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='初級越語（一）（2026秋季班）'>初級越語（一）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>陳氏蘭</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/10週次</span></div></div></div><div class="course-tag"><a href='  https://taiwanlife.org/local/enterprise/collegepage.php?id=6 ' title='多國語文及文化'><label class='course_ent'>多國語文及文化</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=25 ' title='磨課師課程'><label class='course_ent'>磨課師課程</label></a><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=69 ' title='泰語課程'><label class='course_ent'>泰語課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4405)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4404"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1021&amp;area=overviewfiles" alt="初級越語（二）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='初級越語（二）（2026秋季班）'>初級越語（二）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/10週次</span></div></div></div><div class="course-tag"></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4404)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4403"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1022&amp;area=overviewfiles" alt="中級越語（一）（2026秋季班）" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='中級越語（一）（2026秋季班）'>中級越語（一）（2026秋季班）</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/9週次</span></div></div></div><div class="course-tag"></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4403)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/07</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4394"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1007&amp;area=overviewfiles" alt="AI 倫理 (一)：遊玩AI倫理思辨(2026秋季班)" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='AI 倫理 (一)：遊玩AI倫理思辨(2026秋季班)'>AI 倫理 (一)：遊玩AI倫理思辨(2026秋季班)</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>林杏子</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/18週次</span></div></div></div><div class="course-tag"><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=25 ' title='磨課師課程'><label class='course_ent'>磨課師課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4394)"; ><small style="color: white; font-size: 0.5em;">　　</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4393"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1008&amp;area=overviewfiles" alt="AI 倫理 (二)：百工百業有AI倫理(2026秋季班)" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='AI 倫理 (二)：百工百業有AI倫理(2026秋季班)'>AI 倫理 (二)：百工百業有AI倫理(2026秋季班)</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>國立高雄大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>林杏子</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/17~2027/01/07</span><div><i class="fa fa-clock-o"></i><span>9時數/18週次</span></div></div></div><div class="course-tag"><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=25 ' title='磨課師課程'><label class='course_ent'>磨課師課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4393)"; ><small style="color: white; font-size: 0.5em;">　　</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4413"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1027&amp;area=overviewfiles" alt="從一杯茶探索：茶的起源、文化與品茗" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='從一杯茶探索：茶的起源、文化與品茗'>從一杯茶探索：茶的起源、文化與品茗</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>義守大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>范燕姬</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/07~2027/01/31</span><div><i class="fa fa-clock-o"></i><span>4時數/4週次</span></div></div></div><div class="course-tag"><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=3 ' title='自學課程'><label class='course_ent'>自學課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4413)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2026/10/10</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4412"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1026&amp;area=overviewfiles" alt="華語好好玩" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='華語好好玩'>華語好好玩</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>義守大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>方柏婷</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/07~2026/10/10</span><div><i class="fa fa-clock-o"></i><span>4時數/4週次</span></div></div></div><div class="course-tag"><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=3 ' title='自學課程'><label class='course_ent'>自學課程</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4412)"; ><small style="color: white; font-size: 0.5em;"><span class="fa fa-calendar-check-o"></span>報名截止日期：2027/01/31</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4386"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1002&amp;area=overviewfiles" alt="115-3老人健康生活大改造：職能科學之生活應用(2學分)" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='115-3老人健康生活大改造：職能科學之生活應用(2學分)'>115-3老人健康生活大改造：職能科學之生活應用(2學分)</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>高雄醫學大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>郭昶志</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/01~2026/11/30</span><div><i class="fa fa-clock-o"></i><span>36時數/11週次</span></div></div></div><div class="course-tag"><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=2 '  title='終身學習學分班' ><label class='course_ent'>終身學習學分班</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4386)"; ><small style="color: white; font-size: 0.5em;">　　</small><div class="enter-text">進入課程</div>
+						</div></div></div><div class='col-md-3 course-info'> 
+				<div class='course-info-item'><div class="courseimage"><a class="" href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4385"><img src="https://tlc.taiwanlife.org/mnet/service/enrol/download.php?id=1003&amp;area=overviewfiles" alt="115-3活出健康第二人生(1學分)" style="width: 100%;" /></a></div><div class='text-item'><div class="coursename"><h4 title='115-3活出健康第二人生(1學分)'>115-3活出健康第二人生(1學分)</h4></div><div class="course_detail"><div class="schoolname"><i class="fa fa-graduation-cap"></i>高雄醫學大學</div><div class="teachername"><i class="fa fa-user-circle"></i><span>郭昶志</span></div></div><div class="course_schedule"><i class="fa fa-calendar"></i><span style="margin-left:2px;">2026/09/01~2026/11/30</span><div><i class="fa fa-clock-o"></i><span>18時數/7週次</span></div></div></div><div class="course-tag"><a href=' https://taiwanlife.org/local/enterprise/generalcourse.php?id=2 '  title='終身學習學分班' ><label class='course_ent'>終身學習學分班</label></a></div><div class="intocourse-btn"  onclick=javascript:location.href="https://taiwanlife.org/admin/tool/mooccourse/mnetcourseinfo.php?hostid=13&amp;id=4385)"; ><small style="color: white; font-size: 0.5em;">　　</small><div class="enter-text">進入課程</div>
+						</div></div></div></div></div></div><span class="skip-block-to" id="skipavailablecourses"></span><nav aria-label="頁">
+        <ul class="pagination mt-3">
+                <li class="page-item active">
+                    <a href="#" class="page-link">
+                        1
+                            <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=1" class="page-link">
+                        2
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=2" class="page-link">
+                        3
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=3" class="page-link">
+                        4
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=4" class="page-link">
+                        5
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=5" class="page-link">
+                        6
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=6" class="page-link">
+                        7
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=7" class="page-link">
+                        8
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=8" class="page-link">
+                        9
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=9" class="page-link">
+                        10
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">&hellip;</a>
+                </li>
+                <li class="page-item">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=123" class="page-link">124</a>
+                </li>
+                <li class="page-item">
+                    <a href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php?sort=startdate&amp;dir=DESC&amp;categoryid=0&amp;schoolid=0&amp;badgeid=0&amp;search&amp;method=1&amp;filter=4&amp;course_filter=0&amp;page=1" class="page-link">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">往後</span>
+                    </a>
+                </li>
+        </ul>
+    </nav></div>
+                            
+                            
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div id="nav-drawer" data-region="drawer" class="d-print-none moodle-has-zindex closed" aria-hidden="true" tabindex="-1">
+        <nav class="list-group">
+            <a class="list-group-item list-group-item-action " href="https://taiwanlife.org/" data-key="home" data-isexpandable="0" data-indent="0" data-showdivider="0" data-type="1" data-nodetype="1" data-collapse="0" data-forceopen="1" data-isactive="0" data-hidden="0" data-preceedwithhr="0" >
+                <div class="m-l-0">
+                    <div class="media">
+                        <span class="media-left">
+                            <i class="icon fa fa-home fa-fw " aria-hidden="true"  aria-label=""></i>
+                        </span>
+                        <span class="media-body ">首頁</span>
+                    </div>
+                </div>
+            </a>
+            <a class="list-group-item list-group-item-action active" href="https://taiwanlife.org/admin/tool/mooccourse/allcourses.php" data-key="allcourses" data-isexpandable="0" data-indent="0" data-showdivider="0" data-type="60" data-nodetype="0" data-collapse="0" data-forceopen="1" data-isactive="1" data-hidden="0" data-preceedwithhr="0" data-parent-key="1">
+                <div class="m-l-0">
+                    <div class="media">
+                        <span class="media-left">
+                            <i class="icon fa fa-search fa-fw " aria-hidden="true"  aria-label=""></i>
+                        </span>
+                        <span class="media-body font-weight-bold">所有課程</span>
+                    </div>
+                </div>
+            </a>
+            <a class="list-group-item list-group-item-action " href="https://taiwanlife.org/local/school/list.php" data-key="partners" data-isexpandable="0" data-indent="0" data-showdivider="0" data-type="60" data-nodetype="0" data-collapse="0" data-forceopen="0" data-isactive="0" data-hidden="0" data-preceedwithhr="0" data-parent-key="1">
+                <div class="m-l-0">
+                    <div class="media">
+                        <span class="media-left">
+                            <i class="icon fa fa-users fa-fw " aria-hidden="true"  aria-label=""></i>
+                        </span>
+                        <span class="media-body ">合作夥伴</span>
+                    </div>
+                </div>
+            </a>
+            <a class="list-group-item list-group-item-action " href="https://taiwanlife.org/reportnews.php" data-key="news" data-isexpandable="0" data-indent="0" data-showdivider="0" data-type="60" data-nodetype="0" data-collapse="0" data-forceopen="0" data-isactive="0" data-hidden="0" data-preceedwithhr="0" data-parent-key="1">
+                <div class="m-l-0">
+                    <div class="media">
+                        <span class="media-left">
+                            <i class="icon fa fa-globe fa-fw " aria-hidden="true"  aria-label=""></i>
+                        </span>
+                        <span class="media-body ">最新消息</span>
+                    </div>
+                </div>
+            </a>
+        </nav>
+    </div>
+</div>
+
+<footer id="footer" class="py-3 bg-dark text-light">
+    <div class="footer-main">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="footer-desc">
+                        <div class="logo-footer">
+                            <a href="https://taiwanlife.org/?redirect=0">
+                                <img src="//taiwanlife.org/pluginfile.php/1/theme_eguru/logo/1788158701/Taiwan_Life_logo_new_website-20200320.png" width="183" height="67" alt="Eguru">
+                            </a>
+                        </div>
+                        <p>國人已進入數位學習及終身學習的時代，TaiwanLIFE自上線服務以來，已開設超過九百課次，註冊者超過十萬人次，為台灣打造出全民終身學習的優質環境。TaiwanLIFE has been setting up over 900 online courses and owns over 100,000 registered learners since the launching year of 2014. We will keep on working for a better quality of lifelong learning for anyone at every corner of the world.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="footer-nav">
+                        <h4></h4>
+                        <ul>
+                           <li><a href="https://taiwanlife.org/aboutus.php">關於TaiwanLIFE</a></li>
+<li><a href="https://taiwanlife.org/mod/moocforum/faq_forum_list.php">常見問題</a></li>
+<li><a href="https://forms.gle/K6Emh7M2u4pdJuME6">聯絡我們</a></li>
+<li><a href="https://taiwanlife.org/personal_information_protection_notification.php">個人資料蒐集告知聲明</a></li>
+<li><a href="https://taiwanlife.org/servicearticle.php">網站服務條款</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="social-media">
+                        <h4></h4>
+                        <ul>
+                            <li class="smedia-01">
+                                <a href="https://www.facebook.com/TLifemoocs" target="_blank">
+                                    <span class="media-icon">
+                                    <i class="fa fa-facebook-f"></i>
+                                    </span>
+                                    <span class="media-name">Facebook</span>
+                                </a>
+                            </li>
+
+							<!--lilyn change twitter to line-->
+
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="footer-foot">
+    <div class="container"><p class="text-center">TaiwanLIFE臺灣全民學習平臺由<a href="https://www.nou.edu.tw/">國立空中大學</a>維護經營<br /> <p class="text-center">解析度建議1280*1024以上，瀏覽器支援Google Chrome、Microsoft Edge、Mozilla Firefox、Safari。<br /></div>
+</div>
+
+</footer>
+
+<footer>
+<div class="tool_dataprivacy"><a href="https://taiwanlife.org/admin/tool/dataprivacy/summary.php">Data retention summary</a></div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+var require = {
+    baseUrl : 'https://taiwanlife.org/lib/requirejs.php/1781759450/',
+    // We only support AMD modules with an explicit define() statement.
+    enforceDefine: true,
+    skipDataMain: true,
+    waitSeconds : 0,
+
+    paths: {
+        jquery: 'https://taiwanlife.org/lib/javascript.php/1781759450/lib/jquery/jquery-3.6.4.min',
+        jqueryui: 'https://taiwanlife.org/lib/javascript.php/1781759450/lib/jquery/ui-1.12.1/jquery-ui.min',
+        jqueryprivate: 'https://taiwanlife.org/lib/javascript.php/1781759450/lib/requirejs/jquery-private'
+    },
+
+    // Custom jquery config map.
+    map: {
+      // '*' means all modules will get 'jqueryprivate'
+      // for their 'jquery' dependency.
+      '*': { jquery: 'jqueryprivate' },
+      // Stub module for 'process'. This is a workaround for a bug in MathJax (see MDL-60458).
+      '*': { process: 'core/first' },
+
+      // 'jquery-private' wants the real jQuery module
+      // though. If this line was not here, there would
+      // be an unresolvable cyclic dependency.
+      jqueryprivate: { jquery: 'jquery' }
+    }
+};
+
+//]]>
+</script>
+<script type="text/javascript" src="https://taiwanlife.org/lib/javascript.php/1781759450/lib/requirejs/require.min.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+require(['core/first'], function() {
+;
+require(["media_videojs/loader"], function(loader) {
+    loader.setUp(function(videojs) {
+        videojs.options.flash.swf = "https://taiwanlife.org/media/player/videojs/videojs/video-js.swf";
+videojs.addLanguage("zh-CN",{
+ "Play": "播放",
+ "Pause": "暂停",
+ "Current Time": "当前时间",
+ "Duration Time": "时长",
+ "Remaining Time": "剩余时间",
+ "Stream Type": "媒体流类型",
+ "LIVE": "直播",
+ "Loaded": "加载完毕",
+ "Progress": "进度",
+ "Fullscreen": "全屏",
+ "Non-Fullscreen": "退出全屏",
+ "Mute": "静音",
+ "Unmute": "取消静音",
+ "Playback Rate": "播放速度",
+ "Subtitles": "字幕",
+ "subtitles off": "关闭字幕",
+ "Captions": "内嵌字幕",
+ "captions off": "关闭内嵌字幕",
+ "Chapters": "节目段落",
+ "Close Modal Dialog": "关闭弹窗",
+ "Descriptions": "描述",
+ "descriptions off": "关闭描述",
+ "Audio Track": "音轨",
+ "You aborted the media playback": "视频播放被终止",
+ "A network error caused the media download to fail part-way.": "网络错误导致视频下载中途失败。",
+ "The media could not be loaded, either because the server or network failed or because the format is not supported.": "视频因格式不支持或者服务器或网络的问题无法加载。",
+ "The media playback was aborted due to a corruption problem or because the media used features your browser did not support.": "由于视频文件损坏或是该视频使用了你的浏览器不支持的功能，播放终止。",
+ "No compatible source was found for this media.": "无法找到此视频兼容的源。",
+ "The media is encrypted and we do not have the keys to decrypt it.": "视频已加密，无法解密。",
+ "Play Video": "播放视频",
+ "Close": "关闭",
+ "Modal Window": "弹窗",
+ "This is a modal window": "这是一个弹窗",
+ "This modal can be closed by pressing the Escape key or activating the close button.": "可以按ESC按键或启用关闭按钮来关闭此弹窗。",
+ ", opens captions settings dialog": ", 开启标题设置弹窗",
+ ", opens subtitles settings dialog": ", 开启字幕设置弹窗",
+ ", opens descriptions settings dialog": ", 开启描述设置弹窗",
+ ", selected": ", 选择"
+});
+
+    });
+});;
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-70749664-3', {'siteSpeedSampleRate': 50});
+    ga('set', 'anonymizeIp', true);
+    ga('send', {'hitType' : 'pageview',
+                'page' : '/',
+                'title' : 'TaiwanLIFE 臺灣全民學習平台'
+                });
+;
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-70749664-3']);
+  _gaq.push(['_trackPageview', '/']);
+  _gaq.push(['_setSiteSpeedSampleRate', 50]);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript';
+    ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+;
+
+require(['jquery'], function($) {
+    $('#single_select6a9c34bb38a673').change(function() {
+        var ignore = $(this).find(':selected').attr('data-ignore');
+        if (typeof ignore === typeof undefined) {
+            $('#single_select_f6a9c34bb38a672').submit();
+        }
+    });
+});
+;
+
+require(['jquery'], function($) {
+    $('#single_select6a9c34bb38a676').change(function() {
+        var ignore = $(this).find(':selected').attr('data-ignore');
+        if (typeof ignore === typeof undefined) {
+            $('#single_select_f6a9c34bb38a675').submit();
+        }
+    });
+});
+;
+
+require(['jquery'], function($) {
+    $('#single_select6a9c34bb38a679').change(function() {
+        var ignore = $(this).find(':selected').attr('data-ignore');
+        if (typeof ignore === typeof undefined) {
+            $('#single_select_f6a9c34bb38a678').submit();
+        }
+    });
+});
+;
+
+require(['theme_boost/loader']);
+require(['theme_boost/drawer'], function(mod) {
+    mod.init();
+});
+;
+require(["core/notification"], function(amd) { amd.init(1, []); });;
+require(["core/log"], function(amd) { amd.setConfig({"level":"warn"}); });
+});
+//]]>
+</script>
+<script type="text/javascript" src="https://taiwanlife.org/lib/javascript.php/1781759450/theme/eguru/javascript/theme.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+M.str = {"moodle":{"lastmodified":"\u6700\u5f8c\u4fee\u6539","name":"\u540d\u7a31","error":"\u932f\u8aa4","info":"\u8cc7\u8a0a","yes":"\u662f","no":"\u5426","cancel":"\u53d6\u6d88","confirm":"\u78ba\u8a8d","areyousure":"\u4f60\u78ba\u5b9a\u55ce\uff1f","closebuttontitle":"\u95dc\u9589","unknownerror":"\u672a\u77e5\u7684\u932f\u8aa4"},"repository":{"type":"\u985e\u578b","size":"\u5927\u5c0f","invalidjson":"\u7121\u6548\u7684JSON \u5b57\u4e32","nofilesattached":"\u6c92\u6709\u9644\u52a0\u6a94\u6848","filepicker":"\u6a94\u6848\u6311\u9078\u5668","logout":"\u767b\u51fa","nofilesavailable":"\u6c92\u6709\u53ef\u7528\u7684\u6a94\u6848","norepositoriesavailable":"\u62b1\u6b49\uff0c\u4f60\u73fe\u6709\u7684\u5009\u5132\u6c92\u6709\u4e00\u500b\u53ef\u4ee5\u56de\u5fa9\u6210\u8981\u6c42\u683c\u5f0f\u7684\u6a94\u6848\u3002","fileexistsdialogheader":"\u6a94\u6848\u5df2\u5b58\u5728","fileexistsdialog_editor":"\u6709\u4e00\u500b\u9019\u540d\u7a31\u7684\u6a94\u6848\u5df2\u7d93\u88ab\u9644\u52a0\u5230\u4f60\u6b63\u5728\u7de8\u8f2f\u7684\u6587\u5b57\u4e0a\u4e86","fileexistsdialog_filemanager":"\u6709\u4e00\u500b\u9019\u540d\u7a31\u7684\u6a94\u6848\u5df2\u7d93\u88ab\u9644\u52a0\u4e0a\u53bb\u4e86","renameto":"\u91cd\u65b0\u547d\u540d\u70ba{$a}","referencesexist":"\u9019\u88e1\u6709{$a}\u500b\u5225\u540d\/\u6377\u5f91\u6a94\u6848\u4f7f\u7528\u9019\u4e00\u500b\u6a94\u6848\u4f5c\u70ba\u4ed6\u5011\u8cc7\u6e90\u3002","select":"\u9078\u64c7"},"admin":{"confirmdeletecomments":"\u60a8\u5373\u5c07\u522a\u9664\u8a55\u8ad6\uff0c\u60a8\u78ba\u5b9a\u55ce\uff1f","confirmation":"\u78ba\u8a8d"}};
+//]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+(function() {Y.use("moodle-filter_mathjaxloader-loader",function() {M.filter_mathjaxloader.configure({"mathjaxconfig":"\nMathJax.Hub.Config({\n    config: [\"Accessible.js\", \"Safe.js\"],\n    errorSettings: { message: [\"!\"] },\n    skipStartupTypeset: true,\n    messageStyle: \"none\"\n});\n","lang":"zh-hant"});
+});
+M.util.help_popups.setup(Y);
+ M.util.js_pending('random6a9c34bb38a6711'); Y.on('domready', function() { M.util.js_complete("init");  M.util.js_complete('random6a9c34bb38a6711'); });
+})();
+//]]>
+</script>
+
+
+</footer>
+
+<!--lilyn line icon hover effect-->
+<script type='text/javascript'>
+$(".line-icon").hover(function(){
+    $(".line-icon").find('path').css("fill","white");
+},function(){
+    $(".line-icon").find('path').css("fill","#00B400");
+});
+</script>
+<script type='text/javascript'>
+	//lilyn
+	$('select').change(function() {
+		$('#coursesearchnavbar').submit();
+	});
+
+
+
+	$( '#searchcoursename' ).focus(function() {
+		$('#method0').prop('checked', true);
+	});
+	$('#menufilter').change(function(){
+		$('#method1').prop('checked', true);
+	});
+</script>

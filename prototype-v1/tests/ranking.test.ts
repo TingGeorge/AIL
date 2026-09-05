@@ -45,7 +45,7 @@ test("sanitizeRanking：未知與重複 id 不進結果，漏掉的候選依成�
       { id: "b", reason: "評分 9/10、最便宜，只要 999 元" },
       { id: "unknown", reason: "不存在" },
       { id: "b", reason: "重複" },
-      { id: "a", reason: "總可比成本為 100 元，是本組最低。" },
+      { id: "a", reason: "預估總費用為 100 元，是這組最低。" },
     ],
   });
 
@@ -53,7 +53,7 @@ test("sanitizeRanking：未知與重複 id 不進結果，漏掉的候選依成�
   expect(new Set(ranked.map((r) => r.id)).size).toBe(records.length);
   expect(ranked[0]?.reason).toContain("200 元");
   expect(ranked[0]?.reason).not.toMatch(/9\/10|最便宜|999/);
-  expect(ranked[1]?.reason).toBe("總可比成本為 100 元，是本組最低。");
+  expect(ranked[1]?.reason).toBe("預估總費用為 100 元，是這組最低。");
   expect(ranked[2]?.reason).toBeNull();
 });
 
@@ -61,13 +61,13 @@ test("sanitizeRanking：不接受錯誤自有成本或把文字型限制說成�
   const records = [rec({ id: "a", price_total_twd: 100 }), rec({ id: "b", price_total_twd: 200 })];
   const ranked = sanitizeRanking(records, need({ people_or_servings: 4, eligibility_notes: "限學生" }), {
     order: [
-      { id: "b", reason: "總可比成本為 100 元，符合 4 人與學生資格。" },
-      { id: "a", reason: "總可比成本為 100 元，是本組最低。" },
+      { id: "b", reason: "預估總費用為 100 元，符合 4 人與學生資格。" },
+      { id: "a", reason: "預估總費用為 100 元，是這組最低。" },
     ],
   });
   expect(ranked[0]?.reason).toContain("200 元");
   expect(ranked[0]?.reason).not.toContain("符合 4 人");
-  expect(ranked[1]?.reason).toBe("總可比成本為 100 元，是本組最低。");
+  expect(ranked[1]?.reason).toBe("預估總費用為 100 元，是這組最低。");
 });
 
 test("sanitizeRanking：較貴候選超前時必須明說成本取捨，免費也不可捏造無條件", () => {
@@ -78,16 +78,16 @@ test("sanitizeRanking：較貴候選超前時必須明說成本取捨，免費�
   ];
   const ranked = sanitizeRanking(records, need({ soft_preferences: ["可外帶"] }), {
     order: [
-      { id: "paid", reason: "符合可外帶偏好，總可比成本為 200 元。" },
+      { id: "paid", reason: "符合可外帶偏好，預估總費用為 200 元。" },
       { id: "free", reason: "完全免費且沒有任何資格限制。" },
-      { id: "cheap", reason: "總可比成本為 100 元。" },
+      { id: "cheap", reason: "預估總費用為 100 元。" },
     ],
   });
   expect(ranked.map((record) => record.id)).toEqual(["paid", "free", "cheap"]);
-  expect(ranked[0]?.reason).toContain("本組最低 0 元");
+  expect(ranked[0]?.reason).toContain("這組最低 0 元");
   expect(ranked[0]?.reason).toContain("可外帶");
   expect(ranked[1]?.reason).not.toContain("沒有任何資格限制");
-  expect(ranked[1]?.reason).toContain("仍請核對");
+  expect(ranked[1]?.reason).toContain("仍請確認");
 });
 
 test("sanitizeRanking：拒絕無元字樣的錯誤 NT$ 成本、捏造星等與反向文字限制保證", () => {
@@ -95,12 +95,12 @@ test("sanitizeRanking：拒絕無元字樣的錯誤 NT$ 成本、捏造星等與
   const ranked = sanitizeRanking(records, need({ people_or_servings: 2, date: "2026-09-06", time_window: "晚上" }), {
     order: [
       { id: "b", reason: "這項價格是 NT$100，五星推薦，兩人份剛好且今晚適合。" },
-      { id: "a", reason: "總可比成本為 NT$100；份量與今晚供應仍需核對。" },
+      { id: "a", reason: "預估總費用為 NT$100；份量與今晚供應仍需核對。" },
     ],
   });
   expect(ranked[0]?.reason).toContain("200 元");
   expect(ranked[0]?.reason).not.toMatch(/NT\$100|五星|剛好/);
-  expect(ranked[1]?.reason).toBe("總可比成本為 NT$100；份量與今晚供應仍需核對。");
+  expect(ranked[1]?.reason).toBe("預估總費用為 NT$100；份量與今晚供應仍需核對。");
 });
 
 test("rankGroup：注入 provider、只送允許欄位，成功時保留伺服器排序", async () => {
@@ -112,8 +112,8 @@ test("rankGroup：注入 provider、只送允許欄位，成功時保留伺服�
     generate: async (input) => {
       call = input;
       return { order: [
-        { id: "b", reason: "符合可外帶偏好；總可比成本為 130 元。" },
-        { id: "a", reason: "總可比成本為 100 元，是本組最低。" },
+        { id: "b", reason: "符合可外帶偏好；預估總費用為 130 元。" },
+        { id: "a", reason: "預估總費用為 100 元，是這組最低。" },
       ] };
     },
   });
@@ -138,7 +138,7 @@ test("rankGroup：格式錯誤時整組 failed，回傳成本 fallback 與安全
     records: [rec({ id: "b", price_total_twd: 200 }), rec({ id: "a", price_total_twd: 100 })],
     need: need(), generate: async () => ({ nope: true }),
   });
-  expect(result).toMatchObject({ status: "failed", error: "推薦排序格式錯誤，已改依總可比成本排列" });
+  expect(result).toMatchObject({ status: "failed", error: "推薦排序格式錯誤，已改依預估總費用排列" });
   expect(result.records.map((r) => r.id)).toEqual(["a", "b"]);
   expect(result.records.every((r) => r.reason === null)).toBe(true);
 });
@@ -157,7 +157,7 @@ test("rankGroup：逾時會中止 provider，且不等待未完成 promise", asy
   expect(aborted).toBe(true);
   expect(result.status).toBe("failed");
   if (result.status !== "failed") throw new Error("expected failed ranking");
-  expect(result.error).toBe("推薦排序逾時，已改依總可比成本排列");
+  expect(result.error).toBe("推薦排序逾時，已改依預估總費用排列");
 });
 
 test("rankGroup：外部請求中止會傳給 provider 並安全結束", async () => {
@@ -191,7 +191,7 @@ test("rankGroup：未設定 provider 時明確 failed，不把成本排序冒充
   });
   expect(result.status).toBe("failed");
   if (result.status !== "failed") throw new Error("expected failed ranking");
-  expect(result.error).toBe("LLM 未設定，已改依總可比成本排列");
+  expect(result.error).toBe("智慧排序目前無法使用，已改依預估總費用排列");
   expect(result.records[0]?.reason).toBeNull();
 });
 
@@ -213,7 +213,7 @@ test("constraintWarnings：need 與設定排除遇到未知標籤或候選缺標
   expect(warnings).toEqual([{
     code: "exclude_tags_not_guaranteed",
     fields: ["exclude_tags", "exclude"],
-    message: "排除項目「堅果」不在目前可辨識標籤內；部分候選缺少成分標籤；缺乏排除證據的食品列待確認，不進主要推薦。",
+    message: "排除項目「堅果」不在目前可辨識標籤內；部分選項缺少成分標籤；無法確認排除項目的食品會排在清單後段，請再確認。",
   }]);
 });
 
@@ -232,7 +232,7 @@ test("rankGroup defaults to Gemini without the provider-rejected 500-item array 
         return Response.json({error: {code: "invalid_request", message: "Request contains an invalid argument."}}, {status: 400});
       }
       return Response.json({ status: "completed", steps: [{ type: "model_output", content: [{
-        type: "text", text: JSON.stringify({ order: [{ id: "a", reason: "總可比成本為 100 元。" }] }),
+        type: "text", text: JSON.stringify({ order: [{ id: "a", reason: "預估總費用為 100 元。" }] }),
       }] }] });
     }) as unknown as typeof fetch;
     const result = await rankGroup({ agent: "paid", category: "食品", records: [rec()], need: need() });
@@ -258,7 +258,7 @@ test("rankGroup defaults to Gemini without the provider-rejected 500-item array 
 test("Gemini ranking still validates local size, item lengths and strict objects", async () => {
   const oldKey = process.env.GEMINI_API_KEY, oldModel = process.env.GEMINI_MODEL;
   const oldFetch = globalThis.fetch;
-  const item = {id: "a", reason: "總可比成本為 100 元。"};
+  const item = {id: "a", reason: "預估總費用為 100 元。"};
   const cases: {output: unknown; status: "done" | "failed"}[] = [
     {output: {order: Array.from({length:500}, () => item)}, status: "done"},
     {output: {order: Array.from({length:501}, () => item)}, status: "failed"},

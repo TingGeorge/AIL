@@ -10,6 +10,8 @@ import { readVoiceUpload, VoiceUploadError } from "./voice-upload.ts";
 import { applySchema, dbConfigured } from "./db.ts";
 import { search } from "./search.ts";
 import { data } from "./data.ts";
+import { browse } from "./browse.ts";
+import { groupOffers } from "./group-offer-memberships.ts";
 import { auth } from "./auth.ts";
 import { account } from "./account.ts";
 import { bodyLimit } from "hono/body-limit";
@@ -28,10 +30,10 @@ const withTimeout = <T>(run:(signal:AbortSignal)=>Promise<T>, requestSignal:Abor
 
 // Upstream errors are logged, never echoed: they can embed the provider URL or headers.
 const fail = (c: { json: (o: unknown, s: 502 | 504) => Response }, kind: "voice_failed" | "parse_failed", e: unknown) => {
-  if (e instanceof Timeout || (e instanceof DOMException && e.name === "TimeoutError")) return c.json({ error: "timeout", message: "逾時" }, 504);
+  if (e instanceof Timeout || (e instanceof DOMException && e.name === "TimeoutError")) return c.json({ error: "timeout", message: "處理時間過久，請重試或改用文字設定條件。" }, 504);
   console.error(kind, e instanceof GeminiError ? `${e.kind}:${e.status}` : e instanceof Error ? e.name : "unknown_error");
   if (e instanceof GeminiError) return c.json({ error: `gemini_${e.kind}`, message: e.publicMessage, upstream_status: e.status || undefined }, 502);
-  return c.json({ error: kind, message: kind === "voice_failed" ? "語音解析失敗，請重試或改用文字" : "解析失敗" }, 502);
+  return c.json({ error: kind, message: kind === "voice_failed" ? "語音整理失敗，請重新錄音或改用文字描述。" : "需求整理失敗，請重試或自行設定條件。" }, 502);
 };
 
 // Server-resolved calendar date for the fixed area (spec §3: 由伺服器依請求當天解析).
@@ -53,22 +55,22 @@ app.get("/api/config", c => c.json({ database:dbConfigured(), parse:parseConfigu
 app.get("/api/health", c => c.json({status:"ok"}));
 
 app.post("/api/voice", async (c) => {
-  if (!voiceConfigured()) return c.json({ error: "voice_failed", message: "Gemini 未設定，可改用手動搜尋" }, 503);
+  if (!voiceConfigured()) return c.json({ error: "voice_failed", message: "語音功能目前無法使用，請改用文字描述或自行設定條件。" }, 503);
   let audio: Awaited<ReturnType<typeof readVoiceUpload>>;
   try { audio = await readVoiceUpload(c.req.raw); } catch (error) {
-    if (error instanceof VoiceUploadError && error.kind === "too_large") return c.json({ error: "too_large", message: "音檔不可超過 5 MiB" }, 413);
-    return c.json({ error: "voice_failed", message: "請上傳一份 audio 音檔" }, 400);
+    if (error instanceof VoiceUploadError && error.kind === "too_large") return c.json({ error: "too_large", message: "音檔大小不能超過 5 MB，請縮短錄音後重試。" }, 413);
+    return c.json({ error: "voice_failed", message: "沒有收到錄音檔，請重新錄音或改用文字描述。" }, 400);
   }
-  if (audio.bytes.byteLength === 0) return c.json({ error: "voice_failed", message: "音檔為空" }, 400);
-  if (audio.bytes.byteLength > MAX_AUDIO_BYTES) return c.json({ error: "too_large", message: "音檔不可超過 5 MiB" }, 413);
+  if (audio.bytes.byteLength === 0) return c.json({ error: "voice_failed", message: "錄音內容是空的，請重新錄音或改用文字描述。" }, 400);
+  if (audio.bytes.byteLength > MAX_AUDIO_BYTES) return c.json({ error: "too_large", message: "音檔大小不能超過 5 MB，請縮短錄音後重試。" }, 413);
   const mime = audioMime(audio.type);
-  if (!mime) return c.json({ error: "unsupported_audio", message: "不支援此音訊格式，請重新錄音或改用文字" }, 415);
+  if (!mime) return c.json({ error: "unsupported_audio", message: "不支援這個錄音格式，請重新錄音或改用文字描述。" }, 415);
   try {
     const bytes = audio.bytes;
-    if (!audioEnvelopeMatches(bytes, mime)) return c.json({ error: "unsupported_audio", message: "音訊內容與格式不符，請重新錄音" }, 415);
+    if (!audioEnvelopeMatches(bytes, mime)) return c.json({ error: "unsupported_audio", message: "錄音內容與格式不符，請重新錄音或改用文字描述。" }, 415);
     return c.json(await withTimeout(signal => parseVoice({ audio: bytes, mimeType: mime, today: todayInTaipei() }, signal), c.req.raw.signal));
   } catch (e) {
-    if (e instanceof NoSpeechError) return c.json({ error: "no_speech", message: "沒有辨識到語音，請重錄或改用文字" }, 422);
+    if (e instanceof NoSpeechError) return c.json({ error: "no_speech", message: "沒有聽到清楚的語音，請重新錄音或改用文字描述。" }, 422);
     return fail(c, "voice_failed", e);
   }
 });
@@ -79,7 +81,7 @@ const parseBody = z.object({
 });
 
 app.post("/api/parse", async (c) => {
-  if (!parseConfigured()) return c.json({ error: "parse_failed", message: "Gemini 未設定" }, 503);
+  if (!parseConfigured()) return c.json({ error: "parse_failed", message: "文字整理功能目前無法使用，請自行設定條件。" }, 503);
   const body = parseBody.safeParse(await c.req.json().catch(() => null));
   if (!body.success) return c.json({ error: "parse_failed", message: "請求格式錯誤" }, 400);
   try {
@@ -92,10 +94,12 @@ app.post("/api/parse", async (c) => {
 // 新路由一定要掛在 serveStatic 的 catch-all 之前，否則會被靜態檔案接走（SPEC-backend §5.2）。
 app.route("/", search);
 app.route("/", data);
+app.route("/", browse);
+app.route("/", groupOffers);
 app.route("/", auth);
 app.route("/", account);
 // API typos must never become a successful HTML response.
-app.all("/api/*", c => c.json({error:"not_found",message:"找不到此 API"},404));
+app.all("/api/*", c => c.json({error:"not_found",message:"找不到這個功能，請返回上一頁後重試。"},404));
 
 app.use("/*",async(c,next)=>{if(c.req.path==="/sw.js"||c.req.path==="/"||c.req.path.endsWith(".html"))c.header("Cache-Control","no-cache");await next();});
 app.use("/*", serveStatic({ root: "./dist" }));

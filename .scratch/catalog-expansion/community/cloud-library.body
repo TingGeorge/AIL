@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="view-template" content="L" />
+    <meta name="google-site-verification" content="IrzuTtdVXuqQPJB2eS5CgkRlp_UlwghMEIXXvuSKngI" />
+    <title>台灣雲端書庫</title>
+    <meta
+            name="description"
+            content="台灣雲端書庫 - 首創「準公共借閱權」電子書平台（Public Lending Right）。提供優質電子書、電子雜誌線上免費借閱。公私協力推廣閱讀，為下一個讀者捐一本書。"
+    />
+    <link rel="image_src" type="image/jpeg" href="/images/thumb.jpg" />
+    <!-- icons -->
+    <link
+            rel="shortcut icon"
+            type="image/x-icon"
+            href="/images/icons/logo-64.png"
+    />
+    <link rel="apple-touch-icon" href="/images/icons/logo-60.png" />
+    <link
+            rel="apple-touch-icon"
+            sizes="120x120"
+            href="/images/icons/logo-120.png"
+    />
+    <link
+            rel="apple-touch-icon"
+            sizes="152x152"
+            href="/images/icons/logo-152.png"
+    />
+    <!-- cloud fonts -->
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700;900&display=swap"
+            rel="stylesheet"
+    />
+    <link
+            href="https://fonts.googleapis.com/css?family=Noto+Sans+TC:400,700&display=swap&subset=chinese-traditional"
+            rel="stylesheet"
+    />
+    <!-- facebook/orkut -->
+    <meta property="og:title" content="台灣雲端書庫" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/images/thumb.jpg" />
+    <meta
+            property="og:description"
+            content="台灣雲端書庫 - 首創「準公共借閱權」電子書平台（Public Lending Right）。提供優質電子書、電子雜誌線上免費借閱。公私協力推廣閱讀，為下一個讀者捐一本書。"
+    />
+
+    <!-- css -->
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"
+    />
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
+    />
+    <link rel="stylesheet" type="text/css" href="/css/slick.theme.css" />
+    <link rel="stylesheet" type="text/css" href="/css/animate.css" />
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+    />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:400,600"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/vendors/fontawesome-6.7.2/css/all.min.css" />
+</head>
+<body>
+<div id="app"></div>
+
+<script src="/js/jquery-3.1.1.js"></script>
+<script src="/js/jquery.wow.min.js"></script>
+<script src="/js/taiwan-map.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<script src="/vendors/fontawesome-6.7.2/js/all.min.js"></script>
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SL0S7T9EFE"></script>
+    <script>
+	    window.dataLayer = window.dataLayer || [];
+	    function gtag(){dataLayer.push(arguments);}
+	    gtag('js', new Date());
+	    gtag('config', 'G-SL0S7T9EFE');
+    </script>
+    <script>
+	    var ga = function (...args) {
+	    };
+    </script>
+    <script src="/js/main.bundle.js"></script>
+    <script src="/js/vendors~main.bundle.js"></script>
+
+</body>
+</html>

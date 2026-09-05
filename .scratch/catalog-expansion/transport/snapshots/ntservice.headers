@@ -1,0 +1,33 @@
+HTTP/2 302 
+server: HiNetCDN
+date: Sat, 05 Sep 2026 15:31:48 GMT
+content-type: text/html; charset=UTF-8
+content-length: 0
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+location: /
+content-security-policy: frame-ancestors 'self';
+x-content-type-options: nosniff
+cache-control: max-age=0, no-cache, no-store, must-revalidate
+pragma: no-cache
+expires: Wed, 11 Jan 1984 05:00:00 GMT
+x-cache: MISS, MISS, MISS
+x-request-id: 05daeba59274130b96c501aeffa7e104
+
+HTTP/2 200 
+server: HiNetCDN
+date: Sat, 05 Sep 2026 15:31:48 GMT
+content-type: text/html; charset=UTF-8
+vary: Accept-Encoding
+expires: Thu, 19 Nov 1981 08:52:00 GMT
+cache-control: no-store, no-cache, must-revalidate
+pragma: no-cache
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+content-security-policy: frame-ancestors 'self';
+x-content-type-options: nosniff
+cache-control: max-age=0, no-cache, no-store, must-revalidate
+pragma: no-cache
+x-cache: EXPIRED, EXPIRED, HIT
+x-request-id: a46ec68e4232ac28e4f6d23611ff3c08
+

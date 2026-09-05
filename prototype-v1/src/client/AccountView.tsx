@@ -4,6 +4,7 @@ import { DOT_COLORS, PREFS, TAGS } from "../shared/records.ts";
 import { mergeAccountChanges } from "../shared/account-merge.ts";
 import { currentAccountMonth } from "../shared/account.ts";
 import type { useAccount } from "./useAccount.ts";
+import { displayAvatarColor, displayTagLabel } from "./display.ts";
 import "./compact-support.css";
 
 type Account = ReturnType<typeof useAccount>;
@@ -13,7 +14,6 @@ type AccountViewProps = {
   onDone: () => void;
   supportEmail: string | null;
 };
-
 type SettingsViewProps = {
   account: Account;
   onLogin: () => void;
@@ -32,20 +32,20 @@ export function AccountView({ account, onDone, supportEmail }: AccountViewProps)
   return (
     <section className="screen auth-screen compact-support compact-account">
       <h1>{account.user ? "你的帳號" : mode === "login" ? "登入生活帳號" : "建立生活帳號"}</h1>
-      <p className="section-copy compact-lede">搜尋免登入；帳號只用來跨裝置保存。</p>
+      <p className="section-copy compact-lede">不登入也能搜尋；登入後才能儲存清單與收藏。</p>
 
       <details className="compact-disclosure compact-account-disclosure">
         <summary>
-          <span className="compact-summary-label">保存方式</span>
-          <small>匿名資料不合併</small>
+          <span className="compact-summary-label">儲存方式</span>
+          <small>不會自動合併</small>
         </summary>
         <div className="compact-disclosure-body">
-          <p>搜尋不需登入。登入後，收藏、清單與設定才會保存到伺服器，不合併匿名資料。</p>
+          <p>不登入也能搜尋；登入後才能儲存清單與收藏。匿名資料不會自動與帳號合併。</p>
         </div>
       </details>
 
       {account.restoring ? (
-        <p role="status">正在還原帳號…</p>
+        <p role="status">正在載入帳號資料…</p>
       ) : account.user ? (
         <>
           <div className="account-card compact-account-card">
@@ -53,10 +53,10 @@ export function AccountView({ account, onDone, supportEmail }: AccountViewProps)
             <div>
               <h2>{account.user.nickname}</h2>
               <p>@{account.user.username}</p>
-              <small>帳號已連線</small>
+              <small>已登入</small>
             </div>
           </div>
-          <button className="primary-action" onClick={onDone}>回到生活探索<ArrowRight /></button>
+          <button className="primary-action" onClick={onDone}>回到生活探索<ArrowRight aria-hidden="true" /></button>
           <button
             className="secondary-action"
             disabled={busy}
@@ -71,7 +71,7 @@ export function AccountView({ account, onDone, supportEmail }: AccountViewProps)
               }
             }}
           >
-            登出並撤銷本次工作階段
+            登出
           </button>
         </>
       ) : (
@@ -111,7 +111,7 @@ export function AccountView({ account, onDone, supportEmail }: AccountViewProps)
           </label>
           <button className="primary-action" disabled={busy || account.restoring}>
             <LogIn aria-hidden="true" />
-            {busy ? "連線中…" : mode === "login" ? "登入帳號" : "建立帳號"}
+            {busy ? mode === "login" ? "登入中…" : "建立帳號中…" : mode === "login" ? "登入帳號" : "建立帳號"}
             <ArrowRight aria-hidden="true" />
           </button>
         </form>
@@ -158,11 +158,11 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
 
       <details className="compact-disclosure compact-settings-disclosure">
         <summary>
-          <span className="compact-summary-label">設定保存方式</span>
+          <span className="compact-summary-label">設定儲存方式</span>
           <small>{account.user ? "跨裝置同步" : "登入後會取代"}</small>
         </summary>
         <div className="compact-disclosure-body">
-          <p>{account.user ? "設定儲存後會同步到你的帳號。" : "目前是匿名設定，只保留於此分頁的工作階段；登入後以帳號資料取代。"}</p>
+          <p>{account.user ? "設定儲存後會同步到你的帳號。" : "目前是匿名設定，只保留在這個分頁；登入後會以帳號設定取代，不會自動合併。"}</p>
         </div>
       </details>
 
@@ -190,17 +190,25 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
               顯示名稱
               <input value={draft.profile.nickname} onChange={(event) => setDraft({ ...draft, profile: { ...draft.profile, nickname: event.target.value } })} required minLength={1} maxLength={30} />
             </label>
+            {/* Colour applies on click, not on submit: the avatar reads account data, so a draft-only
+                pick looks like nothing happened. Merge keeps it because the draft still holds the old value. */}
             <div className="avatar-colors compact-avatar-colors">
               {DOT_COLORS.map((color) => (
                 <button
                   key={color}
                   type="button"
                   style={{ background: color }}
-                  aria-label={`選擇頭像顏色 ${color}`}
-                  aria-pressed={draft.profile.color === color}
-                  onClick={() => setDraft({ ...draft, profile: { ...draft.profile, color } })}
+                  aria-label={`選擇頭像顏色 ${displayAvatarColor(color)}`}
+                  aria-pressed={account.data.profile.color === color}
+                  onClick={async () => {
+                    try {
+                      await account.update((data) => ({ ...data, profile: { ...data.profile, color } }));
+                    } catch {
+                      // Shared account.error owns save failures and clears after a successful retry.
+                    }
+                  }}
                 >
-                  {draft.profile.color === color ? "✓" : ""}
+                  {account.data.profile.color === color ? "✓" : ""}
                 </button>
               ))}
             </div>
@@ -218,25 +226,13 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
           </label>
         </div>
 
-        <p className="compact-warning">自行記錄，不是銀行付款紀錄。</p>
-        <details className="compact-disclosure compact-inline-disclosure">
-          <summary>
-            <span className="compact-summary-label">支出資料如何計算</span>
-            <small>不連接銀行</small>
-          </summary>
-          <div className="compact-disclosure-body">
-            <p>這是自行填寫或「標記已買」累計的月支出總額，不是付款紀錄。App 不連接銀行，不會假造消費分析或省下金額。</p>
-          </div>
-        </details>
-
-        <label className="check-row"><input type="checkbox" checked={settings.survival} onChange={(event) => set("survival", event.target.checked)} />生存模式：免費優先（仍可能有付費）</label>
-        <label className="check-row"><input type="checkbox" checked={settings.costco_ok} onChange={(event) => set("costco_ok", event.target.checked)} />我有可使用的 Costco 會員資格</label>
+        <label className="check-row"><input type="checkbox" checked={settings.survival} onChange={(event) => set("survival", event.target.checked)} />省錢模式：優先顯示免費選項（仍可能有付費）</label>
 
         <fieldset className="tag-picker">
           <legend>預設排除</legend>
           <div>
             {TAGS.map((tag) => (
-              <button type="button" key={tag} aria-pressed={settings.exclude.includes(tag)} className={settings.exclude.includes(tag) ? "active" : ""} onClick={() => set("exclude", settings.exclude.includes(tag) ? settings.exclude.filter((value) => value !== tag) : [...settings.exclude, tag])}>{tag}</button>
+              <button type="button" key={tag} aria-pressed={settings.exclude.includes(tag)} className={settings.exclude.includes(tag) ? "active" : ""} onClick={() => set("exclude", settings.exclude.includes(tag) ? settings.exclude.filter((value) => value !== tag) : [...settings.exclude, tag])}>{displayTagLabel(tag)}</button>
             ))}
           </div>
         </fieldset>
@@ -253,7 +249,7 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
       </form>
 
       {message && <p role="status" className="notice">{message}</p>}
-      {!account.user && <button className="secondary-action" onClick={onLogin}>登入以跨裝置保存</button>}
+      {!account.user && <button className="secondary-action" onClick={onLogin}>登入後儲存清單與收藏</button>}
 
       <div className="pwa-card compact-pwa-card">
         <h2 className="compact-pwa-title">把 ALL IN LIFE 放到主畫面</h2>
@@ -264,7 +260,7 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
             <small>搜尋需網路</small>
           </summary>
           <div className="compact-disclosure-body">
-            <p>離線只能開啟介面；搜尋與帳號需要網路，API 不會快取。</p>
+            <p>離線只能開啟介面；搜尋與帳號需要網路，恢復連線後即可繼續。</p>
           </div>
         </details>
         <button className="secondary-action" onClick={onInstall}>{installable ? "安裝 App" : "查看安裝方式"}</button>
@@ -296,7 +292,7 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
             >
               <label className="field">目前密碼<input type="password" autoComplete="current-password" required value={current} onChange={(event) => setCurrent(event.target.value)} /></label>
               <label className="field">新密碼<input type="password" autoComplete="new-password" minLength={12} maxLength={256} required value={next} onChange={(event) => setNext(event.target.value)} /></label>
-              <p className="fine-print">修改後，所有裝置的工作階段會撤銷，請重新登入。</p>
+              <p className="fine-print">修改後，所有裝置都會登出，請重新登入。</p>
               <button className="secondary-action" disabled={busy}>更新密碼並登出所有裝置</button>
             </form>
           </div>

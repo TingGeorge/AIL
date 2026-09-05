@@ -1,0 +1,12 @@
+HTTP/2 200 
+content-type: application/pdf
+last-modified: Fri, 13 Dec 2024 03:05:25 GMT
+accept-ranges: bytes
+etag: "b6f2f6dab4ddb1:0"
+x-frame-options: SAMEORIGIN
+content-security-policy: default-src 'self' * data: 'unsafe-inline'  'unsafe-eval';
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-content-type-options: nosniff
+date: Sat, 05 Sep 2026 15:31:48 GMT
+content-length: 206579
+

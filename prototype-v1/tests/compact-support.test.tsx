@@ -48,28 +48,29 @@ test("compact catalog keeps one short summary visible and full truthful metadata
   const html = renderToStaticMarkup(<CatalogNotice initialSummary={catalog} />);
   const disclosureAt = html.indexOf("<details");
 
-  expect(html).toContain("27 筆真實資料");
+  expect(html).toContain("27 筆已收錄資料");
   expect(html).toContain("臺北市公開網頁與提供者公告 · 使用前再確認");
-  expect(html).toContain("資料範圍與五類統計");
+  expect(html).toContain("資料涵蓋範圍與五類統計");
   expect(disclosureAt).toBeGreaterThan(0);
-  expect(html.indexOf("27 筆真實資料")).toBeLessThan(disclosureAt);
+  expect(html.indexOf("27 筆已收錄資料")).toBeLessThan(disclosureAt);
   expect(html).not.toMatch(/<details[^>]*\sopen(?:=|\s|>)/);
 
-  expect(html.indexOf("31 筆總收錄")).toBeGreaterThan(disclosureAt);
-  expect(html.indexOf("18 可排序")).toBeGreaterThan(disclosureAt);
-  expect(html.indexOf("9 待確認")).toBeGreaterThan(disclosureAt);
+  expect(html.indexOf("31 筆已收錄")).toBeGreaterThan(disclosureAt);
+  expect(html.indexOf("18 可比較")).toBeGreaterThan(disclosureAt);
+  expect(html.indexOf("9 需要再確認")).toBeGreaterThan(disclosureAt);
   expect(html.indexOf("4 筆示範資料")).toBeGreaterThan(disclosureAt);
-  expect(html.indexOf("公開網頁資料快照，不代表即時庫存、名額或費率保證；讀取與瀏覽不需要 LLM API key。")).toBeGreaterThan(disclosureAt);
+  expect(html.indexOf("目前顯示的是已整理的公開資料，不是即時網路搜尋；價格、名額與服務狀態請以來源最新資訊為準。")).toBeGreaterThan(disclosureAt);
+  expect(html).not.toMatch(/LLM|API key|Gemini|PostgreSQL/);
   for (const row of catalog.categories) expect(html.indexOf(row.category)).toBeGreaterThan(disclosureAt);
 });
 
 test("account keeps credentials, privacy, anonymous-session limits and all login inputs without visible prose blocks", () => {
   const html = renderToStaticMarkup(<AccountView account={mockAccount()} onDone={() => {}} supportEmail="help@example.test" />);
 
-  expect(html).toContain("搜尋免登入；帳號只用來跨裝置保存。");
-  expect(html).toContain("保存方式");
-  expect(html).toContain("匿名資料不合併");
-  expect(html).toContain("搜尋不需登入。登入後，收藏、清單與設定才會保存到伺服器，不合併匿名資料。");
+  expect(html).toContain("不登入也能搜尋；登入後才能儲存清單與收藏。");
+  expect(html).toContain("儲存方式");
+  expect(html).toContain("不會自動合併");
+  expect(html).toContain("不登入也能搜尋；登入後才能儲存清單與收藏。匿名資料不會自動與帳號合併。");
   expect(html).toContain("登入憑證只保留在本分頁，預設 30 分鐘逾時。語音、逐字稿、搜尋條件和精確位置不會寫入帳號資料。");
   expect(html).toContain("本分頁 · 30 分鐘");
   expect(html).toContain("autoComplete=\"username\"");
@@ -81,20 +82,20 @@ test("account keeps credentials, privacy, anonymous-session limits and all login
 test("settings preserves every control and moves long caveats into closed disclosures", () => {
   const html = renderToStaticMarkup(<SettingsView account={mockAccount()} onLogin={() => {}} onInstall={() => {}} installable={false} />);
 
-  expect((html.match(/<input/g) ?? []).length).toBe(4);
+  expect((html.match(/<input/g) ?? []).length).toBe(3);
   expect((html.match(/type=\"number\"/g) ?? []).length).toBe(2);
-  expect((html.match(/type=\"checkbox\"/g) ?? []).length).toBe(2);
+  expect((html.match(/type=\"checkbox\"/g) ?? []).length).toBe(1);
   expect(html).toContain("匿名設定只留在此分頁。");
-  expect(html).toContain("目前是匿名設定，只保留於此分頁的工作階段；登入後以帳號資料取代。");
-  expect(html).toContain("自行記錄，不是銀行付款紀錄。");
-  expect(html).toContain("這是自行填寫或「標記已買」累計的月支出總額，不是付款紀錄。App 不連接銀行，不會假造消費分析或省下金額。");
-  expect(html).toContain("生存模式：免費優先（仍可能有付費）");
-  expect(html).toContain("我有可使用的 Costco 會員資格");
+  expect(html).toContain("目前是匿名設定，只保留在這個分頁；登入後會以帳號設定取代，不會自動合併。");
+  expect(html).toContain("省錢模式：優先顯示免費選項（仍可能有付費）");
+  expect(html).not.toContain("Costco");
+  expect(html).not.toContain("自行記錄，不是銀行付款紀錄。");
+  expect(html).not.toContain("支出資料如何計算");
   expect(html).toContain("預設排除");
   expect(html).toContain("預設偏好");
-  expect(html).toContain("登入以跨裝置保存");
+  expect(html).toContain("登入後儲存清單與收藏");
   expect(html).toContain("<h2 class=\"compact-pwa-title\">把 ALL IN LIFE 放到主畫面</h2>");
-  expect(html).toContain("離線只能開啟介面；搜尋與帳號需要網路，API 不會快取。");
+  expect(html).toContain("離線只能開啟介面；搜尋與帳號需要網路，恢復連線後即可繼續。");
   expect(html).not.toMatch(/<details[^>]*\sopen(?:=|\s|>)/);
 });
 
@@ -110,9 +111,9 @@ test("signed-in settings keeps profile and password inputs plus the session-revo
   expect(html).toContain("選擇頭像顏色");
   expect(html).toContain("autoComplete=\"current-password\"");
   expect(html).toContain("autoComplete=\"new-password\"");
-  expect(html).toContain("修改後，所有裝置的工作階段會撤銷，請重新登入。");
+  expect(html).toContain("修改後，所有裝置都會登出，請重新登入。");
   expect(html).toContain("會登出所有裝置");
-  expect(html).not.toContain("登入以跨裝置保存");
+  expect(html).not.toContain("登入後儲存清單與收藏");
 });
 
 test("compact support CSS retains accessible disclosure targets, focus and the save-to-login gap", async () => {
@@ -131,7 +132,7 @@ test("settings expose selected exclusions and preferences to assistive technolog
   account.data.settings.exclude = ["牛"];
   account.data.settings.prefs = ["可外帶"];
   const html = renderToStaticMarkup(<SettingsView account={account} onLogin={() => {}} onInstall={() => {}} installable={false} />);
-  expect(html).toMatch(/<button[^>]*aria-pressed="true"[^>]*>牛<\/button>/);
+  expect(html).toMatch(/<button[^>]*aria-pressed="true"[^>]*>牛肉<\/button>/);
   expect(html).toMatch(/<button[^>]*aria-pressed="true"[^>]*>可外帶<\/button>/);
-  expect(html).toMatch(/<button[^>]*aria-pressed="false"[^>]*>豬<\/button>/);
+  expect(html).toMatch(/<button[^>]*aria-pressed="false"[^>]*>豬肉<\/button>/);
 });

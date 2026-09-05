@@ -13,10 +13,10 @@
 
 目前可執行後端在 `prototype-v1`：Bun／Hono／PostgreSQL、兩階段搜尋（deterministic 篩選，再 Gemini 分組推薦排序）、SSE、候選／catalog、帳號與回報。2026-09-05 音訊入口改為 `POST /api/voice` → **Gemini 一次回傳 `{transcript,need}`** → 前端人工確認後才搜尋。文字與 correction 保留 `POST /api/parse` → Need，後端共用 Gemini native Interactions adapter，不串接 STT。官方契約及未驗證事項見 [Gemini 查核紀錄](research/gemini-audio-structured.md)。
 
-有兩個決定偏離原 PRD，本文件明確記錄：
+有兩個重要實作決定，本文件明確記錄：
 
 1. **資料事先匯入，執行期不上網搜尋。** 候選紀錄由爬蟲或 API 腳本事先寫進資料庫；Agent 的工作是從已篩選的清單做推薦排序。
-2. **揪團只顯示商家兌換碼，沒有共享狀態。** 不追蹤成員、不做加入代碼。
+2. **每筆團體優惠目前只有一個共享團。** 公開顯示人數進度；登入後可加入／退出，只有同團成員可查看 nickname 與 username。App 不代訂、不付款，也不把加入視為官方預約。
 
 ## 2. 實作基線與驗證邊界
 
@@ -34,17 +34,17 @@
 | Schema 管理 | 一個 `schema.sql`，伺服器啟動時執行，全部 `CREATE TABLE IF NOT EXISTS`；不用 migration 工具。 |
 | 資料匯入 | 欄位契約、可空規則與匯入腳本見 [SPEC-ingestion.md](./SPEC-ingestion.md)；本文件從「資料已在表裡」開始。 |
 | 搜尋流程 | 第一階段（不是 Agent）：deterministic 篩選 = 證據閘門 + 硬限制，整個請求跑一次。第二階段：LLM 推薦排序。 |
-| Agent | 產品、畫面與 PRD 維持兩個 Agent（付費選項 Agent、免費資源 Agent）。每個 Agent 內部**按類別各打一次 LLM、並行執行**（付費最多 4 條、免費最多 2 條）。某一類失敗只有該類退回成本排序。 |
-| Gemini 排序規則 | LLM 對它負責的 (agent, category) 群組排序**整份**篩選後清單；不刪任何一筆；每筆附一句繁中 `reason`。系統提示明講：總可比成本第一、軟偏好第二；排在更便宜項目前面時，理由必須說明原因。 |
-| 同類別免費／付費並存 | 類別分頁顯示一張清單：付費與免費兩份排序依名次交錯（付費第 1、免費第 1、付費第 2…）；免費項目掛「免費」標籤；生存模式把免費整段釘在最前（沿用現有前端邏輯）。PRD FR-08 改為「以標籤區分，不合成單一分數」。 |
+| Agent | 產品、畫面與 PRD 維持兩個 Agent（付費選項 Agent、免費資源 Agent）。每個 Agent 內部**按類別各打一次 LLM、並行執行**（付費最多 4 條、免費最多 2 條）。某一類失敗只有該類退回預設 deterministic 排序。 |
+| Gemini 排序規則 | LLM 對它負責的 (agent, category) 群組排序**整份**篩選後清單；不刪任何一筆；每筆附一句繁中 `reason`。食品有 `portion_match` 時，份量接近度先於成本：恰好 N 優先，再排最接近的較小份量；同份量接近度才比較總可比成本與軟偏好，安全理由不得宣稱較小份量足夠全員。其他候選維持總可比成本第一、軟偏好第二。 |
+| 同類別免費／付費並存 | 一般推薦沿用付費／免費名次交錯；生存模式的推薦順序先放免費整段，再於免費與付費各段套用食品份量接近度。使用者手動選擇成本、距離或資料日期時只依該控制排序；pending 始終接在 main 後面。 |
 | 距離 | `candidates.lat／lng`；使用者座標由瀏覽器原生 `navigator.geolocation` 在搜尋當下取得、放在請求 body、不保存、不寫 log。伺服器以 haversine 算直線公里數，標示「估算」；`max_minutes` 以 km ÷ 0.08（步行每分鐘 80 公尺）換算，標示「估算」。沒有座標 → 距離為 null → 不做距離篩選。`address` 與 `lat／lng` 的取得與寫入見 [SPEC-geocoding.md](./SPEC-geocoding.md)。 |
 | 候選紀錄持久化 | 五類共用一張 `candidates` 表；保留 `agent` 欄位（`paid`／`free`）；證據放 `jsonb` 陣列（逐欄摘錄）；類別特有零碎欄位放 `extra jsonb`。 |
 | 帳號 | 照 PRD／SPEC：username `^[a-z0-9_-]{3,30}$`（不分大小寫唯一，小寫儲存）、password ≥ 12 字元、`Bun.password` Argon2id、32 bytes 隨機 opaque token、只存 SHA-256 hash、固定 30 分鐘到期、`Authorization: Bearer`、token 放 `sessionStorage`。不用 Cookie。忘記密碼只顯示 `SUPPORT_EMAIL`。 |
-| 帳號資料 | 每個帳號一列：`account_data(user_id, list, favs, settings, profile, updated_at, revision)` 全部 `jsonb`；`GET／PUT /api/me/data` 整包讀寫。每個帳號一份清單。 |
+| 帳號資料 | 每個帳號一列：`account_data(user_id, list, favs, settings, profile, updated_at, revision)` 全部 `jsonb`；愛心／加入清單對應 `list`，書籤／收藏對應 `favs`，兩個集合獨立讀寫。 |
 | 已花費 | 沿用整合版的生活設定／清單行為：清單頁按「標記已買」→ 該筆移出清單、`settings.spent += 總可比成本`。加入清單不累加（加入清單不等於花錢）。跨月歸零：`settings.spent_month` 存 `"2026-09"`，前端載入帳號資料時若不等於當月就把 `spent` 歸零並更新月份。`ponytail:` 純前端、不做記帳歷史；升級路徑是加一張 `monthly_spend` 表。 |
-| 匿名使用者 | 可以搜尋、可以改設定（只存在該分頁 `sessionStorage`）。**★ 與加入清單需要登入**（點擊時提示登入）。不做匿名→帳號合併；登入後帳號資料取代 session-local 資料。這推翻 PRD FR-12／FR-15 與 SPEC Case A8。 |
+| 匿名使用者 | 可以搜尋、可以改設定（只存在該分頁 `sessionStorage`）。**愛心清單與書籤收藏都需要登入**（點擊時提示登入）。不做匿名→帳號合併；登入後帳號資料取代 session-local 資料。這推翻 PRD FR-12／FR-15 與 SPEC Case A8。 |
 | 回報 | 共享資料，需登入。`reports(id, candidate_id, user_id, reason, note, created_at)`。七種原因（4 種資料回報 + 3 種體驗回報）。回報不自動改 `data_status`。體驗回報顯示時標示「使用者回報，非系統判斷」。 |
-| 揪團 | 純顯示。`group_offer jsonb` 增加 `redeem_code`。揪團頁顯示商家兌換碼、人數條件、成本試算（單獨／成團後／每人）、分享按鈕。移除成員列表與加入代碼。不建表。 |
+| 揪團 | `group_offer jsonb` 保存商家條件與兌換碼；`group_offer_memberships` 保存共享加入狀態。公開 API 只回加入／剩餘人數；登入後可加入／退出，只有已加入同一團者可看 nickname／username。`min_people` 在目前單團版本同時作為成團門檻與容量。 |
 | 搜尋 API | `POST /api/search`，回 Server-Sent Events。 |
 
 ## 4. 架構
@@ -121,10 +121,10 @@ prototype-v1/
 | `evidence_quote: string` | `evidence: {field, quote, url, checked_at}[]` | FR-10 要求每個排序欄位都有摘錄；同一 `field` 兩筆代表該來源自己前後矛盾（SPEC-ingestion §6.1） |
 | （沒有） | `address: string \| null`、`action_url: string \| null`、`extra: Record<string, unknown>` | 詳情頁要顯示地址、開地圖連結（`extra.address_source`、`extra.place_id`） |
 | （沒有） | `lat`、`lng`、`valid_until: string \| null`、`distance_km: number \| null`、`reason: string \| null` | 距離估算、過期標示、LLM 推薦理由 |
-| `GroupOffer` | 增加 `redeem_code: string` | 揪團改為純顯示兌換碼 |
+| `GroupOffer` | 增加 `redeem_code: string`；`min_people` 作為目前團的門檻與容量 | 顯示商家優惠條件並建立共享進度 |
 | `Settings` | 增加 `costco_ok: boolean`、`spent_month: string`（`YYYY-MM`） | §8 的會員開關；`spent` 的跨月歸零（§3） |
 | `Report{rec_id, at, by}` | `{candidate_id, created_at, by}`（`by` = nickname，null 時退回 username） | 和 `reports` 表對齊，只有 `by` 是伺服器 JOIN 出來的顯示名稱 |
-| `Team` | 刪除 | 揪團不建表、不追蹤成員 |
+| `Team` | 不恢復舊型別；改用 `GroupOfferProgress`／`GroupOfferParticipation`／`GroupOfferMember` | 成員狀態由 API 與 membership table 提供，不混入候選來源資料 |
 
 `rowToRec` 只做三件事：欄位直接對應、`tags`／`eligibility` 的 Postgres array 轉 JS array、`timestamptz` 轉 ISO 字串。`distance_km` 與 `reason` 由搜尋流程後填，預設 null。
 
@@ -193,6 +193,15 @@ create table if not exists candidates (
 );
 create index if not exists candidates_category_status on candidates (category, data_status);
 
+create table if not exists group_offer_memberships (
+  candidate_id text not null references candidates(id) on delete cascade,
+  user_id      text not null references users(id) on delete cascade,
+  joined_at    timestamptz not null default now(),
+  primary key (candidate_id, user_id)
+);
+create index if not exists group_offer_memberships_user_joined
+  on group_offer_memberships (user_id, joined_at);
+
 create table if not exists reports (
   id           bigserial primary key,
   candidate_id text not null references candidates(id) on delete cascade,
@@ -212,7 +221,7 @@ create index if not exists reports_candidate on reports (candidate_id, created_a
 | r_77x1 | 免費／公益資源 | free | 社區共餐（週六） | 0 | null | null | {素} | 已驗證 |
 | d_2p0q | 日用品 | paid | 洗碗精 1L | null | 台北市信義區…（Google 回填） | 25.07／121.53 | {} | 無法納入比較 |
 
-對「2 人、預算 300、排除牛」的請求，洗碗精因為沒有價格進不了閘門，只會出現在「待確認」清單，不會送給 LLM。
+對「2 人、預算 300、排除牛」的請求，洗碗精因為沒有價格進不了閘門，只會進 pending、不會送給 LLM；前端將它標示待確認並接在推薦清單後段。
 
 ### 6.2 資料匯入者要遵守的規則
 
@@ -267,6 +276,10 @@ create index if not exists reports_candidate on reports (candidate_id, created_a
 | PUT | `/api/me/data` | 是 | 同上形狀（zod 驗證，id 數 ≤ 200）→ 200 |
 | GET | `/api/candidates/:id/reports` | 否 | → `[{reason, note, created_at, by: nickname}]` |
 | POST | `/api/candidates/:id/reports` | 是 | `{reason, note}` → 201 |
+| GET | `/api/group-offers/status?ids=a,b` | 否 | → `{offers:[{candidate_id,capacity,joined_count,remaining_count,full}]}`；最多 100 ids，不回傳成員身分 |
+| GET | `/api/group-offers/mine?ids=a,b` | 是 | → `{offers:[{...progress,joined,members}]}`；未加入該團時 `members:null`；已加入者即使優惠失效仍會取得該筆，以便退出 |
+| POST | `/api/group-offers/:id/join` | 是 | 占一席並回傳 `GroupOfferParticipation`；重複加入幂等、滿員 409、無效／過期優惠拒絕加入 |
+| DELETE | `/api/group-offers/:id/join` | 是 | 退出並釋放名額；重複退出幂等，優惠失效後原成員仍可退出 |
 
 錯誤 body 使用 `{error, message}` 固定文案。Gemini wrapper 遮罩 provider 內容，route 僅記錄 error 類型，不記錄完整上游回應、key 或使用者輸入。
 
@@ -278,7 +291,7 @@ SSE（Server-Sent Events）是同一個 HTTP 連線保持打開，伺服器有�
 {step:"filter", found: 48, passed: 17, pending: 9, excluded_by: {budget: 12, free_only: 0, distance: 6, exclude: 4, registration: 0, costco: 3}}
 {agent:"paid", category:"食品",  status:"ranking"}
 {agent:"paid", category:"食品",  status:"done",   records:[Rec & {reason: string|null, distance_km: number|null}]}
-{agent:"free", category:"活動",  status:"failed", reason:"推薦排序逾時，已改依成本排列", records:[...依成本排序, reason:null]}
+{agent:"free", category:"活動",  status:"failed", reason:"推薦排序逾時，已改依預設推薦規則排序", records:[...deterministic 預設順序, reason:null]}
 {step:"done", pending:[Rec...]}
 ```
 
@@ -288,17 +301,17 @@ SSE（Server-Sent Events）是同一個 HTTP 連線保持打開，伺服器有�
 
 1. `SELECT * FROM candidates`（約 100 列以內）。`ponytail:` 整表讀出、TypeScript 篩選；上限約 1 萬列，升級路徑是把條件推進 SQL `WHERE`。
 2. 有 `location` 且該列有 `lat／lng` 時算 `distance_km`（haversine，一個函式放在 `shared/records.ts`）。
-3. 第一階段用共用純函式：`passesGate`（已驗證、總可比成本可算，且 `valid_until` 為 null 或 `> now()`；已過期的視同「過期／待確認」退到 pending）→ 否則進 pending；`passesHard(need, exclude)` 擴充距離（`max_distance_km`）、時間（`max_minutes` 對 `km ÷ 0.08`）、`registration_ok === false` 時要求 `registration_required` 為 false。統計每個限制的 `excluded_by`。`ponytail:` `people_or_servings`、`date`、`time_window`、`eligibility_notes` 維持文字，只顯示並交給 LLM，不做機器篩選；紀錄沒有對應的結構化欄位。
+3. 第一階段用共用純函式套證據閘門與硬限制。食品有 `people_or_servings = N` 時，只解析明示的人數／份數；明確區間取最大值，1..N 留作候選，超過 N 優先判 excluded（不因價格或閘門未知降為 pending），未知份量才 pending。件數、重量與餐名不推導份量，也不乘數量或價格。預算、排除成分／過敏原、Costco 會員、登記、日期、時段、資格、距離與時間仍按既有規則統計 `excluded_by`；不能判定符合者 pending。
 4. `main` 依 `(agent, category)` 分組；每個非空群組跑 `rankGroup()`，`Promise.allSettled`，各自包在現有 `withTimeout`（30 秒）。
-5. `rankGroup`：使用共用 `gemini.ts` 的 `generateStructured`，以 strict Zod schema 取得 `{order:[{id,reason}]}`；native Interactions 的 text input／JSON response_format，沒有 OpenAI adapter。每筆送給 LLM 的欄位：id、title、provider、總可比成本、price_unit、quantity_or_servings、distance_km、availability、eligibility、tags。不送 URL、證據原文、baseline。系統提示：總可比成本第一、軟偏好第二、不刪任何一筆、理由一句繁中、排在更便宜項目前面時理由必須說明。
-6. 驗證輸出：不在輸入清單的 id 丟掉；漏掉的 id 依成本順序補到最後、`reason: null`；逾時或格式不合 → 整組依成本排序，`status:"failed"` 加固定文案。
+5. `rankGroup`：使用共用 `gemini.ts` 的 `generateStructured`，以 strict Zod schema 取得 `{order:[{id,reason}]}`；native Interactions 的 text input／JSON response_format，沒有 OpenAI adapter。每筆送給 LLM 的欄位包括 `portion_match`（若有），但不送 URL、證據原文或 baseline。食品先按份量接近度，再比較成本與軟偏好；`rank.ts` 對這些食品一律產生可核對的 deterministic 安全理由，不接受模型把較小份量說成足夠全員。
+6. 驗證輸出：不在輸入清單的 id 丟掉；漏掉的 id 依預設 deterministic 順序補回、`reason: null`；逾時或格式不合也用同一備援。食品為份量接近度 → 總可比成本 → 查核時間／id；其他候選為總可比成本 → 查核時間／id。
 7. 每組完成就推事件；最後推 `{step:"done", pending}`。
 
-前端在類別分頁合併：付費與免費兩份依名次交錯；`settings.survival` 為 true 時免費整段在前。
+前端在類別分頁合併：一般推薦沿用付費／免費名次交錯；`settings.survival` 為 true 時推薦順序先免費整段，再於各段套用份量接近度。手動成本／距離／資料日期排序依選取控制，不附加生存模式或份量排序；pending 另在 main 之後排序。
 
 `settings.costco_ok` 是「我有 Costco 會員」的開關（預設 false），不是顯示偏好：為 false 時 `passesHard` 排除 `eligibility` 含 `Costco 會員` 的候選（計入 `excluded_by.costco`），前端同時隱藏 `baseline.basis === "costco"` 的節省。沒有會員就買不到，用買不到的價格算節省是假的。欄位規則見 [SPEC-ingestion.md §8](./SPEC-ingestion.md)。
 
-`need.budget_total_twd` 為 null（使用者沒設預算）時不做預算篩選；模型排序仍以總可比成本第一、軟偏好第二；不捏造 CP 分數。前端已套用並讓使用者確認的設定預填，以送來的 Need 為準；server 不替使用者補預算。
+`need.budget_total_twd` 為 null（使用者沒設預算）時不做預算篩選。食品有份量需求時推薦順序先比較份量接近度；其他候選與同份量層級才以總可比成本第一、軟偏好第二，且不捏造 CP 分數。前端已套用並讓使用者確認的設定預填，以送來的 Need 為準；server 不替使用者補預算。
 
 ### 8.1 排序範例
 
@@ -322,10 +335,11 @@ SSE（Server-Sent Events）是同一個 HTTP 連線保持打開，伺服器有�
 ## 10. 前端接點（後端完成後再做，範圍最小）
 
 - `api.ts`：`search()` 用 `fetch` + `ReadableStream` 讀 SSE；auth 呼叫；`me/data` GET／PUT；reports；`candidates?ids=` 批次取回。
+- `api.ts`：團購頁以一次 status 批次查詢取得公開進度；登入時再以一次 mine 批次查詢取得自己的加入狀態。Join／退出只更新對應卡片，不為每張卡片各發一個 GET。
 - `screens/ListScreen.tsx`：現在的 `items: Rec[]` 來自搜尋當下的記憶體，重新整理就空了。改為進入清單／收藏頁時以 `list`／`favs` 的 id 呼叫 `GET /api/candidates?ids=`。
-- `App.tsx`：token 存 `sessionStorage` key `ail.token`；啟動時呼叫 `/api/auth/me`；匿名時 ★／清單按鈕提示登入；登入後以帳號資料取代本機清單／收藏／設定；每次變更序列化 PUT，攜帶 revision 並處理 409 三方合併。
+- `App.tsx`：token 存 `sessionStorage` key `ail.token`；啟動時呼叫 `/api/auth/me`；匿名時愛心清單／書籤收藏按鈕提示登入；登入後以帳號資料取代本機清單／收藏／設定；每次變更序列化 PUT，攜帶 revision 並處理 409 三方合併。
 - `screens/Search.tsx`：消費事件；維持兩個面板；步驟改為篩選 → 推薦排序 n/m → 完成；各類失敗文案。
-- `screens/Team.tsx`：移除成員與加入代碼；顯示 `group_offer.redeem_code`、條件、成本列、分享。
+- `GroupOffers.tsx`：顯示商家優惠資訊、兌換碼、成本列、分享、`已加入／總名額／剩餘名額` 與 Join／退出。未登入時導向登入；已加入後才顯示「查看同團成員」，名單包含 nickname、`@username` 與本人標記。
 - `screens/Detail.tsx`：顯示 `reason`、「免費」標籤、`address`（`extra.address_source` 為 `geocoded` 時標示為系統比對所得）與不需金鑰的開地圖連結（`google.com/maps/search/?api=1&query=`）、「直線距離估算」文字、來自 API 的回報列表、「使用者回報，非系統判斷」標示。
 - 分享：**純前端，沒有後端路由**。已登入使用者按分享 → 跳出可複製的文字，內容為 標題、提供者、總可比成本、資料時間、地址（有的話）、來源連結；不含使用者位置與任何個資（PRD FR-12）。用 `navigator.share`，不支援時退回 `navigator.clipboard.writeText`。
 - 新增最小的帳號畫面（註冊／登入／修改密碼／忘記密碼 → `SUPPORT_EMAIL`）。設定增加 `costco_ok`（標示為「我有 Costco 會員」）。
@@ -361,8 +375,8 @@ Session 固定 1,800 秒，不因請求延長；不是可調的 env 參數。所
 
 以下保留原後端整合的歷史紀錄；ADR 見 [adr/0001](./adr/0001-offline-ingestion-and-per-category-ranking.md)。
 
-- `CONTEXT.md`：Agent 改為「負責一種推薦排序任務的 LLM 執行單元；不上網搜尋」；新增：第一階段篩選、推薦排序、推薦理由、資料回報／體驗回報、團體優惠（含兌換碼，由商家到店驗證，平台不追蹤成員）、生存模式、每月預算／已花費、排除項目、估算距離。
-- `docs/PRD-all-in-life.md`：§3.2 與 NFR-05 的位置條文改為「經同意後僅於該次搜尋使用目前位置，不保存」；§7.1／§7.2 Agent 對事先匯入的資料庫做推薦排序、每個 Agent 內部按類別並行；§9.1 增加 lat／lng、證據陣列、redeem_code；§9.7 以 `account_data` 取代清單／收藏各表；FR-08 免費／付費改為標籤區分；FR-12／FR-15 匿名不可 ★／清單、不做合併；揪團改為純顯示。
+- `CONTEXT.md`：Agent 改為「負責一種推薦排序任務的 LLM 執行單元；不上網搜尋」；新增第一階段篩選、推薦排序、回報、團體優惠與團購加入等詞彙；團購進度公開，成員身分只對同團成員可見。
+- `docs/PRD-all-in-life.md`：保留匿名搜尋與帳號資料規則；團體優惠增加 PostgreSQL 共享加入狀態、Join／退出、人數進度、滿員保護與成員隱私邊界。
 - `docs/SPEC-voice-input.md`：§1.1／§2.4／§4 移除合併（Case A8）；`/api/auth/me` 回傳 data；§8 環境變數已列。
 - 舊規格曾把 session TTL 列為 env；目前固定 1,800 秒。有效 AI 設定以本文件 §11 的 Gemini 欄位為準。
 - ADR `docs/adr/0001-offline-ingestion-and-per-category-ranking.md`：難以回頭、與 PRD「即時網路搜尋」相反、有真實取捨（誠實與成本 vs 廣度）。
@@ -388,7 +402,7 @@ Session 固定 1,800 秒，不因請求延長；不是可調的 env 參數。所
 ## 14. 延後與不在範圍
 
 - 實際的來源清單與蒐集工作（規格見 [SPEC-ingestion.md](./SPEC-ingestion.md)，內容由開發者填）。
-- 有共享狀態的揪團（teams 表）：Demo 後再議。
+- 多團輪替、使用者自行開新團、邀請連結、聊天、候補、通知、官方訂單／付款／核銷整合：Demo 後再議。
 - Google Routes API（`computeRouteMatrix`；舊稱 Distance Matrix API，已進入維護模式）：只需換掉 haversine 那個函式；已存的 `place_id` 可直接當 waypoint。見 [SPEC-geocoding.md](./SPEC-geocoding.md) §14。
 - 本機以外的部署。
 
@@ -396,7 +410,7 @@ Session 固定 1,800 秒，不因請求延長；不是可調的 env 參數。所
 
 - 類別分頁的合併規則是兩個 Agent 清單依名次交錯。
 - ~~新增 `settings.costco_ok`；未開啟時隱藏 Costco 基準。~~ 已定案：會員開關，未開啟時連同需會員的候選一起排除（§8）。
-- `people_or_servings`、`date`、`time_window`、`eligibility_notes` 不做機器篩選（紀錄沒有結構化欄位）。
+- ~~`people_or_servings`、`date`、`time_window`、`eligibility_notes` 不做機器篩選。~~ 已定案：只接受有限、明確且可保守判定的格式；食品份量另依本次需求建立暫時比對資料（見下節）。
 - `prototype-v1/` 是複製 `old_version/` 原始碼再修改，不是重寫。
 - `/api/auth/me` 在同一個回應裡回傳帳號資料。
 
@@ -411,8 +425,21 @@ Session 固定 1,800 秒，不因請求延長；不是可調的 env 參數。所
 
 前端序列化保存並以三方合併套用使用者實際 delta：不同欄位合併、收藏／清單明確增刪、相同欄位不同值則拒絕盲覆蓋。標記已買同時涉及支出與清單；不同購買不得因金額相同而靜默少算。重載須明示會丟棄未同步本機變更。
 
+集合契約固定為：結果／預設瀏覽愛心與詳情「加入清單」讀寫 `account.data.list`；詳情書籤讀寫 `account.data.favs`。兩者各自判斷 selected 並獨立切換；此次語意修正不批次搬移既有 id。愛心 selected 樣式為紅色實心 icon，按鈕背景不改紅。
+
 ### 搜尋需求的三種結果
 
-資料閘門未通過 → pending；通過後已知不符合硬限制 → excluded；通過但缺少符合證據 → pending；只有可判定符合者進 main。`request_match?:{status:"pending"|"excluded",reasons:string[]}` 只存在搜尋結果，不寫回資料證據狀態。
+一般規則是資料閘門未通過 → pending；通過後已知不符合硬限制 → excluded；通過但缺少符合證據 → pending；只有可判定符合者進 main。食品份量超過本次 N 是優先硬限制：即使該筆價格、有效性或其他閘門資料未知仍 excluded，不得漏進 pending。
 
-新增 `excluded_by.people/date/time/eligibility`。份量、日期、時段、成分／資格只判定明確有限格式；未知不能交给 LLM 猜測，不放大份量或價格。來源未明示食品成分不存在時，帶排除需求的該食品會待確認。地圖／定位仍沿用既有契約，未納入本次驗收。
+`request_match?:{status:"pending"|"excluded",reasons:string[]}` 與 `portion_match?:{requested,min,max}` 都只存在本次搜尋結果，不寫回或持久化。`portion_match` 用於篩選、伺服器／前端推薦順序及安全理由；明確區間以 max 比對，未知維持 null，不製造份量數字。搜尋內開啟詳情沿用該次搜尋快照，避免原始 catalog 查詢覆蓋份量與待確認／排除說明；重新載入後不重建舊搜尋條件。
+
+前端呈現（2026-09-05 更新）：推薦模式在生存模式下先免費、再於免費／付費各段套用食品份量；手動成本、距離、資料日期排序只遵循該控制。main 與 pending 分別排序後串接，pending 保持後置；分類筆數／候選總數計入 main + pending，excluded 繼續保留獨立收合區塊。
+
+新增 `excluded_by.people/date/time/eligibility`。食品需求 N 時已知 1..N 皆可成為候選，恰好 N 先於接近的較小份量；件數、重量、餐名或數量×單價都不是份量證據。日期、時段、成分／過敏原、會員、登記與資格只判定明確有限格式，未知不能交給 LLM 猜測。地圖／定位仍沿用既有契約，未納入本次驗收。
+
+
+### 未設定需求的公開瀏覽（2026-09-05）
+
+新增 `GET /api/browse`，匿名可用、`Cache-Control: no-store`，成功回傳 `{main: Rec[], pending: Rec[], excluded: []}`。讀取候選後先套 `publicRecords` 與既有證據閘門；main／pending 各自依 `comparableTotal` 由低到高（同成本沿用查核時間排序），不套使用者硬限制，也不呼叫需求解析或 LLM 排名。缺資料庫設定回 503；讀取失敗回 502 與安全訊息，不回傳假的空陣列或連線細節。
+
+此路由只用於尚未執行搜尋的結果頁；不改動 `POST /api/search` 的五類篩選、排序或 SSE 契約。前端預設「全部」＋「成本低到高」，並沿用 pending 後置與 excluded 獨立區塊。

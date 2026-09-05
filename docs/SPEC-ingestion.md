@@ -80,7 +80,7 @@ JSON 檔的 key 直接對應 `candidates` 的欄位名。**可空欄位不確定
 | `action_url` | text | ✔ | 外部可執行動作連結（訂購、報名、公告）。 | `https://…` |
 | `action_label` | text | ✔ | 動作按鈕文字。 | `線上訂購` |
 | `baseline` | jsonb | ✔ | `{name, total_twd, basis, as_of}`，`basis` 三選一：`user_plan`／`local_common`／`costco`。沒有同份量的可比基準就填 null（§8）。 | 見下 |
-| `group_offer` | jsonb | ✔ | `{min_people, discount_pct?, price_per_person?, redeem_code, note}`。`redeem_code` 是商家到店驗證用的兌換碼，平台不追蹤成員。 | 見下 |
+| `group_offer` | jsonb | ✔ | `{min_people, discount_pct?, price_per_person?, redeem_code, note}`。`redeem_code` 是官方公布的商家兌換碼；未公布時必須填 `null`，不可自製代碼。真實團體優惠的逐字證據另存 `extra.group_offer_evidence`，使用方式及獨立期限存 `extra.group_offer_terms: {redemption_method, valid_until, valid_from?}`；無明示期限填 `null`。門檻必須是官方要求的人數，不能把餐點份數換成人數。平台不追蹤成員。 | 見下 |
 | `extra` | jsonb | ✗（可空物件 `{}`） | 類別特有零碎欄位、`address_source`、`place_id`（後兩者由 geocode 腳本寫）。 | `{"address_source":"source"}` |
 
 ## 5. 證據規則（`evidence`）

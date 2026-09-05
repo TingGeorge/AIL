@@ -308,8 +308,7 @@
 }
 
 .save-fab svg { width: 15px; height: 15px; }
-.save-fab.saved { border-color: rgb(255 93 93 / 0.5); color: var(--coral); }
-.save-fab.saved svg { fill: currentColor; }
+.save-fab.saved svg { color: var(--coral); fill: currentColor; }
 
 .empty-state {
   margin: 26px 0 8px;
@@ -725,3 +724,9 @@
 .reports-panel.detail-disclosure > summary > span { display: flex; align-items: center; gap: 8px; }
 .reports-panel.detail-disclosure > summary > span > svg { width: 16px; height: 16px; }
 .reports-panel.detail-disclosure .fine-print { font-size: 12px; }
+
+/* Selection changes the icon only; keep the action surface readable. */
+.detail-actions .detail-primary[aria-pressed="true"] svg { color: #b42332; fill: currentColor; }
+.detail-actions button.saved svg { fill: currentColor; }
+.saved-screen .segmented button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.saved-screen .segmented button svg { width: 14px; height: 14px; flex-shrink: 0; }

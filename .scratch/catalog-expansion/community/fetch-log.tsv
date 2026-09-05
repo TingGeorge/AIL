@@ -1,0 +1,27 @@
+key	checked_at	curl_exit	http_status	effective_url	content_type	bytes	error
+taiwanjobs	2026-09-05T23:25:44+0800	0	200	https://job.taiwanjobs.gov.tw/Internet/Index/DocDetail.aspx?docid=17062&uk=1420	text/html; charset=utf-8	119003	
+laf-onsite	2026-09-05T23:25:44+0800	0	200	https://www.laf.org.tw/service-legal-advice/1	text/html; charset=utf-8	77812	
+labor-mol	2026-09-05T23:25:44+0800	0	200	https://www.mol.gov.tw/1607/28162/28296/81778/81802/81951/	text/html; charset=utf-8	94199	
+labor-taipei	2026-09-05T23:25:45+0800	0	200	https://bola.gov.taipei/News_Content.aspx?n=1A6417117CA20D98&s=9598CEC46364ACB0&sms=31B6C0BAB6E11488	text/html; charset=utf-8	83336	
+labor-form	2026-09-05T23:25:45+0800	0	200	https://service.gov.taipei/Errors/PageNotFound	text/html; charset=utf-8	17831	
+foi-fee	2026-09-05T23:25:45+0800	0	200	https://www.foi.org.tw/Article.aspx?Arti=1616&Lang=1&lid=645	text/html; charset=utf-8	155266	
+foi-process	2026-09-05T23:25:46+0800	0	200	https://www.foi.org.tw/Article.aspx?Arti=1622&Lang=1&p=3	text/html; charset=utf-8	161289	
+caregiver-provider	2026-09-05T23:25:47+0800	0	200	https://www.familycare.org.tw/taxonomy/term/892	text/html; charset=utf-8	36535	
+caregiver-contact	2026-09-05T23:25:48+0800	0	200	https://www.familycare.org.tw/contact	text/html; charset=utf-8	32652	
+mohw-hotlines	2026-09-05T23:25:49+0800	0	200	https://www.mohw.gov.tw/CSO/cp-23-135-1.html	text/html; charset=utf-8	31777	
+dementia	2026-09-05T23:25:49+0800	0	200	https://dementia.gov.taipei/News_Content.aspx?n=04825D3265339708&s=65C3246500BEEBAD&sms=D3FC34DCF234E6DD	text/html; charset=utf-8	67898	
+smoking	2026-09-05T23:25:49+0800	0	200	https://www.hpa.gov.tw/Pages/Detail.aspx?nodeid=4705&pid=17752	text/html; charset=utf-8	217178	
+maternal	2026-09-05T23:25:50+0800	0	200	https://www.hpa.gov.tw/Pages/Detail.aspx?nodeid=4705&pid=16871	text/html; charset=utf-8	211065	
+hpa-hotlines	2026-09-05T23:25:51+0800	0	200	https://www.hpa.gov.tw/Pages/List.aspx?nodeid=94	text/html; charset=utf-8	281988	
+itaiwan-intro	2026-09-05T23:25:53+0800	0	200	https://itaiwan.gov.tw/ITaiwanArticle/Contents?articleId=81	text/html; charset=utf-8	79142	
+itaiwan-faq	2026-09-05T23:25:53+0800	0	200	https://itaiwan.gov.tw/ITaiwanArticle/Contents?articleId=80	text/html; charset=utf-8	44177	
+taipei-elearning-rules	2026-09-05T23:25:53+0800	0	200	https://elearning.taipei/mpage/webfile/userfiles/files/Provision0407.pdf	application/pdf	316256	
+taipei-elearning-list	2026-09-05T23:25:53+0800	0	200	https://elearning.taipei/mpage/view_type_list	text/html; charset=UTF-8	280852	
+cloud-library	2026-09-05T23:25:53+0800	0	200	https://www.ebookservice.tw/tp/support/library-guide?mode=full	text/html; charset=utf-8	4718	
+blind-library	2026-09-05T23:25:53+0800	60	000	https://blind.tpml.gov.taipei/TaipeiLib/wSite/ct?ctNode=338&xItem=64090		0	curl: (60) SSL: no alternative certificate subject name matches target host name 'blind.tpml.gov.taipei' More details here: https://curl.se/docs/sslcerts.html  curl failed to verify the legitimacy of the server and therefore could not establish a secure connection to it. To learn more about this situation and how to fix it, please visit the web page mentioned above. 
+adult-health-free	2026-09-05T23:25:53+0800	0	200	https://www.hpa.gov.tw/Pages/Detail.aspx?nodeid=4878&pid=18755&sid=19082	text/html; charset=utf-8	210010	
+adult-health-current	2026-09-05T23:25:55+0800	0	200	https://www.hpa.gov.tw/Pages/List.aspx?nodeid=189	text/html; charset=utf-8	233547	
+adult-health-action	2026-09-05T23:25:56+0800	0	200	https://scbooking.health.gov.taipei/	text/html; charset=utf-8	53206	
+tpml-card-fee	2026-09-05T23:25:56+0800	0	200	https://tpml.gov.taipei/News_Content.aspx?n=E5F579B94C9D2941&s=0B14D794801EB4E3	text/html; charset=utf-8	75775	
+tpml-card-how	2026-09-05T23:25:57+0800	0	200	https://tpml.gov.taipei/News_Content.aspx?n=E5F579B94C9D2941&s=3042D939FA6A98F3	text/html; charset=utf-8	80783	
+tpml-loan	2026-09-05T23:25:57+0800	0	200	https://tpml.gov.taipei/News_Content.aspx?n=E5F579B94C9D2941&s=930491EFE66FAA04	text/html; charset=utf-8	75846	

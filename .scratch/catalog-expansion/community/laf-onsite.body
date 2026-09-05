@@ -1,0 +1,1299 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<meta name="author" content="馬亞科技 | 台北 | 台南 | 網頁設計  | 網站設計 | 網頁製作 | 無障礙網頁設計 | Designer: Ringo  | Slicing: Trista | PG(程式): Austin "/>
+<meta name="keywords" content="財團法人法律扶助基金會 現場法律諮詢、面對面法律諮詢"/>
+<meta name="description" content="財團法人法律扶助基金會 現場法律諮詢服務說明及駐點資訊"/>
+<meta name="author" content="馬亞科技 | 台北 |  台南 | 網頁設計 | 網站設計 | 網頁製作"/>
+<meta name="copyright" content="台北 | 台南 | 馬亞網頁設計公司 (C)1996-2023"/>
+<meta property="og:title" content="現場法律諮詢"/>
+<meta property="og:description" content=""/>
+<meta property="og:image" content="https://www.laf.org.tw/upload/2024/05/20240515155044875.png"/>
+<title>現場法律諮詢－法律扶助基金會</title>
+<base href="https://www.laf.org.tw/">
+<!-- 新版編輯器CSS -->
+<link href="ContentBox/box/box.css" rel="stylesheet" type="text/css" /> 
+<link href="ContentBox/assets/minimalist-blocks/content.css" rel="stylesheet" type="text/css" /> 
+
+<link href="images/favicon.ico" rel="shortcut icon"/>
+<link href="lib/dialog/dialog.css" rel="stylesheet"/>
+<link href="css/libs.css" rel="stylesheet"/>
+<link href="css/style.css?1788621944" rel="stylesheet"/>
+<script src="js/libs.js"></script>
+
+    <link rel="stylesheet" href="lib/slick/accessible-slick-theme.min.css">
+    <script src="lib/slick/slick.min.js"></script>
+    <!-- <link rel="stylesheet" href="lib/tab/tabs.css">
+    <script src="lib/tab/tabs-automatic.js"></script> -->
+    <script src="lib/dialog/utils.js"></script>
+    <script src="lib/dialog/dialog.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWFRHJXFCP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZWFRHJXFCP');
+</script>
+<!-- Meta Pixel Code -->
+
+<script>
+
+!function(f,b,e,v,n,t,s)
+
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+
+n.queue=[];t=b.createElement(e);t.async=!0;
+
+t.src=v;s=b.getElementsByTagName(e)[0];
+
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+
+'https://connect.facebook.net/en_US/fbevents.js');
+
+fbq('init', '414502577391676');
+
+fbq('track', 'PageView');
+
+</script>
+
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=414502577391676&ev=PageView&noscript=1" alt="臉書noscript使用"/></noscript>
+
+<!-- End Meta Pixel Code -->    <noscript>您的瀏覽器不支援JavaScript功能，若網頁功能無法正常使用時，請開啟瀏覽器JavaScript狀態</noscript>
+  </head>
+  <body>
+  
+      <header>
+      <div class="TW">
+      <script async src="https://cse.google.com/cse.js?cx=77669bbd7164b444d"></script>
+
+      <a class="srOnly to-main" href="#mainContent" title="跳到主要內容">跳到主要內容</a>
+<div class="header">       
+  <div class="top-row">
+        <div class="container"><a class="srOnly" id="accU" href="#accU" accesskey="U" title="右上方功能區塊">:::</a><a class="sitemap-link" href="https://www.laf.org.tw/sitemapw" title="提供瞭解網站整體架構及鍵盤快捷鍵"><i class="fa-solid fa-sitemap"></i><span>網站導覽</span></a>
+      <div class="hot-word">
+        <p id="hotword"><i class="fa-solid fa-circle-chevron-right"></i><span>熱門關鍵字：</span></p>        <ul aria-labelledby="hotword">
+                  <li><a class="search_tag" href="javascript:;" psearch="債務清理" title="關鍵字快速搜尋:債務清理">債務清理</a></li>
+                    <li><a class="search_tag" href="javascript:;" psearch="法律諮詢" title="關鍵字快速搜尋:法律諮詢">法律諮詢</a></li>
+                    <li><a class="search_tag" href="javascript:;" psearch="申請法扶律師" title="關鍵字快速搜尋:申請法扶律師">申請法扶律師</a></li>
+                    <li><a class="search_tag" href="javascript:;" psearch="費用說明" title="關鍵字快速搜尋:費用說明">費用說明</a></li>
+                  </ul>
+      </div>
+      <div class="font-size">
+        <p id="fontsize">字級：</p>
+        <ul aria-labelledby="fontsize">
+          <li><a class="FZmin" href="javascript:;" data-size="min" title="字級：小" role="button">A-</a></li>
+          <li class="active"><a class="FZnormal" href="javascript:;" data-size="normal" title="字級：中" role="button" aria-current="true">A</a></li>
+          <li><a class="FZlarge" href="javascript:;" data-size="large" title="字級：大" role="button">A+</a></li>
+        </ul>
+      </div>
+      <div class="language dropdown"><a class="current-lang dropdown-toggle" id="language" href="javascript:;" title="" role="button" aria-expanded="false"><i class="fa-solid fa-earth-americas"></i><span>Language</span></a>
+        <ul class="lang-list dropdown-menu" aria-labelledby="language">
+          <li><a href="https://www.laf.org.tw/en/index.php" target="_blank" title="切換英文語系網站(另開視窗)">English</a></li>
+          <li class="active"><a href="index.php" title="切換中文語系網站" aria-current="true">中文</a></li>
+                    <li><a href="https://www.laf.org.tw/foreign/2" title="切換越南文語系網站">Việt Nam</a></li>
+                    <li><a href="https://www.laf.org.tw/foreign/4" title="切換菲律賓文語系網站">Pilippines</a></li>
+                    <li><a href="https://www.laf.org.tw/foreign/1" title="切換印尼文語系網站">Indonesia</a></li>
+                    <li><a href="https://www.laf.org.tw/foreign/5" title="切換緬甸文語系網站">Myanmar</a></li>
+                    <li><a href="https://www.laf.org.tw/foreign/3" title="切換泰文語系網站">ภาษาไทย</a></li>
+                  </ul>
+      </div>
+    </div>
+  </div>
+  <div class="main-row container"><a class="logo" href="https://www.laf.org.tw/" title=""> <img src="images/logo.png" alt="logo" aria-hidden="true"/>
+      <div class="text">
+        <h1>財團法人法律扶助基金會</h1>
+        <p class="en">Legal Aid Foundation</p>
+      </div></a><a class="mobile-toggle" href="javascript:;" role="button" title=""><span></span>
+      <p class="hide">手機版本收合選單</p></a>
+    <div class="right-active-box">
+      <form class="keyword-form" action="index.php"><a class="srOnly" id="accS" href="#accS" accesskey="S" title="網站搜尋">:::</a>
+        <label class="hide" for="keyword">關鍵字搜尋</label>
+        <input type="hidden" name="action" value="search_g"/>
+        <input id="keyword" type="text" name="q" placeholder="請輸入關鍵字"/>
+        <button type="submit" title=""><i class="fa-solid fa-magnifying-glass"></i><span class="hide">送出關鍵字查詢</span></button>
+      </form>
+      <div class="outlink-list"><a href="https://www.laf.org.tw/lawyer-intro" title="前往我是律師專頁"><i class="fa-solid fa-user-tie"></i><span>我是律師</span></a><a href="https://crpd.laf.org.tw/" target="_blank" rel="noopener noreferrer" title="前往無障礙網站(另開視窗)"><i class="fa-solid fa-wheelchair"></i><span>無障礙網站</span></a></div>
+    </div>
+  </div>
+  <nav class="main-menu-nav" id="main-nav" aria-label="網站主選單"><a class="srOnly" id="accM" href="#accM" accesskey="M" title="主選單區">:::</a>
+    <ul class="main-menu container" id="main-menu">
+      <li class="menu-item dropdown"><a role="button" class="dropdown-toggle" id="menu-subject-1" href="#" title="">關於法扶</a>
+        <ul class="dropdown-menu" aria-labelledby="menu-subject-1">
+          <li class="dropdown"><a role="button" class="dropdown-toggle" id="menu-subject-1-1" href="#" title="">法扶介紹</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-1-1">
+                            <li><a href="https://www.laf.org.tw/about/7" title="法扶簡介">法扶簡介</a></li>
+                            <li><a href="https://www.laf.org.tw/about/9" title="組織架構">組織架構</a></li>
+                            <li><a href="https://www.laf.org.tw/about/13" title="董事會與監察人會">董事會與監察人會</a></li>
+                            <li><a href="https://www.laf.org.tw/about/16" title="董事長">董事長</a></li>
+                            <li><a href="https://www.laf.org.tw/about/12" title="執行長">執行長</a></li>
+                          </ul>
+          </li>
+          <li class="dropdown"><a role="button" class="dropdown-toggle" id="menu-subject-1-2" href="#" title="">法律扶助法及相關法規</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-1-2">
+              <li><a href="https://www.laf.org.tw/law" title="">最新修訂及法規列表</a></li>
+                            <li><a href="https://www.laf.org.tw/lawCategory/1" title="母法及相關監督法規">母法及相關監督法規</a></li>
+                            <li><a href="https://www.laf.org.tw/lawCategory/2" title="關於申請及審查標準">關於申請及審查標準</a></li>
+                            <li><a href="https://www.laf.org.tw/lawCategory/3" title="行政相關作業">行政相關作業</a></li>
+                            <li><a href="https://www.laf.org.tw/lawCategory/4" title="扶助律師">扶助律師</a></li>
+                            <li><a href="https://www.laf.org.tw/lawCategory/5" title="人事法規">人事法規</a></li>
+                            <li><a href="https://www.laf.org.tw/lawCategory/6" title="財會法規">財會法規</a></li>
+                            <li><a href="https://www.laf.org.tw/lawCategory/7" title="其他">其他</a></li>
+                          </ul>
+          </li>
+          <li class="dropdown"><a role="button" class="dropdown-toggle" id="menu-subject-1-3" href="#" title="">公開資訊</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-1-3">
+              <li><a href="https://www.laf.org.tw/publication" title="">法扶年報</a></li>
+              <li class="dropdown has-sub"><a role="button" class="dropdown-toggle" id="menu-subject-1-3-2" href="#" title="">財務報表</a>
+                <ul class="dropdown-menu sub-menu third-menu" aria-labelledby="menu-subject-1-3-2">
+                                  <li><a href="https://www.laf.org.tw/financialReport/1" title="預算報告書">預算報告書</a></li>
+                                    <li><a href="https://www.laf.org.tw/financialReport/2" title="決算報告書">決算報告書</a></li>
+                                    <li><a href="https://www.laf.org.tw/financialReport/3" title="監察報告書">監察報告書</a></li>
+                                  </ul>
+              </li>
+              <li class="dropdown has-sub"><a role="button" class="dropdown-toggle" id="menu-subject-1-3-3" href="#" title="">會議記錄</a>
+                <ul class="dropdown-menu sub-menu third-menu" aria-labelledby="menu-subject-1-3-3">
+                                  <li><a href="https://www.laf.org.tw/meetingRecord/2" title="監察人會議記錄">監察人會議記錄</a></li>
+                                    <li><a href="https://www.laf.org.tw/meetingRecord/1" title="董事會會議記錄">董事會會議記錄</a></li>
+                                  </ul>
+              </li>
+                            <li><a href="https://www.laf.org.tw/fotherReport/4" title="支付獎助名單">支付獎助名單</a></li>
+                            <li><a href="https://www.laf.org.tw/fotherReport/1" title="國際交流報告書">國際交流報告書</a></li>
+                            <li><a href="https://www.laf.org.tw/fotherReport/5" title="扶助律師接案數">扶助律師接案數</a></li>
+                            <li><a href="https://www.laf.org.tw/awardRecord" title="">週年表揚名單</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li class="menu-item dropdown"><a role="button" class="dropdown-toggle" id="menu-subject-2" href="#" title="">法扶服務</a>
+        <ul class="dropdown-menu" aria-labelledby="menu-subject-2">
+          <li><a href="https://www.laf.org.tw/service-des" title="">服務說明</a></li>
+          <li><a role="button" class="dropdown-toggle" id="menu-subject-2-2" href="#" title="">法律諮詢</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-2-2">
+              <li><a href="https://www.laf.org.tw/service-legal-des" title="">法律諮詢說明</a></li>
+              <li><a href="https://www.laf.org.tw/service-legal-advice-tel" title="">電話法律諮詢</a></li>
+              <li><a href="https://www.laf.org.tw/service-legal-advice/1" title="">現場法律諮詢</a></li>
+              <li><a href="https://www.laf.org.tw/service-legal-advice/2" title="">視訊法律諮詢</a></li>
+                          </ul>
+          </li>
+          <li><a role="button" class="dropdown-toggle" id="menu-subject-2-3" href="#" title="">申請法扶律師</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-2-3">
+                            <li><a href="https://www.laf.org.tw/service-laywer-des" title="">申請法扶律師說明</a></li>
+              <li><a href="https://www.laf.org.tw/service-laywer-doc" title="">應備文件</a></li>
+              <li class="dropdown has-sub"><a role="button" class="dropdown-toggle" id="menu-subject-2-3-3" href="#" title="">扶助資格</a>
+                <ul class="dropdown-menu sub-menu third-menu" aria-labelledby="menu-subject-2-3-3">
+                  <li><a href="https://www.laf.org.tw/service-assistance-des" title="">扶助資格說明</a></li>
+                  <li><a href="https://www.laf.org.tw/service-assistance-nocompetency" title="">無資力標準</a></li>
+                                    <li><a href="https://www.laf.org.tw/service-assistance-unlimit/1" title="">不用審查資力情形</a></li>
+                                    <li><a href="https://www.laf.org.tw/service-assistance-unlimit/2" title="">原則上無法提供扶助之案件類型</a></li>
+                                  </ul>
+              </li>
+              <li><a href="https://www.laf.org.tw/expense-des" title="">費用說明</a></li>
+              <li><a href="https://www.laf.org.tw/service-app" title="">申請方式</a></li>
+              <li class="dropdown has-sub"><a role="button" class="dropdown-toggle" id="menu-subject-2-3-6" href="#" title="">申請流程</a>
+                <ul class="dropdown-menu sub-menu third-menu" aria-labelledby="menu-subject-2-3-6">
+                  <li><a href="https://www.laf.org.tw/service-flow1" title="">預約及準備</a></li>
+                  <li><a href="https://www.laf.org.tw/service-flow2" title="">到會審查</a></li>
+                  <li><a href="https://www.laf.org.tw/service-flow3" title="">審查後通知結果</a></li>
+                </ul>
+              </li>
+              <li><a href="https://www.laf.org.tw/service-process" title="">受扶助人注意事項</a></li>
+              <li><a href="https://www.laf.org.tw/service-project" title="">扶助專案</a></li>
+            </ul>
+          </li>
+          <li><a role="button" class="dropdown-toggle" id="menu-subject-2-4" href="#" title="">常見問題</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-2-4">
+                          <li><a href="https://www.laf.org.tw/service-qa/8" title="">對法律扶助基金會的疑問</a></li>
+                            <li><a href="https://www.laf.org.tw/service-qa/7" title="">法律諮詢相關問題</a></li>
+                            <li><a href="https://www.laf.org.tw/service-qa/6" title="">申請法扶律師相關問題</a></li>
+                            <li><a href="https://www.laf.org.tw/service-qa/5" title="">審查階段相關問題</a></li>
+                            <li><a href="https://www.laf.org.tw/service-qa/4" title="">對法扶律師的相關問題</a></li>
+                          </ul>
+          </li>
+          <li><a href="https://www.laf.org.tw/service-col-des" title="">合作與連結</a></li>
+        </ul>
+      </li>
+      <li class="menu-item dropdown"><a role="button" class="dropdown-toggle" id="menu-subject-3" href="#" title="">服務據點</a>
+        <ul class="dropdown-menu" aria-labelledby="menu-subject-3">
+          <li><a href="https://www.laf.org.tw/place" title="">全國服務據點</a></li>
+                    <li><a role="button" class="dropdown-toggle" id="menu-subject-3-2" href="#" title="">北部</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-3-2">
+                            <li><a href="https://www.laf.org.tw/place-detail/2" title="">基隆分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/3" title="">台北分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/4" title="">士林分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/5" title="">新北分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/6" title="">桃園分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/7" title="">新竹分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/8" title="">原住民族法律服務中心西部辦公室</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/1" title="">總會</a></li>
+                          </ul>
+          </li>
+                    <li><a role="button" class="dropdown-toggle" id="menu-subject-3-2" href="#" title="">中部</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-3-2">
+                            <li><a href="https://www.laf.org.tw/place-detail/9" title="">苗栗分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/10" title="">台中分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/11" title="">彰化分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/12" title="">南投分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/13" title="">雲林分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/14" title="">嘉義分會</a></li>
+                          </ul>
+          </li>
+                    <li><a role="button" class="dropdown-toggle" id="menu-subject-3-2" href="#" title="">南部</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-3-2">
+                            <li><a href="https://www.laf.org.tw/place-detail/15" title="">台南分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/16" title="">高雄分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/17" title="">橋頭分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/18" title="">屏東分會</a></li>
+                          </ul>
+          </li>
+                    <li><a role="button" class="dropdown-toggle" id="menu-subject-3-2" href="#" title="">東部</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-3-2">
+                            <li><a href="https://www.laf.org.tw/place-detail/19" title="">宜蘭分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/20" title="">原住民族法律服務中心花蓮本部</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/21" title="">花蓮分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/22" title="">台東分會</a></li>
+                          </ul>
+          </li>
+                    <li><a role="button" class="dropdown-toggle" id="menu-subject-3-2" href="#" title="">離島</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-3-2">
+                            <li><a href="https://www.laf.org.tw/place-detail/23" title="">澎湖分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/24" title="">金門分會</a></li>
+                            <li><a href="https://www.laf.org.tw/place-detail/25" title="">馬祖分會</a></li>
+                          </ul>
+          </li>
+                  </ul>
+      </li>
+      <li class="menu-item dropdown"><a role="button" class="dropdown-toggle" id="menu-subject-4" href="#" title="">最新消息</a>
+        <ul class="dropdown-menu" aria-labelledby="menu-subject-4">
+        <li><a href="https://www.laf.org.tw/news" title="全部消息">全部消息</a></li>
+                  <li><a href="https://www.laf.org.tw/news/2" title="">公告</a></li>
+                    <li><a href="https://www.laf.org.tw/news/3" title="">新聞稿</a></li>
+                    <li><a href="https://www.laf.org.tw/news/1" title="">分會服務異動</a></li>
+                    <li><a href="https://www.laf.org.tw/activity" title="">活動</a></li>
+          <li><a href="https://www.laf.org.tw/hire" title="">招募</a></li>
+        </ul>
+      </li>
+      <li class="menu-item dropdown"><a role="button" class="dropdown-toggle" id="menu-subject-5" href="#" title="">我要捐款</a>
+        <ul class="dropdown-menu" aria-labelledby="menu-subject-5">
+          <li><a href="https://www.laf.org.tw/donate-method" title="">捐款方式</a></li>
+                    <li><a href="https://laftaiwan.neticrm.tw/civicrm/contribute/transact?reset=1&id=3" target="_blank"  title="(另開視窗)">線上純捐款</a></li>
+                    <li><a href="https://www.laf.org.tw/donate" title="">線上捐款滿額贈</a></li>
+          <li><a href="https://www.laf.org.tw/donate-inquiry" title="">捐款徵信</a></li>
+          <li><a href="https://www.laf.org.tw/donate-result" title="">捐款成果</a></li>
+          <li><a href="https://www.laf.org.tw/donate-qa" title="">捐款問與答</a></li>
+        </ul>
+      </li>
+      <li class="menu-item dropdown"><a role="button" class="dropdown-toggle" id="menu-subject-6" href="#" title="">法治教育</a>
+        <ul class="dropdown-menu" aria-labelledby="menu-subject-6">
+                  <li><a href="https://www.laf.org.tw/edu/1" title="">法扶報報</a></li>
+                    <li><a href="https://www.laf.org.tw/edu/2" title="">法律扶助與社會期刊</a></li>
+                    <li><a href="https://www.laf.org.tw/edu/4" title="">出版叢書</a></li>
+                    <li><a href="https://www.laf.org.tw/edu/5" title="">法扶影音</a></li>
+                    <li><a href="https://www.laf.org.tw/edu/6" title="">法扶有聲書</a></li>
+                    <li><a href="https://www.laf.org.tw/edu/7" title="">法扶Podcast</a></li>
+                    <li><a href="https://www.laf.org.tw/lazy" title="">法律懶人包</a></li>
+        </ul>
+      </li>
+      <li class="menu-item dropdown"><a role="button" class="dropdown-toggle" id="menu-subject-7" href="#" title="">下載專區</a>
+        <ul class="dropdown-menu" aria-labelledby="menu-subject-7">
+                            <li><a role="button" class="dropdown-toggle" id="menu-subject-7-1"  href="javascript:;" title="申請法扶">申請法扶</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-7-1">
+                          <li><a href="https://www.laf.org.tw/download/7" title="申請法律扶助類">申請法律扶助類</a></li>
+                            <li><a href="https://www.laf.org.tw/download/8" title="申請減免費用類">申請減免費用類</a></li>
+                            <li><a href="https://www.laf.org.tw/download/9" title="申請墊付費用類">申請墊付費用類</a></li>
+                          </ul>
+          </li>
+                                <li><a href="https://www.laf.org.tw/download/2" title="轉介個案">轉介個案</a></li>
+                                <li><a href="https://www.laf.org.tw/download/3" title="院檢專用">院檢專用</a></li>
+                                <li><a href="https://www.laf.org.tw/download/4" title="檢警專案">檢警專案</a></li>
+                              <li><a role="button" class="dropdown-toggle" id="menu-subject-7-5"  href="javascript:;" title="律師專用">律師專用</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-7-5">
+                          <li><a href="https://www.laf.org.tw/download/10" title="申請擔任扶助律師">申請擔任扶助律師</a></li>
+                            <li><a href="https://www.laf.org.tw/download/11" title="扶助律師常用表單">扶助律師常用表單</a></li>
+                            <li><a href="https://www.laf.org.tw/download/12" title="酬金計付說明表單">酬金計付說明表單</a></li>
+                            <li><a href="https://www.laf.org.tw/download/13" title="律師意見調查表單">律師意見調查表單</a></li>
+                            <li><a href="https://www.laf.org.tw/download/14" title="檢警律師相關表單">檢警律師相關表單</a></li>
+                            <li><a href="https://www.laf.org.tw/download/15" title="提審律師相關表單">提審律師相關表單</a></li>
+                            <li><a href="https://www.laf.org.tw/download/16" title="勞工訴訟扶助專案">勞工訴訟扶助專案</a></li>
+                          </ul>
+          </li>
+                              <li><a role="button" class="dropdown-toggle" id="menu-subject-7-6"  href="javascript:;" title="電子文宣">電子文宣</a>
+            <ul class="dropdown-menu sub-menu" aria-labelledby="menu-subject-7-6">
+                          <li><a href="https://www.laf.org.tw/download/17" title="法扶DM">法扶DM</a></li>
+                            <li><a href="https://www.laf.org.tw/download/18" title="法扶海報">法扶海報</a></li>
+                            <li><a href="https://www.laf.org.tw/download/19" title="外語DM">外語DM</a></li>
+                          </ul>
+          </li>
+                  </ul>
+      </li>
+    </ul>
+    <div class="right-active-box is-mobile">
+      <form class="keyword-form" action="index.php">
+        <label class="hide" for="keywordMB">關鍵字搜尋</label>
+        <input type="hidden" name="action" value="search_g"/>
+        <input id="keywordMB" name="q" type="text" placeholder="請輸入關鍵字"/>
+        <button type="submit" title=""><i class="fa-solid fa-magnifying-glass"></i><span class="hide">送出關鍵字查詢</span></button>
+      </form>
+      <div class="outlink-list"><a href="https://www.laf.org.tw/lawyer-intro" title="前往我是律師專頁"><i class="fa-solid fa-user-tie"></i><span>我是律師</span></a><a href="https://crpd.laf.org.tw/" target="_blank" rel="noopener noreferrer" title="前往無障礙網站(另開視窗)"><i class="fa-solid fa-wheelchair"></i><span>無障礙網站</span></a></div>
+    </div>
+  </nav>
+</div>
+      </div>
+    </header>
+    
+    <script>
+    $(document).ready(function() {
+      
+      $(".search_tag").on("click", function() {
+        psearch=$(this).attr("psearch");
+        if(psearch!=''){
+          $("input[name='q']").val(psearch);
+          $(".keyword-form").submit();
+        }
+      });
+      //處理baseurl偽靜態錨點問題
+      var pathname = window.location.href.split('#')[0];
+      
+    $('a[href^="#"]').each(function() {
+        var $this = $(this),
+            link = $this.attr('href');
+        $this.attr('href', pathname + link);
+    });
+    //處理baseurl偽靜態錨點問題end
+    });
+  </script>
+<main>
+  <div class="TW" id="mainContent"><a class="srOnly" id="accC" href="#accC" accesskey="C" title="主要內容區塊">:::</a>
+    <nav class="breadcrumb-grid" aria-label="目前位置">
+      <div class="container">
+        <ol>
+          <li><a href="https://www.laf.org.tw/" title="">
+              <i class="fa-solid fa-house"></i>首頁</a></li>
+          <li><a href="https://www.laf.org.tw/service-des" title="">法扶服務</a>
+          </li>
+          <li><a href="javascript:;" title="" aria-current="page">法律諮詢</a>
+          </li>
+                    <li><a href="javascript:;" title="">現場法律諮詢</a>
+
+          </li>
+        </ol>
+      </div>
+    </nav>
+    <div class="page-container-grid container">
+      
+<aside class="aside-grid"><a class="srOnly" id="accL" href="#accL" accesskey="L" title="左方主功能區塊">:::</a>
+  <div class="aside-head">
+    <div class="icon"><img src="images/mascot-2.png" alt="裝飾圖片" /></div>
+    <div class="text">
+      <h2>法扶服務</h2>
+      <p class="sub-text">Legal Services</p>
+    </div>
+  </div>
+  <!-- <form class="aside-form" action="#">
+              <label class="hide" for="pageKeyword">單元內容搜尋</label>
+              <input id="pageKeyword" type="text" placeholder="法扶服務關鍵字搜尋"/>
+              <button type="submit" title=""><i class="fa-solid fa-magnifying-glass"></i><span class="hide">送出關鍵字查詢</span></button>
+            </form> -->
+  <nav><a class="toggle-btn toggle-menu" role="button" tabindex="0" aria-pressed="false" title="更多單元"><i
+        class="fas fa-bars"></i><span>更多單元</span></a>
+    <div class="accordion">
+      <div class="accordion-item">
+                <div class="accordion-toggle"><a
+            class="first-trigger "
+            href="https://www.laf.org.tw/service-des" title=""><span class="accordion-title">服務說明</span></a></div>
+      </div>
+            <div class="accordion-item">
+        <div class="accordion-toggle has-child">
+          <button class="accordion-trigger first-trigger" type="button" aria-expanded="true"
+            aria-controls="sect2" id="accordion2id"><span class="accordion-title">法律諮詢</span></button>
+        </div>
+        <ul class="accordion-panel first-panel" role="region" aria-labelledby="accordion2id" id="sect2" >
+          <li ><a
+              href="https://www.laf.org.tw/service-legal-des" title="">法律諮詢說明</a>
+          </li>
+          <li ><a
+              href="https://www.laf.org.tw/service-legal-advice-tel" title="">電話法律諮詢</a>
+          </li>
+          <li class="active" ><a href="https://www.laf.org.tw/service-legal-advice/1" title="">現場法律諮詢</a>
+          </li>
+          <li ><a
+              href="https://www.laf.org.tw/service-legal-advice/2" title="">視訊法律諮詢</a>
+          </li>
+                  </ul>
+      </div>
+            <div class="accordion-item">
+        <div class="accordion-toggle has-child">
+          <button class="accordion-trigger first-trigger" type="button" aria-expanded="false"
+            aria-controls="sect3" id="accordion3id"><span class="accordion-title">申請法扶律師</span></button>
+        </div>
+                <ul class="accordion-panel first-panel" role="region" aria-labelledby="accordion3id" id="sect3" hidden="hidden" >
+          <li ><a
+              href="https://www.laf.org.tw/service-laywer-des" title="">申請法扶律師說明</a>
+          </li>
+          <li ><a
+              href="https://www.laf.org.tw/service-laywer-doc" title="">應備文件</a>
+          </li>
+                    <li >
+
+            <div class="accordion-item">
+              <div class="accordion-toggle has-child">
+                <button class="accordion-trigger second-trigger" type="button"
+                  aria-expanded="false" aria-controls="sect3-3"
+                  id="accordion3id-sub3">扶助資格</button>
+              </div>
+              <ul class="accordion-panel second-panel" role="region" aria-labelledby="accordion3id-sub3" id="sect3-3"
+                hidden="hidden" >
+                <li ><a
+                    href="https://www.laf.org.tw/service-assistance-des" title="">扶助資格說明</a></li>
+                <li ><a
+                    href="https://www.laf.org.tw/service-assistance-nocompetency" title="">無資力標準</a></li>
+                                    <li ><a href="https://www.laf.org.tw/service-assistance-unlimit/1"
+                        title="">不用審查資力情形</a></li>
+                                      <li ><a href="https://www.laf.org.tw/service-assistance-unlimit/2"
+                        title="">原則上無法提供扶助之案件類型</a></li>
+                                </ul>
+            </div>
+          </li>
+          <li ><a
+              href="https://www.laf.org.tw/expense-des" title="">費用說明</a>
+          </li>
+          <li ><a
+              href="https://www.laf.org.tw/service-app" title="">申請方式</a>
+          </li>
+                    <li >
+            <div class="accordion-item">
+              <div class="accordion-toggle has-child">
+                <button class="accordion-trigger second-trigger" type="button"
+                  aria-expanded="false" aria-controls="sect3-6"
+                  id="accordion3id-sub6">申請流程</button>
+              </div>
+              <ul class="accordion-panel second-panel" role="region" aria-labelledby="accordion3id-sub6" id="sect3-6"
+                hidden="hidden" >
+                <li ><a
+                    href="https://www.laf.org.tw/service-flow1" title="">預約及準備</a></li>
+                <li ><a
+                    href="https://www.laf.org.tw/service-flow2" title="">到會審查</a></li>
+                <li ><a href="https://www.laf.org.tw/service-flow3" title="">審查後通知結果</a></li>
+              </ul>
+            </div>
+          </li>
+          <li ><a
+              href="https://www.laf.org.tw/service-process" title="">受扶助人注意事項</a>
+          </li>
+          <li ><a href="https://www.laf.org.tw/service-project" title="">扶助專案</a>
+          </li>
+        </ul>
+      </div>
+            <div class="accordion-item">
+        <div class="accordion-toggle has-child">
+          <button class="accordion-trigger first-trigger" type="button" aria-expanded="false"
+            aria-controls="sect4" id="accordion4id"><span class="accordion-title">常見問題</span></button>
+        </div>
+        <ul class="accordion-panel first-panel" role="region" aria-labelledby="accordion4id" id="sect4" hidden="hidden" >
+                        <li ><a
+                  href="https://www.laf.org.tw/service-qa/8"
+                  title="">對法律扶助基金會的疑問</a>
+              </li>
+                          <li ><a
+                  href="https://www.laf.org.tw/service-qa/7"
+                  title="">法律諮詢相關問題</a>
+              </li>
+                          <li ><a
+                  href="https://www.laf.org.tw/service-qa/6"
+                  title="">申請法扶律師相關問題</a>
+              </li>
+                          <li ><a
+                  href="https://www.laf.org.tw/service-qa/5"
+                  title="">審查階段相關問題</a>
+              </li>
+                          <li ><a
+                  href="https://www.laf.org.tw/service-qa/4"
+                  title="">對法扶律師的相關問題</a>
+              </li>
+                    </ul>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-toggle"><a
+            class="first-trigger "
+            href="https://www.laf.org.tw/service-col-des" title=""><span class="accordion-title">合作與連結</span></a></div>
+      </div>
+    </div>
+  </nav>
+</aside>      <div class="page-main-grid page-service">
+        <div class="page-head">
+          <h3>現場法律諮詢</h3>
+        </div>
+        <div class="page-main">
+          <div class="page-info-list">
+                          <div class="info-item date-item">
+                <p class="title"><span>發佈日期：</span>2023.12.18</p>
+              </div>
+                                      <div class="info-item update-item">
+                <p class="title"><span>更新日期：</span>2026.08.17</p>
+              </div>
+                      </div>
+          <div class="page-main-content">
+            <div class="accordion page-accordion legal-advice-toggle">
+                                <div class="accordion-item" id="item1">
+                    <div class="accordion-toggle has-child">
+                      <button class="accordion-trigger" type="button" aria-expanded="true"
+                        aria-controls="qa1" id="qa1id"> <span
+                          class="no">1.</span>服務說明</button>
+                    </div>
+                    <div class="accordion-panel" role="region" aria-labelledby="qa1id"
+                      id="qa1" >
+                                              <!-- 原編輯器 START -->
+                        <div class="unreset">
+                          <p>法律扶助基金會與各縣市單位合作並提供法律諮詢駐點服務，您可以在法律諮詢駐點，與專業律師面對面進行「現場法律諮詢」，每位民眾限時20分鐘。<br />
+&nbsp;</p>                        </div>
+                        <!-- 原編輯器 END -->
+                                          </div>
+                  </div>
+                                  <div class="accordion-item" id="item2">
+                    <div class="accordion-toggle has-child">
+                      <button class="accordion-trigger" type="button" aria-expanded="false"
+                        aria-controls="qa2" id="qa2id"> <span
+                          class="no">2.</span>服務對象</button>
+                    </div>
+                    <div class="accordion-panel" role="region" aria-labelledby="qa2id"
+                      id="qa2" hidden>
+                                              <!-- 原編輯器 START -->
+                        <div class="unreset">
+                          <p>只要是在台灣的民眾，均可使用法扶基金會法律諮詢服務，且不需要審查您的資力（即財力）及案情。<br />                        </div>
+                        <!-- 原編輯器 END -->
+                                          </div>
+                  </div>
+                                  <div class="accordion-item" id="item3">
+                    <div class="accordion-toggle has-child">
+                      <button class="accordion-trigger" type="button" aria-expanded="false"
+                        aria-controls="qa3" id="qa3id"> <span
+                          class="no">3.</span>諮詢費用</button>
+                    </div>
+                    <div class="accordion-panel" role="region" aria-labelledby="qa3id"
+                      id="qa3" hidden>
+                                              <!-- 原編輯器 START -->
+                        <div class="unreset">
+                          <p>免費諮詢，您不需要負擔律師費，由法律扶助基金會支付律師諮詢費。<br />
+&nbsp;</p>                        </div>
+                        <!-- 原編輯器 END -->
+                                          </div>
+                  </div>
+                                  <div class="accordion-item" id="item4">
+                    <div class="accordion-toggle has-child">
+                      <button class="accordion-trigger" type="button" aria-expanded="false"
+                        aria-controls="qa4" id="qa4id"> <span
+                          class="no">4.</span>應備文件</button>
+                    </div>
+                    <div class="accordion-panel" role="region" aria-labelledby="qa4id"
+                      id="qa4" hidden>
+                                              <!-- 原編輯器 START -->
+                        <div class="unreset">
+                          <p>建議攜帶預約面談者的身分證（或其他身分證明文件）、案情相關資料。<br />
+&nbsp;</p>                        </div>
+                        <!-- 原編輯器 END -->
+                                          </div>
+                  </div>
+                                  <div class="accordion-item" id="item5">
+                    <div class="accordion-toggle has-child">
+                      <button class="accordion-trigger" type="button" aria-expanded="false"
+                        aria-controls="qa5" id="qa5id"> <span
+                          class="no">5.</span>預約方式</button>
+                    </div>
+                    <div class="accordion-panel" role="region" aria-labelledby="qa5id"
+                      id="qa5" hidden>
+                                              <!-- 原編輯器 START -->
+                        <div class="unreset">
+                          <p>請透過下方篩選器查詢預約方式，網路預約請連結<a href="https://legal-advice.laf.org.tw/" style="color:#035bdf;" target="_blank" title="點擊將另開新視窗連結至：「法律扶助線上預約系統」"><i class="fa-solid fa-link" style="padding-right:8px;"></i><strong>「法律扶助線上預約系統」</strong></a>進行線上預約。</p>
+
+<p><span style="color:#e74c3c;"><strong>如線上預約系統內沒有您可配合的時間地點，敬請透過下方「服務駐點查詢功能」，另外洽詢或查找可配合的服務時段及預約方式。</strong></span></p>
+
+<p>&nbsp;</p>                        </div>
+                        <!-- 原編輯器 END -->
+                                          </div>
+                  </div>
+                                  <div class="accordion-item" id="item6">
+                    <div class="accordion-toggle has-child">
+                      <button class="accordion-trigger" type="button" aria-expanded="false"
+                        aria-controls="qa6" id="qa6id"> <span
+                          class="no">6.</span>服務駐點查詢</button>
+                    </div>
+                    <div class="accordion-panel" role="region" aria-labelledby="qa6id"
+                      id="qa6" hidden>
+                                              <!-- 原編輯器 START -->
+                        <div class="unreset">
+                          <p>請透過下方篩選器查詢，或點擊連結開啟或下載：<strong><a href="/upload/user/files/法律扶助基金會 現場面對面法律諮詢一覽表2026.08.17.ods" style="color:#035bdf;" target="_blank" title="點擊將另開新視窗可開啟或下載檔案：「現場面對面法律諮詢駐點一覽表」.ods">「現場面對面法律諮詢駐點一覽表」.ods</a></strong></p>                        </div>
+                        <!-- 原編輯器 END -->
+                                          </div>
+                  </div>
+                
+            </div>
+            <div class="legal-advice-place-grid">
+              <form class="place-search search-fm form-style" action="#" id="fosub_search" onsubmit="return false">
+                <input type=hidden name="action" value="service-legal-advice">
+                <input type=hidden name="ntype" value="1">
+                <div class="field-row">
+                  <div class="field">
+                    <div class="field-label nomt">
+                      <label class="field-title" id="adviceType" for="adviceType">服務類型：</label>
+                    </div>
+                    <div class="field-content" role="group" aria-labelledby="adviceType">
+
+                                                <label class="checked-item" for="adviceType1">
+                            <input type="checkbox" name="adviceType" id="adviceType1"
+                              value="現場面對面法律諮詢" checked /><span>現場面對面法律諮詢</span>
+                          </label>
+                                                  <label class="checked-item" for="adviceType2">
+                            <input type="checkbox" name="adviceType" id="adviceType2"
+                              value="駐點取號視訊法律諮詢"  /><span>駐點取號視訊法律諮詢</span>
+                          </label>
+                                              <span class="remark">(可複選)</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="field-row city-selector">
+                  <div class="field">
+                    <div class="field-label">
+                      <label class="field-title" for="country">縣市：</label>
+                    </div>
+                    <div class="field-content">
+                      <div class="select-style">
+                        <select id="country" name=""></select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">
+                      <label class="field-title" for="district">區域：</label>
+                    </div>
+                    <div class="field-content">
+                      <div class="select-style">
+                        <select id="district" name=""> </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field wide-field">
+                    <div class="field-label nomt">
+                      <label class="field-title" for="ta">服務時段：</label>
+                    </div>
+
+                    <div class="field-content">
+
+                                                <label class="checked-item" for="tz1">
+                            <input type="checkbox" name="tz" id="tz1"
+                              value="週一" /><span>週一</span>
+                          </label>
+                                                  <label class="checked-item" for="tz2">
+                            <input type="checkbox" name="tz" id="tz2"
+                              value="週二" /><span>週二</span>
+                          </label>
+                                                  <label class="checked-item" for="tz3">
+                            <input type="checkbox" name="tz" id="tz3"
+                              value="週三" /><span>週三</span>
+                          </label>
+                                                  <label class="checked-item" for="tz4">
+                            <input type="checkbox" name="tz" id="tz4"
+                              value="週四" /><span>週四</span>
+                          </label>
+                                                  <label class="checked-item" for="tz5">
+                            <input type="checkbox" name="tz" id="tz5"
+                              value="週五" /><span>週五</span>
+                          </label>
+                                              <!-- <label class="checked-item" for="ta2">
+                            <input type="checkbox" name="" id="ta2" value="原住民"/><span>原住民</span>
+                          </label>
+                          <label class="checked-item" for="ta3">
+                            <input type="checkbox" name="" id="ta3" value="身心障礙者"/><span>身心障礙者</span>
+                          </label> -->
+                      <span class="remark">(可複選)</span>
+                      <!-- <div class="select-style">
+                            <select id="ta" name="ta">
+                              <option value="">選擇服務對象</option>
+                                                            <option value=""></option>
+                                                          </select>
+                          </div> -->
+                    </div>
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field wide-field">
+                    <div class="field-label nomt">
+                      <label class="field-title" for="reservationType">預約方式：</label>
+                    </div>
+                    <div class="field-content">
+                                                <label class="checked-item" for="reservationType1">
+                            <input type="checkbox" name="reservationType" id="reservationType1"
+                              value="電話預約" /><span>電話預約</span>
+                          </label>
+                                                  <label class="checked-item" for="reservationType2">
+                            <input type="checkbox" name="reservationType" id="reservationType2"
+                              value="網路預約" /><span>網路預約</span>
+                          </label>
+                                                  <label class="checked-item" for="reservationType3">
+                            <input type="checkbox" name="reservationType" id="reservationType3"
+                              value="現場排隊" /><span>現場排隊</span>
+                          </label>
+                                                  <label class="checked-item" for="reservationType4">
+                            <input type="checkbox" name="reservationType" id="reservationType4"
+                              value="現場抽號採視訊服務" /><span>現場抽號採視訊服務</span>
+                          </label>
+                                              <!-- <label class="checked-item" for="reservationType2">
+                            <input type="checkbox" name="" id="reservationType2" value="電話預約"/><span>電話預約</span>
+                          </label>
+                          <label class="checked-item" for="reservationType3">
+                            <input type="checkbox" name="" id="reservationType3" value="現場排隊"/><span>現場排隊</span>
+                          </label>
+                          <label class="checked-item" for="reservationType4">
+                            <input type="checkbox" name="" id="reservationType4" value="現場抽號提供視訊服務"/><span>現場抽號提供視訊服務</span>
+                          </label> -->
+                      <span class="remark">(可複選)</span>
+                      <!-- <div class="select-style">
+                            <select id="reservationType" name="reservationType">
+                              <option value="">選擇預約方式</option>
+                                                            <option value="現場抽號採視訊服務">現場抽號採視訊服務</option>
+                                                            <option value="現場排隊">現場排隊</option>
+                                                            <option value="網路預約">網路預約</option>
+                                                            <option value="網路預約/現場排隊">網路預約/現場排隊</option>
+                                                            <option value="網路預約/電話預約">網路預約/電話預約</option>
+                                                            <option value="網路預約/電話預約/現場排隊">網路預約/電話預約/現場排隊</option>
+                                                            <option value="電話預約">電話預約</option>
+                                                            <option value="電話預約/現場排隊">電話預約/現場排隊</option>
+                                                          </select>
+                          </div> -->
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">
+                      <label class="field-title must" for="keyword">關鍵字：</label>
+                    </div>
+                    <div class="field-content">
+                      <input id="keyword" type="text" name="keyword" placeholder="請輸入關鍵字">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <button class="submit" type="button" id="search_place"><i
+                        class="fa-solid fa-magnifying-glass"></i><span class="hide">搜尋</span></button>
+                  </div>
+                </div>
+              </form>
+              <div class="legal-advice-place-table">
+                <div class="table-style pc-table">
+                  <div class="table-limit">
+                    <table class="tsearch">
+                      <thead>
+                        <tr>
+                          <th style="width:45px;">序號</th>
+                          <!-- <th style="width:60px;">縣市</th> -->
+                          <th>駐點名稱</th>
+                          <th>地址</th>
+                          <th style="width:140px;">服務時段</th>
+                          <th style="width:100px;">服務類型</th>
+                          <th style="width:90px;">預約方式</th>
+                          <th style="width:110px;">電話</th>
+                          <!-- <th style="width:100px;">服務對象</th> -->
+                          <th style="width:20%;">備註</th>
+                        </tr>
+                      </thead>
+                      <tbody id="srehtm">
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="legal-advice-place-mobile mobile-table">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="share-link-list">
+            <p class="text">
+              <i class="fa-solid fa-share"></i>分享：
+            </p>
+            <div class="a2a_kit a2a_kit_size_32 a2a_default_style share-link">
+              <a title='分享頁面到facebook(另開視窗)' class="a2a_button_facebook"><i class="fa-brands fa-facebook-f"></i></a>
+              <a title='分享頁面到line(另開視窗)' class="a2a_button_line"><i class="fa-brands fa-line"></i></a>
+              <a title='分享頁面到threads(另開視窗)' class="a2a_button_threads"><img src="images/sns-threads.svg" alt=""></a>
+              <a title='分享頁面到X(另開視窗)' class="a2a_button_twitter"><i class="fa-brands fa-x-twitter"></i></a>
+              <a title='分享頁面到email(另開視窗)' class="a2a_button_email"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+            <script async src="https://static.addtoany.com/menu/page.js"></script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="lib/tw-city-selector/tw-city-selector.min.js"></script>
+
+<script>
+  new TwCitySelector({
+    el: '.city-selector',
+    elCountry: '#country',
+    elDistrict: '#district',
+  });
+  $(function () {
+    //快速篩選
+    /*$("input[name=keyword]").on("keyup", function() {
+      var value = $(this).val().toLowerCase();
+      $(".tsearch tr").slice(1).filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+     
+      $(".mobile-item").slice(0).filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    });*/
+    //服務類型
+    /* $("input[name=adviceType]").on("click", function() {
+       $(".tsearch tr").removeClass("kk");
+       $(".mobile-item").removeClass("kk");
+       var num2 = $('input[name=adviceType]:checked').length;
+       if(num2==0){
+         $(".tsearch tr").show();
+         $(".mobile-item").show();
+         
+       }else{
+         $("input[name='adviceType']:checked").each(function(index, item) {
+
+         var prdid = $(item).val();
+         
+         $(".tsearch tr").slice(1).hide();
+
+         $(".tsearch tr").slice(1).filter(":contains("+ prdid.trim() +")").addClass("kk");
+         $(".tsearch tr.kk").show();
+         $(".mobile-item").slice(0).hide();
+         $(".mobile-item").slice(0).filter(":contains("+ prdid.trim() +")").addClass("kk");
+         $(".mobile-item.kk").show();
+      });
+       }
+       
+       
+     });*/
+
+    $("#search_place").on("click", function () {
+      //服務類型
+      var prd_data = [];
+      var arrayO = {};
+      //縣市
+      var county = '';
+      //區域
+      var district = '';
+      //服務時段
+      var tz = [];
+      //預約方式
+      var reservationType = [];
+      //關鍵字
+      var keyword = '';
+
+      county = $("select[name=county]").val();
+      district = $("select[name=district]").val();
+      //  ta=$("select[name=ta]").val();
+      //  reservationType=$("select[name=reservationType]").val();
+      keyword = $("input[name=keyword]").val();
+      var ckprdnum = $("input[name='adviceType']:checked").length;
+      if (ckprdnum > 0) {
+        $("input[name='adviceType']:checked").each(function (index, item) {
+
+          var prdid = $(item).val();
+          prd_data.push(prdid);
+        });
+      }
+      //20240221
+      var ckprdnum2 = $("input[name='tz']:checked").length;
+      if (ckprdnum2 > 0) {
+        $("input[name='tz']:checked").each(function (index, item) {
+
+          var prdid2 = $(item).val();
+          tz.push(prdid2);
+        });
+      }
+      var ckprdnum3 = $("input[name='reservationType']:checked").length;
+      if (ckprdnum3 > 0) {
+        $("input[name='reservationType']:checked").each(function (index, item) {
+
+          var prdid3 = $(item).val();
+          reservationType.push(prdid3);
+        });
+      }
+      arrayO = {};
+      arrayO['prd_data'] = prd_data;
+      arrayO['county'] = county;
+      arrayO['district'] = district;
+      arrayO['tz'] = tz;
+      arrayO['reservationType'] = reservationType;
+      arrayO['keyword'] = keyword;
+      //  console.log(arrayO);
+      $.ajax({
+        type: "POST",
+        url: "ajax/sec_place.php",
+        dataType: "json",
+        data: arrayO,
+        success: function (msg) {
+          // alert(msg.csatus);
+          // alert(msg.search_debug);
+          //  console.log(msg.search_debug);
+          if (msg.csatus.trim() != 'no') {
+            $("#srehtm").html(msg.htmla);
+            $(".mobile-table").html(msg.htmlb);
+
+            // alert("批次處理完成!");
+            //  console.log(msg.search_debug);
+            // alert("處理成功!");
+
+          } else {
+            alert("處理失敗!");
+          }
+        }
+      });
+    });
+    //
+    $("#search_place").trigger("click");
+  });
+</script><footer>
+  <div class="TW">
+    <div class="footer-menu-grid"><a class="srOnly" id="accZ" href="#accZ" accesskey="Z" title="下方功能區塊">:::</a><a
+        class="ft-menu-toggle" href="javascript:;" title="" aria-expanded="true"><i class="fa-solid fa-plus"></i><span
+          class="hide">網站結構收合按鈕</span></a>
+      <div class="container">
+        <div class="footer-menu">
+          <div class="menu-item">
+            <p class="menu-title" id="ftmenu-subject-1">關於法扶</p>
+            <ul aria-labelledby="ftmenu-subject-1">
+              <li><a href="https://www.laf.org.tw/about" title="">法扶介紹</a></li>
+              <li><a href="https://www.laf.org.tw/law" title="">法律扶助法及相關法規</a></li>
+              <li><a href="https://www.laf.org.tw/publication" title="">公開資訊</a></li>
+            </ul>
+          </div>
+          <div class="menu-item">
+            <p class="menu-title" id="ftmenu-subject-2">法扶服務</p>
+            <ul aria-labelledby="ftmenu-subject-2">
+              <li><a href="https://www.laf.org.tw/service-des" title="">服務說明</a></li>
+              <li><a href="https://www.laf.org.tw/service-legal-advice" title="">法律諮詢</a></li>
+              <li><a href="https://www.laf.org.tw/service-laywer-des" title="">申請法扶律師</a></li>
+              <li><a href="https://www.laf.org.tw/service-qa" title="">常見問題</a></li>
+              <li><a href="https://www.laf.org.tw/service-col-des" title="">合作與連結</a></li>
+            </ul>
+          </div>
+          <div class="menu-item">
+            <p class="menu-title" id="ftmenu-subject-3">服務據點</p>
+            <ul aria-labelledby="ftmenu-subject-3">
+              <li><a href="https://www.laf.org.tw/place" title="">全國服務據點</a></li>
+                                <li><a href="https://www.laf.org.tw/place-detail/2"
+                      title="1">北部</a></li>
+                                  <li><a href="https://www.laf.org.tw/place-detail/9"
+                      title="2">中部</a></li>
+                                  <li><a href="https://www.laf.org.tw/place-detail/15"
+                      title="3">南部</a></li>
+                                  <li><a href="https://www.laf.org.tw/place-detail/19"
+                      title="4">東部</a></li>
+                                  <li><a href="https://www.laf.org.tw/place-detail/23"
+                      title="5">離島</a></li>
+                            </ul>
+          </div>
+          <div class="menu-item">
+            <p class="menu-title" id="ftmenu-subject-4">最新消息</p>
+            <ul aria-labelledby="ftmenu-subject-4">
+              <li><a href="https://www.laf.org.tw/news" title="">全部消息</a></li>
+                                <li><a href="https://www.laf.org.tw/news/2"
+                      title="公告">公告</a></li>
+                                  <li><a href="https://www.laf.org.tw/news/3"
+                      title="新聞稿">新聞稿</a></li>
+                                  <li><a href="https://www.laf.org.tw/news/1"
+                      title="分會服務異動">分會服務異動</a></li>
+                              <li><a href="https://www.laf.org.tw/activity" title="">活動</a></li>
+              <li><a href="https://www.laf.org.tw/hire" title="">招募</a></li>
+            </ul>
+          </div>
+          <div class="menu-item">
+            <p class="menu-title" id="ftmenu-subject-5">我要捐款</p>
+            <ul aria-labelledby="ftmenu-subject-5">
+              <li><a href="https://www.laf.org.tw/donate-method" title="">捐款方式</a></li>
+                              <li><a href="https://laftaiwan.neticrm.tw/civicrm/contribute/transact?reset=1&id=3" target="_blank"  title="">線上純捐款</a></li>
+                            <li><a href="https://www.laf.org.tw/donate" title="">線上捐款滿額贈</a></li>
+              <li><a href="https://www.laf.org.tw/donate-inquiry" title="">捐款徵信</a></li>
+              <li><a href="https://www.laf.org.tw/donate-result" title="">捐款成果</a></li>
+              <li><a href="https://www.laf.org.tw/donate-qa" title="">捐款問與答</a></li>
+            </ul>
+          </div>
+          <div class="menu-item">
+            <p class="menu-title" id="ftmenu-subject-6">法治教育</p>
+            <ul aria-labelledby="ftmenu-subject-6">
+                                <li><a href="https://www.laf.org.tw/edu/1"
+                      title="">法扶報報</a></li>
+                                  <li><a href="https://www.laf.org.tw/edu/2"
+                      title="">法律扶助與社會期刊</a></li>
+                                  <li><a href="https://www.laf.org.tw/edu/4"
+                      title="">出版叢書</a></li>
+                                  <li><a href="https://www.laf.org.tw/edu/5"
+                      title="">法扶影音</a></li>
+                                  <li><a href="https://www.laf.org.tw/edu/6"
+                      title="">法扶有聲書</a></li>
+                                  <li><a href="https://www.laf.org.tw/edu/7"
+                      title="">法扶Podcast</a></li>
+                              <li><a href="https://www.laf.org.tw/lazy" title="法律懶人包">法律懶人包</a></li>
+            </ul>
+          </div>
+          <div class="menu-item">
+            <p class="menu-title" id="ftmenu-subject-7">下載專區</p>
+            <ul aria-labelledby="ftmenu-subject-7">
+                                <li><a href="https://www.laf.org.tw/download/7"
+                      title="申請法扶">申請法扶</a>
+                  </li>
+                                  <li><a href="https://www.laf.org.tw/download/2"
+                      title="轉介個案">轉介個案</a>
+                  </li>
+                                  <li><a href="https://www.laf.org.tw/download/3"
+                      title="院檢專用">院檢專用</a>
+                  </li>
+                                  <li><a href="https://www.laf.org.tw/download/4"
+                      title="檢警專案">檢警專案</a>
+                  </li>
+                                  <li><a href="https://www.laf.org.tw/download/10"
+                      title="律師專用">律師專用</a>
+                  </li>
+                                  <li><a href="https://www.laf.org.tw/download/17"
+                      title="電子文宣">電子文宣</a>
+                  </li>
+                            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-info-row">
+      <div class="container">
+        <div class="info-box">
+          <div class="ft-logo"><img src="images/logo-footer.png" alt="法扶logo" aria-hidden="true" />
+            <div class="text">
+              <p class="main-text">財團法人法律扶助基金會</p>
+              <p class="en">Legal Aid Foundation</p>
+            </div>
+          </div>
+          <div class="ft-des">
+            <p>如您對於本會同仁或審查委員的言行舉止、扶助律師的扶助品質，認為有違反法令或言行不當等情況，可以<b>具名</b>提出申訴。</p>
+          </div>
+          <div class="btn-row">
+            <a class="appeal-btn" href="https://www.laf.org.tw/appeal" title=""><i
+                class="fa-solid fa-hand-pointer"></i><span>申訴或檢舉</span></a>
+                        <a class="sexual-btn" href="https://www.laf.org.tw/sexual" title=""><i
+                class="fa-solid fa-people-group"></i><span>法扶會性騷擾防治措施</span></a>
+          </div>
+        </div>
+        <div class="right-box">
+          <div class="sns-row">
+            <a href="https://accessibility.moda.gov.tw/Applications/Detail?category=20240517110208" title="無障礙網站(另開視窗)"
+              target="_blank">
+              <img src="images/a-sign.svg" border="0" width="120" alt="通過A無障礙網頁檢測" />
+            </a>
+                        <a class="term-link" href="https://www.laf.org.tw/term" title="">隱私權保護政策</a>
+            <div class="sns-links">
+              <a href="https://www.facebook.com/legalaidtw/" target="_blank" rel="noopener noreferrer"
+                title="前往facebook專頁(另開視窗)"><i class="fa-brands fa-facebook-f"></i><span
+                  class="hide">前往facebook專頁</span></a>
+              <a href="https://www.instagram.com/legalaidtaiwan/" target="_blank" rel="noopener noreferrer"
+                title="前往instagram專頁(另開視窗)">
+                <i class="fa-brands fa-instagram"></i><span class="hide">前往instagram專頁</span></a>
+              <a href="https://www.youtube.com/user/laftaiwan" target="_blank" rel="noopener noreferrer"
+                title="前往youtube專頁(另開視窗)">
+                <i class="fa-brands fa-youtube"></i><span class="hide">前往youtube專頁</span></a>
+              <a href="https://www.threads.net/@legalaidtaiwan" target="_blank" rel="noopener noreferrer"
+                title="前往threads專頁(另開視窗)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 448">
+                  <path
+                    d="M64,0C28.7,0,0,28.7,0,64v320c0,35.3,28.7,64,64,64h320c35.3,0,64-28.7,64-64V64c0-35.3-28.7-64-64-64H64ZM294.2,212.3c19.5,9.3,33.7,23.5,41.2,40.9,10.4,24.3,11.4,63.9-20.2,95.4-24.2,24.1-53.5,35-95.1,35.3h-.2c-46.8-.3-82.8-16.1-106.9-46.8-21.5-27.3-32.6-65.4-33-113.1v-.2c.4-47.7,11.5-85.7,33-113.1,24.2-30.7,60.2-46.5,106.9-46.8h.2c46.9.3,83.3,16,108.2,46.6,12.3,15.1,21.3,33.3,27,54.4l-26.9,7.2c-4.7-17.2-11.9-31.9-21.4-43.6-19.4-23.9-48.7-36.1-87-36.4-38,.3-66.8,12.5-85.5,36.2-17.5,22.3-26.6,54.4-26.9,95.5.3,41.1,9.4,73.3,26.9,95.5,18.7,23.8,47.4,36,85.5,36.2,34.3-.3,56.9-8.4,75.8-27.3,21.5-21.5,21.1-47.9,14.2-64-4-9.4-11.4-17.3-21.3-23.3-2.4,18-7.9,32.2-16.5,43.2-11.4,14.5-27.7,22.4-48.4,23.5-15.7.9-30.8-2.9-42.6-10.7-13.9-9.2-22-23.2-22.9-39.5-1.7-32.2,23.8-55.3,63.5-57.6,14.1-.8,27.3-.2,39.5,1.9-1.6-9.9-4.9-17.7-9.8-23.4-6.7-7.8-17.1-11.8-30.8-11.9h-.4c-11,0-26,3.1-35.6,17.6l-23-15.8c12.8-19.4,33.6-30.1,58.5-30.1h.6c41.8.3,66.6,26.3,69.1,71.8,1.4.6,2.8,1.2,4.2,1.9l.1.5h0ZM222.4,279.8c17-.9,36.4-7.6,39.7-48.8-8.8-1.9-18.6-2.9-29-2.9-3.2,0-6.4.1-9.6.3-28.6,1.6-38.1,15.5-37.4,27.9.9,16.7,19,24.5,36.4,23.6l-.1-.1h0Z" />
+                </svg>
+                <span class="hide">前往threads專頁</span></a>
+            </div>
+            <button class="btn-edm-booked" type="button" onclick="openDialog('dialogEDM', this)">訂閱電子報</button>
+          </div>
+          <div class="bottom-info">
+            <p class="right">© Copyright 2023 財團法人法律扶助基金會 All Rights Reserved</p>
+            <p class="designed">Designed by iware<a href="https://www.iware.com.tw/" target="_blank"
+                title="網頁設計公司:馬亞科技(另開視窗)" rel="noopener noreferrer"><b>網頁設計</b></a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="aside-active-links"><a class="srOnly" id="accB" href="#accB" accesskey="B" title="右側輔助功能區塊">:::</a>
+      <p class="hide" id="aside-links">浮動功能選單</p>
+      <button class="hide-toggle" title="收合右側輔助功能區"><i class="fa-solid fa-arrows-left-right"></i>收合</button>
+      <ul aria-labelledby="aside-links">
+        <li><a class="top-btn" href="#" title="回到網頁最上方">
+            <div class="icon"><img src="images/ic-top.svg" alt="置頂圖示" /><img src="images/ic-top-active.svg"
+                alt="置頂圖示(hover)" /></div>
+          </a></li>
+        <li><a href="https://www.laf.org.tw/place" title="前往服務據點">
+            <div class="icon"><img src="images/ic-place.svg" alt="服務據點圖示" /><img src="images/ic-place-active.svg"
+                alt="服務據點圖示(hover)" /></div>
+          </a></li>
+        <li><a href="https://www.facebook.com/legalaidtw/" target="_blank" rel="noopener noreferrer"
+            title="前往facebook專頁(另開視窗)"><i class="fa-brands fa-facebook-f"></i><span class="hide">前往facebook專頁</span></a>
+        </li>
+        <li><a href="https://www.instagram.com/legalaidtaiwan/" target="_blank" rel="noopener noreferrer"
+            title="前往instagram專頁(另開視窗)"><i class="fa-brands fa-instagram"></i><span
+              class="hide">前往instagram專頁</span></a></li>
+        <li><a href="https://www.youtube.com/user/laftaiwan" target="_blank" rel="noopener noreferrer"
+            title="前往youtube專頁(另開視窗)"><i class="fa-brands fa-youtube"></i><span class="hide">前往youtube專頁</span></a></li>
+        <li><a href="https://www.threads.net/@legalaidtaiwan" target="_blank" rel="noopener noreferrer"
+            title="前往threads專頁(另開視窗)">
+            <div class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 448">
+                <path
+                  d="M64,0C28.7,0,0,28.7,0,64v320c0,35.3,28.7,64,64,64h320c35.3,0,64-28.7,64-64V64c0-35.3-28.7-64-64-64H64ZM294.2,212.3c19.5,9.3,33.7,23.5,41.2,40.9,10.4,24.3,11.4,63.9-20.2,95.4-24.2,24.1-53.5,35-95.1,35.3h-.2c-46.8-.3-82.8-16.1-106.9-46.8-21.5-27.3-32.6-65.4-33-113.1v-.2c.4-47.7,11.5-85.7,33-113.1,24.2-30.7,60.2-46.5,106.9-46.8h.2c46.9.3,83.3,16,108.2,46.6,12.3,15.1,21.3,33.3,27,54.4l-26.9,7.2c-4.7-17.2-11.9-31.9-21.4-43.6-19.4-23.9-48.7-36.1-87-36.4-38,.3-66.8,12.5-85.5,36.2-17.5,22.3-26.6,54.4-26.9,95.5.3,41.1,9.4,73.3,26.9,95.5,18.7,23.8,47.4,36,85.5,36.2,34.3-.3,56.9-8.4,75.8-27.3,21.5-21.5,21.1-47.9,14.2-64-4-9.4-11.4-17.3-21.3-23.3-2.4,18-7.9,32.2-16.5,43.2-11.4,14.5-27.7,22.4-48.4,23.5-15.7.9-30.8-2.9-42.6-10.7-13.9-9.2-22-23.2-22.9-39.5-1.7-32.2,23.8-55.3,63.5-57.6,14.1-.8,27.3-.2,39.5,1.9-1.6-9.9-4.9-17.7-9.8-23.4-6.7-7.8-17.1-11.8-30.8-11.9h-.4c-11,0-26,3.1-35.6,17.6l-23-15.8c12.8-19.4,33.6-30.1,58.5-30.1h.6c41.8.3,66.6,26.3,69.1,71.8,1.4.6,2.8,1.2,4.2,1.9l.1.5h0ZM222.4,279.8c17-.9,36.4-7.6,39.7-48.8-8.8-1.9-18.6-2.9-29-2.9-3.2,0-6.4.1-9.6.3-28.6,1.6-38.1,15.5-37.4,27.9.9,16.7,19,24.5,36.4,23.6l-.1-.1h0Z" />
+              </svg>
+            </div>
+            <span class="hide">前往threads專頁</span>
+          </a></li>
+      </ul>
+    </div>
+    <div class="dialogs">
+      <div class="hidden" id="dialogEDM" role="dialog" aria-labelledby="dialogEDM_label" aria-modal="true">
+        <p class="dialog-head" id="dialogEDM_label">訂閱電子報</p>
+        <form class="form-fm form-style" action="" id="fo_epaper" onsubmit="return false">
+          
+          <div class="field-group">
+
+            <div class="field">
+              <div class="field-label">
+                <label class="field-title must" for="EDMAddress">E-mail</label>
+              </div>
+              <div class="field-content">
+                <input id="EDMAddress" type="text" name="email" placeholder="請輸入電子信箱" required="required" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <label class="field-title must" for="lastName">姓</label>
+              </div>
+              <div class="field-content">
+                <input id="lastName" type="text" name="lastName" placeholder="請輸入姓" required="required" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <label class="field-title must" for="firstName">名</label>
+              </div>
+              <div class="field-content">
+                <input id="firstName" type="text" name="firstName" placeholder="請輸入名" required="required" />
+              </div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button type="submit" id="epaper_submit1">送出</button>
+            <button class="btn-cencel" id="epaper_cencel" type="button" onclick="closeDialog(this)">取消</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- SCRIPT start-->
+<!-- <script src="js/libs.js"></script> -->
+<script src="lib/accordion/accordion.js"></script>
+<link rel="stylesheet" href="lib/tab/tabs.css">
+<!-- <script src="lib/tab/tabs-automatic.js"></script> -->
+<script src="lib/tab-browserall.js"></script>
+<script src="lib/SmartMenus/jquery.smartmenus.min.js"></script>
+<script src="js/main.js"></script>
+<link rel="stylesheet" href="lib/carousel/carousel-prev-next.css">
+<script src="lib/carousel/carousel-prev-next.js"></script>
+
+<!-- 新版編輯器JS -->
+<script src="ContentBox/box/box.js" type="text/javascript"></script>
+
+<script>
+
+  </script>
+<script>
+
+  $(document).ready(function () {
+
+    $(document).on("click", "#epaper_submit1", function () {
+      //alert( "Handler for .change() called." );
+
+      var msg = "";
+      var ckField = "";
+      var smsg = "";
+
+      reg = /^[^\s]+@[^\s]+\.[^\s]{2,3}$/;
+      var email = $("input[name=email]").val();
+      if (email == "") {
+        msg += "請輸入email!\n";
+      }
+      if (email != "" && reg.test(email) == false) {
+        msg += "email格式錯誤!\n";
+      }
+      var lastName = $("input[name=lastName]").val();
+      if (lastName == "") {
+        msg += "請輸入姓!\n";
+      }
+      var firstName = $("#firstName").val();
+      if (firstName == "") {
+        msg += "請輸入名!\n";
+      }
+      var st = '6a0189baa00bcb76679c41b1364b16fc'
+      if (msg) {
+        alert(msg);
+        return false;
+      } else {
+        if (email != "") {
+          $.ajax({
+            type: "POST",
+            url: "ajax/add_email.php",
+            data: {
+              name1: lastName,
+              name2: firstName,
+              email: email,
+              token: st,
+            },
+            dataType: "json",
+            async: false,
+            success: function (output) {
+
+              //alert(nmsg);
+              //if (jQuery.trim(nmsg)=="Y"){
+
+              if (output.csatus == "ok") {
+                smsg += "訂閱成功!\n";
+                location.reload();
+              }
+              if (output.csatus == "rp") {
+                smsg += "該email已訂閱!\n";
+                location.reload();
+              }
+              if (output.csatus == "no") {
+                smsg += "訂閱失敗!\n";
+                location.reload();
+
+              }
+              if (output.csatus == "noa") {
+                smsg += "訂閱失敗token錯誤!\n";
+                location.reload();
+              }
+              alert(smsg);
+            }
+          });
+
+        }
+      }
+
+
+
+    });
+
+
+  }); 
+</script>
+<!-- SCRIPT end-->
+</body>
+
+</html>

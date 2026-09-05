@@ -32,7 +32,6 @@ export const accountSettingsSchema = z.strictObject({
   survival: z.boolean(),
   exclude: z.array(z.enum(TAGS)).max(TAGS.length).refine(unique, "exclude values must be unique"),
   prefs: z.array(z.enum(PREFS)).max(PREFS.length).refine(unique, "preference values must be unique"),
-  costco_ok: z.boolean(),
 });
 export type AccountSettings = z.infer<typeof accountSettingsSchema>;
 
@@ -128,7 +127,6 @@ export const defaultAccountSettings = (now = new Date()): AccountSettings => ({
   survival: false,
   exclude: [],
   prefs: [],
-  costco_ok: false,
 });
 
 export const defaultAccountProfile = (nickname = "使用者"): AccountProfile => ({ nickname, color: DOT_COLORS[3] });
@@ -172,7 +170,6 @@ export const accountDataFromStorage = (row: Record<string, unknown>, nickname: s
       survival: settings.survival ?? defaults.settings.survival,
       exclude: settings.exclude ?? defaults.settings.exclude,
       prefs: settings.prefs ?? defaults.settings.prefs,
-      costco_ok: settings.costco_ok ?? defaults.settings.costco_ok,
     },
     profile: { nickname, color: profile.color ?? defaults.profile.color },
     updated_at: timestamp ?? defaults.updated_at,

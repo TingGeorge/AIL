@@ -1,0 +1,2540 @@
+[
+  {
+    "id": "f_ik01",
+    "category": "食品",
+    "agent": "paid",
+    "title": "超值早餐",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 59,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份早餐餐盤",
+    "quantity_or_servings": "1份早餐餐盤；含皇后吐司、炒蛋、巧達起司腸、雙色蔬菜",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "官方菜單供應09:00–10:30；IKEA內湖店營業時間交集為平日10:00–10:30、週末09:00–10:30（由兩個官方時段推導），仍以現場供應為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$59",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含皇后吐司、炒蛋、巧達起司腸、雙色蔬菜",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "*供應時間：早上9:00-10:30",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。",
+      "availability_derivation": "菜單09:00–10:30與內湖店平日10:00開門、週末09:00開門取交集。"
+    }
+  },
+  {
+    "id": "f_ik02",
+    "category": "食品",
+    "agent": "paid",
+    "title": "香酥鱈魚晨光盤",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 169,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份早餐餐盤",
+    "quantity_or_servings": "1份早餐餐盤；含鱈魚排、法國餐包、炒蛋、酪梨片、小番茄、塔塔醬、奶油",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "官方菜單供應09:00–10:30；IKEA內湖店營業時間交集為平日10:00–10:30、週末09:00–10:30（由兩個官方時段推導），仍以現場供應為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$169",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含鱈魚排、法國餐包、炒蛋、酪梨片、小番茄、塔塔醬、奶油",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "*供應時間：早上9:00-10:30",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。",
+      "availability_derivation": "菜單09:00–10:30與內湖店平日10:00開門、週末09:00開門取交集。"
+    }
+  },
+  {
+    "id": "f_ik03",
+    "category": "食品",
+    "agent": "paid",
+    "title": "植物烤牛肉泡菜炒飯",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 129,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份現場單點",
+    "quantity_or_servings": "官方菜單一份炒飯品項；含泡菜炒飯、植物烤牛肉、海苔絲、綜合蔬菜",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$129",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含泡菜炒飯、植物烤牛肉、海苔絲、綜合蔬菜",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik04",
+    "category": "食品",
+    "agent": "paid",
+    "title": "蒜香小龍蝦",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 199,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份現場單點",
+    "quantity_or_servings": "官方菜單一份品項；菜單未標示尾數或克數",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$199",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含蒜香小龍蝦",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik05",
+    "category": "食品",
+    "agent": "paid",
+    "title": "鮮蔥肋眼牛排",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 429,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份現場單點（一般價）",
+    "quantity_or_servings": "官方菜單一份牛排品項；含肋眼牛排、薯條、綜合蔬菜、蔥花、奶香蔥花醬",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$429",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含肋眼牛排、薯條、綜合蔬菜、蔥花、奶香蔥花醬",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。",
+        "採一般價429元，不採2026年9月IKEA Family卡友價369元；本筆不需要會員資格。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik06",
+    "category": "食品",
+    "agent": "paid",
+    "title": "鷹嘴豆丸咖哩飯",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 159,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份現場單點",
+    "quantity_or_servings": "官方菜單一份咖哩飯品項；含鷹嘴豆丸、印度咖哩醬I、綜合蔬菜、蛋炒飯",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$159",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含鷹嘴豆丸、印度咖哩醬I、綜合蔬菜、蛋炒飯",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik07",
+    "category": "食品",
+    "agent": "paid",
+    "title": "鮭魚菲力佐蔬菜馬鈴薯餅",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 280,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份現場單點",
+    "quantity_or_servings": "官方菜單一份鮭魚主餐；含鮭魚菲力、蔬菜馬鈴薯餅、綜合蔬菜、小蕃茄、荷蘭醬",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$280",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含鮭魚菲力、蔬菜馬鈴薯餅、綜合蔬菜、 小蕃茄、荷蘭醬",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik08",
+    "category": "食品",
+    "agent": "paid",
+    "title": "瑞典肉丸 8粒",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 139,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "8粒",
+    "quantity_or_servings": "8粒瑞典肉丸，附薯泥、雙色蔬菜、肉丸奶醬、越橘果醬",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "8粒 $139",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含瑞典烤肉丸、薯泥、雙色蔬菜、肉丸奶醬、越橘果醬",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik09",
+    "category": "食品",
+    "agent": "paid",
+    "title": "瑞典雞肉丸 8粒",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 139,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "8粒",
+    "quantity_or_servings": "8粒瑞典雞肉丸，附薯泥、雙色蔬菜、肉丸奶醬、越橘果醬",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "8粒 $139",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含瑞典雞肉丸、薯泥、雙色蔬菜、肉丸奶醬、越橘果醬",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik10",
+    "category": "食品",
+    "agent": "paid",
+    "title": "植物素肉丸 8粒",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 119,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "8粒",
+    "quantity_or_servings": "8粒植物素肉丸，附薯泥、雙色蔬菜、肉丸奶醬、越橘果醬",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "8粒 $119",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含植物素肉丸、薯泥、雙色蔬菜、肉丸奶醬、越橘果醬",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik11",
+    "category": "食品",
+    "agent": "paid",
+    "title": "鄉村烤半雞",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 280,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "半雞1份",
+    "quantity_or_servings": "半隻義式香草雞，附薯條、雙色蔬菜",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$280",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含義式香草半雞、薯條、雙色蔬菜",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik12",
+    "category": "食品",
+    "agent": "paid",
+    "title": "煙燻BBQ烤豬肋排",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 389,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份現場單點",
+    "quantity_or_servings": "官方菜單一份豬肋排品項；未標示重量",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$389",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含煙燻豬肋排、綜合蔬菜、V型薯條、煙燻燒烤醬",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik13",
+    "category": "食品",
+    "agent": "paid",
+    "title": "脆皮豬腳佐V型薯條",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 389,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份現場單點",
+    "quantity_or_servings": "官方菜單一份豬腳品項；含豬腳、V型薯條、德國酸菜，未標示重量",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$389",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含豬腳、V型薯條、德國酸菜",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik14",
+    "category": "食品",
+    "agent": "paid",
+    "title": "大三元吉利丸15粒",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 199,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "15粒",
+    "quantity_or_servings": "15粒：瑞典肉丸5粒、雞肉丸5粒、植物素肉丸5粒，另附醬與配菜",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$199",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含瑞典肉丸5粒、雞肉丸5粒、 植物素肉丸5粒、肉丸奶醬、薯泥、 越桔果醬",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik15",
+    "category": "食品",
+    "agent": "paid",
+    "title": "香菜小龍蝦沙拉罐",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 199,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1罐現場單點",
+    "quantity_or_servings": "1罐沙拉；含小龍蝦仁、綜合生菜、紅橡木、紫洋蔥、小黃瓜、香菜與沙拉醬",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA官方菜單銷售區間為2026-08-27至2026-09-16；IKEA內湖店是否尚有現貨以現場為準",
+    "valid_until": "2026-09-16T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$199",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含小龍蝦仁、綜合生菜、紅橡木、紫洋蔥、小黃瓜、香菜、香菜風味沙拉醬",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "銷售區間 : 2026/8/27- 2026/9/16",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。",
+        "期限的23:59:59是將官方只標日期的2026-09-16正規化為臺灣當日結束；商品仍可能提前售完或門市未供應。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik16",
+    "category": "食品",
+    "agent": "paid",
+    "title": "金黃小龍蝦餃",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 50,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份現場單點",
+    "quantity_or_servings": "官方菜單一份小龍蝦餃品項；未標示顆數或克數",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$50",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含小麥麵粉、洋蔥、小龍蝦仁、乾酪、蕃茄、九層塔、胡椒、香料",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik17",
+    "category": "食品",
+    "agent": "paid",
+    "title": "黃金海鮮拼盤",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 229,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份現場單點",
+    "quantity_or_servings": "官方菜單一份拼盤；含福氣魚、天婦羅蝦、蝦米花、塔塔醬、檸檬，未標示各品項數量",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$229",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含福氣魚、天婦羅蝦、 蝦米花、塔塔醬、檸檬",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_ik18",
+    "category": "食品",
+    "agent": "paid",
+    "title": "薄脆雞翅",
+    "provider": "IKEA內湖店｜瑞典餐廳",
+    "price_total_twd": 55,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "2支",
+    "quantity_or_servings": "2支薄脆雞翅",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "IKEA內湖店瑞典餐廳週一至週五10:00–21:00、週六至週日09:00–21:00，晚上供餐至20:30；品項供應以現場為準",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "$55/2支",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "含雞翅、麵粉、調味料",
+        "url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "• 瑞典餐廳：週一至週五10:00-21:00；週六至週日 09:00-21:00 ；晚上供餐時間到20:30",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "不用訂位，來IKEA餐廳就能用親民價格",
+        "url": "https://www.ikea.com.tw/zh/store/nei-hu/index",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ikea.com.tw/zh/ikea-food/restaurant",
+    "action_label": "查看IKEA官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "IKEA內湖店瑞典餐廳現場單點；不含外送、IKEA Family卡友優惠、可選加購或其他分店。",
+      "pricing_context": "price_total_twd採IKEA官方菜單的一般現場標價。mandatory_fees_twd=0僅適用於本筆現場單點範圍：未加入配送、會員方案或可選加購；官網未另列本範圍的強制服務費，此為範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "官方菜單明示餐點供應依各分店現場為主；本筆不宣稱研究時點庫存。",
+        "地址與座標未由來源逐字核妥，故address、lat、lng保持null。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "官方未明示價格有效期限者valid_until保持null，應在使用前再核價。"
+      ],
+      "local_or_online": "IKEA內湖店現場",
+      "supply_disclaimer": "*餐點供應依各分店現場為主；餐廳營業時間請參考各分店公告。",
+      "registration_basis": "官方內湖店頁寫明不用訂位。"
+    }
+  },
+  {
+    "id": "f_kf01",
+    "category": "食品",
+    "agent": "paid",
+    "title": "5塊雞桶",
+    "provider": "KFC肯德基台灣｜預訂快取",
+    "price_total_twd": 299,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份官方菜單品項",
+    "quantity_or_servings": "5塊雞；API與官方菜單品名直接標示5塊",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 00:00:00起至2026-09-19 23:59:59止的官方API商品檔期；預訂快取實際供應仍依門市與時段",
+    "valid_until": "2026-09-19T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "5塊雞桶\n$299",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "5塊雞桶",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "\"Fcode\":\"AA654\",\"Name\":\"5塊雞桶\",\"StartDate\":\"2026/09/05 00:00:00\",\"EndDate\":\"2026/09/19 23:59:59\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "預訂快取(外帶)：不限訂購金額皆可預訂快取，歡迎多加運用！",
+        "url": "https://olo.kfcclub.com.tw/customerService/FAQ",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "action_label": "查看KFC官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "KFC台灣官網預訂快取（外帶）的官方菜單品項；不含外送、第三方平台、可選加購與台北車站B2店（FAQ列為不適用預訂快取）。",
+      "pricing_context": "price_total_twd採官方菜單頁顯示的$299，並與官方GetQueryFood API的Upa_Group=299交叉核對。mandatory_fees_twd=0限預訂快取外帶範圍：FAQ說快取不限訂購金額；本筆排除外送，未套用外送價與每單39元外送費。這是範圍化成本判定，不是官方「快取零費用」引文。",
+      "review_notes": [
+        "官方FAQ列預訂快取一般可取餐時間07:20–22:30，但各餐廳營業時間可能不同。",
+        "API在查核時SoldOut=false僅是當時回應；不代表指定門市有即時庫存。",
+        "外送每單39元且可能有不同價格；本筆不可用於估算外送或第三方平台到手價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣參與預訂快取的KFC門市",
+      "kfc_fcode": "AA654",
+      "api_snapshot": ".scratch/catalog-expansion/food/kfc-food-2.json",
+      "api_end_date": "2026/09/19 23:59:59",
+      "api_sold_out_at_check": false,
+      "pickup_hours_reference": "預訂快取(外帶)可取餐時間：早上07:20~晚上22:30",
+      "delivery_excluded": "外送服務每筆訂單需收取外送費$39，且價格與範圍可能不同。"
+    }
+  },
+  {
+    "id": "f_kf02",
+    "category": "食品",
+    "agent": "paid",
+    "title": "咔啦雙堡餐",
+    "provider": "KFC肯德基台灣｜預訂快取",
+    "price_total_twd": 299,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份官方菜單品項",
+    "quantity_or_servings": "1份咔啦雙堡餐；官方頁未逐項標示套餐內容與各品項份量",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 00:00:00起至2026-09-19 23:59:59止的官方API商品檔期；預訂快取實際供應仍依門市與時段",
+    "valid_until": "2026-09-19T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "咔啦雙堡餐\n$299",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "咔啦雙堡餐",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "\"Fcode\":\"AA683\",\"Name\":\"咔啦雙堡餐\",\"StartDate\":\"2026/09/05 00:00:00\",\"EndDate\":\"2026/09/19 23:59:59\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "預訂快取(外帶)：不限訂購金額皆可預訂快取，歡迎多加運用！",
+        "url": "https://olo.kfcclub.com.tw/customerService/FAQ",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "action_label": "查看KFC官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "KFC台灣官網預訂快取（外帶）的官方菜單品項；不含外送、第三方平台、可選加購與台北車站B2店（FAQ列為不適用預訂快取）。",
+      "pricing_context": "price_total_twd採官方菜單頁顯示的$299，並與官方GetQueryFood API的Upa_Group=299交叉核對。mandatory_fees_twd=0限預訂快取外帶範圍：FAQ說快取不限訂購金額；本筆排除外送，未套用外送價與每單39元外送費。這是範圍化成本判定，不是官方「快取零費用」引文。",
+      "review_notes": [
+        "官方FAQ列預訂快取一般可取餐時間07:20–22:30，但各餐廳營業時間可能不同。",
+        "API在查核時SoldOut=false僅是當時回應；不代表指定門市有即時庫存。",
+        "外送每單39元且可能有不同價格；本筆不可用於估算外送或第三方平台到手價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣參與預訂快取的KFC門市",
+      "kfc_fcode": "AA683",
+      "api_snapshot": ".scratch/catalog-expansion/food/kfc-food-2.json",
+      "api_end_date": "2026/09/19 23:59:59",
+      "api_sold_out_at_check": false,
+      "pickup_hours_reference": "預訂快取(外帶)可取餐時間：早上07:20~晚上22:30",
+      "delivery_excluded": "外送服務每筆訂單需收取外送費$39，且價格與範圍可能不同。"
+    }
+  },
+  {
+    "id": "f_kf03",
+    "category": "食品",
+    "agent": "paid",
+    "title": "義式香草紙包雞 雙人餐",
+    "provider": "KFC肯德基台灣｜預訂快取",
+    "price_total_twd": 299,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份官方菜單品項",
+    "quantity_or_servings": "1份雙人餐；官方品名標示雙人餐，但API未逐項標示餐點內容",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-03-18 00:00:00起至2026-09-19 23:59:59止的官方API商品檔期；預訂快取實際供應仍依門市與時段",
+    "valid_until": "2026-09-19T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "義式香草紙包雞 雙人餐\n$299",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "義式香草紙包雞 雙人餐",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "\"Fcode\":\"AA753\",\"Name\":\"義式香草紙包雞 雙人餐\",\"StartDate\":\"2026/03/18 00:00:00\",\"EndDate\":\"2026/09/19 23:59:59\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "預訂快取(外帶)：不限訂購金額皆可預訂快取，歡迎多加運用！",
+        "url": "https://olo.kfcclub.com.tw/customerService/FAQ",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "action_label": "查看KFC官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "KFC台灣官網預訂快取（外帶）的官方菜單品項；不含外送、第三方平台、可選加購與台北車站B2店（FAQ列為不適用預訂快取）。",
+      "pricing_context": "price_total_twd採官方菜單頁顯示的$299，並與官方GetQueryFood API的Upa_Group=299交叉核對。mandatory_fees_twd=0限預訂快取外帶範圍：FAQ說快取不限訂購金額；本筆排除外送，未套用外送價與每單39元外送費。這是範圍化成本判定，不是官方「快取零費用」引文。",
+      "review_notes": [
+        "官方FAQ列預訂快取一般可取餐時間07:20–22:30，但各餐廳營業時間可能不同。",
+        "API在查核時SoldOut=false僅是當時回應；不代表指定門市有即時庫存。",
+        "外送每單39元且可能有不同價格；本筆不可用於估算外送或第三方平台到手價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣參與預訂快取的KFC門市",
+      "kfc_fcode": "AA753",
+      "api_snapshot": ".scratch/catalog-expansion/food/kfc-food-2.json",
+      "api_end_date": "2026/09/19 23:59:59",
+      "api_sold_out_at_check": false,
+      "pickup_hours_reference": "預訂快取(外帶)可取餐時間：早上07:20~晚上22:30",
+      "delivery_excluded": "外送服務每筆訂單需收取外送費$39，且價格與範圍可能不同。"
+    }
+  },
+  {
+    "id": "f_kf04",
+    "category": "食品",
+    "agent": "paid",
+    "title": "青花椒花生蛋撻",
+    "provider": "KFC肯德基台灣｜預訂快取",
+    "price_total_twd": 57,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1個官方菜單單點品項",
+    "quantity_or_servings": "1顆；官方API圖片檔名標示單顆",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-08-04 00:00:00起至2026-09-19 23:59:59止的官方API商品檔期；預訂快取實際供應仍依門市與時段",
+    "valid_until": "2026-09-19T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "青花椒花生蛋撻\n$57",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "\"ImageURL\":\"/OLO餐圖-青花椒花生蛋撻單顆.png\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "\"Fcode\":\"FA240\",\"Name\":\"青花椒花生蛋撻\",\"StartDate\":\"2026/08/04 00:00:00\",\"EndDate\":\"2026/09/19 23:59:59\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "預訂快取(外帶)：不限訂購金額皆可預訂快取，歡迎多加運用！",
+        "url": "https://olo.kfcclub.com.tw/customerService/FAQ",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "action_label": "查看KFC官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "KFC台灣官網預訂快取（外帶）的官方菜單品項；不含外送、第三方平台、可選加購與台北車站B2店（FAQ列為不適用預訂快取）。",
+      "pricing_context": "price_total_twd採官方菜單頁顯示的$57，並與官方GetQueryFood API的Upa_Group=57交叉核對。mandatory_fees_twd=0限預訂快取外帶範圍：FAQ說快取不限訂購金額；本筆排除外送，未套用外送價與每單39元外送費。這是範圍化成本判定，不是官方「快取零費用」引文。",
+      "review_notes": [
+        "官方FAQ列預訂快取一般可取餐時間07:20–22:30，但各餐廳營業時間可能不同。",
+        "API在查核時SoldOut=false僅是當時回應；不代表指定門市有即時庫存。",
+        "外送每單39元且可能有不同價格；本筆不可用於估算外送或第三方平台到手價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣參與預訂快取的KFC門市",
+      "kfc_fcode": "FA240",
+      "api_snapshot": ".scratch/catalog-expansion/food/kfc-food-184.json",
+      "api_end_date": "2026/09/19 23:59:59",
+      "api_sold_out_at_check": false,
+      "pickup_hours_reference": "預訂快取(外帶)可取餐時間：早上07:20~晚上22:30",
+      "delivery_excluded": "外送服務每筆訂單需收取外送費$39，且價格與範圍可能不同。"
+    }
+  },
+  {
+    "id": "f_kf05",
+    "category": "食品",
+    "agent": "paid",
+    "title": "雙色蛋撻禮盒(原+青花椒花生)",
+    "provider": "KFC肯德基台灣｜預訂快取",
+    "price_total_twd": 286,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份官方菜單品項",
+    "quantity_or_servings": "6顆：青花椒花生蛋撻3顆＋原味蛋撻3顆；依官方API圖片檔名",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-08-04 00:00:00起至2026-09-19 23:59:59止的官方API商品檔期；預訂快取實際供應仍依門市與時段",
+    "valid_until": "2026-09-19T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "雙色蛋撻禮盒(原+青花椒花生)\n$286",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "\"ImageURL\":\"/OLO餐圖-青花椒花生蛋撻x3+原味蛋撻x3禮盒.png\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "\"Fcode\":\"JA151\",\"Name\":\"雙色蛋撻禮盒(原+青花椒花生)\",\"StartDate\":\"2026/08/04 00:00:00\",\"EndDate\":\"2026/09/19 23:59:59\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "預訂快取(外帶)：不限訂購金額皆可預訂快取，歡迎多加運用！",
+        "url": "https://olo.kfcclub.com.tw/customerService/FAQ",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "action_label": "查看KFC官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "KFC台灣官網預訂快取（外帶）的官方菜單品項；不含外送、第三方平台、可選加購與台北車站B2店（FAQ列為不適用預訂快取）。",
+      "pricing_context": "price_total_twd採官方菜單頁顯示的$286，並與官方GetQueryFood API的Upa_Group=286交叉核對。mandatory_fees_twd=0限預訂快取外帶範圍：FAQ說快取不限訂購金額；本筆排除外送，未套用外送價與每單39元外送費。這是範圍化成本判定，不是官方「快取零費用」引文。",
+      "review_notes": [
+        "官方FAQ列預訂快取一般可取餐時間07:20–22:30，但各餐廳營業時間可能不同。",
+        "API在查核時SoldOut=false僅是當時回應；不代表指定門市有即時庫存。",
+        "外送每單39元且可能有不同價格；本筆不可用於估算外送或第三方平台到手價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣參與預訂快取的KFC門市",
+      "kfc_fcode": "JA151",
+      "api_snapshot": ".scratch/catalog-expansion/food/kfc-food-184.json",
+      "api_end_date": "2026/09/19 23:59:59",
+      "api_sold_out_at_check": false,
+      "pickup_hours_reference": "預訂快取(外帶)可取餐時間：早上07:20~晚上22:30",
+      "delivery_excluded": "外送服務每筆訂單需收取外送費$39，且價格與範圍可能不同。"
+    }
+  },
+  {
+    "id": "f_kf06",
+    "category": "食品",
+    "agent": "paid",
+    "title": "上校雞塊4塊",
+    "provider": "KFC肯德基台灣｜預訂快取",
+    "price_total_twd": 49,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1個官方菜單單點品項",
+    "quantity_or_servings": "4塊上校雞塊；官方菜單品名直接標示4塊",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-05 00:00:00起至2026-09-19 23:59:59止的官方API商品檔期；預訂快取實際供應仍依門市與時段",
+    "valid_until": "2026-09-19T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "上校雞塊4塊\n$49",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "上校雞塊4塊",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "\"Fcode\":\"FA013\",\"Name\":\"上校雞塊4塊\",\"StartDate\":\"2026/09/05 00:00:00\",\"EndDate\":\"2026/09/19 23:59:59\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "預訂快取(外帶)：不限訂購金額皆可預訂快取，歡迎多加運用！",
+        "url": "https://olo.kfcclub.com.tw/customerService/FAQ",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "action_label": "查看KFC官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "KFC台灣官網預訂快取（外帶）的官方菜單品項；不含外送、第三方平台、可選加購與台北車站B2店（FAQ列為不適用預訂快取）。",
+      "pricing_context": "price_total_twd採官方菜單頁顯示的$49，並與官方GetQueryFood API的Upa_Group=49交叉核對。mandatory_fees_twd=0限預訂快取外帶範圍：FAQ說快取不限訂購金額；本筆排除外送，未套用外送價與每單39元外送費。這是範圍化成本判定，不是官方「快取零費用」引文。",
+      "review_notes": [
+        "官方FAQ列預訂快取一般可取餐時間07:20–22:30，但各餐廳營業時間可能不同。",
+        "API在查核時SoldOut=false僅是當時回應；不代表指定門市有即時庫存。",
+        "外送每單39元且可能有不同價格；本筆不可用於估算外送或第三方平台到手價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣參與預訂快取的KFC門市",
+      "kfc_fcode": "FA013",
+      "api_snapshot": ".scratch/catalog-expansion/food/kfc-food-5.json",
+      "api_end_date": "2026/09/19 23:59:59",
+      "api_sold_out_at_check": false,
+      "pickup_hours_reference": "預訂快取(外帶)可取餐時間：早上07:20~晚上22:30",
+      "delivery_excluded": "外送服務每筆訂單需收取外送費$39，且價格與範圍可能不同。"
+    }
+  },
+  {
+    "id": "f_kf07",
+    "category": "食品",
+    "agent": "paid",
+    "title": "黃金超蝦塊3塊",
+    "provider": "KFC肯德基台灣｜預訂快取",
+    "price_total_twd": 59,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1個官方菜單單點品項",
+    "quantity_or_servings": "3塊黃金超蝦塊；官方菜單品名直接標示3塊",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2024-10-18 00:00:00起至2026-09-19 23:59:59止的官方API商品檔期；預訂快取實際供應仍依門市與時段",
+    "valid_until": "2026-09-19T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "黃金超蝦塊3塊\n$59",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "黃金超蝦塊3塊",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "\"Fcode\":\"FA173\",\"Name\":\"黃金超蝦塊3塊\",\"StartDate\":\"2024/10/18 00:00:00\",\"EndDate\":\"2026/09/19 23:59:59\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "預訂快取(外帶)：不限訂購金額皆可預訂快取，歡迎多加運用！",
+        "url": "https://olo.kfcclub.com.tw/customerService/FAQ",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "action_label": "查看KFC官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "KFC台灣官網預訂快取（外帶）的官方菜單品項；不含外送、第三方平台、可選加購與台北車站B2店（FAQ列為不適用預訂快取）。",
+      "pricing_context": "price_total_twd採官方菜單頁顯示的$59，並與官方GetQueryFood API的Upa_Group=59交叉核對。mandatory_fees_twd=0限預訂快取外帶範圍：FAQ說快取不限訂購金額；本筆排除外送，未套用外送價與每單39元外送費。這是範圍化成本判定，不是官方「快取零費用」引文。",
+      "review_notes": [
+        "官方FAQ列預訂快取一般可取餐時間07:20–22:30，但各餐廳營業時間可能不同。",
+        "API在查核時SoldOut=false僅是當時回應；不代表指定門市有即時庫存。",
+        "外送每單39元且可能有不同價格；本筆不可用於估算外送或第三方平台到手價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣參與預訂快取的KFC門市",
+      "kfc_fcode": "FA173",
+      "api_snapshot": ".scratch/catalog-expansion/food/kfc-food-5.json",
+      "api_end_date": "2026/09/19 23:59:59",
+      "api_sold_out_at_check": false,
+      "pickup_hours_reference": "預訂快取(外帶)可取餐時間：早上07:20~晚上22:30",
+      "delivery_excluded": "外送服務每筆訂單需收取外送費$39，且價格與範圍可能不同。"
+    }
+  },
+  {
+    "id": "f_kf08",
+    "category": "食品",
+    "agent": "paid",
+    "title": "咔啦脆雞",
+    "provider": "KFC肯德基台灣｜預訂快取",
+    "price_total_twd": 71,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1個官方菜單單點品項",
+    "quantity_or_servings": "官方菜單一個單點品項；官方頁與API未標示塊數或克數",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2025-02-19 00:00:00起至2026-09-19 23:59:59止的官方API商品檔期；預訂快取實際供應仍依門市與時段",
+    "valid_until": "2026-09-19T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "咔啦脆雞\n$71",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "咔啦脆雞\n$71",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "\"Fcode\":\"CO2000\",\"Name\":\"咔啦脆雞\",\"StartDate\":\"2025/02/19 00:00:00\",\"EndDate\":\"2026/09/19 23:59:59\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "預訂快取(外帶)：不限訂購金額皆可預訂快取，歡迎多加運用！",
+        "url": "https://olo.kfcclub.com.tw/customerService/FAQ",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "action_label": "查看KFC官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "KFC台灣官網預訂快取（外帶）的官方菜單品項；不含外送、第三方平台、可選加購與台北車站B2店（FAQ列為不適用預訂快取）。",
+      "pricing_context": "price_total_twd採官方菜單頁顯示的$71，並與官方GetQueryFood API的Upa_Group=71交叉核對。mandatory_fees_twd=0限預訂快取外帶範圍：FAQ說快取不限訂購金額；本筆排除外送，未套用外送價與每單39元外送費。這是範圍化成本判定，不是官方「快取零費用」引文。",
+      "review_notes": [
+        "官方FAQ列預訂快取一般可取餐時間07:20–22:30，但各餐廳營業時間可能不同。",
+        "API在查核時SoldOut=false僅是當時回應；不代表指定門市有即時庫存。",
+        "外送每單39元且可能有不同價格；本筆不可用於估算外送或第三方平台到手價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣參與預訂快取的KFC門市",
+      "kfc_fcode": "CO2000",
+      "api_snapshot": ".scratch/catalog-expansion/food/kfc-food-5.json",
+      "api_end_date": "2026/09/19 23:59:59",
+      "api_sold_out_at_check": false,
+      "pickup_hours_reference": "預訂快取(外帶)可取餐時間：早上07:20~晚上22:30",
+      "delivery_excluded": "外送服務每筆訂單需收取外送費$39，且價格與範圍可能不同。"
+    }
+  },
+  {
+    "id": "f_kf09",
+    "category": "食品",
+    "agent": "paid",
+    "title": "咔啦爆脆雞(不辣)",
+    "provider": "KFC肯德基台灣｜預訂快取",
+    "price_total_twd": 71,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1個官方菜單單點品項",
+    "quantity_or_servings": "1塊；官方API圖片檔名標示1塊",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-04-08 00:00:00起至2026-09-19 23:59:59止的官方API商品檔期；預訂快取實際供應仍依門市與時段",
+    "valid_until": "2026-09-19T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "咔啦爆脆雞(不辣)\n$71",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "\"ImageURL\":\"/newOLO-咔啦爆脆1塊.png\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "\"Fcode\":\"CO2009\",\"Name\":\"咔啦爆脆雞(不辣)\",\"StartDate\":\"2026/04/08 00:00:00\",\"EndDate\":\"2026/09/19 23:59:59\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "預訂快取(外帶)：不限訂購金額皆可預訂快取，歡迎多加運用！",
+        "url": "https://olo.kfcclub.com.tw/customerService/FAQ",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "action_label": "查看KFC官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "KFC台灣官網預訂快取（外帶）的官方菜單品項；不含外送、第三方平台、可選加購與台北車站B2店（FAQ列為不適用預訂快取）。",
+      "pricing_context": "price_total_twd採官方菜單頁顯示的$71，並與官方GetQueryFood API的Upa_Group=71交叉核對。mandatory_fees_twd=0限預訂快取外帶範圍：FAQ說快取不限訂購金額；本筆排除外送，未套用外送價與每單39元外送費。這是範圍化成本判定，不是官方「快取零費用」引文。",
+      "review_notes": [
+        "官方FAQ列預訂快取一般可取餐時間07:20–22:30，但各餐廳營業時間可能不同。",
+        "API在查核時SoldOut=false僅是當時回應；不代表指定門市有即時庫存。",
+        "外送每單39元且可能有不同價格；本筆不可用於估算外送或第三方平台到手價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣參與預訂快取的KFC門市",
+      "kfc_fcode": "CO2009",
+      "api_snapshot": ".scratch/catalog-expansion/food/kfc-food-5.json",
+      "api_end_date": "2026/09/19 23:59:59",
+      "api_sold_out_at_check": false,
+      "pickup_hours_reference": "預訂快取(外帶)可取餐時間：早上07:20~晚上22:30",
+      "delivery_excluded": "外送服務每筆訂單需收取外送費$39，且價格與範圍可能不同。"
+    }
+  },
+  {
+    "id": "f_kf10",
+    "category": "食品",
+    "agent": "paid",
+    "title": "雙色轉轉QQ球",
+    "provider": "KFC肯德基台灣｜預訂快取",
+    "price_total_twd": 59,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1個官方菜單單點品項",
+    "quantity_or_servings": "官方菜單一個單點品項；官方頁與API未標示球數或克數",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2024-09-01 00:00:00起至2026-09-19 23:59:59止的官方API商品檔期；預訂快取實際供應仍依門市與時段",
+    "valid_until": "2026-09-19T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "雙色轉轉QQ球\n$59",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "雙色轉轉QQ球\n$59",
+        "url": "https://www.kfcclub.com.tw/menu?menuId=2",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "\"Fcode\":\"FA125\",\"Name\":\"雙色轉轉QQ球\",\"StartDate\":\"2024/09/01 00:00:00\",\"EndDate\":\"2026/09/19 23:59:59\"",
+        "url": "https://olo-api.kfcclub.com.tw/menu/v1/GetQueryFood",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "預訂快取(外帶)：不限訂購金額皆可預訂快取，歡迎多加運用！",
+        "url": "https://olo.kfcclub.com.tw/customerService/FAQ",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.kfcclub.com.tw/menu?menuId=2",
+    "action_label": "查看KFC官方菜單",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "KFC台灣官網預訂快取（外帶）的官方菜單品項；不含外送、第三方平台、可選加購與台北車站B2店（FAQ列為不適用預訂快取）。",
+      "pricing_context": "price_total_twd採官方菜單頁顯示的$59，並與官方GetQueryFood API的Upa_Group=59交叉核對。mandatory_fees_twd=0限預訂快取外帶範圍：FAQ說快取不限訂購金額；本筆排除外送，未套用外送價與每單39元外送費。這是範圍化成本判定，不是官方「快取零費用」引文。",
+      "review_notes": [
+        "官方FAQ列預訂快取一般可取餐時間07:20–22:30，但各餐廳營業時間可能不同。",
+        "API在查核時SoldOut=false僅是當時回應；不代表指定門市有即時庫存。",
+        "外送每單39元且可能有不同價格；本筆不可用於估算外送或第三方平台到手價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣參與預訂快取的KFC門市",
+      "kfc_fcode": "FA125",
+      "api_snapshot": ".scratch/catalog-expansion/food/kfc-food-5.json",
+      "api_end_date": "2026/09/19 23:59:59",
+      "api_sold_out_at_check": false,
+      "pickup_hours_reference": "預訂快取(外帶)可取餐時間：早上07:20~晚上22:30",
+      "delivery_excluded": "外送服務每筆訂單需收取外送費$39，且價格與範圍可能不同。"
+    }
+  },
+  {
+    "id": "f_md01",
+    "category": "食品",
+    "agent": "paid",
+    "title": "煙燻勁脆鷄腿堡",
+    "provider": "台灣麥當勞",
+    "price_total_twd": 99,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1個單點漢堡",
+    "quantity_or_servings": "1個煙燻勁脆鷄腿堡單點",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "自2026-09-02上午10:30起開賣；官方未明示每日停售時段",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "「煙燻勁脆鷄腿堡」：單點 99 元；經典套餐 169 元。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "「煙燻勁脆鷄腿堡」：單點 99 元",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "活動時間：自 9 月 2 日上午 10:30 起開賣。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "action_label": "查看麥當勞官方公告",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "台灣麥當勞參與餐廳的現場內用或外帶單點；不含歡樂送、第三方外送、套餐、優惠券、塑膠袋或其他可選加購。",
+      "pricing_context": "price_total_twd採官方新聞稿的單點99元。mandatory_fees_twd=0只適用於現場內用或外帶且不索取塑膠袋、不選可選加購的範圍；歡樂送、第三方外送與塑膠袋費用均排除。這是範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "各餐廳可依現場營運與供應狀況調整；本筆沒有指定門市的即時庫存證據。",
+        "官方未明示價格有效期限者valid_until保持null，使用前仍應再次核價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣麥當勞參與餐廳現場內用或外帶",
+      "delivery_excluded": "歡樂送與第三方外送的售價及費用不在本筆範圍。"
+    }
+  },
+  {
+    "id": "f_md02",
+    "category": "食品",
+    "agent": "paid",
+    "title": "肯瓊勁脆鷄腿堡",
+    "provider": "台灣麥當勞",
+    "price_total_twd": 99,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1個單點漢堡",
+    "quantity_or_servings": "1個肯瓊勁脆鷄腿堡單點",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "自2026-09-02上午10:30起開賣；官方未明示每日停售時段",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "「肯瓊勁脆鷄腿堡」：單點 99 元；經典套餐 169 元。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "「肯瓊勁脆鷄腿堡」：單點 99 元",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "活動時間：自 9 月 2 日上午 10:30 起開賣。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "action_label": "查看麥當勞官方公告",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "台灣麥當勞參與餐廳的現場內用或外帶單點；不含歡樂送、第三方外送、套餐、優惠券、塑膠袋或其他可選加購。",
+      "pricing_context": "price_total_twd採官方新聞稿的單點99元。mandatory_fees_twd=0只適用於現場內用或外帶且不索取塑膠袋、不選可選加購的範圍；歡樂送、第三方外送與塑膠袋費用均排除。這是範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "各餐廳可依現場營運與供應狀況調整；本筆沒有指定門市的即時庫存證據。",
+        "官方未明示價格有效期限者valid_until保持null，使用前仍應再次核價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣麥當勞參與餐廳現場內用或外帶",
+      "delivery_excluded": "歡樂送與第三方外送的售價及費用不在本筆範圍。"
+    }
+  },
+  {
+    "id": "f_md03",
+    "category": "食品",
+    "agent": "paid",
+    "title": "迷你 Q 紫薯",
+    "provider": "台灣麥當勞",
+    "price_total_twd": 59,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每份5入",
+    "quantity_or_servings": "每份5入迷你 Q 紫薯",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-02至2026-09-22，或售完為止；沒有即時門市庫存證據",
+    "valid_until": "2026-09-22T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "「迷你 Q 紫薯」：每份 5 入；單點 59 元，套餐加購優惠價 50 元。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "「迷你 Q 紫薯」：每份 5 入",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "活動時間：自 9 月 2 日至 9 月 22 日（或售完為止）。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "action_label": "查看麥當勞官方公告",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "台灣麥當勞參與餐廳的現場內用或外帶單點；不含歡樂送、第三方外送、套餐、優惠券、塑膠袋或其他可選加購。",
+      "pricing_context": "price_total_twd採官方新聞稿的單點59元。mandatory_fees_twd=0只適用於現場內用或外帶且不索取塑膠袋、不選可選加購的範圍；歡樂送、第三方外送與塑膠袋費用均排除。這是範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "各餐廳可依現場營運與供應狀況調整；本筆沒有指定門市的即時庫存證據。",
+        "官方未明示價格有效期限者valid_until保持null，使用前仍應再次核價。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "valid_until將官方只標日期的9月22日正規化為臺灣當日結束；『或售完為止』可能使商品更早停止供應。"
+      ],
+      "local_or_online": "台灣麥當勞參與餐廳現場內用或外帶",
+      "delivery_excluded": "歡樂送與第三方外送的售價及費用不在本筆範圍。"
+    }
+  },
+  {
+    "id": "f_md04",
+    "category": "食品",
+    "agent": "paid",
+    "title": "6 塊辣味麥克鷄塊",
+    "provider": "台灣麥當勞",
+    "price_total_twd": 68,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "6塊單點",
+    "quantity_or_servings": "6塊辣味麥克鷄塊",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-02上午10:30起至2026-10-20，或售完為止；沒有即時門市庫存證據",
+    "valid_until": "2026-10-20T23:59:59+08:00",
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "「6 塊辣味麥克鷄塊」：單點 68 元；經典套餐 138 元。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "「6 塊辣味麥克鷄塊」：單點 68 元",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "活動期間：自 9 月 2 日上午 10:30 起至 10 月 20 日（或售完為止）。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "action_label": "查看麥當勞官方公告",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "台灣麥當勞參與餐廳的現場內用或外帶單點；不含歡樂送、第三方外送、套餐、優惠券、塑膠袋或其他可選加購。",
+      "pricing_context": "price_total_twd採官方新聞稿的單點68元。mandatory_fees_twd=0只適用於現場內用或外帶且不索取塑膠袋、不選可選加購的範圍；歡樂送、第三方外送與塑膠袋費用均排除。這是範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "各餐廳可依現場營運與供應狀況調整；本筆沒有指定門市的即時庫存證據。",
+        "官方未明示價格有效期限者valid_until保持null，使用前仍應再次核價。",
+        "成分與過敏原未完整核對，tags保持null。",
+        "valid_until將官方只標日期的10月20日正規化為臺灣當日結束；『或售完為止』可能使商品更早停止供應。"
+      ],
+      "local_or_online": "台灣麥當勞參與餐廳現場內用或外帶",
+      "delivery_excluded": "歡樂送與第三方外送的售價及費用不在本筆範圍。"
+    }
+  },
+  {
+    "id": "f_md05",
+    "category": "食品",
+    "agent": "paid",
+    "title": "炭燒醬烤鷄腿堡",
+    "provider": "台灣麥當勞",
+    "price_total_twd": 99,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1個單點漢堡",
+    "quantity_or_servings": "1個炭燒醬烤鷄腿堡單點",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "自2026-09-02上午10:30起開賣；官方未明示每日停售時段",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "「炭燒醬烤鷄腿堡」：單點 99 元；經典套餐 169 元。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "「炭燒醬烤鷄腿堡」：單點 99 元",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "活動時間：自 9 月 2 日上午 10:30 起開賣。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "action_label": "查看麥當勞官方公告",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "台灣麥當勞參與餐廳的現場內用或外帶單點；不含歡樂送、第三方外送、套餐、優惠券、塑膠袋或其他可選加購。",
+      "pricing_context": "price_total_twd採官方新聞稿的單點99元。mandatory_fees_twd=0只適用於現場內用或外帶且不索取塑膠袋、不選可選加購的範圍；歡樂送、第三方外送與塑膠袋費用均排除。這是範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "各餐廳可依現場營運與供應狀況調整；本筆沒有指定門市的即時庫存證據。",
+        "官方未明示價格有效期限者valid_until保持null，使用前仍應再次核價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣麥當勞參與餐廳現場內用或外帶",
+      "delivery_excluded": "歡樂送與第三方外送的售價及費用不在本筆範圍。"
+    }
+  },
+  {
+    "id": "f_md06",
+    "category": "食品",
+    "agent": "paid",
+    "title": "BLT 香烙烤鷄腿堡",
+    "provider": "台灣麥當勞",
+    "price_total_twd": 129,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1個單點漢堡",
+    "quantity_or_servings": "1個BLT 香烙烤鷄腿堡單點",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "自2026-09-02上午10:30起開賣；官方未明示每日停售時段",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "「BLT 香烙烤鷄腿堡」：單點 129 元；經典套餐 199 元。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "「BLT 香烙烤鷄腿堡」：單點 129 元",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "活動時間：自 9 月 2 日上午 10:30 起開賣。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "action_label": "查看麥當勞官方公告",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "台灣麥當勞參與餐廳的現場內用或外帶單點；不含歡樂送、第三方外送、套餐、優惠券、塑膠袋或其他可選加購。",
+      "pricing_context": "price_total_twd採官方新聞稿的單點129元。mandatory_fees_twd=0只適用於現場內用或外帶且不索取塑膠袋、不選可選加購的範圍；歡樂送、第三方外送與塑膠袋費用均排除。這是範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "各餐廳可依現場營運與供應狀況調整；本筆沒有指定門市的即時庫存證據。",
+        "官方未明示價格有效期限者valid_until保持null，使用前仍應再次核價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣麥當勞參與餐廳現場內用或外帶",
+      "delivery_excluded": "歡樂送與第三方外送的售價及費用不在本筆範圍。"
+    }
+  },
+  {
+    "id": "f_md07",
+    "category": "食品",
+    "agent": "paid",
+    "title": "藜麥香烙烤鷄沙拉",
+    "provider": "台灣麥當勞",
+    "price_total_twd": 159,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1份單點沙拉",
+    "quantity_or_servings": "1份藜麥香烙烤鷄沙拉單點",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "自2026-09-02上午10:30起開賣；官方未明示每日停售時段",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "「藜麥香烙烤鷄沙拉」：單點 159 元；經典套餐 229 元。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "「藜麥香烙烤鷄沙拉」：單點 159 元",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "活動時間：自 9 月 2 日上午 10:30 起開賣。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260831.html",
+    "action_label": "查看麥當勞官方公告",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "台灣麥當勞參與餐廳的現場內用或外帶單點；不含歡樂送、第三方外送、套餐、優惠券、塑膠袋或其他可選加購。",
+      "pricing_context": "price_total_twd採官方新聞稿的單點159元。mandatory_fees_twd=0只適用於現場內用或外帶且不索取塑膠袋、不選可選加購的範圍；歡樂送、第三方外送與塑膠袋費用均排除。這是範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "各餐廳可依現場營運與供應狀況調整；本筆沒有指定門市的即時庫存證據。",
+        "官方未明示價格有效期限者valid_until保持null，使用前仍應再次核價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣麥當勞參與餐廳現場內用或外帶",
+      "delivery_excluded": "歡樂送與第三方外送的售價及費用不在本筆範圍。"
+    }
+  },
+  {
+    "id": "f_md08",
+    "category": "食品",
+    "agent": "paid",
+    "title": "辣味四盎司牛肉堡",
+    "provider": "台灣麥當勞",
+    "price_total_twd": 92,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "1個單點漢堡",
+    "quantity_or_servings": "1個辣味四盎司牛肉堡單點；品名標示四盎司牛肉",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "自2026-05-27起長期供應；官方公告未列每日停售時段",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": null,
+    "tags": null,
+    "source_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260519.html",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "「辣味四盎司牛肉堡」單點92元，經典套餐162元。",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260519.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "「辣味四盎司牛肉堡」單點92元",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260519.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "HOT! 「辣味四盎司牛肉堡」、「辣味雙層四盎司牛肉堡」、「雙層麥香魚」5月27日起長期供應：",
+        "url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260519.html",
+        "checked_at": "2026-09-05T23:42:02+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T23:42:02+08:00",
+    "verified_at": "2026-09-05T23:42:02+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mcdonalds.com/tw/zh-tw/newsroom/2026/20260519.html",
+    "action_label": "查看麥當勞官方公告",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "expansion-2026-09-05",
+      "scope": "台灣麥當勞參與餐廳的現場內用或外帶單點；不含歡樂送、第三方外送、套餐、優惠券、塑膠袋或其他可選加購。",
+      "pricing_context": "price_total_twd採官方新聞稿的單點92元。mandatory_fees_twd=0只適用於現場內用或外帶且不索取塑膠袋、不選可選加購的範圍；歡樂送、第三方外送與塑膠袋費用均排除。這是範圍化成本判定，不是官方零費用引文。",
+      "review_notes": [
+        "各餐廳可依現場營運與供應狀況調整；本筆沒有指定門市的即時庫存證據。",
+        "官方未明示價格有效期限者valid_until保持null，使用前仍應再次核價。",
+        "成分與過敏原未完整核對，tags保持null。"
+      ],
+      "local_or_online": "台灣麥當勞參與餐廳現場內用或外帶",
+      "delivery_excluded": "歡樂送與第三方外送的售價及費用不在本筆範圍。"
+    }
+  }
+]

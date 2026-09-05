@@ -11,7 +11,7 @@ export const data = new Hono();
 
 const failed = (c: { json: (o: unknown, s: 502) => Response }, e: unknown) => {
   console.error("candidates_failed", e instanceof Error ? e.name : "unknown_error");   // 上游錯誤只寫 log，不回傳
-  return c.json({ error: "candidates_failed", message: "讀取失敗" }, 502);
+  return c.json({ error: "candidates_failed", message: "目前無法載入資料，請稍後重試。" }, 502);
 };
 
 data.get("/api/candidates", async (c) => {
@@ -31,7 +31,7 @@ data.get("/api/candidates/:id", async (c) => {
   try {
     const rows = await sql`select * from candidates where id = ${c.req.param("id")}`;
     const visible = publicRecords(rows.map(rowToRec));
-    if (visible.length === 0) return c.json({ error: "not_found", message: "找不到這筆紀錄" }, 404);
+    if (visible.length === 0) return c.json({ error: "not_found", message: "找不到這個選項，請返回結果頁後重試。" }, 404);
     return c.json(visible[0]);
   } catch (e) {
     return failed(c, e);
@@ -40,7 +40,7 @@ data.get("/api/candidates/:id", async (c) => {
 
 // Public coverage/readiness, without user data or provider secrets.
 data.get("/api/catalog", async c => {
-  if (!dbConfigured()) return c.json({error:"database_unconfigured",message:"尚未設定資料庫"},503);
+  if (!dbConfigured()) return c.json({error:"database_unconfigured",message:"資料涵蓋範圍目前無法載入，請稍後重試。"},503);
   try { return c.json(summarizeCatalog(publicRecords((await sql`select * from candidates`).map(rowToRec)))); }
   catch(error) { return failed(c,error); }
 });

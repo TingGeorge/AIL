@@ -1,0 +1,427 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+        <title>錯誤</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="author" content="Taipei City Government">
+    <meta name="keywords" content="臺北市政府">
+    <meta name="description" content="臺北市政府">
+    <!-- icon -->
+    <link rel="shortcut icon" href="/img/ico/favicon.ico" />
+    <!-- <link rel="icon" type="image/gif" href="assets/img/ico/animated_favicon1.gif" /> -->
+    <link rel="icon" sizes="192x192" href="/img/ico/logo_192.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/img/ico/logo_114.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/ico/logo_144.png" />
+    <!--Facebook meta-->
+    <meta property="og:title" content="臺北市政府" />
+    <meta property="og:description" content="臺北市政府" />
+    <meta property="og:site_name" content="臺北市政府" />
+    <meta property="og:image" content="/img/ico/logo_fb.png" />
+    <meta property="og:url" content="" />
+    <meta property="og:type" content="website" />
+    <!-- Plugins CSS -->
+    <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/plugins/fancybox/dist/jquery.fancybox.min.css" rel="stylesheet">
+    <link href="/plugins/owlcarousel/dist/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/plugins/owlcarousel/dist/assets/owl.theme.default.min.css" rel="stylesheet">
+    <link href="/css/plugins.css" rel="stylesheet">
+    <!-- Kyart CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+
+
+    <style type="text/css">
+        .ErrorContent {
+            text-align: center;
+            font-family: "微軟正黑體";
+            color: #000000;
+            font-size: 100%;
+            left: 0;
+            /*font-weight: bold;*/
+        }
+    </style>
+
+    
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JSV0KJ0Y35"></script>
+    <script>
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-JSV0KJ0Y35');
+    </script>
+</head>
+
+<body class="main">
+    <div class="wrapper index">
+        <!-- header & menu -->
+        <header>
+            <div class="nav-toggle" id="id-menutoggle"><img src="/img/theme/nav-btn-01.png" alt="主選單展開收合按鈕"></div>
+            <div class="headertop font-level-content">
+                <div class="logolink float-left">
+                    <a href="/" alt="首頁連結" title="首頁連結">
+                        <div class="logo-block"><img src="/img/theme/logo_01.png" alt="網站商標"></div>
+                        <div class="logo-text">
+                            <h4>臺北市政府</h4>
+                            <p>市民服務大平臺</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="main-nav">
+                    <div class="qlink float-right">
+                        <ul>
+                            <li class="label-red font-level">
+                                <div class="fl-btn" id="font-size">
+                                    <button type="button" class="font-small" id="font-small">小</button>
+                                    <button type="button" class="font-medium" id="font-medium">中</button>
+                                    <button type="button" class="font-large" id="font-large">大</button>
+                                </div>
+                                <p class="idmenu-text">字級</p>
+                            </li>
+                            <li class="label-yellow">
+                                <a id="autoclick"
+                                   href="/Case/Search"
+                                   alt="案件進度查詢連結" title="案件進度查詢">
+                                    <div class="tlink-icon">
+                                        <img src="/img/theme/toplinkicon_01.png"
+                                             alt="按鍵進度查詢連結的icon">
+                                    </div>
+                                    <p class="idmenu-text">案件進度查詢</p>
+                                </a>
+                            </li>
+                            <li class="label-green">
+                                <a href="/QA" alt="常見問題連結" title="常見問題">
+                                    <div class="tlink-icon">
+                                        <img src="/img/theme/toplinkicon_02.png" alt="新手上路連結的icon">
+                                    </div>
+                                    <p class="idmenu-text">常見問題</p>
+                                </a>
+                            </li>
+
+                            <li class="label-blue">
+                                <a href="javascript:void(0)" onclick="Logout()" alt="會員登出連結" title="會員登出"
+                                   id="LogoutArea" hidden="hidden">
+                                    <div class="tlink-icon">
+                                        <img src="/img/theme/toplinkicon_03.png" alt="會員登入連結的icon">
+                                    </div>
+                                    <p class="idmenu-text" id="showMemberName"> (登出)</p>
+                                </a>
+                                <a href="javascript:void(0)" onclick="Login()" alt="會員登入連結" title="會員登入" id="LoginArea"
+                                   hidden="hidden">
+                                    <div class="tlink-icon">
+                                        <img src="/img/theme/toplinkicon_03.png" alt="會員登入連結的icon">
+                                    </div>
+                                    <p class="idmenu-text" style="width: 72px; height: 90px; display: block;">登入</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </header>
+
+        <!-- header & menu END-->
+
+        
+
+
+<div style="text-align:center; padding-top:7%;">
+    <div class="scroll">
+        <div class="scroll_inner">
+            <img src="/img/warning.png" width="160" />
+        </div>
+    </div>
+    <div class="inner">
+        <div class="ErrorContent">
+            <h3>
+                <p>頁面發生異常錯誤，建議使用無痕模式或重啟瀏覽器進行重試</p>
+                <p> 若重試後還有相同問題，請撥打客服專線1999再轉8585</p>
+                本網站建議使用Chrome瀏覽器
+            </h3>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+        <!-- Footer===================-->
+
+        <footer>
+            <a name="footer"></a>
+            <div class="container">
+                <div class="footerlink font-level-content">
+                    <ul>
+                        <li><a href="/SiteMap">網站導覽</a></li>
+                        <li><a href="https://id.taipei/tpcd/" target="_blank">台北通</a></li>
+                        <li><a href="https://www.gov.taipei/News_Content.aspx?n=10FDEA7683714512&sms=AA987E1C50412097&s=3B6C92FD22C01611">政府網站資料開放宣告</a></li>
+                        <li><a href="/Privacy">隱私權及資訊安全政策</a></li>
+                    </ul>
+                </div>
+                <div class="copyright font-level-p">
+                    <span><i class="fa fa-map-marker" aria-hidden="true"></i> 110204 臺北市信義區市府路1號</span>
+                    <span><i  aria-hidden="true"></i>Tel: 02-27208889(代表號)</span>
+                    <span>臺北市民免付費當家熱線1999(公共電話，放心講及第二類電信除外)</span>
+                    <span>本網站建議使用Chrome瀏覽器</span>
+                    
+                </div>
+            </div>
+
+
+<div class="copyright">
+    <span>網站版次 V20250327</span>
+    <span>更新時間 2025/03/27</span>
+    <span style="display:none"><i>目前線上人數 <span id="currentUserCount">43381536</span></i></span>
+    <span style="display:none"><i>累計線上人數 68815685</i></span>
+</div>                    <span class="copyright font-level-p">AP-02</span>
+
+        </footer>
+
+        <!-- Footer End -->
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmTemplate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h3 class="modal-title" style="font-weight: bold">
+                        臺北市政府
+                        <small class="value-holder"></small>
+                    </h3>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="confirm_no" class="btn btn-s btn-gray btn-br5" data-dismiss="modal"
+                            aria-label="Close" value="Yes" style="width: 70px">
+                        取消
+                    </button>
+                    <button type="button" id="confirm_yes" class="btn btn-s btn-green btn-br5" value="No"
+                            style="width: 70px">
+                        確定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="messageTemplate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h3 class="modal-title" style="font-weight: bold">
+                        臺北市政府
+                        <small class="value-holder"></small>
+                    </h3>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="message_yes" class="btn btn-s btn-gray btn-br5" data-dismiss="modal"
+                            aria-label="Close" value="Yes" style="width: 70px">
+                        確定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS lib -->
+    <script src="/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="/Scripts/jquery-migrate-3.3.2.min.js"></script>
+    <script src="/Scripts/moment.min.js"></script>
+    <script src="/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/plugins/fancybox/dist/jquery.fancybox.min.js"></script>
+    <script src="/plugins/owlcarousel/dist/owl.carousel.min.js"></script>
+    <script src="/plugins/autocomplete/autocomplete.js"></script>
+    
+    
+    
+    <!-- theme js -->
+
+    <script src="/Scripts/jquery.cookie.js"></script>
+    
+    <script src="/plugins/jquery-textresizer-master/jquery.textresizer.js"></script>
+    <script src="/Scripts/ui-setting.js"></script>
+    <script src="/Scripts/site/tpesite.js"></script>
+
+    <script src="/Scripts/jquery.signalR-2.3.0.min.js"></script>
+    <script src="/signalr/hubs"></script>
+
+    
+
+<script type="text/javascript">
+        $(function () {
+
+            // owl bigbanner
+            $('.bigbanner').owlCarousel({
+                loop: true,
+                margin: 0,
+                nav: true,
+                items: 1,
+                singleItem: true,
+                navText: ['<img src="/img/banner/index_banner_arrow_prev.png" alt="上一則">', '<img src="/img/banner/index_banner_arrow_next.png" alt="上一則">'],
+                autoplay: true,
+                autoplayTimeout: 10000,
+                autoplayHoverPause: true
+                // animateIn: 'fadeIn'
+            })
+            // nav toggle
+            $('#id-menutoggle').click(function (event) {
+                $('.main-nav').toggleClass('active');
+                $('body').toggleClass('open-index');
+                // if($('.wrapper').hasClass('open')){
+                //     $('<div class="index-menumask"></div>').appendTo("body");
+                // }else{
+                //     $('.index-menumask').remove();
+                // }
+
+            });
+            $('.wrapper').click(function (e) {
+                if (e.target == $(this)[0]) {
+                    $('body').removeClass('open-index'); // or hide()
+                    $('.main-nav').removeClass('active');
+                }
+            });
+            $(window).scroll(function () {
+                var menu_top = 200;
+                if ($(window).scrollTop() >= menu_top) {
+                    $('header').addClass('menuFixed')
+                } else {
+                    $('header').removeClass('menuFixed')
+                }
+            });
+
+            LoginArea(
+                'no',
+                '');
+
+            // Reference the auto-generated proxy for the hub.
+            var userActivity = $.connection.userActivityHub;
+
+            if (userActivity) {
+
+                //// Create a function that the hub can call back to display messages.
+                userActivity.client.updateUsersOnlineCount = function (count) {
+                    // Add the message to the page.
+                    //alert('updateUsersOnlineCount');
+                    //$('#currentUserCount').text(count);
+                };
+
+                $.connection.hub.start().done(function () {
+                    //alert('start().done');
+                });
+            }
+        })
+
+        TPE_INIT();
+</script>
+
+    <script type="text/javascript">
+        function Login() {
+            var expand = "&state=https%3a%2f%2fservice.gov.taipei%3a443";
+            var clientId = "251519ef4126ae8d622c6eb0ac4217b5805d48d7";
+            var redirectUrl = "https://service.gov.taipei/Member/OAuthCallback";
+            var scope = "uuid email phone_no member_type verify_level formatted_name real_name id_no birthday addresses is_citizen is_native_people resident_address";
+            var authUrl = "https://id.taipei/isso/oauth2/authorize?response_type=code&client_id=" + encodeURIComponent(clientId) + "&redirectUri=" + encodeURIComponent(redirectUrl) + "&scope=" + encodeURIComponent(scope) + expand;//;
+            //var authUrl = "https://id.taipei/isso/oauth2/authorize?response_type=code&client_id=" + clientId + "&redirectUri=" + redirectUrl + "&scope=real_name id_no phone_no" + expand;//;
+            sessionStorage.setItem('TPELoginRedirectUrl', location.href);
+            sessionStorage.setItem('TPELoginProcessType', 'new');
+
+        
+
+                //window.open(authUrl, 'formLogin');
+
+            debugger;
+            console.log(authUrl);
+                window.location.href = authUrl;
+        }
+
+
+        function Logout() {
+            if (confirm('確定登出？')) {
+                $.post('/Member/Logout', {}, function () {
+                    self.location.href = '/';
+                });
+            }
+        }
+    </script>
+
+    <script>
+        if (self == top) {
+            var theBody = document.getElementsByTagName('body')[0];
+            theBody.style.display = "block"
+        } else {
+            top.location = self.location
+        }
+    </script>
+
+    <script type="text/javascript">
+        function showConfirmationWindow(message, confirm_yes, confirm_no) {
+            showMessagebox('#confirmTemplate', message, "#confirm_yes", confirm_yes, "#confirm_no", confirm_no);
+        }
+
+        function showMessageWindow(message, confirm_yes) {
+            showMessagebox('#messageTemplate', message, "#message_yes", confirm_yes);
+        }
+
+        function showMessagebox(templateId, message, yesId, confirm_yes, noId, confirm_no) {
+            var template = $(templateId);
+            if (template == undefined) return;
+
+            template.find('.modal-body').html(message);
+            template.modal("show");
+
+            var yes = $(yesId);
+            if (yes != undefined) {
+                yes.off("click");
+                yes.click(function () {
+                    if (confirm_yes != undefined || confirm_yes != null) {
+                        confirm_yes();
+                    }
+                    template.modal("hide")
+                });
+            }
+
+            var no = $(noId);
+            if (no != undefined) {
+                no.off("click");
+                no.click(function () {
+                    if (confirm_no != undefined || confirm_no != null) {
+                        confirm_no();
+                    }
+                    template.modal("hide")
+                });
+            }
+        }
+
+    </script>
+
+
+    
+
+    
+</body>
+
+</html>
+
+

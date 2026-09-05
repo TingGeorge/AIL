@@ -37,7 +37,7 @@ describe("Gemini API contract without live provider", () => {
   test("parse: upstream failure is 502 with a fixed message, no leaked detail", async () => {
     const res = await post("/api/parse", JSON.stringify({ transcript: "晚餐" }), { "content-type": "application/json" });
     expect(res.status).toBe(502);
-    expect(await res.json()).toEqual({ error: "gemini_unavailable", message: "Gemini 服務暫時無法使用", upstream_status: 502 });
+    expect(await res.json()).toEqual({ error: "gemini_unavailable", message: "智慧功能暫時無法使用，請稍後重試。", upstream_status: 502 });
   });
   test("voice: 400 without audio or on an empty clip", async () => {
     const noAudio = new FormData();
@@ -63,7 +63,7 @@ test("search: 503 with a clear error when DATABASE_URL is missing", async () => 
   try {
     const res = await post("/api/search", JSON.stringify({ need: EMPTY_NEED, exclude: [], location: null }), { "content-type": "application/json" });
     expect(res.status).toBe(503);
-    expect(await res.json()).toEqual({ error: "search_failed", message: "資料庫未設定" });
+    expect(await res.json()).toEqual({ error: "search_failed", message: "搜尋服務目前無法使用，請稍後重試。" });
   } finally {
     if (previous === undefined) delete process.env.DATABASE_URL; else process.env.DATABASE_URL = previous;
   }
@@ -129,12 +129,12 @@ describe.skipIf(!dbLive)("搜尋與候選查詢 (live database)", () => {
   };
 
   test("SSE 推 filter → 各組 ranking → 可交錯的 failed fallback → final done", async () => {
-    const es = await events({ need: {...need,people_or_servings:null}, exclude: [], location: null, costco_ok: false });
+    const es = await events({ need: {...need,people_or_servings:null}, exclude: [], location: null });
     const filter = es[0];
     expect(filter.step).toBe("filter");
     expect(filter.found).toBeGreaterThanOrEqual(10);
     expect(filter.passed).toBeGreaterThan(0);
-    expect(Object.keys(filter.excluded_by).sort()).toEqual(["budget", "costco", "date", "distance", "eligibility", "exclude", "free_only", "people", "registration", "time"]);
+    expect(Object.keys(filter.excluded_by).sort()).toEqual(["budget", "date", "distance", "eligibility", "exclude", "free_only", "people", "registration", "time"]);
     expect(filter.warnings.some((w: {code:string})=>w.code==="strict_constraints_applied")).toBe(false);
     // 預算 300 排掉那筆 780 的鍋物。
     expect(filter.excluded_by.budget).toBeGreaterThan(0);
@@ -157,7 +157,7 @@ describe.skipIf(!dbLive)("搜尋與候選查詢 (live database)", () => {
       expect(terminal).toBeDefined();
       expect(middle.indexOf(terminal)).toBeGreaterThan(middle.indexOf(ranking));
       expect(terminal.status).toBe("failed");
-      expect(terminal.error).toBe("LLM 未設定，已改依總可比成本排列");
+      expect(terminal.error).toBe("智慧排序目前無法使用，已改依預估總費用排列");
       const totals = terminal.records.map((r: Rec) => comparableTotal(r));
       expect([...totals].sort((a: number, b: number) => a - b)).toEqual(totals);
       expect(terminal.records.every((r: Rec) => r.reason === null)).toBe(true);
@@ -166,7 +166,7 @@ describe.skipIf(!dbLive)("搜尋與候選查詢 (live database)", () => {
 
   test("SSE 警告 need／設定排除中無法由 TAGS 保證的項目", async () => {
     const es = await events({
-      need: { ...need, exclude_tags: ["堅果"] }, exclude: ["牛"], location: null, costco_ok: false,
+      need: { ...need, exclude_tags: ["堅果"] }, exclude: ["牛"], location: null,
     });
     const warning = es[0].warnings.find((item: { code: string }) => item.code === "exclude_tags_not_guaranteed");
     expect(warning.fields).toEqual(["exclude_tags", "exclude"]);
@@ -175,7 +175,7 @@ describe.skipIf(!dbLive)("搜尋與候選查詢 (live database)", () => {
     expect(es[0].excluded_by.exclude).toBeGreaterThan(0);
 
     const needOnly = await events({
-      need: { ...need, exclude_tags: ["牛"] }, exclude: [], location: null, costco_ok: false,
+      need: { ...need, exclude_tags: ["牛"] }, exclude: [], location: null,
     });
     expect(needOnly[0].excluded_by.exclude).toBeGreaterThan(0);
     expect(needOnly[0].warnings.find((item: { code: string }) => item.code === "exclude_tags_not_guaranteed").fields)
@@ -183,7 +183,7 @@ describe.skipIf(!dbLive)("搜尋與候選查詢 (live database)", () => {
   });
 
   test("strict exclusions partition uncertain food away from every ranked SSE group", async () => {
-    const es = await events({ need: { ...EMPTY_NEED, exclude_tags: ["牛"] }, exclude: [], location: null, costco_ok: false });
+    const es = await events({ need: { ...EMPTY_NEED, exclude_tags: ["牛"] }, exclude: [], location: null });
     const main = es.flatMap(event => event.status === "done" || event.status === "failed" ? event.records : []);
     const final = es.at(-1);
     expect(main.filter((record: Rec) => record.category === "食品")).toHaveLength(0);
@@ -202,7 +202,7 @@ describe.skipIf(!dbLive)("搜尋與候選查詢 (live database)", () => {
   });
 
   test("free_only fallback 只留下總可比成本 0 的紀錄", async () => {
-    const es = await events({ need: { ...need, free_only: true }, exclude: [], location: null, costco_ok: false });
+    const es = await events({ need: { ...need, free_only: true }, exclude: [], location: null });
     expect(es[0].excluded_by.free_only).toBeGreaterThan(0);
     for (const event of es.slice(1, -1)) {
       if (event.status !== "done" && event.status !== "failed") continue;

@@ -1,0 +1,332 @@
+[
+  {
+    "proposal_id": "go_zoo_30",
+    "matched_candidate_id": "a_zoo1",
+    "matched_candidate_state": "new100_activity_expansion",
+    "category": "活動",
+    "offer_title": "臺北市立動物園 30 人以上團體票",
+    "venue": "臺北市立動物園",
+    "source_url": "https://www.zoo.gov.taipei/cp.aspx?n=763493FD7ECCAA11&s=F3BC09EC36168CB6",
+    "base_regular_price_twd_per_person": 100,
+    "group_offer": {
+      "min_people": 30,
+      "price_per_person_twd": 70,
+      "discount_pct": 30,
+      "discount_amount_twd_per_person": 30,
+      "price_derivation": "官方頁直接列示每人70元；相對全票100元，折扣=(100-70)/100=30%。",
+      "redeem_code": null
+    },
+    "valid_from": null,
+    "valid_until": null,
+    "validity_basis": "官方現行票價與購票方式頁列示的常態團體票；頁面未標示結束日，因此不宣稱永久有效，使用前仍須重查。",
+    "reservation_required": false,
+    "reservation_conditions": "30人（含）以上先集合，現場洽工作人員清點人數後購票入場；此提案僅指一般入園團體票，不等同團體導覽或教育活動預約。",
+    "redemption_method": "現場由工作人員清點人數後購買團體票並入場。",
+    "scope": "臺北市立動物園一般全票適用者；30人（含）以上，同一團體現場購票入園。",
+    "evidence": [
+      {
+        "field": "regular_price",
+        "quote": "全票：100元",
+        "url": "https://www.zoo.gov.taipei/cp.aspx?n=763493FD7ECCAA11&s=F3BC09EC36168CB6",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "group_eligibility",
+        "quote": "30人（含）以上團體，7折",
+        "url": "https://www.zoo.gov.taipei/cp.aspx?n=763493FD7ECCAA11&s=F3BC09EC36168CB6",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "group_price",
+        "quote": "30人（含）以上團體，每人70元",
+        "url": "https://www.zoo.gov.taipei/cp.aspx?n=763493FD7ECCAA11&s=F3BC09EC36168CB6",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "redemption",
+        "quote": "團體集合好請洽現場工作人員，由工作人員清點人數後購票入場。",
+        "url": "https://www.zoo.gov.taipei/cp.aspx?n=763493FD7ECCAA11&s=F3BC09EC36168CB6",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      }
+    ],
+    "checked_at": "2026-09-05T23:45:24+08:00",
+    "limitations": [
+      "官方頁未標示票價結束日。",
+      "特殊活動、遊客列車、教育課程或導覽可能另有費用與預約規則，不包含在本提案。"
+    ],
+    "proposal_status": "final_research_proposal",
+    "overlap_with_new100": true,
+    "overlap_checked_at": "2026-09-05T23:47:13+08:00",
+    "overlap_path": "/Users/apple/Desktop/AIL/prototype-v1/data/live/活動-expansion.json",
+    "existing_group_offer_state": "present_verified",
+    "integration_action": "already_incorporated_no_change",
+    "integration_priority": "supporting",
+    "integration_note": "已於2026-09-05以官方第一手頁面獨立交叉驗證目前活動 expansion record：團體門檻、每人價格、資格、預約狀態與 redeem_code:null 均正確；推薦已納入，無需再改。",
+    "disposition_checked_at": "2026-09-05T23:49:27+08:00"
+  },
+  {
+    "proposal_id": "go_ntm_20",
+    "matched_candidate_id": "a_ntm1",
+    "matched_candidate_state": "new100_activity_expansion",
+    "category": "活動",
+    "offer_title": "國立臺灣博物館 20 人以上機關／學校團體票",
+    "venue": "國立臺灣博物館",
+    "source_url": "https://www.ntm.gov.tw/cp.aspx?n=5444",
+    "base_regular_price_twd_per_person": 30,
+    "group_offer": {
+      "min_people": 20,
+      "price_per_person_twd": 15,
+      "discount_pct": 50,
+      "discount_amount_twd_per_person": 15,
+      "price_derivation": "官方規定團體票按全票30元的二分之一計收；30×1/2=15元/人。",
+      "group_price_is_derived": true,
+      "redeem_code": null
+    },
+    "valid_from": null,
+    "valid_until": null,
+    "validity_basis": "官方參觀資訊頁列示的常態票價；頁面未標示結束日，因此使用前仍須重查。",
+    "reservation_required": true,
+    "reservation_conditions": "限機關、學校20人以上團體；參訪日一週前透過官方線上申請。",
+    "redemption_method": "完成官方團體線上申請後，依館方回覆及現場規定購票入館。",
+    "scope": "國立臺灣博物館機關或學校團體，不適用於未具機關／學校資格的一般朋友揪團。",
+    "evidence": [
+      {
+        "field": "regular_price",
+        "quote": "全票：每張新臺幣30元",
+        "url": "https://www.ntm.gov.tw/cp.aspx?n=5444",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "group_eligibility",
+        "quote": "機關、學校團體二十人以上。",
+        "url": "https://www.ntm.gov.tw/cp.aspx?n=5444",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "group_discount",
+        "quote": "團體票按全票票價二分之一計收。",
+        "url": "https://www.ntm.gov.tw/cp.aspx?n=5444",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "reservation",
+        "quote": "本館校外教學及機關團體(20人以上)請於參訪日一週前至線上申請",
+        "url": "https://www.ntm.gov.tw/cp.aspx?n=5444",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      }
+    ],
+    "checked_at": "2026-09-05T23:45:24+08:00",
+    "limitations": [
+      "15元為依官方二分之一規則計算的每人價格，不是頁面另列的數字。",
+      "團體資格明確限機關、學校；不可泛化為所有20人團體。",
+      "官方頁未標示票價結束日。"
+    ],
+    "proposal_status": "final_research_proposal",
+    "overlap_with_new100": true,
+    "overlap_checked_at": "2026-09-05T23:47:13+08:00",
+    "overlap_path": "/Users/apple/Desktop/AIL/prototype-v1/data/live/活動-expansion.json",
+    "existing_group_offer_state": "present_verified",
+    "integration_action": "already_incorporated_no_change",
+    "integration_priority": "supporting",
+    "integration_note": "已於2026-09-05以官方第一手頁面獨立交叉驗證目前活動 expansion record：團體門檻、每人價格、資格、預約狀態與 redeem_code:null 均正確；推薦已納入，無需再改。",
+    "disposition_checked_at": "2026-09-05T23:49:27+08:00"
+  },
+  {
+    "proposal_id": "go_nmh_10",
+    "matched_candidate_id": "a_nmh1",
+    "matched_candidate_state": "new100_activity_expansion",
+    "category": "活動",
+    "offer_title": "國立歷史博物館 10 人以上一般團體票",
+    "venue": "國立歷史博物館",
+    "source_url": "https://www.nmh.gov.tw/cp.aspx?n=7423",
+    "base_regular_price_twd_per_person": 80,
+    "group_offer": {
+      "min_people": 10,
+      "price_per_person_twd": 40,
+      "discount_pct": 50,
+      "discount_amount_twd_per_person": 40,
+      "price_derivation": "官方頁直接列示一般團體10人以上每人40元；相對全票80元為五折。",
+      "redeem_code": null
+    },
+    "valid_from": null,
+    "valid_until": null,
+    "validity_basis": "官方現行票價頁列示的常態團體票；頁面未標示結束日，因此使用前仍須重查。",
+    "reservation_required": null,
+    "reservation_conditions": "官方票價頁未明示一般團體入館是否必須事前預約；出發前應向館方確認團體購票與入館流程。",
+    "redemption_method": "依現場團體票規定購票；事前預約要求尚待館方確認。",
+    "scope": "國立歷史博物館一般團體，10人以上；不延伸到特展、導覽或其他另行收費服務。",
+    "evidence": [
+      {
+        "field": "regular_price",
+        "quote": "全票 80元 一般觀眾。",
+        "url": "https://www.nmh.gov.tw/cp.aspx?n=7423",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "group_price_and_min_people",
+        "quote": "團體票 40元 一般團體（10人以上）。",
+        "url": "https://www.nmh.gov.tw/cp.aspx?n=7423",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      }
+    ],
+    "checked_at": "2026-09-05T23:45:24+08:00",
+    "limitations": [
+      "官方票價頁沒有寫明一般團體預約規則。",
+      "官方頁未標示票價結束日。"
+    ],
+    "proposal_status": "final_research_proposal",
+    "overlap_with_new100": true,
+    "overlap_checked_at": "2026-09-05T23:47:13+08:00",
+    "overlap_path": "/Users/apple/Desktop/AIL/prototype-v1/data/live/活動-expansion.json",
+    "existing_group_offer_state": "present_verified",
+    "integration_action": "already_incorporated_no_change",
+    "integration_priority": "supporting",
+    "integration_note": "已於2026-09-05以官方第一手頁面獨立交叉驗證目前活動 expansion record：團體門檻、每人價格、資格、預約狀態與 redeem_code:null 均正確；推薦已納入，無需再改。",
+    "disposition_checked_at": "2026-09-05T23:49:27+08:00"
+  },
+  {
+    "proposal_id": "go_tam_30",
+    "matched_candidate_id": "a_tam0",
+    "matched_candidate_state": "existing_live",
+    "category": "活動",
+    "offer_title": "臺北市立天文科學教育館展示場 30 人以上團體票",
+    "venue": "臺北市立天文科學教育館",
+    "source_url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+    "base_regular_price_twd_per_person": 40,
+    "group_offer": {
+      "min_people": 30,
+      "price_per_person_twd": 28,
+      "discount_pct": 30,
+      "discount_amount_twd_per_person": 12,
+      "price_derivation": "官方展示場票價表列普通票40元、團體票28元，且團體人數須達30人；折扣=(40-28)/40=30%。",
+      "redeem_code": null
+    },
+    "valid_from": null,
+    "valid_until": null,
+    "validity_basis": "官方現行館區購票資訊列示的常態團體票；頁面未標示結束日，因此使用前仍須重查。",
+    "reservation_required": true,
+    "reservation_conditions": "30人以上團體須電洽天文館票房預約，電話02-28314551分機523。",
+    "redemption_method": "先電話向票房完成團體預約，再依館方指示於現場購買展示場團體票。",
+    "scope": "臺北市立天文科學教育館展示場普通票適用者，團體人數達30人；不包含劇場、宇宙探險或導覽服務。",
+    "evidence": [
+      {
+        "field": "regular_price",
+        "quote": "展示場：普通票：40元、優待票：20元、臺北市民票：20元。",
+        "url": "https://tam.gov.taipei/News_Content.aspx?n=58A23AB0B3278B05&s=B102900CF2C249C3",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "group_requirement",
+        "quote": "團體達30人以上(限購買普通票者)，享有團體票優惠。",
+        "url": "https://tam.gov.taipei/News_Content.aspx?n=58A23AB0B3278B05&s=B102900CF2C249C3",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "group_ticket_type",
+        "quote": "團體票",
+        "source_locator": "展示場票價表／票種欄",
+        "url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "group_price",
+        "quote": "28",
+        "source_locator": "展示場票價表／團體票／票價（新臺幣/元）欄",
+        "url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "group_min_people",
+        "quote": "團體人數達三十人者。",
+        "source_locator": "展示場票價表／團體票／適用對象欄",
+        "url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "reservation",
+        "quote": "若屬30人以上團體，請電洽本館票房進行預約，預約電話02-28314551分機523。",
+        "url": "https://tam.gov.taipei/News_Content.aspx?n=58A23AB0B3278B05&s=CB1FF8D604E8EA75",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      }
+    ],
+    "checked_at": "2026-09-05T23:45:24+08:00",
+    "limitations": [
+      "展示場票價表把票種、票價與適用對象分列欄位；group_price證據保留官方價位欄原值28，並以source_locator標示欄位位置，未拼成來源不存在的句子。",
+      "官方頁未標示票價結束日。"
+    ],
+    "proposal_status": "final_research_proposal",
+    "overlap_with_new100": true,
+    "overlap_checked_at": "2026-09-05T23:47:13+08:00",
+    "overlap_path": "/Users/apple/Desktop/AIL/prototype-v1/data/live/活動.json",
+    "existing_group_offer_state": "absent",
+    "integration_action": "do_not_apply_preserve_old50",
+    "integration_priority": "deferred",
+    "integration_note": "研究證據保留供未來使用；依主 agent 目前決策暫不套用到舊50 record，以保留舊資料，本輪不修改 live 檔。",
+    "disposition_checked_at": "2026-09-05T23:49:27+08:00"
+  },
+  {
+    "proposal_id": "go_ntsc_20",
+    "matched_candidate_id": "a_ntsc",
+    "matched_candidate_state": "existing_live",
+    "category": "活動",
+    "offer_title": "國立臺灣科學教育館常設展 20 人以上一般團體票",
+    "venue": "國立臺灣科學教育館",
+    "source_url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+    "base_regular_price_twd_per_person": 120,
+    "group_offer": {
+      "min_people": 20,
+      "price_per_person_twd": 90,
+      "discount_pct": 25,
+      "discount_amount_twd_per_person": 30,
+      "price_derivation": "官方頁直接列示一般團體20人以上每人90元；相對全票120元，折扣=(120-90)/120=25%。",
+      "redeem_code": null
+    },
+    "valid_from": null,
+    "valid_until": null,
+    "validity_basis": "官方現行票價與團體預約頁列示的常態團體票；頁面未標示結束日，因此使用前仍須重查。",
+    "reservation_required": true,
+    "reservation_conditions": "20人以上由官方團體線上預約系統申請；可預約日為週二至週五（不含週一及國定假日），並於當日14:00前入館。",
+    "redemption_method": "先完成官方團體線上預約，再依館方通知與現場規定購買團體票入館。",
+    "scope": "國立臺灣科學教育館3至6樓常設展一般團體20人以上；本提案採一般團體90元，不使用另有資格限制的學生團體80元。",
+    "evidence": [
+      {
+        "field": "regular_price",
+        "quote": "全票：120元",
+        "url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "group_price_and_min_people",
+        "quote": "一般團體(20人以上)為90元、學生團體(20人以上)為80元",
+        "url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "reservation_method",
+        "quote": "團體預約，須由本館官網團體線上預約系統進行預約",
+        "url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      },
+      {
+        "field": "reservation_time",
+        "quote": "可預約日為星期二至星期五(不含週一及國定假日)，請於當日14:00前入館",
+        "url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+        "checked_at": "2026-09-05T23:45:24+08:00"
+      }
+    ],
+    "checked_at": "2026-09-05T23:45:24+08:00",
+    "limitations": [
+      "90元提案只代表常設展一般團體票；其他設施或特展可能另行售票。",
+      "官方頁未標示票價結束日。"
+    ],
+    "proposal_status": "final_research_proposal",
+    "overlap_with_new100": true,
+    "overlap_checked_at": "2026-09-05T23:47:13+08:00",
+    "overlap_path": "/Users/apple/Desktop/AIL/prototype-v1/data/live/活動.json",
+    "existing_group_offer_state": "absent",
+    "integration_action": "do_not_apply_preserve_old50",
+    "integration_priority": "deferred",
+    "integration_note": "研究證據保留供未來使用；依主 agent 目前決策暫不套用到舊50 record，以保留舊資料，本輪不修改 live 檔。",
+    "disposition_checked_at": "2026-09-05T23:49:27+08:00"
+  }
+]

@@ -1,9 +1,10 @@
 import type { Need } from "./need.ts";
 import type { Rec } from "./records.ts";
+import { foodPortionRange } from "./portions.ts";
 
 export type ConstraintKey = "exclude" | "people" | "date" | "time" | "eligibility";
 export type ConstraintMatch = { incompatible: ConstraintKey[]; unknown: ConstraintKey[] };
-export const constraintLabels: Record<ConstraintKey, string> = {exclude:"成分／排除項目",people:"人數／份量",date:"日期",time:"供應時段",eligibility:"使用資格"};
+export const constraintLabels: Record<ConstraintKey, string> = {exclude:"排除項目",people:"人數／餐點份數",date:"日期",time:"供應／使用時間",eligibility:"使用資格"};
 
 // Only explicit positive evidence proves presence. Missing labels NEVER prove absence.
 const ingredientPresence: Record<string, RegExp> = {
@@ -46,11 +47,10 @@ export function matchConstraints(r: Rec, n: Need, exclusions: string[]): Constra
     const quantity = r.quantity_or_servings ?? "";
     let servings: number | null = null;
     if (r.category === "食品") {
-      const count = quantity.match(/^(\d+)(?:人份|份|個)/);
-      if (count && /每人各1|人份|份/.test(quantity)) servings = Number(count[1]);
+      servings = foodPortionRange(quantity)?.max ?? null;
     } else if (/每張限一人|單程1人次|每人1張|一車/.test(quantity)) servings = 1;
     if (servings === null) unknown.push("people");
-    else if (servings < n.people_or_servings) incompatible.push("people");
+    else if (r.category === "食品" ? servings > n.people_or_servings : servings < n.people_or_servings) incompatible.push("people");
   }
   if (n.date) {
     const availability = r.availability_or_event_time ?? "";

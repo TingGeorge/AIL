@@ -1,0 +1,689 @@
+{
+  "checked_at": "2026-09-05T23:46:54+08:00",
+  "method": "exact substring, no paraphrase or normalization",
+  "records": 16,
+  "quotes": 68,
+  "passed": true,
+  "checks": [
+    {
+      "id": "t_p120",
+      "field": "價格",
+      "quote": "基北北桃跨城際定期票(1,200元)",
+      "url": "https://www.tpass.tw/faq",
+      "snapshot": "snapshots/tpass.txt",
+      "offset": 809,
+      "line": 23,
+      "exact_match": true
+    },
+    {
+      "id": "t_p120",
+      "field": "份量",
+      "quote": "基隆市、新北市、臺北市、桃園市",
+      "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+      "snapshot": "snapshots/nttickets-correct.txt",
+      "offset": 2746,
+      "line": 207,
+      "exact_match": true
+    },
+    {
+      "id": "t_p120",
+      "field": "資格",
+      "quote": "一般實體悠遊卡，包含普通卡",
+      "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+      "snapshot": "snapshots/nttickets-correct.txt",
+      "offset": 2860,
+      "line": 220,
+      "exact_match": true
+    },
+    {
+      "id": "t_p120",
+      "field": "時間",
+      "quote": "連續30日",
+      "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+      "snapshot": "snapshots/nttickets-correct.txt",
+      "offset": 3457,
+      "line": 234,
+      "exact_match": true
+    },
+    {
+      "id": "t_p120",
+      "field": "費用",
+      "quote": "民眾可以使用原有卡片購買公共運輸定期票",
+      "url": "https://www.tpass.tw/faq",
+      "snapshot": "snapshots/tpass.txt",
+      "offset": 234,
+      "line": 15,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp1d",
+      "field": "價格",
+      "quote": "一日券210元",
+      "url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+      "snapshot": "snapshots/funpass-gov-faq.txt",
+      "offset": 2229,
+      "line": 238,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp1d",
+      "field": "份量",
+      "quote": "一張票卡僅限一人使用。",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 1408,
+      "line": 78,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp1d",
+      "field": "時間",
+      "quote": "以票卡正面標示之天數為有效天數，必須連續使用",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 896,
+      "line": 67,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp1d",
+      "field": "費用",
+      "quote": "本卡不含押金、不具再加值功能。",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 1420,
+      "line": 79,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp2d",
+      "field": "價格",
+      "quote": "二日券340元",
+      "url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+      "snapshot": "snapshots/funpass-gov-faq.txt",
+      "offset": 2237,
+      "line": 238,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp2d",
+      "field": "份量",
+      "quote": "一張票卡僅限一人使用。",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 1408,
+      "line": 78,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp2d",
+      "field": "時間",
+      "quote": "以票卡正面標示之天數為有效天數，必須連續使用",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 896,
+      "line": 67,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp2d",
+      "field": "費用",
+      "quote": "本卡不含押金、不具再加值功能。",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 1420,
+      "line": 79,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp3d",
+      "field": "價格",
+      "quote": "三日券470元",
+      "url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+      "snapshot": "snapshots/funpass-gov-faq.txt",
+      "offset": 2245,
+      "line": 238,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp3d",
+      "field": "份量",
+      "quote": "一張票卡僅限一人使用。",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 1408,
+      "line": 78,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp3d",
+      "field": "時間",
+      "quote": "以票卡正面標示之天數為有效天數，必須連續使用",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 896,
+      "line": 67,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp3d",
+      "field": "費用",
+      "quote": "本卡不含押金、不具再加值功能。",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 1420,
+      "line": 79,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp5d",
+      "field": "價格",
+      "quote": "五日券730元",
+      "url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+      "snapshot": "snapshots/funpass-gov-faq.txt",
+      "offset": 2253,
+      "line": 238,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp5d",
+      "field": "份量",
+      "quote": "一張票卡僅限一人使用。",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 1408,
+      "line": 78,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp5d",
+      "field": "時間",
+      "quote": "以票卡正面標示之天數為有效天數，必須連續使用",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 896,
+      "line": 67,
+      "exact_match": true
+    },
+    {
+      "id": "t_fp5d",
+      "field": "費用",
+      "quote": "本卡不含押金、不具再加值功能。",
+      "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+      "snapshot": "snapshots/easycard-funpass.txt",
+      "offset": 1420,
+      "line": 79,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm1d",
+      "field": "價格",
+      "quote": "優惠價 320元/張",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+      "snapshot": "snapshots/ty1.txt",
+      "offset": 3715,
+      "line": 459,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm1d",
+      "field": "份量",
+      "quote": "不限區間、不限次數、不限車種搭乘",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+      "snapshot": "snapshots/ty1.txt",
+      "offset": 3782,
+      "line": 463,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm1d",
+      "field": "時間",
+      "quote": "啟用後於當日營運結束前",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+      "snapshot": "snapshots/ty1.txt",
+      "offset": 3770,
+      "line": 463,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm1d",
+      "field": "費用",
+      "quote": "本票卡不具加值功能且不含押金。",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+      "snapshot": "snapshots/ty1.txt",
+      "offset": 3852,
+      "line": 468,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm48",
+      "field": "價格",
+      "quote": "機捷來回票+北捷48小時票：520元",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+      "snapshot": "snapshots/tyjoint.txt",
+      "offset": 2784,
+      "line": 389,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm48",
+      "field": "份量",
+      "quote": "搭乘2次桃園機場捷運",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+      "snapshot": "snapshots/tyjoint.txt",
+      "offset": 2889,
+      "line": 399,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm48",
+      "field": "時間",
+      "quote": "自首次刷卡進入臺北捷運車站之時間起計連續48/72小時",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+      "snapshot": "snapshots/tyjoint.txt",
+      "offset": 2950,
+      "line": 400,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm48",
+      "field": "費用",
+      "quote": "本套票以優惠價格出售，套票內之票卡不得轉售予他人。",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+      "snapshot": "snapshots/tyjoint.txt",
+      "offset": 2994,
+      "line": 402,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm72",
+      "field": "價格",
+      "quote": "機捷來回票+北捷72小時票：600元",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+      "snapshot": "snapshots/tyjoint.txt",
+      "offset": 2803,
+      "line": 390,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm72",
+      "field": "份量",
+      "quote": "搭乘2次桃園機場捷運",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+      "snapshot": "snapshots/tyjoint.txt",
+      "offset": 2889,
+      "line": 399,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm72",
+      "field": "時間",
+      "quote": "自首次刷卡進入臺北捷運車站之時間起計連續48/72小時",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+      "snapshot": "snapshots/tyjoint.txt",
+      "offset": 2950,
+      "line": 400,
+      "exact_match": true
+    },
+    {
+      "id": "t_tm72",
+      "field": "費用",
+      "quote": "本套票以優惠價格出售，套票內之票卡不得轉售予他人。",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+      "snapshot": "snapshots/tyjoint.txt",
+      "offset": 2994,
+      "line": 402,
+      "exact_match": true
+    },
+    {
+      "id": "t_a1a3",
+      "field": "價格",
+      "quote": "160",
+      "url": "https://www.tymetro.com.tw/tymetro-new/upload/ckupload/20241213_11052534.pdf",
+      "snapshot": "snapshots/tyfare.txt",
+      "offset": 255,
+      "line": 11,
+      "exact_match": true
+    },
+    {
+      "id": "t_a1a3",
+      "field": "份量",
+      "quote": "單程票",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+      "snapshot": "snapshots/ty1.txt",
+      "offset": 322,
+      "line": 56,
+      "exact_match": true
+    },
+    {
+      "id": "t_a1a3",
+      "field": "時間",
+      "quote": "發售當日營運時間內有效。",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+      "snapshot": "snapshots/ty1.txt",
+      "offset": 3312,
+      "line": 440,
+      "exact_match": true
+    },
+    {
+      "id": "t_a1a3",
+      "field": "人數",
+      "quote": "10人以上團體",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+      "snapshot": "snapshots/group-ty.txt",
+      "offset": 5598,
+      "line": 505,
+      "exact_match": true
+    },
+    {
+      "id": "t_a1a3",
+      "field": "折扣",
+      "quote": "依公告票價之8折收費",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+      "snapshot": "snapshots/group-ty.txt",
+      "offset": 5611,
+      "line": 507,
+      "exact_match": true
+    },
+    {
+      "id": "t_a1a3",
+      "field": "兌換",
+      "quote": "車站詢問處",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+      "snapshot": "snapshots/group-ty.txt",
+      "offset": 2757,
+      "line": 377,
+      "exact_match": true
+    },
+    {
+      "id": "t_a1a3",
+      "field": "購票限制",
+      "quote": "不可預購。",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+      "snapshot": "snapshots/group-ty.txt",
+      "offset": 5795,
+      "line": 519,
+      "exact_match": true
+    },
+    {
+      "id": "t_a1a3",
+      "field": "同行條件",
+      "quote": "旅客須團進團出，由公務門進出站。",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+      "snapshot": "snapshots/group-ty.txt",
+      "offset": 5801,
+      "line": 520,
+      "exact_match": true
+    },
+    {
+      "id": "t_a1a3",
+      "field": "期限",
+      "quote": "發售當日營運時間內有效",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+      "snapshot": "snapshots/group-ty.txt",
+      "offset": 5770,
+      "line": 515,
+      "exact_match": true
+    },
+    {
+      "id": "t_a1a3",
+      "field": "退票",
+      "quote": "不予退票",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+      "snapshot": "snapshots/group-ty.txt",
+      "offset": 5785,
+      "line": 517,
+      "exact_match": true
+    },
+    {
+      "id": "t_a1a3",
+      "field": "費用",
+      "quote": "出站時由自動收費閘門回收。",
+      "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+      "snapshot": "snapshots/ty1.txt",
+      "offset": 3352,
+      "line": 445,
+      "exact_match": true
+    },
+    {
+      "id": "t_nt1d",
+      "field": "價格",
+      "quote": "50元",
+      "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+      "snapshot": "snapshots/nttickets-correct.txt",
+      "offset": 771,
+      "line": 96,
+      "exact_match": true
+    },
+    {
+      "id": "t_nt1d",
+      "field": "份量",
+      "quote": "限1人使用。",
+      "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+      "snapshot": "snapshots/nttickets-correct.txt",
+      "offset": 951,
+      "line": 108,
+      "exact_match": true
+    },
+    {
+      "id": "t_nt1d",
+      "field": "時間",
+      "quote": "本票限發售或啟用當日營運時間內有效，當天營運時間內可不限次數搭乘。",
+      "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+      "snapshot": "snapshots/nttickets-correct.txt",
+      "offset": 993,
+      "line": 111,
+      "exact_match": true
+    },
+    {
+      "id": "t_ntbk",
+      "field": "價格",
+      "quote": "單一票價收費新台幣50元",
+      "url": "https://www.ntmetro.com.tw/basic/?mode=detail&node=3",
+      "snapshot": "snapshots/ntbike-correct.txt",
+      "offset": 710,
+      "line": 68,
+      "exact_match": true
+    },
+    {
+      "id": "t_ntbk",
+      "field": "份量",
+      "quote": "人車須一同進出車站",
+      "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+      "snapshot": "snapshots/nttickets-correct.txt",
+      "offset": 742,
+      "line": 94,
+      "exact_match": true
+    },
+    {
+      "id": "t_ntbk",
+      "field": "資格",
+      "quote": "長180公分、高120公分、寬70公分以下非動力式腳踏車",
+      "url": "https://www.ntmetro.com.tw/basic/?mode=detail&node=3",
+      "snapshot": "snapshots/ntbike-correct.txt",
+      "offset": 931,
+      "line": 73,
+      "exact_match": true
+    },
+    {
+      "id": "t_ntbk",
+      "field": "時間",
+      "quote": "車票限發售1小時內有效，逾期作廢。",
+      "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+      "snapshot": "snapshots/nttickets-correct.txt",
+      "offset": 531,
+      "line": 79,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd24",
+      "field": "價格",
+      "quote": "$ 660",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414140,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd24",
+      "field": "份量",
+      "quote": "可不限次數上下車使用",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414061,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd24",
+      "field": "時間",
+      "quote": "首次搭乘日及次日有效",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414045,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd48",
+      "field": "價格",
+      "quote": "$ 1100",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414303,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd48",
+      "field": "份量",
+      "quote": "可不限次數上下車使用",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414061,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd48",
+      "field": "時間",
+      "quote": "首次搭乘起，48小時內有效",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414210,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dddy",
+      "field": "價格",
+      "quote": "$ 550",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414326,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dddy",
+      "field": "份量",
+      "quote": "營業時間內紅、藍線任意搭乘",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414357,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dddy",
+      "field": "時間",
+      "quote": "當天有效",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414352,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd4h",
+      "field": "價格",
+      "quote": "$ 330",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414162,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd4h",
+      "field": "份量",
+      "quote": "紅、藍線任意搭乘",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414072,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd4h",
+      "field": "時間",
+      "quote": "啟用4小時內",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414499,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd1x",
+      "field": "價格",
+      "quote": "$ 170",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414754,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd1x",
+      "field": "份量",
+      "quote": "限搭乘紅線或藍線一次，下車失效",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414661,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd1x",
+      "field": "資格",
+      "quote": "國人限定，含有本國居留證的外國人亦可。",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414622,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd1x",
+      "field": "時間",
+      "quote": "首末班發車時間 09:10-18:50",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414190,
+      "line": 460,
+      "exact_match": true
+    },
+    {
+      "id": "t_dd1x",
+      "field": "終點限制",
+      "quote": "提醒您終點站為台北車站，並無法搭回原上車點。",
+      "url": "https://taipeisightseeing.com.tw/assets/index-CL_Fz9_Y.js",
+      "snapshot": "snapshots/bus-app.js",
+      "offset": 414688,
+      "line": 460,
+      "exact_match": true
+    }
+  ]
+}

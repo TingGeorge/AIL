@@ -1,0 +1,69 @@
+{
+  "mode": "applied",
+  "batch": "expansion-2026-09-05",
+  "checked_at": "2026-09-05T15:51:17.235Z",
+  "database_name": "ail",
+  "added": 100,
+  "planned_additions": {
+    "食品": 36,
+    "日用品": 14,
+    "免費／公益資源": 14,
+    "活動": 20,
+    "交通": 16
+  },
+  "before": {
+    "食品": 18,
+    "日用品": 7,
+    "免費／公益資源": 7,
+    "活動": 10,
+    "交通": 8
+  },
+  "after": {
+    "食品": 54,
+    "日用品": 21,
+    "免費／公益資源": 21,
+    "活動": 30,
+    "交通": 24
+  },
+  "preserved_existing_rows": 50,
+  "catalog": {
+    "total": 139,
+    "rankable": 136,
+    "pending": 3,
+    "demonstration": 0,
+    "latest_verified_at": "2026-09-05T15:49:45.000Z",
+    "scope": "涵蓋臺北及各筆明示地區的商家／場館、線上商品與全臺公共服務；不全在圓山步行圈內，請依個別地點、配送、時段與資格確認。資料是來源查核快照，不代表即時庫存、名額或班次。",
+    "categories": [
+      {
+        "category": "食品",
+        "total": 44,
+        "rankable": 44,
+        "pending": 0
+      },
+      {
+        "category": "日用品",
+        "total": 21,
+        "rankable": 21,
+        "pending": 0
+      },
+      {
+        "category": "免費／公益資源",
+        "total": 21,
+        "rankable": 21,
+        "pending": 0
+      },
+      {
+        "category": "活動",
+        "total": 29,
+        "rankable": 26,
+        "pending": 3
+      },
+      {
+        "category": "交通",
+        "total": 24,
+        "rankable": 24,
+        "pending": 0
+      }
+    ]
+  }
+}

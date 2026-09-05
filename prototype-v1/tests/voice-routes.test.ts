@@ -65,12 +65,12 @@ test("Safari AAC MP4 container is sent as supported M4A without altering bytes",
 test("silence returns a retryable no-speech message",async()=>{
   globalThis.fetch=(async()=>Response.json(completed({transcript:"",need:EMPTY_NEED}))) as unknown as typeof fetch;
   const res=await voice(upload());expect(res.status).toBe(422);
-  expect(await res.json()).toEqual({error:"no_speech",message:"沒有辨識到語音，請重錄或改用文字"});
+  expect(await res.json()).toEqual({error:"no_speech",message:"沒有聽到清楚的語音，請重新錄音或改用文字描述。"});
 });
 test("invalid model output and upstream failures never leak private provider detail",async()=>{
   const cases = [
-    [Response.json(completed({...result,need:{...result.need,date:"2026-02-30"}})), {error:"gemini_invalid_response",message:"Gemini 回應格式不正確，請重試"}],
-    [Response.json({error:"fake-test-key PRIVATE TRANSCRIPT"},{status:429}), {error:"gemini_quota",message:"Gemini 額度或呼叫頻率受限，請稍後重試",upstream_status:429}],
+    [Response.json(completed({...result,need:{...result.need,date:"2026-02-30"}})), {error:"gemini_invalid_response",message:"智慧功能的回應格式不正確，請重試或自行設定條件。"}],
+    [Response.json({error:"fake-test-key PRIVATE TRANSCRIPT"},{status:429}), {error:"gemini_quota",message:"智慧功能目前忙碌中，請稍後重試。",upstream_status:429}],
   ] as const;
   for(const [response, expected] of cases){
     globalThis.fetch=(async()=>response) as unknown as typeof fetch;
@@ -115,5 +115,5 @@ test("provider timeout returns a safe retryable timeout response", async () => {
   const res = await voice(upload());
   // An upstream fetch timeout must stay actionable; never echo provider detail.
   expect(res.status).toBe(504);
-  expect(await res.json()).toEqual({ error: "timeout", message: "逾時" });
+  expect(await res.json()).toEqual({ error: "timeout", message: "處理時間過久，請重試或改用文字設定條件。" });
 });

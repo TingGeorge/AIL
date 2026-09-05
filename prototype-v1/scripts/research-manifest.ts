@@ -3,6 +3,7 @@ import { resolve, join } from "node:path";
 import { readCatalog, defaultDataDirectory } from "./catalog-files.ts";
 import { assessCatalog } from "../src/shared/catalog-quality.ts";
 import { rowToRec } from "../src/shared/records.ts";
+import { canDisplayGroupOffer, groupOfferEvidence } from "../src/shared/group-offers.ts";
 
 try {
   const batch = await readCatalog(defaultDataDirectory,false);
@@ -10,7 +11,7 @@ try {
   const sourceIndex = new Map<string,Set<string>>();
   for (const record of records) {
     const coordinates = record.extra.source_coordinates as {url?:string}|null|undefined;
-    const urls = [record.source_url,...record.evidence.map(evidence=>evidence.url),...(coordinates?.url ? [coordinates.url] : [])];
+    const urls = [record.source_url,...record.evidence.map(evidence=>evidence.url),...groupOfferEvidence(record).map(evidence=>evidence.url),...(coordinates?.url ? [coordinates.url] : [])];
     for (const url of urls) {
       const ids = sourceIndex.get(url) ?? new Set<string>();
       ids.add(record.id);sourceIndex.set(url,ids);
@@ -30,6 +31,8 @@ try {
     assessment:assessCatalog(records,undefined,assessmentClock),
     coordinate_count:records.filter(record=>record.lat!==null && record.lng!==null).length,
     baseline_count:records.filter(record=>record.baseline!==null).length,
+    group_offer_count:records.filter(record=>record.group_offer!==null).length,
+    displayable_group_offer_count:records.filter(record=>canDisplayGroupOffer(record,assessmentClock)).length,
     files,
     sources:[...sourceIndex.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([url,ids])=>({url,candidate_ids:[...ids].sort()})),
   };

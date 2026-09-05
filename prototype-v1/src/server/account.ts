@@ -78,7 +78,7 @@ account.put("/api/me/data", requireUser, accountBodyLimit, async (c) => {
 
 account.get("/api/candidates/:id/reports", async (c) => {
   const candidateId = candidateParamSchema.safeParse(c.req.param("id"));
-  if (!candidateId.success) return c.json({ error: "invalid_request", message: "候選紀錄格式錯誤" }, 400);
+  if (!candidateId.success) return c.json({ error: "invalid_request", message: "選項資料格式錯誤，請重新整理後再試。" }, 400);
   if (!dbConfigured()) return unavailable(c);
 
   try {
@@ -109,7 +109,7 @@ account.post("/api/candidates/:id/reports", requireUser, accountBodyLimit, async
       from candidates where id = ${candidateId.data}
       returning id, candidate_id, reason, note, created_at`;
     const row = rows[0] as Record<string, unknown> | undefined;
-    if (!row) return c.json({ error: "not_found", message: "找不到這筆紀錄" }, 404);
+    if (!row) return c.json({ error: "not_found", message: "找不到這個選項，請返回結果頁後重試。" }, 404);
     return c.json(reportFromRow({ ...row, by: c.var.user.nickname }), 201);
   } catch (error) {
     console.error("reports_write_failed", error instanceof Error ? error.name : "unknown_error");

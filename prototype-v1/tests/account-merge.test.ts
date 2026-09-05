@@ -27,3 +27,12 @@ test("two different purchases with identical prices cannot silently undercount s
   expect(() => mergeAccountChanges(base, local, remote)).toThrow("支出");
   expect(mergeAccountChanges(base, local, local).settings.spent).toBe(100);
 });
+
+// 頭像顏色在點選當下就送出，設定表單的 draft 仍是舊顏色；儲存設定不可以把顏色改回去。
+test("a settings save with a stale draft colour keeps the colour applied on click", () => {
+  const base = defaultAccountData("使用者");
+  const local = structuredClone(base); local.profile.nickname = "新暱稱";
+  const remote = structuredClone(base); remote.profile.color = "#ff4b3e"; remote.revision = 1;
+  const merged = mergeAccountChanges(base, local, remote);
+  expect(merged.profile).toEqual({ nickname: "新暱稱", color: "#ff4b3e" });
+});

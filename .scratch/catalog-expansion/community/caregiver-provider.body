@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-hant">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<title>關懷專線 | 中華民國家庭照顧者關懷總會</title>
+		
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+		<link type="text/css" rel="stylesheet" href="https://www.familycare.org.tw/sites/default/files/css/css_rEI_5cK_B9hB4So2yZUtr5weuEV3heuAllCDE6XsIkI.css" media="all" />
+<link type="text/css" rel="stylesheet" href="https://www.familycare.org.tw/sites/default/files/css/css_RiUCT__-H5ElsHZ6XnPAAr7e-teQsPZ3lfI18IkXWpg.css" media="all" />
+<link type="text/css" rel="stylesheet" href="https://www.familycare.org.tw/sites/default/files/css/css_zUpoRNsS38LYIysn3PUKOzM30a-abTIuoNL0au3qgPE.css" media="all" />
+<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,500,400italic,500italic,700,900" media="all" />
+<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Great+Vibes" media="all" />
+<link type="text/css" rel="stylesheet" href="https://www.familycare.org.tw/sites/default/files/css/css_uvTxQcXJ2sFN__mj2jjeaVi083d7dVacRTfjW0qjIFE.css" media="all" />
+<link type="text/css" rel="stylesheet" href="https://www.familycare.org.tw/sites/default/files/css/css_L-VX03R-KpBj5WUDHqDwVAxUOmaKo7LQKZ4D2oone-I.css" media="all" />
+		<link href="/sites/all/themes/probes/css/custom.css" rel="stylesheet" type="text/css" />
+		<!-- JS begin -->
+					<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/modules/jquery_update/replace/jquery/1.7/jquery.min.js?v=1.7.2"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/misc/jquery-extend-3.4.0.js?v=1.7.2"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/misc/jquery-html-prefilter-3.5.0-backport.js?v=1.7.2"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/misc/jquery.once.js?v=1.2"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/misc/drupal.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/misc/form-single-submit.js?v=7.105"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/modules/extlink/extlink.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/default/files/languages/zh-hant_bAxP3L7Z-CCN7uUi6UxPSjvTWIOTkVvRUC749qa3p_g.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/modules/google_analytics/googleanalytics.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-0VYHE4NB83"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments)};gtag("js", new Date());gtag("set", "developer_id.dMDhkMT", true);gtag("config", "G-0VYHE4NB83", {"groups":"default","anonymize_ip":true});
+//--><!]]>
+</script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/jquery.min.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/jquery.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/bootstrap.min.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/masterslider/jquery.easing.min.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/masterslider/masterslider.min.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/cubeportfolio/jquery-latest.min.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/cubeportfolio/jquery.cubeportfolio.min.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/cubeportfolio/main.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/animations/animations.min.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/animations/appear.min.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/style-switcher/jquery-1.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/style-switcher/styleselector.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/yamm/sticky.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/owl-carousel/owl.carousel.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/owl-carousel/custom.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/scrolltotop/totop.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/aninum/jquery.animateNumber.min.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/countdown/simplyCountdown.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/jquery.easing.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/skroll/sKroll.min.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/update.js?tktkbo"></script>
+<script type="text/javascript" src="https://www.familycare.org.tw/sites/all/themes/probes/js/custom.js?tktkbo"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","setHasJsCookie":0,"ajaxPageState":{"theme":"probes","theme_token":"_lpa_ilLOR56Rj1WSGLOHlRTXQ4UqK9gerqsjhahCvc","js":{"https:\/\/www.familycare.org.tw\/sites\/all\/modules\/civicrm\/js\/insights.js?vdc45209":1,"sites\/all\/modules\/jquery_update\/replace\/jquery\/1.7\/jquery.min.js":1,"misc\/jquery-extend-3.4.0.js":1,"misc\/jquery-html-prefilter-3.5.0-backport.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"misc\/form-single-submit.js":1,"sites\/all\/modules\/extlink\/extlink.js":1,"public:\/\/languages\/zh-hant_bAxP3L7Z-CCN7uUi6UxPSjvTWIOTkVvRUC749qa3p_g.js":1,"sites\/all\/modules\/google_analytics\/googleanalytics.js":1,"https:\/\/www.googletagmanager.com\/gtag\/js?id=G-0VYHE4NB83":1,"0":1,"sites\/all\/themes\/probes\/js\/jquery.min.js":1,"sites\/all\/themes\/probes\/js\/jquery.js":1,"sites\/all\/themes\/probes\/js\/bootstrap.min.js":1,"sites\/all\/themes\/probes\/js\/masterslider\/jquery.easing.min.js":1,"sites\/all\/themes\/probes\/js\/masterslider\/masterslider.min.js":1,"sites\/all\/themes\/probes\/js\/cubeportfolio\/jquery-latest.min.js":1,"sites\/all\/themes\/probes\/js\/cubeportfolio\/jquery.cubeportfolio.min.js":1,"sites\/all\/themes\/probes\/js\/cubeportfolio\/main.js":1,"sites\/all\/themes\/probes\/js\/animations\/animations.min.js":1,"sites\/all\/themes\/probes\/js\/animations\/appear.min.js":1,"sites\/all\/themes\/probes\/js\/style-switcher\/jquery-1.js":1,"sites\/all\/themes\/probes\/js\/style-switcher\/styleselector.js":1,"sites\/all\/themes\/probes\/js\/yamm\/sticky.js":1,"sites\/all\/themes\/probes\/js\/owl-carousel\/owl.carousel.js":1,"sites\/all\/themes\/probes\/js\/owl-carousel\/custom.js":1,"sites\/all\/themes\/probes\/js\/scrolltotop\/totop.js":1,"sites\/all\/themes\/probes\/js\/aninum\/jquery.animateNumber.min.js":1,"sites\/all\/themes\/probes\/js\/countdown\/simplyCountdown.js":1,"sites\/all\/themes\/probes\/js\/jquery.easing.js":1,"sites\/all\/themes\/probes\/js\/skroll\/sKroll.min.js":1,"sites\/all\/themes\/probes\/js\/update.js":1,"sites\/all\/themes\/probes\/js\/custom.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.messages.css":1,"modules\/book\/book.css":1,"sites\/all\/modules\/date\/date_api\/date.css":1,"modules\/field\/theme\/field.css":1,"profiles\/neticrmp\/modules\/logintoboggan\/logintoboggan.css":1,"modules\/node\/node.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/youtube\/css\/youtube.css":1,"sites\/all\/modules\/extlink\/extlink.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/modules\/ckeditor\/css\/ckeditor.css":1,"sites\/all\/modules\/civicrm\/neticrm\/civicrm_neweb\/civicrm_neweb.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/book_made_simple\/book_made_simple.css":1,"profiles\/neticrmp\/modules\/neticrm_preset\/neticrm_preset.css":1,"https:\/\/fonts.googleapis.com\/css?family=Roboto:400,100,100italic,300,500,400italic,500italic,700,900":1,"https:\/\/fonts.googleapis.com\/css?family=Great+Vibes":1,"sites\/all\/modules\/civicrm\/css\/civicrm.css":1,"sites\/all\/modules\/civicrm\/css\/extras.css":1,"sites\/all\/themes\/probes\/css\/bootstrap.min.css":1,"sites\/all\/themes\/probes\/css\/style.css":1,"sites\/all\/themes\/probes\/css\/reset.css":1,"sites\/all\/themes\/probes\/css\/font-awesome\/css\/font-awesome.min.css":1,"sites\/all\/themes\/probes\/css\/simple-line-icons.css":1,"sites\/all\/themes\/probes\/css\/et-line-font\/et-line-font.css":1,"sites\/all\/themes\/probes\/css\/responsive-leyouts.css":1,"sites\/all\/themes\/probes\/js\/yamm\/yamm.css":1,"sites\/all\/themes\/probes\/js\/yamm\/menu.css":1,"sites\/all\/themes\/probes\/js\/masterslider\/style\/masterslider.css":1,"sites\/all\/themes\/probes\/js\/masterslider\/skins\/default\/style1.css":1,"sites\/all\/themes\/probes\/js\/masterslider\/style\/style2.css":1,"sites\/all\/themes\/probes\/js\/cubeportfolio\/css\/cubeportfolio.min.css":1,"sites\/all\/themes\/probes\/js\/form\/css\/sky-forms.css":1,"sites\/all\/themes\/probes\/js\/animations\/css\/animations.min.css":1,"sites\/all\/themes\/probes\/js\/owl-carousel\/owl.carousel.css":1,"sites\/all\/themes\/probes\/js\/owl-carousel\/owl.theme.css":1,"sites\/all\/themes\/probes\/js\/owl-carousel\/owl.transitions.css":1,"sites\/all\/themes\/probes\/js\/countdown\/simplyCountdown.theme.losange.css":1,"sites\/all\/themes\/probes\/css\/update.css":1,"sites\/all\/themes\/probes\/css\/civicrm_menu.css":1,"sites\/all\/themes\/probes\/css\/temp.css":1}},"civicrm":{"resourceBase":"https:\/\/www.familycare.org.tw\/sites\/all\/modules\/civicrm\/"},"urlIsAjaxTrusted":{"\/taxonomy\/term\/892":true,"\/search\/node":true},"extlink":{"extTarget":"_blank","extClass":0,"extLabel":"(link is external)","extImgClass":0,"extSubdomains":1,"extExclude":"","extInclude":"","extCssExclude":"","extCssExplicit":"","extAlert":0,"extAlertText":"This link will take you to an external web site.","mailtoClass":0,"mailtoLabel":"(link sends e-mail)"},"googleanalytics":{"account":["G-0VYHE4NB83"],"trackOutbound":1,"trackMailto":1,"trackDownload":1,"trackDownloadExtensions":"7z|aac|arc|arj|asf|asx|avi|bin|csv|doc(x|m)?|dot(x|m)?|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt(x|m)?|pot(x|m)?|pps(x|m)?|ppam|sld(x|m)?|thmx|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls(x|m|b)?|xlt(x|m)|xlam|xml|z|zip"}});
+//--><!]]>
+</script>
+				<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="google-site-verification" content="xFKUmW-ILqkkwpGr29_5I1M4lXv_Fp5Kqeh8-6dy8zU"><link rel="shortcut icon" href="https://www.familycare.org.tw/sites/default/files/favicon.ico" type="image/vnd.microsoft.icon" />
+<link href="https://www.familycare.org.tw/sites/all/themes/probes/css/style_boxed.css" rel="stylesheet" type="text/css" id="site_layout" data-baseurl="https://www.familycare.org.tw/sites/all/themes/probes" />
+<meta name="description" content="為整合對長照家庭的服務，本會自2000年起開辦國內首支《家庭照顧者關懷諮詢專線》。2015年，衛生福利部設置獨步全球的0800-50-7272家庭照顧者關懷專線，由中華民國家庭照顧者關懷總會承接，透過社工諮詢、支持團體、心理協談、志工關懷等方式，協助家庭照顧者擬定照顧計畫、降低照顧負荷、解決生涯發展衝突、促成家庭照顧協議。 2015年起，家總也輔導縣市家庭照顧者支持服務據點，建立專線服務與在地服務之銜接。截至114年5月，各縣市家庭照顧者支持服務據點已將近150處。 為了讓更多照顧者方便獲取長照資源及家照服務資訊，家庭照顧者關懷專線也推出LINE官方帳號，整合服務介紹、資源查詢、線上預約與據點活動資訊，不僅提升照顧者獲得資源的可近性、便利性，也將資訊數位化，讓照顧需求與服務供應能更即時對接，照顧者也能就近尋找家照據點參與活動。 「家庭照顧者的人生，如何不被長照事件打亂、打敗」是全國家照社工的使命，也鼓勵家庭照顧者可以善用資源、尋求家照據點的支持與協助，若有任何需求，可撥打免付費家庭照顧者關懷專線0800-50-7272，或至LINE官方帳號搜尋「家庭照顧者關懷專線」。 誰需要服務 家庭照顧者八大支持性服務 服務流程 家庭照顧者支持服務據點 家庭照顧者壓力量表 家庭照顧者關懷專線Line官方帳號 與我們聯絡" />
+<link href="https://www.familycare.org.tw/sites/all/themes/probes/css/colors/red.css" rel="stylesheet" type="text/css" id="skin" data-baseurl="https://www.familycare.org.tw/sites/all/themes/probes" />
+<meta name="keywords" content="家總、家庭照顧、照顧離職、居家服務、日照、補助、老人照顧、高齡、身心障礙、輔具" />
+<meta name="generator" content="Drupal 7 (http://drupal.org)" />
+<link rel="canonical" href="https://www.familycare.org.tw/service/892" />
+<link rel="shortlink" href="https://www.familycare.org.tw/taxonomy/term/892" />
+<meta property="og:site_name" content="中華民國家庭照顧者關懷總會" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.familycare.org.tw/service/892" />
+<meta property="og:title" content="關懷專線" />
+<meta property="og:description" content="為整合對長照家庭的服務，本會自2000年起開辦國內首支《家庭照顧者關懷諮詢專線》。2015年，衛生福利部設置獨步全球的0800-50-7272家庭照顧者關懷專線，由中華民國家庭照顧者關懷總會承接，透過社工諮詢、支持團體、心理協談、志工關懷等方式，協助家庭照顧者擬定照顧計畫、降低照顧負荷、解決生涯發展衝突、促成家庭照顧協議。 2015年起，家總也輔導縣市家庭照顧者支持服務據點，建立專線服務與在地服務之銜接。截至114年5月，各縣市家庭照顧者支持服務據點已將近150處。 為了讓更多照顧者方便獲取長照資源及家照服務資訊，家庭照顧者關懷專線也推出LINE官方帳號，整合服務介紹、資源查詢、線上預約與據點活動資訊，不僅提升照顧者獲得資源的可近性、便利性，也將資訊數位化，讓照顧需求與服務供應能更即時對接，照顧者也能就近尋找家照據點參與活動。 「家庭照顧者的人生，如何不被長照事件打亂、打敗」是全國家照社工的使命，也鼓勵家庭照顧者可以善用資源、尋求家照據點的支持與協助，若有任何需求，可撥打免付費家庭照顧者關懷專線0800-50-7272，或至LINE官方帳號搜尋「家庭照顧者關懷專線」。 誰需要服務 家庭照顧者八大支持性服務 服務流程 家庭照顧者支持服務據點 家庭照顧者壓力量表 家庭照顧者關懷專線Line官方帳號 與我們聯絡" />
+					</head>
+	<body class="html not-front not-logged-in no-sidebars page-taxonomy page-taxonomy-term page-taxonomy-term- page-taxonomy-term-892"  style="background-image:url(0);">
+		<div id="skip-link">
+			<a href="#main-content" class="element-invisible element-focusable">移至主內容</a>
+		</div>
+		<div class="site-wrapper">
+			
+
+
+
+    
+    <header id="header" class="test header whitebg headr-style-1 whitebg title-white">
+
+        <div class="container">
+
+            <!-- Menu -->
+
+            <div class="navbar yamm navbar-default">
+
+                <div class="container">
+
+                    <div class="navbar-header">
+
+                        <button type="button" data-toggle="collapse" data-target="#navbar-collapse-1" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+
+                        
+                        <a href="https://www.familycare.org.tw" class="navbar-brand logo"><img src="https://www.familycare.org.tw/sites/default/files/familycare_e.png" alt="中華民國家庭照顧者關懷總會"></a>
+
+                        
+                    </div> 
+
+                
+
+                    <div id="navbar-collapse-1" class="navbar-collapse collapse pull-right">
+
+                                                                                                                            <div class="navigation-region">
+                                	<div id="block-menu-menu-secondary" class="block block-menu block-secondary-menu block-horizontal-menu" ><div class="block-content"><ul class="menu"><li class="first last leaf"><a href="/lecturer">講師資料庫</a></li>
+</ul></div></div><div id="block-block-61" class="block block-block block-search" ><div class="block-content"><form action="/taxonomy/term/892" method="post" id="search-block-form" accept-charset="UTF-8"><div><div class="container-inline">
+      <h2 class="element-invisible">搜尋表單</h2>
+    <div class="form-item form-type-textfield form-item-search-block-form">
+ <input title="輸入您想要搜尋的關鍵字。" placeholder="請輸入關鍵字..." class="form-control email form-text" onfocus="if (this.value == &#039;Search&#039;) {this.value = &#039;&#039;;}" type="text" id="edit-search-block-form--2" name="search_block_form" value="" size="15" maxlength="128" />
+</div>
+<div class="form-actions form-wrapper" id="edit-actions"><input class="btn btn-default uppercase form-submit" type="submit" id="edit-submit" name="op" value="搜尋" /></div><input type="hidden" name="form_build_id" value="form-ZgWYqwdZp8qHhhTzbsCGRjMNC-N8ET89npN91_FFI80" />
+<input type="hidden" name="form_id" value="search_block_form" />
+</div>
+</div></form></div></div><div id="block-system-user-menu" class="block block-system block-user-menu block-horizontal-menu block-menu" ><div class="block-content"><ul class="menu"><li class="first last leaf"><a href="/user/login"><i class="fa fa-sign-in" aria-hidden="true"></i> 登入</a></li>
+</ul></div></div>                            </div>
+                        
+                                                    <div class="main-menu-region">
+                                	<nav class="block block-system block-main-menu block-menu" ><ul class="nav navbar-nav"><li class="first collapsed level-1"><a href="/about">認識家總</a></li>
+<li class="expanded dropdown level-1" style="fa fa-pencil"><a href="/news" class="dropdown-toggle">最新消息 <i class="fa fa-angle-down"></i></a><ul class="dropdown-menu" role="menu"><li class="first leaf level-2"><a href="/news/categories/902">家總新聞稿</a></li>
+<li class="leaf level-2"><a href="/news/categories/897">媒體報導</a></li>
+<li class="leaf level-2"><a href="/news/categories/898">活動公告</a></li>
+<li class="last leaf level-2"><a href="https://www.familycare.org.tw/news/categories/948">專欄投書</a></li>
+</ul></li>
+<li class="expanded dropdown level-1"><a href="/policy" class="dropdown-toggle">政策專區 <i class="fa fa-angle-down"></i></a><ul class="dropdown-menu" role="menu"><li class="first leaf level-2"><a href="/policy/942">年輕照顧者</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/policy/941">照顧悲劇事件簿</a></li>
+<li class="leaf level-2"><a href="/policy/901">喘息服務</a></li>
+<li class="leaf level-2"><a href="http://www.familycare.org.tw/policy/929">住院整合照護服務</a></li>
+<li class="leaf level-2"><a href="/policy/924">友善長照職場</a></li>
+<li class="leaf level-2"><a href="/policy/939">長照安排假</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/policy/943">長照保險</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/policy/937">Covid-19專區</a></li>
+<li class="leaf level-2"><a href="/policy/900">出院準備服務</a></li>
+<li class="leaf level-2"><a href="/policy/933">大選長照政見</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/policy/940">長照服務法修法專區</a></li>
+<li class="leaf level-2"><a href="/policy/887">監督就業安定基金</a></li>
+<li class="leaf level-2"><a href="/policy/889">評鑑政府長照表現</a></li>
+<li class="leaf level-2"><a href="/policy/930">長照支付新制</a></li>
+<li class="last leaf level-2"><a href="/policy/896">歷史資料庫</a></li>
+</ul></li>
+<li class="expanded active-trail dropdown level-1"><a href="/service" class="dropdown-toggle">服務專區 <i class="fa fa-angle-down"></i></a><ul class="dropdown-menu" role="menu"><li class="first leaf active-trail level-2"><a href="/service/892" class="active-trail active">關懷專線</a></li>
+<li class="leaf level-2"><a href="/service/894">喘息學院</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/service/947">互助喘息</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/service/945">家照學院</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/service/935">照顧讀書會</a></li>
+<li class="leaf level-2"><a href="/service/899">長照2.0預備課</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/service/931">家庭照顧協議</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/service/949">照顧者「帶長輩上班」計畫</a></li>
+<li class="leaf level-2"><a href="/service/934">家庭照顧者安心交接計畫</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/service/946">移工家庭支持服務</a></li>
+<li class="leaf level-2"><a href="/service/893">照顧咖啡館</a></li>
+<li class="last leaf level-2"><a href="https://www.familycare.org.tw/service/932">照顧電視台</a></li>
+</ul></li>
+<li class="expanded dropdown level-1"><a href="/care" class="dropdown-toggle">照顧百寶箱 <i class="fa fa-angle-down"></i></a><ul class="dropdown-menu" role="menu"><li class="first leaf level-2"><a href="https://www.familycare.org.tw/page/11673">年度研討會專區</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/page/11759">照顧者博碩士論文</a></li>
+<li class="leaf level-2"><a href="/consideration">照顧技巧教學</a></li>
+<li class="leaf level-2"><a href="/faq">照顧問答集</a></li>
+<li class="leaf level-2"><a href="https://www.familycare.org.tw/page/11864">家總志工</a></li>
+<li class="leaf level-2"><a href="/news/categories/903" title="照顧者/志工故事">照顧者/志工故事</a></li>
+<li class="leaf level-2"><a href="/page/11148">照顧書坊</a></li>
+<li class="leaf level-2"><a href="/page/11236">照顧資源</a></li>
+<li class="leaf level-2"><a href="/page/11290">電子報</a></li>
+<li class="last collapsed level-2"><a href="/book/11371">資訊分享</a></li>
+</ul></li>
+<li class="collapsed level-1"><a href="/page/10715">我要捐款</a></li>
+<li class="leaf level-1"><a href="/contact">聯絡我們</a></li>
+<li class="last expanded dropdown level-1"><a href="/aboutus" class="dropdown-toggle">English <i class="fa fa-angle-down"></i></a><ul class="dropdown-menu" role="menu"><li class="first leaf level-2"><a href="/book/10729">About us</a></li>
+<li class="leaf level-2"><a href="/book/10730">Services</a></li>
+<li class="last leaf level-2"><a href="/book/10731">Achievement</a></li>
+</ul></li>
+</ul></nav>                            </div>
+                        
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+<!-- end Header -->
+
+<div class="page-header " style="background:url(https://www.familycare.org.tw/sites/default/files/background-icon/site-img-95.jpg) no-repeat scroll center top;background-size: cover;" >
+	<div class="container">
+		<div class="col-md-6 left-padd0">
+			<h3 class="font30 nomargin white uppercase">關懷專線</h3>
+					</div>
+		<div class="col-md-6">
+					<div class="pagenation ">
+				<a href="/">首頁</a> <i>/</i> <a href="/service">服務專區</a> <i>/</i> <span>關懷專線</span>			</div>
+				</div>
+	</div>
+</div>
+<!-- end page header -->
+<div class="section-lg">
+  	<div class="container">
+    	<div class="row">
+    		<div class="col-md-12">
+													<div id="block-system-main" class="block block-system" ><div class="block-content"><div class="view view-taxonomy-term-custom view-id-taxonomy_term_custom view-display-id-page taxonomy-term-custom view-dom-id-a5383f0fc50be920cc1c180f82c69d14">
+        
+  
+  
+      <div class="view-content">
+        <div class="views-row views-row-1 views-row-odd views-row-first views-row-last clearfix">
+      
+          <div class="term-info"><h2 class="term-name">關懷專線</h2> <div class="term-desc"><p>為整合對長照家庭的服務，本會自2000年起開辦國內首支《家庭照顧者關懷諮詢專線》。2015年，衛生福利部設置獨步全球的0800-50-7272家庭照顧者關懷專線，由中華民國家庭照顧者關懷總會承接，透過社工諮詢、支持團體、心理協談、志工關懷等方式，協助家庭照顧者擬定照顧計畫、降低照顧負荷、解決生涯發展衝突、促成家庭照顧協議。</p>
+<p>2015年起，家總也輔導縣市家庭照顧者支持服務據點，建立專線服務與在地服務之銜接。截至114年5月，各縣市家庭照顧者支持服務據點已將近150處。</p>
+<p>為了讓更多照顧者方便獲取長照資源及家照服務資訊，家庭照顧者關懷專線也推出LINE官方帳號，整合服務介紹、資源查詢、線上預約與據點活動資訊，不僅提升照顧者獲得資源的可近性、便利性，也將資訊數位化，讓照顧需求與服務供應能更即時對接，照顧者也能就近尋找家照據點參與活動。</p>
+<p>「家庭照顧者的人生，如何不被長照事件打亂、打敗」是全國家照社工的使命，也鼓勵家庭照顧者可以善用資源、尋求家照據點的支持與協助，若有任何需求，可撥打免付費家庭照顧者關懷專線0800-50-7272，或至LINE官方帳號搜尋「家庭照顧者關懷專線」。</p>
+<p><a href="http://www.familycare.org.tw/service/10751" target="_blank">誰需要服務</a><br />
+<a href="http://www.familycare.org.tw/service/10752" target="_blank">家庭照顧者八大支持性服務</a><br />
+<a href="http://www.familycare.org.tw/service/10753" target="_blank">服務流程</a></p>
+<p><a href="http://www.familycare.org.tw/service/10736" target="_blank">家庭照顧者支持服務據點</a><br />
+<a href="http://www.familycare.org.tw/service/10737" target="_blank">家庭照顧者壓力量表</a></p>
+<p><a href="https://lin.ee/H68njQx">家庭照顧者關懷專線Line官方帳號</a><br />
+<a href="http://www.familycare.org.tw/contact" target="_blank">與我們聯絡</a></p>
+</div> </div>    
+          <div class="term-cp-list"><div class="item-list"><ul><li class="first"><div class="field-collection-view clearfix view-mode-full"><div class="entity entity-field-collection-item field-collection-item-field-taxonomy-cp clearfix">
+  <div class="content">
+    <div class="field field-name-field-taxonomy-cp-desc field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even"><p><img alt="" height="405" src="https://www.familycare.org.tw/sites/default/files/line1.JPG" width="720" />   </p>
+<p><img alt="" height="398" src="https://www.familycare.org.tw/sites/default/files/line3.JPG" width="708" /></p>
+<p><img alt="" height="381" src="https://www.familycare.org.tw/sites/default/files/line5.JPG" width="678" /></p>
+</div></div></div>  </div>
+</div>
+</div></li>
+<li class="last"><div class="field-collection-view clearfix view-mode-full field-collection-view-final"><div class="entity entity-field-collection-item field-collection-item-field-taxonomy-cp clearfix">
+  <div class="content">
+    <div class="field field-name-field-taxonomy-cp-desc field-type-text-long field-label-hidden"><div class="field-items"><div class="field-item even"><p><img alt="" height="404" src="https://www.familycare.org.tw/sites/default/files/line2.JPG" width="719" /></p>
+<p><img alt="" height="405" src="https://www.familycare.org.tw/sites/default/files/line4.JPG" width="720" /></p>
+<p><img alt="" height="404" src="https://www.familycare.org.tw/sites/default/files/%E5%AE%B6%E7%B8%BDLINE%E5%AE%98%E6%96%B9%E5%B8%B3%E8%99%9F.jpg" width="718" /></p>
+<p> </p>
+<p> </p>
+<p> </p>
+</div></div></div>  </div>
+</div>
+</div></li>
+</ul></div></div>    </div>
+    </div>
+  
+  
+  
+  
+  
+  
+</div></div></div><div id="block-views-related-node-block-1" class="block block-views" ><h3 class="block-title">相關文章</h3><div class="block-content"><div class="view view-related-node view-id-related_node view-display-id-block_1 node-list related-node-list bootstrap-grid  view-dom-id-05deae665dd60af180d2d20d37f0bca4">
+        
+  
+  
+      <div class="view-content">
+        <div class="views-row views-row-1 views-row-odd views-row-first col-sm-3">
+      
+          <h4 class="node-list-title"><a href="/service/11823">【1140722家總新聞稿】「準備、彈性、樂觀」增強照顧韌力 陪練照顧耐力賽，家照據點挺你！</a></h4>    
+          <p class="node-list-body">「準備、彈性、樂觀」增強照顧韌力
+陪練照顧耐力賽，家照據點挺你！</p>    
+          <div class="node-list-readmore"><a href="/service/11823">閱讀全文</a></div>    </div>
+  <div class="views-row views-row-2 views-row-even col-sm-3">
+      
+          <h4 class="node-list-title"><a href="/service/11725">【1121208家總新聞稿】第七屆聰明照顧者表揚八組「神隊友」　合作共渡照顧汪洋</a></h4>    
+          <p class="node-list-body">5080、8050、老老照顧、年輕照顧者  各有人生難題
+第七屆聰明照顧者表揚八組「神隊友」　合作共渡照顧汪洋</p>    
+          <div class="node-list-readmore"><a href="/service/11725">閱讀全文</a></div>    </div>
+  <div class="views-row views-row-3 views-row-odd col-sm-3">
+      
+          <h4 class="node-list-title"><a href="/service/11672">【1120721家總新聞稿】長照平安五守則－照顧如長泳，互助游更遠</a></h4>    
+          <p class="node-list-body">照顧如長泳，互助游更遠
+政府與民團籲「長照平安五守則」 提供家庭照顧者「照顧救生圈」</p>    
+          <div class="node-list-readmore"><a href="/service/11672">閱讀全文</a></div>    </div>
+  <div class="views-row views-row-4 views-row-even views-row-last col-sm-3">
+      
+          <h4 class="node-list-title"><a href="/service/11077">南投縣左岸成長學苑關懷協會支持服務據點二十七</a></h4>    
+          <p class="node-list-body">《家庭照顧者關懷專線0800-507272》系列介紹（二十七）：南投縣支持服務據點
+～南投濁水溪線據點開張囉～
+左岸成長學苑關懷協會成立於2012年3月，成立之初以婦女議題的倡導及關懷學童為主，2015年協會賴理事長有感於人口老化及預防長期照顧問題惡化，帶領協會積極投入高齡族群服務，一開始於名間鄉新街村提供每月一次的服務，同年8月於南投市仁和里活動中心辦理社區照顧關懷據點，提供高齡族群每星期一次的服務，並配合衛生局針對縣內高齡族群辦理高齡友善城市社區推動計畫，積極實踐快樂志工服務社會之創會宗旨。
+今年更投入家庭照顧者的關懷與服務，期許以過去在縣內的服務量能與行動力，找出南投縣責任區域內失能者的家庭其中為家庭辛苦付出的照顧者，提供他們所需要的協助，讓愛能喘口氣、照顧能省力氣，並成為「在地化」的家庭照顧者支持服務據點種子。
+ 
+
+ 
+</p>    
+          <div class="node-list-readmore"><a href="/service/11077">閱讀全文</a></div>    </div>
+    </div>
+  
+  
+  
+      
+<div class="more-link">
+  <a href="/service/892/related-article">
+    更多相關文章  </a>
+</div>
+  
+  
+  
+</div></div></div>							</div>		
+		</div>
+	</div>
+</div>
+		<footer id="footer" class="line-color title-white footer-bg-color background-color"  data-bg-color="#161616">
+		<div class="container">
+			<div class="row">
+					<div class="col-md-4 col-sm-12 m-bottom3 block block-block bibi1" ><h4 class="font20 font-thin">關於家總</h4><div class="title-line"></div><p>諮詢專線 0800-507-272<br />
+聯絡電話 02-2585-5171、02-2585-5167<br />
+傳真號碼：02-2585-5737<br />
+電子信箱： <a href="mailto:takecare@ms17.hinet.net">takecare@ms17.hinet.net</a><br />
+地址：10491 台北市中山區民權西路19號7樓</p>
+<p>內政部核准立案字號：85.8.台內社字第8523708號</p>
+</div><div class="col-md-4 col-sm-12 m-bottom3 block block-block bibi1" ><h4 class="font20 font-thin">影片</h4><div class="title-line"></div><div class="video-container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/kaCP-V4lQIk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div></div><div class="col-md-4 col-sm-12 m-bottom3 block block-block bibi1" ><h4 class="font20 font-thin">Facebook</h4><div class="title-line"></div><div id="fb-root">&nbsp;</div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.8&appId=1776514149227691";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<div class="fb-page" data-href="https://www.facebook.com/familycare.tw/" data-tabs="timeline" data-height="300" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/familycare.tw/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/familycare.tw/">中華民國家庭照顧者關懷總會</a></blockquote></div></div>			</div>
+		</div>
+	</footer>
+		  <script>
+    if (typeof navigator.doNotTrack === 'object' && !navigator.doNotTrack) {
+      var _paq = window._paq = window._paq || [];
+      _paq.push(['setCustomDimension', 1, document.domain]);
+      _paq.push(['setDocumentTitle', document.domain + "/" + document.title]);
+      _paq.push(['trackPageView']);
+      (function() {
+        var u="//analytics.neticrm.tw/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '1']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    }
+  </script>
+
+<script type="text/javascript" defer="defer" src="https://www.familycare.org.tw/sites/all/modules/civicrm/js/insights.js?vdc45209&amp;tktkbo"></script>
+		</div>
+		<!-- end site wrapper --> 
+				<a href="#" class="scrollup"></a>
+	</body>
+</html>

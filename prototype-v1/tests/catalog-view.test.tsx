@@ -66,9 +66,9 @@ const rec = (overrides: Partial<Rec> = {}): Rec => ({
 const viewProps = {
   pending: [],
   excluded: [],
-  favs: [],
+  list: [],
   onOpen: () => {},
-  onFavorite: () => {},
+  onList: () => {},
   onAdjust: () => {},
   survival: false,
 };
@@ -84,21 +84,20 @@ const detailProps = {
 test("CatalogNotice：顯示五類真實資料覆蓋、確認時間與資料快照限制", () => {
   const html = renderToStaticMarkup(<CatalogNotice initialSummary={summary} />);
 
-  expect(html).toContain("27 筆真實資料");
-  expect(html).toContain("31 筆總收錄");
-  expect(html).toContain("18 可排序");
-  expect(html).toContain("9 待確認");
+  expect(html).toContain("27 筆已收錄資料");
+  expect(html).toContain("31 筆已收錄");
+  expect(html).toContain("18 可比較");
+  expect(html).toContain("9 需要再確認");
   expect(html).toContain("4 筆示範資料");
   expect(html).toContain("臺北市公開網頁與提供者公告");
   for (const row of summary.categories) {
     expect(html).toContain(row.category);
     expect(html).toContain(`${row.total} 筆`);
-    expect(html).toContain(`${row.rankable} 可排序`);
-    expect(html).toContain(`${row.pending} 待確認`);
+    expect(html).toContain(`${row.rankable} 可比較`);
+    expect(html).toContain(`${row.pending} 需要再確認`);
   }
-  expect(html).toContain("公開網頁資料快照");
-  expect(html).toContain("不代表即時庫存、名額或費率保證");
-  expect(html).toContain("不需要 LLM API key");
+  expect(html).toContain("目前顯示的是已整理的公開資料，不是即時網路搜尋；價格、名額與服務狀態請以來源最新資訊為準。");
+  expect(html).not.toMatch(/LLM|API key|Gemini|PostgreSQL/);
   expect(html).toContain("2026");
 });
 
@@ -136,8 +135,9 @@ test("ResultsView 保留必要摘要，DetailView 安全保留完整份量、資
     expect(html).toContain("計價：每人一張");
     expect(html).toContain("僅配送臺北市指定行政區");
     expect(html).not.toContain("<script>不可執行</script>");
-    expect(html).toContain("不同計價單位／份量");
   }
+  expect(resultsHtml).not.toContain("不同計價單位與類別的數量標示不可直接視為多人總價");
+  expect(detailHtml).toContain("不同的份量（例如一份或多人份）不可直接視為相同方案或多人總價");
   expect(resultsHtml).toContain("需符合資格");
   expect(resultsHtml).toContain("條件與詳情");
   expect(resultsHtml).not.toContain("此價格為單人票，不是兩人合計");
@@ -153,7 +153,7 @@ test("ResultsView 摘要提醒，DetailView 保留全部並安全轉義", () => 
   const results = renderToStaticMarkup(createElement(ResultsView, { records: [item], ...viewProps }));
   const detail = renderToStaticMarkup(createElement(DetailView, { item, ...detailProps }));
   expect(results).toContain("條件與詳情");
-  expect(results).not.toContain("必要條件");
+  expect(results).not.toContain("<li>必要條件</li>");
   expect(detail).toContain("必要條件");
   expect(detail).toContain("&lt;script&gt;不可執行&lt;/script&gt;");
   expect(detail).not.toContain("<script>不可執行</script>");
@@ -184,6 +184,7 @@ test("ResultsView 與 DetailView：沒有 extra 文字時不捏造審閱內容�
     expect(html).not.toContain("適用範圍");
     expect(html).not.toContain("價格脈絡");
   }
-  expect(resultsHtml).toContain("總成本不可比較");
-  expect(detailHtml).toContain("未知，總成本不可比較");
+  expect(resultsHtml).toContain("目前資料不足，無法估算總費用");
+  expect(detailHtml).toContain("目前資料不足，無法估算總費用");
+  expect(detailHtml).toContain("必付費用未知，無法估算總費用");
 });

@@ -1,0 +1,57 @@
+[
+  {
+    "key": "easycard-funpass",
+    "url": "https://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+    "started_at": "2026-09-05T23:43:43+08:00",
+    "retrieved_at": "2026-09-05T23:43:43+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.easycard.com.tw/easycard?cls=1514964214&id=1510819513",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/easycard-funpass.html",
+    "sha256": "d5d50912e3b2971b5dd37d7baed01c2404c452bb393ea4712b83a195c1f3080c"
+  },
+  {
+    "key": "funpass-gov-faq",
+    "url": "https://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+    "started_at": "2026-09-05T23:43:43+08:00",
+    "retrieved_at": "2026-09-05T23:43:43+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.tpedoit.gov.taipei/News_Content.aspx?n=4F905810069A3EC5&s=5FBAC4D99BB609C6&sms=87415A8B9CE81B16",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/funpass-gov-faq.html",
+    "sha256": "5a80d1e12c13282ea537c5bf04e5e1fc3e889b4621c46f312ff9429ea5ef99a3"
+  },
+  {
+    "key": "nttickets-correct",
+    "url": "https://www.ntmetro.com.tw/basic/?node=10102",
+    "started_at": "2026-09-05T23:43:43+08:00",
+    "retrieved_at": "2026-09-05T23:43:43+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.ntmetro.com.tw/basic/?node=10102",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/nttickets-correct.html",
+    "sha256": "7969adcfef28872c83851731a6a2fee2a6d2847ce8bc388b6d9992c5b8f98b0f"
+  },
+  {
+    "key": "ntbike-correct",
+    "url": "https://www.ntmetro.com.tw/basic/?mode=detail&node=3",
+    "started_at": "2026-09-05T23:43:43+08:00",
+    "retrieved_at": "2026-09-05T23:43:43+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.ntmetro.com.tw/basic/?mode=detail&node=3",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/ntbike-correct.html",
+    "sha256": "23dbba41943616067420a133295210d0f5d7ea5efa4b6e26861f69ca5912a290"
+  },
+  {
+    "key": "group-ty",
+    "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+    "started_at": "2026-09-05T23:43:43+08:00",
+    "retrieved_at": "2026-09-05T23:43:43+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson02.php",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/group-ty.html",
+    "sha256": "b7b5624df915797812eebc9e78ed1d30d78a3dcb11f339709d1f7652bc18f6f0"
+  }
+]

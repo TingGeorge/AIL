@@ -1,0 +1,36 @@
+HTTP/2 301 
+server: HiNetCDN
+date: Sat, 05 Sep 2026 15:31:49 GMT
+content-type: text/html; charset=UTF-8
+content-length: 0
+expires: Thu, 19 Nov 1981 08:52:00 GMT
+cache-control: no-store, no-cache, must-revalidate
+pragma: no-cache
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+location: /
+content-security-policy: frame-ancestors 'self';
+x-content-type-options: nosniff
+cache-control: max-age=0, no-cache, no-store, must-revalidate
+pragma: no-cache
+set-cookie: PHPSESSID=3ff769cf8af4636248fd4c9e416b1751; path=/; domain=.www.ntmetro.com.tw; SameSite=Lax; HTTPOnly; Secure
+x-cache: MISS, MISS, MISS
+x-request-id: 52e1109e77a3c8212c0b2770766dd908
+
+HTTP/2 200 
+server: HiNetCDN
+date: Sat, 05 Sep 2026 15:31:49 GMT
+content-type: text/html; charset=UTF-8
+vary: Accept-Encoding
+expires: Thu, 19 Nov 1981 08:52:00 GMT
+cache-control: no-store, no-cache, must-revalidate
+pragma: no-cache
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+content-security-policy: frame-ancestors 'self';
+x-content-type-options: nosniff
+cache-control: max-age=0, no-cache, no-store, must-revalidate
+pragma: no-cache
+x-cache: HIT
+x-request-id: 9c5a3272e69016102d855b45b561feb9
+

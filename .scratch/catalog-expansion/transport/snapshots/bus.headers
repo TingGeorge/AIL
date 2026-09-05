@@ -1,0 +1,16 @@
+HTTP/2 200 
+date: Sat, 05 Sep 2026 15:31:49 GMT
+content-type: text/html; charset=utf-8
+referrer-policy: strict-origin-when-cross-origin
+rndr-id: f2aa544b-422c-41e5
+server: cloudflare
+strict-transport-security: max-age=31536000
+vary: Accept-Encoding
+via: 1.1 Caddy
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-render-origin-server: uvicorn
+cf-cache-status: DYNAMIC
+cf-ray: a36648763ff6827c-TPE
+alt-svc: h3=":443"; ma=86400
+

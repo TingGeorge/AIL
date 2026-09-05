@@ -2,6 +2,7 @@
 // and the session-local community objects (profile, settings, reports, teams).
 import { constraintLabels, matchConstraints, type ConstraintKey } from "./constraints.ts";
 import { z } from "zod";
+import { foodPortionMatch, oversizedPortion, portionOrder, type PortionMatch } from "./portions.ts";
 import type { Need } from "./need.ts";
 import { CATEGORIES } from "./need.ts";
 
@@ -13,7 +14,7 @@ export const TAGS = ["牛", "豬", "雞", "海鮮", "辣", "素", "含酒精"] a
 export const PREFS = ["可外帶", "素食優先", "不排隊", "有座位", "近捷運", "營業到晚"] as const;
 export const DOT_COLORS = ["#3b7bff", "#ff4b3e", "#ffe14d", "#e4ff1a", "#7cf2c4", "#c48bff"] as const;
 
-export type GroupOffer = { min_people: number; discount_pct?: number; price_per_person?: number; redeem_code: string; note: string };
+export type GroupOffer = { min_people: number; discount_pct?: number; price_per_person?: number; redeem_code: string | null; note: string };
 
 // 逐欄證據摘錄（SPEC-ingestion §5）。同一個 field 出現兩筆 = 該來源自己前後矛盾。
 export type Evidence = { field: string; quote: string; url: string; checked_at: string };
@@ -53,6 +54,7 @@ export type Rec = {
   // 搜尋流程後填，不在資料庫裡
   distance_km?: number | null;
   reason?: string | null;
+  portion_match?: PortionMatch;
   request_match?: { status: "pending" | "excluded"; reasons: string[] };
 };
 
@@ -64,7 +66,7 @@ export const isDemoRecord = (record: Pick<Rec, "source_url" | "extra">) => {
 };
 
 export type Profile = { nickname: string; color: string };
-export type Settings = { monthly_budget: number | null; spent: number; spent_month: string; survival: boolean; exclude: string[]; prefs: string[]; costco_ok: boolean };
+export type Settings = { monthly_budget: number | null; spent: number; spent_month: string; survival: boolean; exclude: string[]; prefs: string[] };
 export const EXPERIENCE_REASONS = ["食安", "過敏", "身體不適"] as const;
 export const DATA_REASONS = ["價格過期", "條件錯誤", "來源失效", "分類錯誤"] as const;
 export type Report = { id: string; candidate_id: string; reason: string; note: string; created_at: string; by: string };
@@ -92,17 +94,15 @@ export const saving = (r: Rec) => {
   return { amount, pct: Math.round((amount / r.baseline.total_twd) * 100) };
 };
 
-export const COSTCO_MEMBER = "Costco 會員";
-
 // 證據閘門（SPEC-backend §8.3）：已驗證、算得出總可比成本，而且沒有過期。過期是查詢當下判定。
 export const passesGate = (r: Rec, now = Date.now()) =>
   r.data_status === "已驗證" && comparableTotal(r) !== null && !isExpired(r, now);
 
-export type ExcludedBy = Record<Exclude<ConstraintKey, "exclude">, number> & { budget: number; free_only: number; distance: number; exclude: number; registration: number; costco: number };
+export type ExcludedBy = Record<Exclude<ConstraintKey, "exclude">, number> & { budget: number; free_only: number; distance: number; exclude: number; registration: number };
 
 // 硬限制（PRD FR-04、SPEC-backend §8.3）：回傳被哪些限制擋下，空陣列 = 通過。
 // Unsupported or incomplete constraint evidence is pending, never delegated to ranking as a guess.
-export const hardViolations = (r: Rec, n: Need, exclude: string[], costcoOk: boolean): (keyof ExcludedBy)[] => {
+export const hardViolations = (r: Rec, n: Need, exclude: string[]): (keyof ExcludedBy)[] => {
   const out: (keyof ExcludedBy)[] = [];
   const total = comparableTotal(r);
   if (n.free_only && total !== 0) out.push("free_only");
@@ -112,12 +112,16 @@ export const hardViolations = (r: Rec, n: Need, exclude: string[], costcoOk: boo
   if (km !== null && km !== undefined
     && ((n.max_distance_km !== null && km > n.max_distance_km) || (n.max_minutes !== null && walkMinutes(km) > n.max_minutes))) out.push("distance");
   if (n.registration_ok === false && r.registration_required) out.push("registration");
-  if (!costcoOk && r.eligibility.includes(COSTCO_MEMBER)) out.push("costco");
   return out;
 };
 
-export const passesHard = (r: Rec, n: Need, exclude: string[], costcoOk = true) =>
-  hardViolations(r, n, exclude, costcoOk).length === 0 && matchConstraints(r, n, exclude).unknown.length === 0;
+export const passesHard = (r: Rec, n: Need, exclude: string[]) =>
+  hardViolations(r, n, exclude).length === 0 && matchConstraints(r, n, exclude).unknown.length === 0;
+
+export const freeFirstOrder = (survival: boolean) => (a: Rec, b: Rec) => {
+  const aFree = comparableTotal(a) === 0, bFree = comparableTotal(b) === 0;
+  return survival && aFree !== bFree ? (aFree ? -1 : 1) : 0;
+};
 
 // 總可比成本由低至高，同成本時新確認的在前。生存模式：免費永遠在前。
 export const costOrder = (survival = false) => (a: Rec, b: Rec) => {
@@ -128,37 +132,41 @@ export const costOrder = (survival = false) => (a: Rec, b: Rec) => {
 
 export type Bucket = { main: Rec[]; pending: Rec[]; excluded: Rec[] };
 
-// 先過閘門，再套硬限制，最後依成本排序。
-export const bucket = (recs: Rec[], n: Need, exclude: string[], survival: boolean, costcoOk = true): Bucket => {
-  const { main, pending, excluded } = filterStage(recs, n, exclude, costcoOk);
-  main.sort(costOrder(survival));
+// 先過閘門，再套硬限制；有食品份量需求時按接近度，其次成本。生存模式仍免費優先。
+export const bucket = (recs: Rec[], n: Need, exclude: string[], survival: boolean): Bucket => {
+  const { main, pending, excluded } = filterStage(recs, n, exclude);
+  main.sort((a, b) => freeFirstOrder(survival)(a, b) || portionOrder(a, b) || costOrder(false)(a, b));
   return { main, pending, excluded };
 };
 
 export type Stage1 = { main: Rec[]; pending: Rec[]; excluded: Rec[]; excluded_by: ExcludedBy };
 
-// 第一階段（SPEC-backend §8）：閘門 → 硬限制 → 依成本排序。整趟搜尋只跑一次，兩個 Agent 共用。
+// 第一階段（SPEC-backend §8）：閘門 → 硬限制 → 食品份量接近度（若指定）→ 成本。整趟搜尋只跑一次，兩個 Agent 共用。
 // 一筆被多個限制擋下時每個限制都計數：FR-13 要回答的是「放寬哪一個限制才會有結果」。
-export const filterStage = (recs: Rec[], n: Need, exclude: string[], costcoOk: boolean, now = Date.now()): Stage1 => {
+export const filterStage = (recs: Rec[], n: Need, exclude: string[], now = Date.now()): Stage1 => {
   const out: Stage1 = {
     main: [], pending: [], excluded: [],
-    excluded_by: { budget: 0, free_only: 0, distance: 0, exclude: 0, registration: 0, costco: 0, people: 0, date: 0, time: 0, eligibility: 0 },
+    excluded_by: { budget: 0, free_only: 0, distance: 0, exclude: 0, registration: 0, people: 0, date: 0, time: 0, eligibility: 0 },
   };
-  for (const r of recs) {
-    if (!passesGate(r, now)) { out.pending.push(r); continue; }
-    const hit = hardViolations(r, n, exclude, costcoOk);
+  for (const source of recs) {
+    const portion = foodPortionMatch(source, n.people_or_servings);
+    const r = portion ? { ...source, portion_match: portion } : source;
+    // An explicit oversized food offer must not leak into the visible pending
+    // list just because its price or evidence is also uncertain.
+    if (!passesGate(r, now) && !oversizedPortion(portion)) { out.pending.push(r); continue; }
+    const hit = hardViolations(r, n, exclude);
     for (const k of hit) out.excluded_by[k]++;
     const unknown = matchConstraints(r, n, exclude).unknown;
-    if (hit.length) out.excluded.push({ ...r, request_match: { status: "excluded", reasons: hit.map(k => `${({budget:"預算",free_only:"僅限免費",distance:"距離",registration:"登記",costco:"Costco 會員",...constraintLabels})[k]}不符合`) } });
-    else if (unknown.length) out.pending.push({ ...r, request_match: { status: "pending", reasons: unknown.map(k => `${constraintLabels[k]}缺乏足夠證據，待確認`) } });
+    if (hit.length) out.excluded.push({ ...r, request_match: { status: "excluded", reasons: hit.map(k => k === "people" && oversizedPortion(portion) ? `餐點標示最多 ${portion!.max} 份，超過你設定的 ${portion!.requested} 人／餐點份數` : `不符合你設定的${({budget:"預算",free_only:"只看免費選項",distance:"距離／步行時間",registration:"是否需要先登記",...constraintLabels})[k]}`) } });
+    else if (unknown.length) out.pending.push({ ...r, request_match: { status: "pending", reasons: unknown.map(k => `${constraintLabels[k]}資料不足，請再確認`) } });
     else out.main.push(r);
   }
-  out.main.sort(costOrder(false));   // 生存模式的「免費在前」在前端合併時處理
+  out.main.sort((a, b) => portionOrder(a, b) || costOrder(false)(a, b));   // 生存模式的「免費在前」在前端合併時處理
   return out;
 };
 
 export const statusPip = (s: DataStatus) => (s === "已驗證" ? "yellow" : s === "過期／待確認" || s === "衝突待確認" ? "red" : "blue");
-export const money = (n: number) => (n === 0 ? "FREE" : `NT$${n.toLocaleString("zh-TW")}`);
+export const money = (n: number) => (n === 0 ? "免費" : `NT$${n.toLocaleString("zh-TW")}`);
 export const joinCode = (id: string) => `AIL-${id.toUpperCase()}${(id.length * 7) % 10}${(id.charCodeAt(0) * 3) % 10}`;
 
 // 直線距離（haversine）。SPEC-backend §3：只做直線估算，顯示時必須標「估算」。
@@ -272,7 +280,7 @@ const candidateShape = {
     min_people: z.number().int().positive(),
     discount_pct: z.number().min(0).max(100).optional(),
     price_per_person: z.number().int().nonnegative().optional(),
-    redeem_code: z.string().min(1),
+    redeem_code: z.string().trim().min(1).nullable(),
     note: z.string().min(1),
   }).nullable().default(null),
   extra: z.record(z.string(), z.unknown()).default({}),

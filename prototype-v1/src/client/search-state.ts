@@ -21,3 +21,20 @@ export function rankedRecords(state:SearchState,survival=false):Rec[]{
  }
  return out;
 }
+
+// Detail selection is kept at the search/cache boundary so request-only facts
+// cannot be silently overwritten by the raw catalog response.
+export function detailRecord(state: SearchState, cache: Record<string, Rec>, id: string | null | undefined): Rec | undefined {
+  if (!id) return undefined;
+  // The detail belongs to the active search snapshot (including its exclusions),
+  // not a new unfiltered search.
+  const snapshot = [...Object.values(state.groups).flatMap(group => group.records), ...state.pending, ...state.excluded]
+    .find(record => record.id === id);
+  if (snapshot) return snapshot;
+  const cached = cache[id];
+  if (!cached) return undefined;
+  // Cache can outlive a search. Never reuse its old request conditions, ranking
+  // reason or location estimate for an item outside the current search snapshot.
+  const { portion_match: _portion, request_match: _request, ...catalog } = cached;
+  return { ...catalog, reason: null, distance_km: null };
+}

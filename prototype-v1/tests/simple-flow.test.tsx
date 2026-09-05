@@ -12,10 +12,10 @@ function collapsedMarkup(html: string) {
 test("manual search shows primary fields and folds secondary conditions without losing controls", () => {
   const html = renderToStaticMarkup(<NeedEditor need={EMPTY_NEED} onChange={() => {}} />);
   const visible = collapsedMarkup(html);
-  for (const label of ["生活需求", "總預算 TWD", "人數／份數", "日期", "時段", "更多條件"]) {
+  for (const label of ["生活需求", "總預算（新台幣）", "人數／餐點份數", "日期", "時段", "更多條件"]) {
     expect(visible).toContain(label);
   }
-  for (const label of ["最大距離 km", "步行估算上限", "接受事先登記", "排除成分", "軟偏好", "資格說明", "有過敏需求請向提供者確認"]) {
+  for (const label of ["最遠距離（公里）", "最長步行時間（分鐘）", "可以接受需要先登記的選項嗎？", "排除成分／標籤", "其他偏好（逗號分隔）", "資格說明", "有過敏需求請向提供者確認"]) {
     expect(html).toContain(label);
     expect(visible).not.toContain(label);
   }
@@ -29,7 +29,7 @@ test("manual search reports active extra conditions and keeps unresolved warning
   const visible = collapsedMarkup(html);
   expect(visible).toContain("7 項已設定");
   expect(visible).toContain("日期請確認");
-  expect(visible).toContain("已了解並完成手動確認");
+  expect(visible).toContain("已確認這些內容，繼續設定條件");
   expect(html).toContain('value="0"');
   expect(html).toContain('value="false" selected=""');
   expect(html).toContain('value="學生"');
@@ -42,8 +42,8 @@ test("reports are closed by default and preserve auth and public-data warnings",
     const html = renderToStaticMarkup(<ReportView id="test-record" token={token} onLogin={() => {}} onExpired={() => {}} />);
     expect(html).toContain('id="candidate-reports"');
     expect(collapsedMarkup(html)).toContain("回報與留言");
-    expect(collapsedMarkup(html)).not.toContain("請勿填寫個資");
-    expect(html).toContain("請勿填寫個資");
+    expect(collapsedMarkup(html)).not.toContain("請勿填寫個人資料");
+    expect(html).toContain("請勿填寫個人資料");
     expect(html).toContain(token ? "送出回報" : "登入後回報");
     expect(html).not.toMatch(/<details[^>]*\sopen(?:=|\s|>)/);
   }

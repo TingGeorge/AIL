@@ -15,8 +15,8 @@ const SOURCES = {
 type AgentState = { step: number; found: number; passed: number; groups: number; ranked: number; done: boolean; failed: string | null };
 const init: AgentState = { step: 0, found: 0, passed: 0, groups: 0, ranked: 0, done: false, failed: null };
 
-export function Search({ preview, records, need, exclude, costcoOk, onDone, listCount, survival }: {
-  preview: boolean; records: Rec[]; need: Need; exclude: string[]; costcoOk: boolean;
+export function Search({ preview, records, need, exclude, onDone, listCount, survival }: {
+  preview: boolean; records: Rec[]; need: Need; exclude: string[];
   onDone: (r: Rec[]) => void; listCount: number; survival: boolean;
 }) {
   const [paid, setPaid] = useState<AgentState>(init);
@@ -41,7 +41,7 @@ export function Search({ preview, records, need, exclude, costcoOk, onDone, list
     let live = true;
     // 伺服器已經分好 main／pending／excluded，前端用同一組共用純函式（bucket）重新分組，結果一致。
     const all: Rec[] = [];
-    search({ need, exclude, location: null, costco_ok: costcoOk }, (e) => {
+    search({ need, exclude, location: null }, (e) => {
       if (!live) return;
       if ("step" in e) {
         if (e.step === "filter") {

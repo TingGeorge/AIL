@@ -1,0 +1,333 @@
+<!doctype html><html lang="zh-Hant" class="no-js" xmlns:user="urn:user-namespace-here" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+        
+        
+        
+<script async="true" src="https://www.googletagmanager.com/gtag/js?id=G-79CQNV0VWQ" xmlns:gcse="urn:google-did-not-provide-a-real-ns"></script><script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+ 
+          gtag('config', 'G-79CQNV0VWQ');
+        </script>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>服務項目</title>
+<link rel="stylesheet" type="text/css" href="xslgip/style1/vendor/slick/slick.css">
+<link rel="stylesheet" type="text/css" href="xslgip/style1/vendor/slick/slick-theme.css">
+<link rel="stylesheet" type="text/css" href="xslgip/style1/vendor/fancybox/jquery.fancybox.min.css">
+<link rel="stylesheet" href="xslgip/style1/css/hyui.css">
+<link rel="icon" type="image/x-icon" href="xslgip/style1/images/favicon.png">
+<script src="xslgip/style1/js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<a class="goCenter" href="#center" tabindex="1">按Enter到主內容區</a>
+<div class="wrapper">
+<header class="header">
+<div class="container">
+<a class="accesskey" href="#aU" id="aU" accesskey="U" title="網站標題" tabindex="2">:::</a>
+<nav class="navigation" role="navigation" aria-label="Site">
+<div class="navlist">
+<ul>
+<li>
+<a href="mp?mp=1" target="_nwGip" title="
+		                                前往：回首頁（另開新視窗）
+		                            ">回首頁</a>
+</li>
+<li>
+<a href="https://tpml.gov.taipei/" target="_nwGip" title="
+		                                前往：北市圖首頁（另開新視窗）
+		                            ">北市圖首頁</a>
+</li>
+<li>
+<a href="sitemap?mp=1" target="_nwGip" title="
+		                                前往：網站導覽（另開新視窗）
+		                            ">網站導覽</a>
+</li>
+</ul>
+</div>
+</nav>
+<h1>
+<a href="mp?mp=1"><img src="xslgip/style1/images/logo.png" alt="兒童電子圖書館LOGO"></a>
+</h1><div class="user">
+	<p id="loginedP" style="display: none;">
+		歡迎<b id="loginedUserName"></b>，<a
+			href="/TaipeiLib/wSite/sp?xdUrl=/wSite/kid/unitFrontPage.jsp&mp=1&ctNode=320">進入個人書房</a>
+	</p>
+	<button class="btn btn-logout" style="display: none;" onclick="doLogout()" id="loginedB">登出</button>
+	<!--  <button class="btn btn-login" style="display: none;" onclick="goLogin()" id="notLoginedB">登入</button>-->
+	<a class="btn btn-login" style="display: none;" href="/TaipeiLib/wSite/sp?xdUrl=/wSite/kid/login.jsp&amp;mp=1&amp;ctNode=321" id="notLoginedB">登入</a>
+</div>
+<script>
+	var globalUserInfo = {};
+	$(document).ready(function() {
+		globalUserInfo = getUserInfo();
+		chcekLogin();
+   	 	ACCESS_TOKEN = globalUserInfo.jwToken;
+	});
+    /**
+     * 登出
+     * @returns {boolean}
+     */
+    function doLogout(linkUrl) {
+    	 let postData = {};
+ 		$.ajax({
+			url: "/TaipeiLibAdmin/front/userLogout",
+		     type: 'POST',
+		     data: JSON.stringify(postData),
+		     contentType: "application/json; charset=utf-8",
+		     headers: {'Authorization': 'Bearer ' + ACCESS_TOKEN},
+		     success: function (res) {
+		         console.log(res);
+		         if (res.success) {
+		        	 eraseDefaultCookie();
+			         if (linkUrl) {
+			        	 window.location.href = linkUrl;
+			         } else {
+						window.location.reload();
+			         }
+		         } else {
+				     console.log("lost jwtoken");
+				     eraseDefaultCookie();
+			         if (linkUrl) {
+			        	 window.location.href = linkUrl;
+			         } else {
+						window.location.reload();
+			         }
+		         }
+		     },
+		     error: function (data, textStatus, errorThrown) {
+			     console.log("lost jwtoken");
+			     eraseDefaultCookie();
+		         if (linkUrl) {
+		        	 window.location.href = linkUrl;
+		         } else {
+					window.location.reload();
+		         }
+		         console.error(errorThrown);
+		     }
+		});  
+         
+         
+    }
+    function goLogin() {
+        window.location.href = '/TaipeiLib/wSite/sp?xdUrl=/wSite/kid/login.jsp&mp=1&ctNode=321'
+    }
+    function chcekLogin() {
+		if (globalUserInfo.appToken != undefined && globalUserInfo.appToken != "") {
+			$("#loginedUserName").text(globalUserInfo.userName);
+			$("#loginedP").show();
+			$("#loginedB").show();
+			$("#notLoginedB").hide();
+		} else {
+			$("#loginedP").hide();
+			$("#loginedB").hide();
+			$("#notLoginedB").show();
+		}
+    }
+	function getCookie(name) {
+		var match = document.cookie.match(new RegExp('(^| )' + name
+				+ '=([^;]+)'));
+		if (match) {
+			return match[2];
+		} else {
+			console.log('--something went wrong---');
+			return "";
+		}
+	}
+	function b64DecodeUnicode(str) {
+        return decodeURIComponent(atob(str).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    }
+    function getUserInfo() {
+    	var appToken = getCookie("appToken");
+		if (appToken != undefined && appToken != "") {
+			var userInfo = {};
+			userInfo.appToken = getCookie("appToken");
+			userInfo.userName = b64DecodeUnicode(getCookie("userName"));
+			userInfo.jwToken = getCookie("jwToken");
+			userInfo.readerCode = getCookie("readerCode");
+			userInfo.birth = getCookie("birth");
+			userInfo.readerTypeCode = getCookie("readerTypeCode");
+			return userInfo;			
+		} else {
+			return {};
+		}
+    }
+    function eraseCookie(name) {
+        document.cookie = name + '=; Path=/TaipeiLib/; Max-Age=0;';
+    }
+    function eraseDefaultCookie() {
+    	eraseCookie("userName");
+    	eraseCookie("readerCode");
+    	eraseCookie("jwToken");
+    	eraseCookie("appToken");
+    	eraseCookie("birth");
+    	eraseCookie("readerTypeCode");
+    }
+</script><button class="btn btn-open" aria-expanded="false">選單</button>
+<nav class="megamenu" role="navigation" aria-label="About page">
+<ul>
+<li>
+<a href="sp?xdUrl=/wSite/ap/findbook.jsp&ctNode=364&ictunit=136&mp=1">我要找書</a>
+</li>
+<li>
+<a href="np?ctNode=313&mp=1">好書推薦</a>
+<ul>
+<li>
+<a href="lp?ctNode=314&CtUnit=149&BaseDSD=32&mp=1">主題好書</a>
+</li>
+<li>
+<a href="lp?ctNode=315&CtUnit=152&BaseDSD=32&mp=1">得獎書</a>
+</li>
+<li>
+<a href="lp?ctNode=316&CtUnit=153&BaseDSD=32&mp=1">好書大家讀</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="lp?ctNode=317&CtUnit=96&BaseDSD=7&mp=1">電子圖畫書</a>
+</li>
+<li>
+<a href="lp?ctNode=373&CtUnit=147&BaseDSD=7&mp=1">活動報導</a>
+</li>
+<li>
+<a href="sp?xdUrl=/wSite/ap/DR_main.jsp&ctNode=318&ictunit=146&mp=1">小博士信箱</a>
+</li>
+<li>
+<a href="lp?ctNode=332&CtUnit=108&BaseDSD=7&mp=1">酷網站推薦</a>
+</li>
+<li>
+<a href="lp?ctNode=333&CtUnit=109&BaseDSD=7&mp=1">認識圖書館</a>
+</li>
+<li>
+<a href="lp?ctNode=365&CtUnit=137&BaseDSD=7&mp=1">適性閱讀</a>
+</li>
+<li>
+<a href="lp?ctNode=334&CtUnit=110&BaseDSD=7&mp=1">給爸媽</a>
+</li>
+</ul>
+<div class="btn_grp">
+<button class="btn btn-close">關閉選單</button>
+</div>
+</nav>
+<noscript> 您的瀏覽器不支援JavaScript語法，JavaScript語法並不影響內容的陳述。您可使用按鍵盤上的Ctrl鍵+
+                    (+)鍵放大/(-)鍵縮小來改變字型大小；回到上一頁可使用瀏覽器提供的 Alt+左方向鍵(&larr;)
+                    快速鍵功能；列印可使用瀏覽器提供的(Ctrl+P)功能。您的瀏覽器，不支援script語法，若您的瀏覽器無法支援請點選此超連結 <a href="#">網站導覽</a>
+</noscript>
+</div>
+</header>
+<div id="center" class="main innerpage">
+<a class="accesskey" href="#aC" id="aC" accesskey="C" title="主要內容區">:::</a>
+<div class="container">
+<div class="center_block">
+<div class="breadcrumb">
+<ul>
+<li>
+<a href="mp?mp=1">
+                                            首頁
+                                        </a>
+</li>
+<li>
+<a href="np?ctNode=336&mp=1" title="關於啟明">關於啟明</a>
+</li>
+</ul>
+</div>
+<div class="pageHead">
+<h2 class="title">服務項目</h2>
+<div class="function">
+<ul>
+<li class="icon_back">
+<a title="回上一頁" href="javascript:window.history.go(-1);">回上一頁</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="function_panel">
+<div class="publish_time">
+<span>發布日期：</span>
+<time>2023-01-01</time>
+</div>
+</div>
+<section class="cp">
+<ul class="publish_info">
+<li>發布日期:2023-01-01</li>
+<li>更新日期:2026-06-12</li>
+<li>點閱次數:8</li>
+</ul>
+<p><p>電話：(02)2514-8443<br />傳真：(02)2514-8428<br />開放時間：週一至週日：09:00-17:00<br />休館日：每月第一個星期四及國定假日<br />一、 借閱證申請<br />凡領有身心障礙證明(或手冊)之視障者，可證明為視覺障礙者及提具學習障礙鑑定證明書（障礙類型為閱讀或語言障礙者），皆可以郵寄、傳真或親自到館方式向啟明分館辦理視障或學習障礙借閱證。<br /> <br />二、 資料借閱<br />(一) 借閱服務：每張視障及學習障礙借閱證可借閱一般圖書2五冊，每冊借期三十日，得續借二次；視聽資料十件，每件借期六十日，不得續借；另得向啟明分館以書面通訊、網路申請、電話或親自到館借閱視障資料，視障資料（雙視圖書、點字書、有聲書）借閱最高以三十冊(件)為限，每冊（件）借期六十日，得續借一次。<br />(二) 預約服務：每張視障及學習障礙借閱證可預約之冊數以十五冊（件）為限（含一般圖書、視聽資料及視障資料）。<br /> <br />三、 報讀服務<br />免付費讀報專線0800-011-906，服務時間上午9:00-12:00、下午1:30至4:30(休館日、國定假日及人事行政局公告臺北市不上班日不提供服務)，依視障讀者需求進行報讀服務，每人每次至多20分鐘，倘若超出服務時段，請於下個時段再次來電。<br /> <br />四、 啟明讀書會<br />每月第2、4週週六的上午9：30-11：30舉行有聲圖書的研討。<br /> <br />五、 啟明之音<br />每月以MP3光碟免費為視障讀者提供生活資訊之有聲刊物。<br /> <br />六、 提供盲用電腦及輔助設備<br />提供9部點字觸摸顯示器、1部中英文自動閱讀機及1臺擴視機供視障讀者使用。<br /> <br />七、 電子書<br />本館提供點字書及有聲書之電子檔，並置放於視障電子圖書館，提供視障讀者使用盲用視窗界面軟體，以點字觸摸顯示器或語音線上閱讀及下載。</p></p>
+</section>
+</div>
+</div>
+</div>
+<footer>
+<div class="container">
+<a class="accesskey" href="#aZ" id="aZ" accesskey="Z" title="頁尾區">:::</a>
+<section><div class="flex"><img class="img-responsive footer_logo" src="xslgip/style1/images/logo-footer.png" alt="資訊宣告區" />
+<p>本網站為提供小朋友使用之網站，蒐集兒童圖書、電子書等資源，並提供線上作答等活動</p>
+</div>
+<ul class="footer_link">
+<li><a title="另開視窗到連結頁面" href="ct?xItem=94217&ctNode=367&mp=1">隱私權及資訊安全政策</a></li>
+<li><a title="另開視窗到連結頁面" href="ct?xItem=94218&ctNode=367&mp=1">政府網站資料開放宣告</a></li>
+</ul>
+<p>總館館址：10659 臺北市建國南路二段125號<br /> 電話：02-2755-2823<br /> 本館網址：<a title="前往本館網址" href="https://tpml.gov.taipei/">https://tpml.gov.taipei/</a></p></section>
+<section class="flex">
+<div class="footer_others">
+<p class="Copyright">臺北市立圖書館版權所有 &copy; 2022 All Rights Reserved.</p>
+<span class="update">網站最後更新日期：<em>115年9月5日</em></span>
+</div>
+<div class="footer_icon">
+<a title="另開新視窗" target="_blank" href="https://www.gov.taipei/"><img alt="臺北市政府LOGO" src="xslgip/style1/images/kidelab/TCG.png"></a><a title="無障礙網站" target="_blank" href="https://accessibility.moda.gov.tw/Applications/Detail?category=20230511155052"><img alt="通過AA無障礙網頁檢測" src="xslgip/style1/images/basic/2A.webp"></a>
+</div>
+</section>
+<div class="deco-car">
+<img alt="" src="xslgip/style1/images/kidelab/img-animal-footer.svg"></div>
+</div>
+</footer>
+</div>
+<a href="javascript:;" class="scrollToTop">回頁首</a><script src="xslgip/style1/vendor/jquery.easing.min.js"></script><script src="xslgip/style1/vendor/slick/slick.min.js"></script><script src="xslgip/style1/vendor/slick/slick-lightbox.js"></script><script src="xslgip/style1/vendor/lazyload/lazyload.js"></script><script async="async" src="xslgip/style1/vendor/picturefill/picturefill.min.js"></script><script src="xslgip/style1/vendor/scrolltable/jquery.scroltable.min.js"></script><script src="xslgip/style1/vendor/sticky-sidebar/sticky-sidebar.js"></script><script src="xslgip/style1/vendor/sticky-sidebar/ResizeSensor.js"></script><script src="xslgip/style1/vendor/fancybox/jquery.fancybox.min.js"></script><script src="xslgip/style1/js/hyui.js"></script><script src="xslgip/style1/js/customize.js"></script><script src="xslgip/style1/js/common/apiRequest.js"></script><script src="xslgip/style1/js/common/common.js"></script><script>
+      
+      var menuSwitch = true;
+ 
+      function goHistory(){
+          if ((navigator.userAgent.indexOf('MSIE') >= 0) && (navigator.userAgent.indexOf('Opera') < 0)){ // IE  
+            if(history.length > 0){  
+                window.history.go( -1 );  
+            }else{  
+                window.opener=null;window.close();  
+            }  
+        }else{ //非IE浏览器  
+            if (navigator.userAgent.indexOf('Firefox') >= 0 ||  
+                navigator.userAgent.indexOf('Opera') >= 0 ||  
+                navigator.userAgent.indexOf('Safari') >= 0 ||  
+                navigator.userAgent.indexOf('Chrome') >= 0 ||  
+                navigator.userAgent.indexOf('WebKit') >= 0){  
+      
+                if(window.history.length > 1){  
+                    window.history.go( -1 );  
+                }else{  
+                    window.opener=null;window.close();  
+                }  
+            }else{ //未知的浏览器  
+                window.history.go( -1 );  
+            }  
+        }  
+      
+      
+        /*
+        console.log('go back: '+document.referrer);
+        window.history.go(-1);
+        if (document.referrer == "") {
+            window.close();
+        } else {
+            //
+            history.back();
+        }
+        */
+      }
+    </script>
+</body>
+</html>

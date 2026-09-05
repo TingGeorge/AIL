@@ -16,7 +16,6 @@ const searchBody = z.object({
   need: needSchema,
   exclude: z.array(z.string().max(20)).max(20).default([]),
   location: z.object({ lat: z.number(), lng: z.number() }).nullable().default(null),
-  costco_ok: z.boolean().default(false),
 });
 
 type Group = { agent: Rec["agent"]; category: Rec["category"]; records: Rec[] };
@@ -38,9 +37,9 @@ export const search = new Hono();
 search.post("/api/search", async (c) => {
   const body = searchBody.safeParse(await c.req.json().catch(() => null));
   if (!body.success) return c.json({ error: "search_failed", message: "請求格式錯誤" }, 400);
-  if (!dbConfigured()) return c.json({ error: "search_failed", message: "資料庫未設定" }, 503);
+  if (!dbConfigured()) return c.json({ error: "search_failed", message: "搜尋服務目前無法使用，請稍後重試。" }, 503);
 
-  const { need, exclude, costco_ok } = body.data;
+  const { need, exclude } = body.data;
   const location = body.data.location && inTaiwan(body.data.location) ? body.data.location : null;
 
   let recs: Rec[];
@@ -49,7 +48,7 @@ search.post("/api/search", async (c) => {
     recs = publicRecords((await sql`select * from candidates`).map(rowToRec));
   } catch (error) {
     console.error("search_failed", error instanceof Error ? error.name : "unknown_error"); // 上游錯誤只寫 log，不回傳連線細節
-    return c.json({ error: "search_failed", message: "搜尋失敗" }, 502);
+    return c.json({ error: "search_failed", message: "目前無法完成搜尋，請稍後重試或返回條件頁調整需求。" }, 502);
   }
 
   // 使用者座標只用在這一次計算：不寫入資料庫、不寫進 log（SPEC-geocoding）。
@@ -62,7 +61,7 @@ search.post("/api/search", async (c) => {
   }
 
   const effectiveExclude = [...new Set([...need.exclude_tags, ...exclude])];
-  const stage = filterStage(recs, need, effectiveExclude, costco_ok);
+  const stage = filterStage(recs, need, effectiveExclude);
   const groups = grouped(stage.main);
   const warnings = constraintWarnings(need, [...stage.main, ...stage.pending], exclude);
   const groupsOf = (agent: Rec["agent"]) => groups.filter((group) => group.agent === agent).length;

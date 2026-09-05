@@ -1,0 +1,348 @@
+bun test v1.4.0 (34cbb9a40)
+
+tests/food-portions.test.ts:
+(pass) five people can see one through five food portions, but never six portions in recommendations [0.70ms]
+(pass) food recommendations prefer exact portions, then the closest smaller portions without scaling prices [0.16ms]
+(pass) unknown and smaller unverified portions remain pending, but known oversized portions never leak into pending [0.11ms]
+(pass) relaxing food portions does not relax explicit budget, allergens, membership or registration restrictions [0.11ms]
+(pass) unrequested food portions and non-food capacity rules remain unchanged [0.08ms]
+(pass) explicit Arabic/Chinese serving counts and bounded ranges are recognized without treating pieces as people [0.18ms]
+(pass) food portion matching supports changing group sizes, with same-portion ties still ordered by total cost [0.39ms]
+(pass) LLM and fallback ordering cannot move smaller portions ahead of a closer food match [1.95ms]
+(pass) UI recommendation order survives paid/free group merging; explicit cost sort remains cost sort and pending remains last [0.25ms]
+(pass) cards and detail reveal smaller portions without hiding them or claiming a full group meal [11.40ms]
+(pass) food portions do not hide an oversized option behind a smaller leading count [0.14ms]
+(pass) survival mode still puts confirmed free food first, then orders each price group by portion fit [0.06ms]
+(pass) detail retains the current search portion snapshot after a raw catalog record loads [0.17ms]
+(pass) detail keeps pending/excluded explanations from the active search snapshot [0.08ms]
+(pass) detail drops stale query annotations from cache once the active search changes [0.05ms]
+
+tests/simple-flow.test.tsx:
+(pass) manual search shows primary fields and folds secondary conditions without losing controls [0.83ms]
+(pass) manual search reports active extra conditions and keeps unresolved warnings visible [0.39ms]
+(pass) reports are closed by default and preserve auth and public-data warnings [0.54ms]
+
+tests/ingestion.test.ts:
+(pass) provenance rejects private, reserved, credentialed and non-HTTPS URLs [0.22ms]
+(pass) real records must explicitly declare unknown fees; null cannot rank or be marked bought [1.87ms]
+(pass) real verification rejects future dates, empty availability and missing necessary evidence [0.26ms]
+(pass) only source-backed coordinates with an address are promoted; unknown stays null [0.67ms]
+(pass) default catalog hides demonstrations and archived rows; demo exposure is explicit [0.24ms]
+(pass) unsubstantiated verified labels are downgraded without mutating the DB-shaped input [0.24ms]
+(pass) coverage counts expired/unknown costs as pending and never uses fixtures to fill quotas [0.33ms]
+(pass) batch validation rejects duplicate IDs and malformed records before returning any data [2.82ms]
+(pass) batch validation rejects files that contain no candidate rows [0.58ms]
+(pass) omitted mandatory fees cannot become zero through the shared schema or domain helpers [0.17ms]
+
+tests/need-validation.test.ts:
+(pass) needSchema date validation > accepts real ISO calendar dates, including leap day [0.49ms]
+(pass) needSchema date validation > rejects impossible dates and non-ISO shapes [0.14ms]
+(pass) needSchema numeric bounds > accepts every documented inclusive boundary [0.07ms]
+(pass) needSchema numeric bounds > rejects values outside bounds, non-finite numbers, and fractional people [0.17ms]
+(pass) needSchema null semantics > accepts null only for fields whose unknown or unset state is part of the contract [0.01ms]
+(pass) needSchema null semantics > keeps meaningful zero values distinct from null [0.04ms]
+(pass) needSchema null semantics > rejects null for required strings, arrays, and booleans [2.31ms]
+(pass) needSchema null semantics > nullable fields remain required rather than treating omission as null [0.31ms]
+
+tests/auth.test.ts:
+(pass) auth validation is bounded and strict before database access [2.21ms]
+(pass) auth enforces its 8 KiB body limit without relying on Content-Length [0.10ms]
+(pass) protected auth routes use one fixed 401 response [0.21ms]
+(pass) login rate limit returns 429 on the tenth failure in fifteen minutes [777.65ms]
+(pass) login failure limiter expires stale entries and evicts oldest entries at its cap [0.12ms]
+(skip) auth with isolated PostgreSQL rows > register normalizes username, stores argon2id/token hashes, and rejects case-insensitive duplicate
+(skip) auth with isolated PostgreSQL rows > login is case-insensitive and /me restores canonical account data
+(skip) auth with isolated PostgreSQL rows > expired sessions and logged-out sessions return the same 401
+(skip) auth with isolated PostgreSQL rows > change-password revokes every session and only the new password logs in
+(skip) auth with isolated PostgreSQL rows > an old-password login queued behind a password change cannot create a session
+(skip) auth with isolated PostgreSQL rows > concurrent password changes cannot both validate the same old hash
+(skip) auth with isolated PostgreSQL rows > password change revalidates its session after waiting for the user lock
+
+tests/account-merge.test.ts:
+(pass) a stale settings draft preserves a remote favorite and unchanged settings [0.78ms]
+(pass) same-field conflict is explicit and uncertain successful retry is idempotent [0.17ms]
+(pass) two different purchases with identical prices cannot silently undercount spending [0.12ms]
+
+tests/group-offers.test.ts:
+(pass) no published redeem code is null, not an invented placeholder [0.73ms]
+(pass) group page requires real group evidence and actual multi-person threshold [0.31ms]
+(pass) group expiry is independent of venue expiry and future deals are not advertised as current [0.20ms]
+(pass) unverified or unsafe group evidence cannot be surfaced [0.17ms]
+
+tests/data.test.ts:
+(pass) candidateSchema：data/食品.json 每一筆都通過 [0.56ms]
+(pass) 食品資料集涵蓋票 01 的邊界情境 [0.29ms]
+(pass) candidateSchema：擋掉價格 0 卻標 paid、非 https 來源、已驗證卻沒 verified_at [0.17ms]
+(pass) candidateSchema：tags 的 null 與 [] 是兩件事，省略等於 null [0.12ms]
+(pass) missingEvidence：資格與地點只在有值時才要求 [0.05ms]
+(pass) dataStatusOf：無法納入比較 → 衝突 → 過期 → 部分驗證 → 已驗證 [0.05ms]
+(skip) 匯入管線 (live database) > 示範資料未明確允許時拒絕匯入，資料庫維持不變
+(skip) 匯入管線 (live database) > a malformed later row cannot partially import an earlier valid row
+(skip) 匯入管線 (live database) > import preserves SQL NULL mandatory fees instead of defaulting unknown costs to zero
+(skip) 匯入管線 (live database) > import.ts 連跑兩次：列數與內容都不變
+(skip) 匯入管線 (live database) > rowToRec：tags 的 null、jsonb 與 timestamptz 從資料庫回來仍正確
+
+tests/parse.test.ts:
+(skip) 需求解析 (live provider) > 1. 情境 A
+(skip) 需求解析 (live provider) > 2. 情境 B
+(skip) 需求解析 (live provider) > 3. 沒說預算
+(skip) 需求解析 (live provider) > 4. 修正語句只改人數
+(skip) 需求解析 (live provider) > 5. 未解析內容
+(skip) 需求解析 (live provider) > 6. 英文 token 不遺失
+(pass) schema rejects a guessed extra field and accepts EMPTY_NEED [0.10ms]
+
+tests/voice-routes.test.ts:
+(pass) voice directly returns transcript and schema-validated needs in one call, with no-store [6.09ms]
+(pass) config exposes voice capability without old STT flag or credentials [0.22ms]
+(pass) legacy STT endpoint is gone and never triggers a provider call [0.10ms]
+(pass) rejects missing, empty, oversized and invalid-container audio before the model [6.98ms]
+(pass) Safari AAC MP4 container is sent as supported M4A without altering bytes [0.85ms]
+(pass) silence returns a retryable no-speech message [0.55ms]
+voice_failed invalid_response:0
+voice_failed quota:429
+(pass) invalid model output and upstream failures never leak private provider detail [1.13ms]
+(pass) text parsing still supports manual text/corrections using the same native provider [0.66ms]
+(pass) multipart header, not filename, controls MIME validation [0.55ms]
+(pass) rejects duplicate, extra and truncated multipart parts without calling Gemini [0.30ms]
+(pass) provider timeout returns a safe retryable timeout response [0.36ms]
+
+tests/routes.test.ts:
+(pass) Gemini API contract without live provider > parse: 503 when Gemini is unconfigured [0.20ms]
+(pass) Gemini API contract without live provider > parse: 400 on malformed body [0.15ms]
+parse_failed unavailable:502
+(pass) Gemini API contract without live provider > parse: upstream failure is 502 with a fixed message, no leaked detail [0.48ms]
+(pass) Gemini API contract without live provider > voice: 400 without audio or on an empty clip [0.31ms]
+(pass) search: 400 on a malformed body, before touching the database [0.48ms]
+(pass) search: 503 with a clear error when DATABASE_URL is missing [0.11ms]
+(pass) candidates: 400 over the id cap, 400 comes before any query [0.30ms]
+(pass) candidates: no ids is an empty list, not an error [0.04ms]
+(skip) 搜尋與候選查詢 (live database) > catalog/candidates hide persisted demo records by default
+(skip) 搜尋與候選查詢 (live database) > SSE 推 filter → 各組 ranking → 可交錯的 failed fallback → final done
+(skip) 搜尋與候選查詢 (live database) > SSE 警告 need／設定排除中無法由 TAGS 保證的項目
+(skip) 搜尋與候選查詢 (live database) > strict exclusions partition uncertain food away from every ranked SSE group
+(skip) 搜尋與候選查詢 (live database) > free_only fallback 只留下總可比成本 0 的紀錄
+(skip) 搜尋與候選查詢 (live database) > 單筆查詢：找得到回 Rec，找不到回 404
+(skip) 搜尋與候選查詢 (live database) > 批次查詢：略過不存在的 id，不讓整個請求失敗
+
+tests/strict-constraints.test.ts:
+(pass) known beef is excluded and unlabelled ingredients are pending, never main [0.10ms]
+(pass) dinner does not inherit a store's 24H opening when product is breakfast only [0.19ms]
+(pass) smaller food portions remain recommendations without claiming to feed the whole group [0.06ms]
+(pass) event dates and eligibility are strict without confusing food exclusions with transit [0.08ms]
+
+tests/verify-live.test.ts:
+(pass) a requested target category must not narrow the backend smoke snapshot [0.30ms]
+(pass) excluded and pending buckets still reconcile total and rankable coverage [0.07ms]
+(pass) duplicate and lost IDs are rejected [0.16ms]
+(pass) free-only requires zero cost only in ranked results and accounts for paid exclusions [0.07ms]
+(pass) request-pending evidence remains catalog-rankable without entering recommendations [0.07ms]
+(pass) request-pending records cannot be promoted to ranked or mislabelled excluded buckets [0.06ms]
+
+tests/client-integration.test.ts:
+(pass) sseDecoder > decodes CRLF events when field names, values, and blank lines cross arbitrary chunks [0.13ms]
+(pass) sseDecoder > joins multiline data fields and flushes a final event without a trailing blank line [0.03ms]
+(pass) sseDecoder > surfaces malformed JSON instead of silently dropping the event [0.03ms]
+(pass) search > preserves partial events but rejects a stream that closes without done [0.38ms]
+(pass) search > rejects a successful HTTP response whose body is not an SSE stream [0.05ms]
+(pass) search > preserves API status and server-safe message for HTTP errors [0.08ms]
+(pass) search > normalizes fetch failures without attempting a real network request [0.46ms]
+(pass) search state integration > normalizes warning objects from every event into stable, de-duplicated messages [0.08ms]
+(pass) search state integration > group completion order does not change final ranked records [0.06ms]
+(pass) search state integration > uses category order, interleaves paid/free ranks, and puts free first per category in survival mode [0.04ms]
+(pass) search state integration > repeated terminal events replace a group rather than duplicating its records [0.03ms]
+(pass) search state integration > keeps failed group fallback records in the deterministic result list [0.03ms]
+(pass) ranking fallback preserves safe provider diagnostics for the results banner [0.02ms]
+
+tests/group-offers-page.test.tsx:
+(pass) loaded offers come from the browse catalog without requiring a login or prior search [0.78ms]
+(pass) loading, empty and error are three distinct page states [0.17ms]
+(pass) offer cards show the real threshold, price or discount, code status, validity and scope [0.78ms]
+
+tests/search.test.ts:
+(pass) passesGate：過期的紀錄在查詢當下退出主要排序 [0.06ms]
+(pass) filterStage：閘門沒過的一律進待確認，不進排除 [0.06ms]
+(pass) filterStage：六個硬限制各自計數（FR-13 要說得出是哪一個） [0.10ms]
+(pass) filterStage：free_only 只留下總可比成本為 0 的 [0.03ms]
+(pass) filterStage：沒有距離的紀錄不做距離篩選，有距離的走 km 與分鐘兩條 [0.27ms]
+(pass) filterStage：costco_ok 關閉時排除需要會員的候選，開啟時留著 [0.03ms]
+(pass) filterStage：main 依總可比成本由低至高，同成本時新確認的在前 [0.04ms]
+(pass) filterStage：一筆被多個限制排除時每個限制都計數 [0.02ms]
+(pass) filterStage：文字型人數／日期／時段／資格缺乏證據時列待確認 [0.20ms]
+
+tests/need-defaults.test.ts:
+(pass) budget defaults use current-month remaining balance and preserve explicit zero [0.09ms]
+(pass) budget default handles unknown, overspent and previous month without inventing negative budget [0.08ms]
+
+tests/purchases.test.ts:
+(pass) mark bought removes one list item and adds actual comparable cost, not a synthetic payment [0.14ms]
+(pass) mark bought resets previous month before accumulating [0.06ms]
+(pass) demo records, unknown costs, expired and negative costs cannot be marked purchased [0.17ms]
+(pass) zero cost is valid and spent overflow is rejected [0.10ms]
+
+tests/result-view.test.ts:
+(pass) ResultsView：五個後端類別都出現，推薦順序保留伺服器陣列順序 [1.19ms]
+(pass) DetailView：誠實顯示空值、封鎖非 http(s) 連結並使用真實團購碼 [1.75ms]
+(pass) DetailView：百分比團購只折本筆可比成本，人數僅判斷門檻 [1.10ms]
+(pass) DetailView：來源每人價乘以試算人數並明示每人價格 [1.23ms]
+(pass) DetailView：原始可比成本為空時不以每人價虛構方案總額 [1.04ms]
+(pass) ResultsView：只依 isDemoRecord 將樣本狀態改標為示範測試資料 [0.65ms]
+(pass) DetailView：樣本有醒目警告並隱藏地圖、購買行動與優惠分享 [0.99ms]
+(pass) DetailView：非樣本仍保留真實狀態與安全地圖、行動連結 [0.70ms]
+(pass) ResultsView：目標類別優先顯示但五類全部保留 [0.36ms]
+(pass) ResultsView：優先類別零筆也不偷偷改選其他類別 [0.20ms]
+(pass) DetailView：零折扣不是免費，未知價格不能出現 FREE 標籤 [0.57ms]
+(pass) ResultsView：精簡卡片移除分類圖區，保留含費總價、計價與收藏入口 [0.36ms]
+(pass) ResultsView：精簡卡片仍標示免費項目的資格與報名限制 [0.37ms]
+(pass) ResultsView：待確認與已排除卡片同樣精簡，未知費用不能呈現免費 [0.41ms]
+(pass) DetailView：已驗證標章改為小圖示，保留無障礙名稱與提示 [0.69ms]
+(pass) DetailView：未驗證及示範資料不套用已驗證小圖示 [1.07ms]
+(pass) DetailView：預設只顯示重點，完整價格、條件與來源可展開 [0.73ms]
+(pass) DetailView：價格未知及過期待確認不可藏進展開區 [0.56ms]
+(pass) ResultsView：比較說明預設收合，分類、價格及操作保持可見 [0.23ms]
+(pass) ResultsView：待確認直接接在同一清單後段，計數、狀態、原因及收藏保留，已排除仍獨立 [0.61ms]
+(pass) ResultsView：類別只有待確認時仍顯示清單，跨類別計數包含待確認但不含已排除 [0.33ms]
+(pass) ResultsView：只剩已排除時維持空狀態與獨立原因，不將排除項目混入候選 [0.33ms]
+(pass) ResultsView：rank 排序分組穩定，待確認後置且不改寫輸入 [0.14ms]
+(pass) ResultsView：cost 排序分組穩定，待確認後置且不改寫輸入 [0.04ms]
+(pass) ResultsView：distance 排序分組穩定，待確認後置且不改寫輸入 [0.04ms]
+(pass) ResultsView：verified 排序分組穩定，待確認後置且不改寫輸入 [0.03ms]
+(pass) ResultsView：資料仍標已驗證但已過期或費用未知時，合併後仍明示待確認且不改寫資料 [0.34ms]
+(pass) default browsing shows all categories together, starts with cost order, and keeps pending last [0.40ms]
+
+tests/compact-support.test.tsx:
+(pass) compact catalog keeps one short summary visible and full truthful metadata in a closed disclosure [0.53ms]
+(pass) account keeps credentials, privacy, anonymous-session limits and all login inputs without visible prose blocks [0.52ms]
+(pass) settings preserves every control and moves long caveats into closed disclosures [0.44ms]
+(pass) signed-in settings keeps profile and password inputs plus the session-revocation warning [0.47ms]
+(pass) compact support CSS retains accessible disclosure targets, focus and the save-to-login gap [0.25ms]
+(pass) settings expose selected exclusions and preferences to assistive technology [0.52ms]
+
+tests/browse.test.tsx:
+(pass) unconstrained browsing includes all five categories and orders their comparable totals together [0.20ms]
+(pass) browsing does not infer budget, allergy, membership, registration or distance restrictions [0.02ms]
+(pass) price sorting includes mandatory fees and discounts, not just the displayed base price [0.03ms]
+(pass) expired, unconfirmed and unknown-cost rows stay visible after verified rows; unknown cost is not zero [0.04ms]
+(pass) empty catalog is a successful empty browse, not an artificial search error
+(pass) anonymous browse route reads public catalog without auth or any provider call [0.43ms]
+(pass) browse route preserves catalog protections: archived, demo and unsafe-source rows are hidden [0.15ms]
+(pass) browse route downgrades unsupported verified labels without dropping the record [0.09ms]
+(pass) unconfigured database gives 503 without invoking the catalog loader [0.05ms]
+browse_failed Error
+(pass) catalog failure stays a retryable error, never a fake empty catalog or leaked connection detail [0.09ms]
+(pass) client browse performs a no-store GET without account or need data [0.14ms]
+(pass) loading and failure states do not tell a new user to supply requirements or show false empty results [0.15ms]
+(pass) successful empty browsing explains actual catalog emptiness rather than missing requirements [0.25ms]
+(pass) ready browsing keeps detail/list controls and the unfiltered explanation [0.28ms]
+(pass) client preserves browse server errors so the UI can offer retry instead of an empty list [0.07ms]
+(pass) the browse route is mounted in the actual app before its static catch-all [0.17ms]
+
+tests/live-catalog.test.ts:
+(pass) web research batch contains all five categories and only evidence-backed rows can rank [9.57ms]
+(pass) threefold expansion adds exactly 100 distinct, non-demo, non-archived options [4.71ms]
+(pass) expanded group offers have independently sourced thresholds and redemption terms [3.70ms]
+
+tests/account.test.ts:
+(pass) defaultAccountData is callable and produces the canonical client shape [0.98ms]
+(pass) account update schema is strict and caps unique list/favorite IDs [0.48ms]
+(pass) report route rejects an invalid candidate id before database access [0.49ms]
+(skip) account data and reports with isolated PostgreSQL rows > account mutations enforce their 16 KiB body limit without Content-Length
+(skip) account data and reports with isolated PostgreSQL rows > GET/PUT account data round-trips allowlisted fields and atomically updates canonical nickname
+(skip) account data and reports with isolated PostgreSQL rows > stale device cannot overwrite another device's favorites or nickname
+(skip) account data and reports with isolated PostgreSQL rows > PUT rejects forbidden account fields and over-200 IDs
+(skip) account data and reports with isolated PostgreSQL rows > candidate reports enforce reason allowlist and return canonical author display
+
+tests/records.test.ts:
+(pass) haversineKm: 台北車站 → 圓山 [0.07ms]
+(pass) walkMinutes: 0.08 km/分（估算） [0.01ms]
+(pass) isExpired: null 永不過期，過去的期限才算過期 [0.03ms]
+(pass) rowToRec: Date 轉 ISO、null 補預設值、tags 的 null 不能變成 [] [0.07ms]
+
+tests/ranking.test.ts:
+(pass) fallbackRank：明確依總可比成本排序、同成本穩定且不假裝有 AI 理由 [0.09ms]
+(pass) sanitizeRanking：未知與重複 id 不進結果，漏掉的候選依成本補回且每個 id 恰好一次 [0.45ms]
+(pass) sanitizeRanking：不接受錯誤自有成本或把文字型限制說成已保證 [0.12ms]
+(pass) sanitizeRanking：較貴候選超前時必須明說成本取捨，免費也不可捏造無條件 [0.07ms]
+(pass) sanitizeRanking：拒絕無元字樣的錯誤 NT$ 成本、捏造星等與反向文字限制保證 [0.04ms]
+(pass) rankGroup：注入 provider、只送允許欄位，成功時保留伺服器排序 [0.21ms]
+(pass) rankGroup：格式錯誤時整組 failed，回傳成本 fallback 與安全錯誤 [0.12ms]
+(pass) rankGroup：逾時會中止 provider，且不等待未完成 promise [21.86ms]
+(pass) rankGroup：外部請求中止會傳給 provider 並安全結束 [0.21ms]
+(pass) rankGroup：未設定 provider 時明確 failed，不把成本排序冒充 AI [0.04ms]
+(pass) constraintWarnings：只對目前無法保證的硬限制與缺少距離資料提出警告 [0.07ms]
+(pass) constraintWarnings：need 與設定排除遇到未知標籤或候選缺標籤時明確警告 [0.05ms]
+(pass) rankGroup defaults to Gemini without the provider-rejected 500-item array bound [0.64ms]
+(pass) Gemini ranking still validates local size, item lengths and strict objects [2.60ms]
+
+tests/gemini.test.ts:
+(pass) Gemini requires an explicit key and model and rejects URL-like model settings [0.06ms]
+(pass) audio produces transcript AND Need in exactly one native Gemini request, without persistent interaction storage [0.59ms]
+(pass) text corrections use the same Gemini provider and retain current need and Taipei date [0.26ms]
+(pass) rejects invalid JSON, incomplete/blocked output and schema violations [1.55ms]
+(pass) empty speech is actionable rather than a fabricated requirement [0.24ms]
+(pass) upstream errors never expose key, audio, response text, or request URL [0.14ms]
+(pass) cancellation aborts the provider call and is not retried [0.13ms]
+(pass) validates documented audio envelopes including Chromium WebM and Safari M4A [0.05ms]
+(pass) provider schema omits undocumented annotations without weakening local validation [0.43ms]
+(pass) provider authentication, quota, network and malformed output have safe distinct diagnostics [0.23ms]
+(pass) network transport failures and invalid provider JSON are distinguishable and sanitized [0.11ms]
+
+tests/catalog-view.test.tsx:
+(pass) CatalogNotice：顯示五類真實資料覆蓋、確認時間與資料快照限制 [0.64ms]
+(pass) CatalogNotice：零筆資料仍正常顯示五類零值與未知確認時間 [0.20ms]
+(pass) ResultsView 保留必要摘要，DetailView 安全保留完整份量、資格與查核內容 [1.07ms]
+(pass) ResultsView 摘要提醒，DetailView 保留全部並安全轉義 [0.86ms]
+(pass) review_notes 單一字串在精簡卡片提示詳情，並在詳情原樣顯示 [0.81ms]
+(pass) ResultsView 與 DetailView：沒有 extra 文字時不捏造審閱內容，未知必要費用不當成零 [0.85ms]
+
+tests/client-voice.test.ts:
+(pass) voice client API > posts one multipart audio File without replacing its MIME or filename [0.26ms]
+(pass) voice client API > surfaces server errors and rejects malformed voice results [0.15ms]
+(pass) recorded audio metadata > keeps native WebM/OGG and canonicalizes Safari MP4 audio to M4A [0.08ms]
+(pass) recorded audio metadata > fails closed for an unknown recorder MIME instead of uploading relabelled bytes [0.02ms]
+(pass) voice review and stale-result guards > opens a parsed human-review state and applies only the existing budget default [0.32ms]
+(pass) voice review and stale-result guards > discards an aborted response or a response older than transcript edits [0.03ms]
+(pass) recording deadline is 30 seconds, not 30 milliseconds [0.03ms]
+
+tests/collection-buttons.test.tsx:
+(pass) results and browse heart state follows list, never bookmarks (all four combinations) [2.15ms]
+(pass) pending and excluded card hearts also follow the list [0.36ms]
+(pass) detail bookmark and heart remain independently selected [2.58ms]
+(pass) selected heart styling cannot paint the button background red [0.73ms]
+
+30 tests skipped:
+(skip) auth with isolated PostgreSQL rows > register normalizes username, stores argon2id/token hashes, and rejects case-insensitive duplicate
+(skip) auth with isolated PostgreSQL rows > login is case-insensitive and /me restores canonical account data
+(skip) auth with isolated PostgreSQL rows > expired sessions and logged-out sessions return the same 401
+(skip) auth with isolated PostgreSQL rows > change-password revokes every session and only the new password logs in
+(skip) auth with isolated PostgreSQL rows > an old-password login queued behind a password change cannot create a session
+(skip) auth with isolated PostgreSQL rows > concurrent password changes cannot both validate the same old hash
+(skip) auth with isolated PostgreSQL rows > password change revalidates its session after waiting for the user lock
+(skip) 匯入管線 (live database) > 示範資料未明確允許時拒絕匯入，資料庫維持不變
+(skip) 匯入管線 (live database) > a malformed later row cannot partially import an earlier valid row
+(skip) 匯入管線 (live database) > import preserves SQL NULL mandatory fees instead of defaulting unknown costs to zero
+(skip) 匯入管線 (live database) > import.ts 連跑兩次：列數與內容都不變
+(skip) 匯入管線 (live database) > rowToRec：tags 的 null、jsonb 與 timestamptz 從資料庫回來仍正確
+(skip) 需求解析 (live provider) > 1. 情境 A
+(skip) 需求解析 (live provider) > 2. 情境 B
+(skip) 需求解析 (live provider) > 3. 沒說預算
+(skip) 需求解析 (live provider) > 4. 修正語句只改人數
+(skip) 需求解析 (live provider) > 5. 未解析內容
+(skip) 需求解析 (live provider) > 6. 英文 token 不遺失
+(skip) 搜尋與候選查詢 (live database) > catalog/candidates hide persisted demo records by default
+(skip) 搜尋與候選查詢 (live database) > SSE 推 filter → 各組 ranking → 可交錯的 failed fallback → final done
+(skip) 搜尋與候選查詢 (live database) > SSE 警告 need／設定排除中無法由 TAGS 保證的項目
+(skip) 搜尋與候選查詢 (live database) > strict exclusions partition uncertain food away from every ranked SSE group
+(skip) 搜尋與候選查詢 (live database) > free_only fallback 只留下總可比成本 0 的紀錄
+(skip) 搜尋與候選查詢 (live database) > 單筆查詢：找得到回 Rec，找不到回 404
+(skip) 搜尋與候選查詢 (live database) > 批次查詢：略過不存在的 id，不讓整個請求失敗
+(skip) account data and reports with isolated PostgreSQL rows > account mutations enforce their 16 KiB body limit without Content-Length
+(skip) account data and reports with isolated PostgreSQL rows > GET/PUT account data round-trips allowlisted fields and atomically updates canonical nickname
+(skip) account data and reports with isolated PostgreSQL rows > stale device cannot overwrite another device's favorites or nickname
+(skip) account data and reports with isolated PostgreSQL rows > PUT rejects forbidden account fields and over-200 IDs
+(skip) account data and reports with isolated PostgreSQL rows > candidate reports enforce reason allowlist and return canonical author display
+
+ 217 pass
+ 30 skip
+ 0 fail
+ 1938 expect() calls
+Ran 247 tests across 29 files. [1034.00ms]

@@ -1,0 +1,138 @@
+[
+  {
+    "key": "tpass",
+    "url": "https://www.tpass.tw/faq",
+    "retrieved_at": "2026-09-05T23:31:48+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.tpass.tw/faq",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/tpass.html",
+    "sha256": "d2d955ee0117809739c0493a814ae80622ee914b6e266e2464ef95f1fe24ddc2"
+  },
+  {
+    "key": "tpass-nt",
+    "url": "https://www.ntmetro.com.tw/basic/?node=10105",
+    "retrieved_at": "2026-09-05T23:31:48+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.ntmetro.com.tw/basic/?node=10105",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/tpass-nt.html",
+    "sha256": "880d2107fa38cdd520cc46f7b7f2e35d6d18a5cd12048005098364ac17ed1518"
+  },
+  {
+    "key": "fun1",
+    "url": "https://funpass.travel.taipei/tour/ZB4?lang=zh_TW",
+    "retrieved_at": "2026-09-05T23:31:48+08:00",
+    "returncode": 56,
+    "http": "403\thttps://funpass.travel.taipei/tour/ZB4?lang=zh_TW",
+    "error": "curl: (56) The requested URL returned error: 403\n",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/fun1.html"
+  },
+  {
+    "key": "fun2",
+    "url": "https://funpass.travel.taipei/tour/9YP?lang=zh_TW",
+    "retrieved_at": "2026-09-05T23:31:48+08:00",
+    "returncode": 56,
+    "http": "403\thttps://funpass.travel.taipei/tour/9YP?lang=zh_TW",
+    "error": "curl: (56) The requested URL returned error: 403\n",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/fun2.html"
+  },
+  {
+    "key": "fun3",
+    "url": "https://funpass.travel.taipei/tour/04V?lang=zh_TW",
+    "retrieved_at": "2026-09-05T23:31:48+08:00",
+    "returncode": 56,
+    "http": "403\thttps://funpass.travel.taipei/tour/04V?lang=zh_TW",
+    "error": "curl: (56) The requested URL returned error: 403\n",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/fun3.html"
+  },
+  {
+    "key": "fun5",
+    "url": "https://funpass.travel.taipei/tour/71d?lang=zh_TW",
+    "retrieved_at": "2026-09-05T23:31:48+08:00",
+    "returncode": 56,
+    "http": "403\thttps://funpass.travel.taipei/tour/71d?lang=zh_TW",
+    "error": "curl: (56) The requested URL returned error: 403\n",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/fun5.html"
+  },
+  {
+    "key": "ty1",
+    "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+    "retrieved_at": "2026-09-05T23:31:49+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson01.php",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/ty1.html",
+    "sha256": "8021a057327bdb9bf30e2a95813216f1a2e44c78fc3a1dc9667f1ff63fba77ab"
+  },
+  {
+    "key": "tyjoint",
+    "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+    "retrieved_at": "2026-09-05T23:31:48+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/ticketson04.php",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/tyjoint.html",
+    "sha256": "2208a7f37bc6b51156acd81a25269f01017a3c55a36be44c26e1b607d28d37cc"
+  },
+  {
+    "key": "tyfare",
+    "url": "https://www.tymetro.com.tw/tymetro-new/upload/ckupload/20241213_11052534.pdf",
+    "retrieved_at": "2026-09-05T23:31:49+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.tymetro.com.tw/tymetro-new/upload/ckupload/20241213_11052534.pdf",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/tyfare.pdf",
+    "sha256": "84c9c6c091e59823f3cae79ee98136838a35835babe1e56755714895e1eee2af"
+  },
+  {
+    "key": "tya1",
+    "url": "https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/A1",
+    "retrieved_at": "2026-09-05T23:31:49+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/A1",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/tya1.html",
+    "sha256": "0c88c2dc27ea2940ef634107af2d45174433e58365bad3555d80672115e84aeb"
+  },
+  {
+    "key": "ntticket",
+    "url": "https://www.ntmetro.com.tw/basic/?node=10022",
+    "retrieved_at": "2026-09-05T23:31:49+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.ntmetro.com.tw/",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/ntticket.html",
+    "sha256": "ab8b4595a1b30d0efcd5dc761feeae43c4389b09cc709826a8ac5eaa30e0b280"
+  },
+  {
+    "key": "ntservice",
+    "url": "https://www.ntmetro.com.tw/content/?parent_id=10074",
+    "retrieved_at": "2026-09-05T23:31:48+08:00",
+    "returncode": 0,
+    "http": "200\thttps://www.ntmetro.com.tw/",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/ntservice.html",
+    "sha256": "ab8b4595a1b30d0efcd5dc761feeae43c4389b09cc709826a8ac5eaa30e0b280"
+  },
+  {
+    "key": "bus",
+    "url": "https://taipeisightseeing.com.tw/",
+    "retrieved_at": "2026-09-05T23:31:49+08:00",
+    "returncode": 0,
+    "http": "200\thttps://taipeisightseeing.com.tw/",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/bus.html",
+    "sha256": "23e90b2b6a8d33cb68019e8973f8bdc7d83e6d4c4c7540b063f481fdbd56162d"
+  },
+  {
+    "key": "buswww",
+    "url": "https://www.taipeisightseeing.com.tw/",
+    "retrieved_at": "2026-09-05T23:31:49+08:00",
+    "returncode": 0,
+    "http": "200\thttps://taipeisightseeing.com.tw/",
+    "error": "",
+    "file": "/Users/apple/Desktop/AIL/.scratch/catalog-expansion/transport/snapshots/buswww.html",
+    "sha256": "23e90b2b6a8d33cb68019e8973f8bdc7d83e6d4c4c7540b063f481fdbd56162d"
+  }
+]

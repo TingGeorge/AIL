@@ -1,0 +1,110 @@
+{
+  "checked_at": "2026-09-05T15:52:36.022Z",
+  "stored": 150,
+  "old_rows_unchanged": 50,
+  "additions_match_files": 100,
+  "account_tables": {
+    "users": 0,
+    "auth_sessions": 0,
+    "account_data": 0,
+    "reports": 0
+  },
+  "catalog": {
+    "total": 139,
+    "rankable": 136,
+    "pending": 3,
+    "demonstration": 0,
+    "latest_verified_at": "2026-09-05T15:49:45.000Z",
+    "scope": "涵蓋臺北及各筆明示地區的商家／場館、線上商品與全臺公共服務；不全在圓山步行圈內，請依個別地點、配送、時段與資格確認。資料是來源查核快照，不代表即時庫存、名額或班次。",
+    "categories": [
+      {
+        "category": "食品",
+        "total": 44,
+        "rankable": 44,
+        "pending": 0
+      },
+      {
+        "category": "日用品",
+        "total": 21,
+        "rankable": 21,
+        "pending": 0
+      },
+      {
+        "category": "免費／公益資源",
+        "total": 21,
+        "rankable": 21,
+        "pending": 0
+      },
+      {
+        "category": "活動",
+        "total": 29,
+        "rankable": 26,
+        "pending": 3
+      },
+      {
+        "category": "交通",
+        "total": 24,
+        "rankable": 24,
+        "pending": 0
+      }
+    ]
+  },
+  "group_offers": [
+    {
+      "id": "a_kids",
+      "title": "臺北市兒童新樂園入園全票",
+      "min_people": 30,
+      "discount_pct": 30,
+      "redeem_code": null,
+      "note": "30人（含）以上團體按票價7折；另有平常日30人以上依現行團體預約方式，於前1日17:00前完成預約作業，可符合免費入園資格。兩者不重複套用；遊樂設施仍另付費。"
+    },
+    {
+      "id": "a_nmh1",
+      "title": "國立歷史博物館普通票",
+      "min_people": 10,
+      "price_per_person": 40,
+      "redeem_code": null,
+      "note": "10人以上團體適用40元優待票；官方現行票價頁未列本團體票的額外預約、同時購票或隨團免費名額，本筆不加推。國際特展另售。"
+    },
+    {
+      "id": "a_ntm1",
+      "title": "國立臺灣博物館本館暨古生物館全票",
+      "min_people": 20,
+      "price_per_person": 15,
+      "redeem_code": null,
+      "note": "限機關、學校20人（含）以上團體，須於一週前完成網路預約申請，每人15元。"
+    },
+    {
+      "id": "a_t101",
+      "title": "台北101觀景台一般票",
+      "min_people": 20,
+      "price_per_person": 540,
+      "redeem_code": null,
+      "note": "保守依團體申請頁限定外籍團體20人（含）以上，每人540元；團體預約每日限額，填寫線上申請表單。購票資訊頁另以較廣的20人以上團體、傳真或網路預約表述，因跨頁資格不一致，本筆不擴張到本國團體。91樓視天氣狀況開放。"
+    },
+    {
+      "id": "a_watr",
+      "title": "臺北自來水園區非夏月全票",
+      "min_people": 30,
+      "discount_pct": 20,
+      "redeem_code": null,
+      "note": "團體30人以上享全票8折；本筆在非夏月50元全票上記為20%折扣，不另加入未公告的資格或預約條件。"
+    },
+    {
+      "id": "a_zoo1",
+      "title": "臺北市立動物園一般入園票",
+      "min_people": 30,
+      "price_per_person": 70,
+      "redeem_code": null,
+      "note": "團體達30人且均購買100元普通票者，每人70元；全團集合後洽現場工作人員清點並同時購票入場。本比較限定由大門口入園；南站另需每人5元接駁車資且僅限現金。"
+    },
+    {
+      "id": "t_a1a3",
+      "title": "桃園機場捷運單程票（A1台北車站→A13機場第二航廈站）",
+      "min_people": 10,
+      "discount_pct": 20,
+      "redeem_code": null,
+      "note": "現場團體購票：10人以上於車站詢問處購買當日團體票，不可預購、不予退票；全團須同一起訖、團進團出並由公務門進出站。A1→A13一般全票160元的8折為每人128元，不是全團總價，亦不與其他票種優惠重複套用。"
+    }
+  ]
+}

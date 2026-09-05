@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <title>常見問題 | iTaiwan無線上網服務</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="中華民國數位發展部">
+    <!-- META -->
+    <meta name="creator" content="iTaiwan無線上網服務">
+    <meta name="subject" content="常見問題 | iTaiwan無線上網服務">
+    <meta name="keywords" content="">
+    <meta name="news_keywords" content="">
+    <meta name="description" content="iTaiwan更於109年7月1日起全面開放免認證，無論本國民眾或境外旅客均免經註冊，即可在全臺貼有iTaiwan識別圖示的逾1萬個熱點進行免費無線上網服務。">
+    <meta name="publisher" content="iTaiwan無線上網服務">
+    <meta name="contributor" content="">
+    <meta name="date" content="">
+    <meta name="type" content="網頁">
+    <meta name="format" content="text/html">
+    <meta name="identifier" content="A41000000G">
+    <meta name="source" content="">
+    <meta name="language" content="zh-tw">
+    <meta name="relation" content="">
+    <meta name="coverage" content="">
+    <meta name="rights" content="中華民國數位發展部">
+    <!-- icons -->
+    <link rel="icon" href="/img/ico/favicon.ico">
+    <link rel="shortcut icon" href="/img/ico/favicon-16x16.png">
+    <!-- APPLE -->
+    <link data-prerender="keep" rel="apple-touch-icon" sizes="57x57" href="/img/ico/apple-icon-57x57.png">
+    <link data-prerender="keep" rel="apple-touch-icon" sizes="60x60" href="/img/ico/apple-icon-60x60.png">
+    <link data-prerender="keep" rel="apple-touch-icon" sizes="72x72" href="/img/ico/apple-icon-72x72.png">
+    <link data-prerender="keep" rel="apple-touch-icon" sizes="76x76" href="/img/ico/apple-icon-76x76.png">
+    <link data-prerender="keep" rel="apple-touch-icon" sizes="114x114" href="/img/ico/apple-icon-114x114.png">
+    <link data-prerender="keep" rel="apple-touch-icon" sizes="120x120" href="/img/ico/apple-icon-120x120.png">
+    <link data-prerender="keep" rel="apple-touch-icon" sizes="144x144" href="/img/ico/apple-icon-144x144.png">
+    <link data-prerender="keep" rel="apple-touch-icon" sizes="152x152" href="/img/ico/apple-icon-152x152.png">
+    <link data-prerender="keep" rel="apple-touch-icon" sizes="180x180" href="/img/ico/apple-icon-180x180.png">
+    <link data-prerender="keep" rel="icon" type="image/png" sizes="32x32" href="/img/ico/favicon-32x32.png">
+    <link data-prerender="keep" rel="icon" type="image/png" sizes="96x96" href="/img/ico/favicon-96x96.png">
+    <link data-prerender="keep" rel="icon" type="image/png" sizes="16x16" href="/img/ico/favicon-16x16.png">
+    <!-- IE -->
+    <meta name="application-name" content="常見問題 | iTaiwan無線上網服務" />
+    <meta name="msapplication-TileColor" content=" #142b75" />
+    <meta name="msapplication-TileImage" content="/img/ico/tileicon.png" />
+    <meta name="msapplication-square70x70logo" content="/img/ico/smalltile.png" />
+    <meta name="msapplication-square150x150logo" content="/img/ico/mediumtile.png" />
+    <meta name="msapplication-wide310x150logo" content="/img/ico/widetile.png" />
+    <meta name="msapplication-square310x310logo" content="/img/ico/largetile.png" />
+    <meta name="msapplication-notification" content="frequency=30; polling-uri=notifications/contoso1.xml;polling-uri2=notifications/contoso2.xml; polling-uri3=notifications/contoso3.xml" />
+    <!-- Open Graph data -->
+    <meta property="og:title" content="常見問題 | iTaiwan無線上網服務" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="/img/ico/largetile.png" />
+    <meta property="og:description" content="iTaiwan更於109年7月1日起全面開放免認證，無論本國民眾或境外旅客均免經註冊，即可在全臺貼有iTaiwan識別圖示的逾1萬個熱點進行免費無線上網服務。" />
+    <meta property="og:site_name" content="iTaiwan無線上網服務" />
+    <!-- Bootstrap core CSS -->
+    <link href="/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="/Content/owl.carousel.min.css" rel="stylesheet" />
+    <!-- Theme CSS -->
+    <link href="/Content/style.css" rel="stylesheet" />
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="/Scripts/ie-emulation-modes-warning.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="assets/js/html5shiv.min.js"></script>
+      <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="app app-hp">
+    <!-- NOSCRIPT -->
+    <noscript>
+        <div style="height: 25px;overflow: hidden;">
+            <p>很抱歉，網站的某些功能在JavaScript沒有啟用的狀態下無法正常使用。</p>
+        </div>
+    </noscript>
+    <div class="app-wrapper">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="container">
+                <div class="app-navbar-header">
+                    <a href="#accesskeyC" id="gotocenter" title="移到主要內容" class="sr-only sr-only-focusable">跳到主要內容</a>
+                    <a class="navbar-brand app-brand" href="/" title="iTaiwan無線上網服務">
+                        <h1 class="headline">iTaiwan無線上網服務</h1>
+                        <img class="app-brand-logo" src="/img/logo.svg?t=20220826143823" alt="iTaiwan無線上網服務 LOGO" />
+                    </a>
+                    <div class="header-min-menu">
+                        <!-- 手機板選單按鈕 -->
+                        <a href="javascript:void(0)" data-toggle="dropdown" class="navbar-xs-btn" title="選單按鈕"><i class="fa fa-bars"></i><span class="text">手機板選單按鈕</span></a>
+                        <!--上方選單導盲磚-->
+                        <a id="accesskeyU" accesskey="U" href="#accesskeyU" title="上方選單連結區，此區塊列有本網站的主要連結">:::</a>
+                        <nav id="app-nav-nemu" class="dropdown nav-nemu">
+                            <div class="dropdown-menu">
+                                <ul class="nav top-nemu" id="top-nemu">
+			<li class="dropdown">
+                
+                <a href="javascript:void(0)" data-bs-toggle="dropdown" title="資安防護專區">
+                    <span class="btn-img"><img src="/ITaiwanDW/GetAvatar?fileName=19fc511034600000902a.svg&amp;type=5" alt=""></span>資安防護專區
+                </a>
+                <div class="dropdown-menu">
+                    <div class="container">
+                        
+						<ul class="nav flex-column dropdown-menu-sub">
+                                            <li><a href='/ITaiwanArticle/Contents?articleId=187' title='iTaiwan 資安防護專區'>iTaiwan 資安防護專區</a></li> 
+                        </ul>
+                    </div>
+                </div>
+            </li>
+			<li class="dropdown">
+                
+                <a href="javascript:void(0)" data-bs-toggle="dropdown" title="熱點查詢">
+                    <span class="btn-img"><img src="/ITaiwanDW/GetAvatar?fileName=180f414a1c500000060c.svg&amp;type=5" alt=""></span>熱點查詢
+                </a>
+                <div class="dropdown-menu">
+                    <div class="container">
+                        
+						<ul class="nav flex-column dropdown-menu-sub">
+                                            <li><a href='/ITaiwanHotspotQuery/MapQuery' title='地圖式查詢'>地圖式查詢</a></li>
+                                            <li><a href='/ITaiwanHotspotQuery/ConditionalQuery?Type=0' title='條件式查詢'>條件式查詢</a></li>
+                                            <li><a href='/ITaiwanHotspotQuery/HotspotQueryMap' title='全國熱點分佈圖'>全國熱點分佈圖</a></li>
+                                            <li><a href='/ftp/upload/HotspotData/hotspotlist_tw.csv' title='熱點清單下載 (CSV, UTF-8編碼)'>熱點清單下載 (CSV, UTF-8編碼)</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+			<li class="dropdown">
+                
+                <a href="javascript:void(0)" data-bs-toggle="dropdown" title="使用說明">
+                    <span class="btn-img"><img src="/ITaiwanDW/GetAvatar?fileName=180f4150461000009f39.svg&amp;type=5" alt=""></span>使用說明
+                </a>
+                <div class="dropdown-menu">
+                    <div class="container">
+                        
+						<ul class="nav flex-column dropdown-menu-sub">
+                                            <li><a href='/ITaiwanArticle/Contents?articleId=68' title='無線上網使用說明'>無線上網使用說明</a></li> 
+                                            <li><a href='/ITaiwanArticle/Contents?articleId=80' title='常見問題'>常見問題</a></li> 
+                                            <li><a href='/ITaiwanArticle/Contents?articleId=81' title='iTaiwan無線上網服務簡介'>iTaiwan無線上網服務簡介</a></li> 
+                                            <li><a href='/ITaiwanArticle/Contents?articleId=186' title='檢警調單位辦案流程'>檢警調單位辦案流程</a></li> 
+                        </ul>
+                    </div>
+                </div>
+            </li>
+
+                                    <li>
+                                        <a href="/ITaiwanSiteMap/SiteMap" title="網站導覽">
+                                            <span class="btn-img"><img src="/img/icon-nav-sitemap.svg" alt=""></span>網站導覽
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/EN/ITaiwanHome" title="English">
+                                            <span class="btn-img"><img src="/img/icon-nav-global.svg" alt=""></span>English
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- CONTENTS -->
+        
+<div class="app-contents">
+    <div class="container">
+        <!-- //兩欄版型 -->
+        <div class="layout-col-2">
+            <div class="row">
+                <!-- // Left Menu -->
+                
+                <div class="col-md-3">
+                    <!--中間主要內容區塊導盲磚-->
+                    <a id="accesskeyL" accesskey="L" href="#accesskeyL" title="左方選單連結區，此區塊列有本網站的次要選單連結">:::</a>
+                    <div class="left-menu">
+                        <a href="#this" class="left-menu-xs-btn" title="左側選單"><i class="app-icon-grid"></i><span class="text">左側選單</span></a>
+                        <div class="left-menu-xs-mask" title="關閉選單"><i class="app-icon-cross"></i></div>
+                        <div class="left-menu-box">
+                            <!-- <h3 class="headline">熱點查詢</h3> -->
+                            <nav>
+                            <!--syscom
+                                <ul class="nav nav-pills flex-column left-menu-nav">
+                                                <li class="menu-sub">
+                                                    <span class="menu-sub-title">資安防護專區</span>
+                                                    <ul class="nav">
+                                                                        <li><a href='/ITaiwanArticle/Contents?articleId=187' title='iTaiwan 資安防護專區'>iTaiwan 資安防護專區</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="menu-sub">
+                                                    <span class="menu-sub-title">熱點查詢</span>
+                                                    <ul class="nav">
+                                                                        <li><a href='/ITaiwanHotspotQuery/MapQuery' title='地圖式查詢'>地圖式查詢</a></li>
+                                                                        <li><a href='/ITaiwanHotspotQuery/ConditionalQuery?Type=0' title='條件式查詢'>條件式查詢</a></li>
+                                                                        <li><a href='/ITaiwanHotspotQuery/HotspotQueryMap' title='全國熱點分佈圖'>全國熱點分佈圖</a></li>
+                                                                        <li><a href='/ftp/upload/HotspotData/hotspotlist_tw.csv' title='熱點清單下載 (CSV, UTF-8編碼)'>熱點清單下載 (CSV, UTF-8編碼)</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="menu-sub">
+                                                    <span class="menu-sub-title">使用說明</span>
+                                                    <ul class="nav">
+                                                                        <li><a href='/ITaiwanArticle/Contents?articleId=68' title='無線上網使用說明'>無線上網使用說明</a></li>
+                                                                        <li><a href='/ITaiwanArticle/Contents?articleId=80' title='常見問題'>常見問題</a></li>
+                                                                        <li><a href='/ITaiwanArticle/Contents?articleId=81' title='iTaiwan無線上網服務簡介'>iTaiwan無線上網服務簡介</a></li>
+                                                                        <li><a href='/ITaiwanArticle/Contents?articleId=186' title='檢警調單位辦案流程'>檢警調單位辦案流程</a></li>
+                                                    </ul>
+                                                </li>
+                                </ul>-->
+                                <ul class="nav nav-pills flex-column left-menu-nav">
+                                                <li class="nav-item menu-sub">
+                                                    <span class="menu-sub-title">資安防護專區</span>
+                                                    <ul class="nav flex-column">
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link" href='/ITaiwanArticle/Contents?articleId=187' title='iTaiwan 資安防護專區'>iTaiwan 資安防護專區</a>
+                                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="nav-item menu-sub">
+                                                    <span class="menu-sub-title">熱點查詢</span>
+                                                    <ul class="nav flex-column">
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link" href='/ITaiwanHotspotQuery/MapQuery' title='地圖式查詢'>地圖式查詢</a>
+                                                                        </li>
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link" href='/ITaiwanHotspotQuery/ConditionalQuery?Type=0' title='條件式查詢'>條件式查詢</a>
+                                                                        </li>
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link" href='/ITaiwanHotspotQuery/HotspotQueryMap' title='全國熱點分佈圖'>全國熱點分佈圖</a>
+                                                                        </li>
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link" href='/ftp/upload/HotspotData/hotspotlist_tw.csv' title='熱點清單下載 (CSV, UTF-8編碼)'>熱點清單下載 (CSV, UTF-8編碼)</a>
+                                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="nav-item menu-sub">
+                                                    <span class="menu-sub-title">使用說明</span>
+                                                    <ul class="nav flex-column">
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link" href='/ITaiwanArticle/Contents?articleId=68' title='無線上網使用說明'>無線上網使用說明</a>
+                                                                        </li>
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link" href='/ITaiwanArticle/Contents?articleId=80' title='常見問題'>常見問題</a>
+                                                                        </li>
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link" href='/ITaiwanArticle/Contents?articleId=81' title='iTaiwan無線上網服務簡介'>iTaiwan無線上網服務簡介</a>
+                                                                        </li>
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link" href='/ITaiwanArticle/Contents?articleId=186' title='檢警調單位辦案流程'>檢警調單位辦案流程</a>
+                                                                        </li>
+                                                    </ul>
+                                                </li>
+                                </ul>
+
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <!-- // List Content -->
+                
+                
+                <div class="col-md-9">
+                    <!-- // 頁面麵包削 -->
+                    
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/" title="首頁">首頁</a>
+                            </li>
+                                    <li class="breadcrumb-item">使用說明</li>
+                                    <li class="breadcrumb-item active" aria-current="page" title="常見問題">
+                                     常見問題
+                                    </li>
+                        </ol>
+                    </nav>
+                    
+                    <!--中間主要內容區塊導盲磚-->
+                    <div class="contents-box">
+                        <a id="accesskeyC" accesskey="C" href="#accesskeyC" title="中間主要內容區塊，此區塊呈現網頁的網頁內容">:::</a>
+                        <div class="contents-box-title">
+                            <h2 class="headline">
+常見問題                            </h2>
+                            <div class="title-btn">
+                                <a href="javascript:print();" class="btn-print"><img src="/img/icon-print.svg" alt="列印" /></a>
+                            </div>
+                        </div>
+                        <div class="app-style">
+                            <div class="app-style">
+<h3>Q. 「中央行政機關室內公共區域提供免費無線上網」何時啟用?其服務範圍及服務對象為何?</h3>
+
+<p><b>自100年10月7日上午9時起開始提供免費無線上網基本資訊服務，這項無線上網服務名稱(簡稱SSID)為iTaiwan(愛臺灣)。</b></p><p><strong style="font-size: 1rem;">iTaiwan客服服務範圍</strong></p>
+<p>【一般使用者】</p>
+<ol>
+<li>登入異常處理<br>
+例如:無跳出登入畫面、點選我同意免費上網無反應等</li>
+<li>頁面操作教學</li>
+<li>查詢熱點位置</li>
+<li>協助通知機關報修</li>
+</ol>
+<p>【機關人員】</p><ol>
+<li>協助查詢熱點代碼(須核對資料)</li>
+<li>熱點申請業務:申請、異動、刪除熱點相關業務說明</li>
+</ol>
+<p>熱點報修、電路申請流程、費用等請機關洽詢各自電路供應商</p>
+
+
+<h3>Q. 「中央行政機關室內公共區域提供免費無線上網」的相關資訊，可以在何處查詢，遇到問題，可以向誰詢問?</h3>
+
+<p>本服務之服務名稱(SSID)為「iTaiwan」，稱作「愛臺灣」英文並含intelligent Taiwan (智慧臺灣)及 internet Taiwan (臺灣全面上網)之意，相關資訊可隨時至服務網站(<a+alt="itaiwan無線上網服務"+title="itaiwan無線上網服務"+href="https: itaiwan.gov.tw"="">https://itaiwan.gov.tw)查詢，遇到問題可撥打24小時免費客服專線0800-081-051，直接讓客服中心為您處理。</a+alt="itaiwan無線上網服務"+title="itaiwan無線上網服務"+href="https:></p>
+
+
+<h3>Q. 使用iTaiwan服務會要付通信費用嗎?</h3>
+
+<p>目前民眾使用iTaiwan服務並不需要付費，但請特別注意您所持有之上網設備(如智慧型手機)是否預設開啟自動網路連線功能，如您的上網設備預設為自動開啟連網，將可能因離開iTaiwan訊號範圍，您的上網設備自動連上如4G等商業性上網服務而造成支付商業性服務費用，建議您使用前先關閉相關自動網路連線功能。</p>
+
+
+<h3>Q. 目前iTaiwan免費無線上網服務提供之頻寬為何?</h3>
+
+<p>本項服務係採共享頻寬方式，依使用者人數多寡而不同，原則希望使用者8M之使用頻寬，主要為提供民眾無線上網基本資訊服務，滿足民眾於外出活動或洽公時之臨時性上網需求，方便民眾得空時可上網收發電子郵件、瀏覽網頁等基本及經常使用的服務品質，至於民眾下載大量影音、檔案之需求，則可自行取用商用服務，本案仍以基本上網服務為主，此和其他國家作法亦為一致。</p>
+
+
+<h3>Q. 無線上網的電磁波會不會很強?會不會影響人體健康?</h3>
+
+<p>透過WiFi AP 才可以享受無線寬頻上網的樂趣，但電磁波議題每每成為大家關注的焦點。環保署依據國際非游離輻射防護委員會（ICNIRP）公布的低功率射頻規範，建議電磁波量測數值應小於1 毫瓦/平方公分(1,000 微瓦/平方公分或10,000,000 微瓦/平方公尺)。國家通訊傳播委員會曾於97 年6 月量測WiFi AP 的電磁波數值，測試結果為0.000000379 微瓦/平方公分，遠遠低於環保署公布的建議值。臺北市環保局也曾邀集廠商檢測AP 設置點的電磁波數值，據環保局人員指出，若以標準值1,000 微瓦/平方公分來看，檢測最高值為距離發射器最近的定點，數值為2.08 微瓦/平方公分，同樣遠低於標準值。依據世界衛生組織（WHO）於95 年5 月發表「電磁波與公共健康：基地臺與無線網路科技」報告指出，至今仍沒有可靠的科學證據顯示，無線網路產生的微弱射頻訊號會對健康造成負面影響。</p>
+
+
+<h3>Q. 要如何找到iTaiwan上網熱點?</h3>
+
+<p>整體而言，除可於本網站點選「熱點查詢」功能，使用地圖式查詢、條件查詢及全國熱點分布圖等方式來找到上網熱點外，因個別上網熱點為室內公共區域，民眾可注意如洽公區域入口處貼有<img+alt="itaiwan無線上網服務+標識"+src="data:image png;base64,ivborw0kggoaaaansuheugaaadcaaaazcaiaaaaahyfxaaakduleqvryhcvxexbw1ru="" 9963feu+l18sskhcfhicw6pld2cbysvpqvhqmljkravbknbqwfummdbtybru6li3ssrsyo5stqkvhqevbyspsavcqhasl9="" 6vvfuu="" ee="" vfauvip+avnjzfn3xvp+z13zj3li4gi3sefhqtyqvgcaasacbskmaoeakmbahaabaabaapbunzqdsagejnkrnm9qtraznchjd21ehqauuimiuzdbuamlsdufq5kcbiudhuqaqymanaeyakuafwumxrxmriaberfma0q+o6ywvdmbaabqkrwcyrau6s6dut63v1ffxnqbho8mslndeuoqqicmhbkpjqbq4b4wsemukztpc4ybqqakuah1xnpfma3fskkeazxr6xfep2jd7yc7oxyevfr2beytg9xvdajodkorlsariwzqubvlc5c9pmfds8hchrexsoywlbjgollmadwdwmvu0ljxhe2ftfq="" hohyempzhlzz+cndbfeeq2mwixibnmzez8avbh0d1tlb="" 7skpjf+nx76i="" yqqfsqbsiqktkitet0g778v2pri1z9frjsc="" fr3l22tre6qx8csh65ut1b5rqqyqcun="" ixae1nauv5sudzdpvn35t8="" y="" l1+xzohj94cjofzqnaacqli61o172w0rt56fbdvff2dofzwvgbfe="" usnv3c0nwla6f00iahujpvweveb3in+rpz7z="" 16qy="" 88msvfthh0tdhd="" trqxqfgewnbfzhgpreddturhyxq6hdgcefzn6bgbpvuvefp="" zl4ewrpy2plhbfmpbhobopplk90mtrnxel93x100xkkfzsetgp0pjirrojqqkabkebeabuqiabjujjukhpggaopzrsjdfcijssqqkiqtzzi9kbv3rm7t+snk8ihdus+fjslwqi278qd8l3+06dohtatllnm3ygpkm4nwxdibwghdhgodd1nrac0osloa43tqyearuaihurfeqxqkakqzlukpguk="" ubpglootw0tseeiuq6dgcu6ykiyrge7y2cqu6ibtculbsm658fvlz69fplvxv8rnfbjk+t7vyknpvww="" cvemksi8pk0gd9f0jhcffksvcrqjsdaqeakbipiwiy5rmfkamuabqaxajccaycpuauieqhqnqc13oylplbnueci3ziia5agtxu80cf3zbu8pnb95yli7a44qv6jtq5l0+cvozi1rafqywvuy3ruq5t2x4vhebmwvzmcnxy2ge52b5xcrtvxp0uc6="" csltheecilddkuj0cjvhoktdq6ztinv1dh1egg0bauzzrhs+2bc9="" hbdbtk3tziy5iqzreymgiepaf73rmoxaxj4cp9+s0vrpuarpsulnw1djd59gdzca1zf+hqoax3fm0wrigji5nz="" yujezxea29ukyorycvex714ulf8dpunmfed+8ewifjawmkcwf1nas3bhv="" 4e="" vv78vxepeo5juhbo0khw1tbcwkihhk7rlmvxzktls8emggpgmqio+f0ffxsbemdzex8+8+yrbdb20ly7fr9mtq="" iaaodjaeezrlhgn4vl1iyxkztlfisralmaogmptjlhlzbndnqynujvgs8ei7txtbo+bef2hergkkbgsyoaqljx="" 0gj7esd58bcgcaentt67p1606fpp2xl3f9+vvijbioh23bhjt27nbxxwrcakaigk5bguubpk+dth1m1e5h5jxwf8aareupaq5gzg3i9+ztnm227waw6l0aeg4aeakvvx0vofk9innyq5zl9aoukykpkyujbh1+v05qaqugrttfaotkgwxsbhs5uqs4ainmirqvt3kgehbdt66urry8fopgjyiolpl7="" ofon2u4dsnlsqioqhpqvuf+srtqfm9ta2kfnnriw1ujzrqeet0jpvyqlxv5quebahr2dgjaquhbpuuxurq6gptu+h3bysqbfzx9hauewm2wzm+e4vont="" t94fky="" hrfnbcxmqlgiasiksfx1ux1zutu3fsu2oiusfc6xglztj19+vqls5ygyjabrcswtkutjk6pqhxcm3f4ywfw4snpdbyqllhx="" bafc54qmrtu7fr58x9ftcpyp5atnd9="" pudckbvs2blvq1fbtr1mzzri4ujxk8aw9et5x9hhfz="" 4scd0yvphfzxzxrx5c8fuvppzypjx4+vro0qlevopvbtfyleoad1kdv9f09qfuir5hddiiboucmosszmjy0cw+nzaiearevtpbxw7fujwodm7d="" 5t2653vj67dyjcvpx1hfpvriw7bpjg="" fv31tc3cuf273nvs88+a2ho4jwfphgwfaqzpjlz5swzz84co3j8xtxmnj16v="" lywwycyytz5ylt6bt10vpvhfr8bod85cpvhaqbcnjyijqax0stulylyhqiaflgsg6d97jrbue89owhz1ugckcc3kbgoby+fpnym2++eflksczymplsbw31ir+maafqqkskxdcmpqamzs7o0tlsqcbw4mcburq6wcw2bdo0iur1dfwll7545mgry7lonj07ysqiadbnm5vnrlixorq6mje2bniwlpywr3izhqerchtbso4d4ybhs3v3x1ojawxtb0affm3aqz="" xp05xzluun0fhoodc3r17h3zwwqktjixatigxfo1gereavorijbjdhgzp16="" flstxll++xftbgwqfdu3avvhy2kdpn8gdb8disvmzziwtyxnz5o0epfqvv16jx+nccm55bm6ueiixppty+="" 2ztmbn83nfswpljqfn+k1x8wmgt85dvptbw6oo9btxsbk0buwobvgjpmwaqczuoqhv2lfj3lhxw7zs0xw9sbhr5="" p5="" f+cfmphskzpjlhq6up3330xajyuxdre3r5p06yngzbu1nqawiktj6lr6ohdhysqkhhjmzdvvnnzpqzppp8vk8kwxqsuabcjrlxkbqbkkuv="" vgugxee2trgcypnc2j7jxjd+ewxogswre+7jvnw7tutmjzigddor9oaba44fp75169zpp="" 10="" fr10wjune0vp2kxgkuuaobonxv06nhc3nzi4ulhw4fn5+cfpnx4ypqpqoj+="" fshaogngzcepxp07dq1o3fune0taolxeg5ubjabzywxxtlpdcqvoprssqwumkviynugfvrja0q6rhaoqsh74th0qtulzs4weuutcdw3v0wvgpdkzmmoovnt8elf58+fx7bgqxfxcw1t7woppuypnqzd7="" dxvfrikyuq5exli0eondfjhtdv7rnnnmphjg0cojaxvlvvtxz58lwrvu3evxvy5ml1dxvebc3pzw+hw4faaabs287lyxs0afa6nq4gg4wxscqiwuhimomzrbcttpt2kuvmjfblen0mokcfdtpjokrvblnd1r12zzlhxhq6fxvr27w3w3knlcvyxhohhmdikb2t2="" o9ku8="" oinotac0ohgt2im8ezoyrkrmogg7uqfeidkkjrpoipcgbfrqvaen3vmnhfbkewcsy="" rxypff5k3f="" rb="" zbzhuw2ofxap6f6f7v+d="" geg5nuounoniqaaaabjru5erkjggg="=&quot;+style=&quot;width:+55px;&quot;+data-filename=&quot;image.png&quot;">標識，即表示該處室內提供有iTaiwan無線上網服務，進入室內即請於貼有<img+alt="itaiwan無線上網服務+標識"+src="data:image png;base64,ivborw0kggoaaaansuheugaaadcaaaazcaiaaaaahyfxaaakduleqvryhcvxexbw1ru="" 9963feu+l18sskhcfhicw6pld2cbysvpqvhqmljkravbknbqwfummdbtybru6li3ssrsyo5stqkvhqevbyspsavcqhasl9="" 6vvfuu="" ee="" vfauvip+avnjzfn3xvp+z13zj3li4gi3sefhqtyqvgcaasacbskmaoeakmbahaabaabaapbunzqdsagejnkrnm9qtraznchjd21ehqauuimiuzdbuamlsdufq5kcbiudhuqaqymanaeyakuafwumxrxmriaberfma0q+o6ywvdmbaabqkrwcyrau6s6dut63v1ffxnqbho8mslndeuoqqicmhbkpjqbq4b4wsemukztpc4ybqqakuah1xnpfma3fskkeazxr6xfep2jd7yc7oxyevfr2beytg9xvdajodkorlsariwzqubvlc5c9pmfds8hchrexsoywlbjgollmadwdwmvu0ljxhe2ftfq="" hohyempzhlzz+cndbfeeq2mwixibnmzez8avbh0d1tlb="" 7skpjf+nx76i="" yqqfsqbsiqktkitet0g778v2pri1z9frjsc="" fr3l22tre6qx8csh65ut1b5rqqyqcun="" ixae1nauv5sudzdpvn35t8="" y="" l1+xzohj94cjofzqnaacqli61o172w0rt56fbdvff2dofzwvgbfe="" usnv3c0nwla6f00iahujpvweveb3in+rpz7z="" 16qy="" 88msvfthh0tdhd="" trqxqfgewnbfzhgpreddturhyxq6hdgcefzn6bgbpvuvefp="" zl4ewrpy2plhbfmpbhobopplk90mtrnxel93x100xkkfzsetgp0pjirrojqqkabkebeabuqiabjujjukhpggaopzrsjdfcijssqqkiqtzzi9kbv3rm7t+snk8ihdus+fjslwqi278qd8l3+06dohtatllnm3ygpkm4nwxdibwghdhgodd1nrac0osloa43tqyearuaihurfeqxqkakqzlukpguk="" ubpglootw0tseeiuq6dgcu6ykiyrge7y2cqu6ibtculbsm658fvlz69fplvxv8rnfbjk+t7vyknpvww="" cvemksi8pk0gd9f0jhcffksvcrqjsdaqeakbipiwiy5rmfkamuabqaxajccaycpuauieqhqnqc13oylplbnueci3ziia5agtxu80cf3zbu8pnb95yli7a44qv6jtq5l0+cvozi1rafqywvuy3ruq5t2x4vhebmwvzmcnxy2ge52b5xcrtvxp0uc6="" csltheecilddkuj0cjvhoktdq6ztinv1dh1egg0bauzzrhs+2bc9="" hbdbtk3tziy5iqzreymgiepaf73rmoxaxj4cp9+s0vrpuarpsulnw1djd59gdzca1zf+hqoax3fm0wrigji5nz="" yujezxea29ukyorycvex714ulf8dpunmfed+8ewifjawmkcwf1nas3bhv="" 4e="" vv78vxepeo5juhbo0khw1tbcwkihhk7rlmvxzktls8emggpgmqio+f0ffxsbemdzex8+8+yrbdb20ly7fr9mtq="" iaaodjaeezrlhgn4vl1iyxkztlfisralmaogmptjlhlzbndnqynujvgs8ei7txtbo+bef2hergkkbgsyoaqljx="" 0gj7esd58bcgcaentt67p1606fpp2xl3f9+vvijbioh23bhjt27nbxxwrcakaigk5bguubpk+dth1m1e5h5jxwf8aareupaq5gzg3i9+ztnm227waw6l0aeg4aeakvvx0vofk9innyq5zl9aoukykpkyujbh1+v05qaqugrttfaotkgwxsbhs5uqs4ainmirqvt3kgehbdt66urry8fopgjyiolpl7="" ofon2u4dsnlsqioqhpqvuf+srtqfm9ta2kfnnriw1ujzrqeet0jpvyqlxv5quebahr2dgjaquhbpuuxurq6gptu+h3bysqbfzx9hauewm2wzm+e4vont="" t94fky="" hrfnbcxmqlgiasiksfx1ux1zutu3fsu2oiusfc6xglztj19+vqls5ygyjabrcswtkutjk6pqhxcm3f4ywfw4snpdbyqllhx="" bafc54qmrtu7fr58x9ftcpyp5atnd9="" pudckbvs2blvq1fbtr1mzzri4ujxk8aw9et5x9hhfz="" 4scd0yvphfzxzxrx5c8fuvppzypjx4+vro0qlevopvbtfyleoad1kdv9f09qfuir5hddiiboucmosszmjy0cw+nzaiearevtpbxw7fujwodm7d="" 5t2653vj67dyjcvpx1hfpvriw7bpjg="" fv31tc3cuf273nvs88+a2ho4jwfphgwfaqzpjlz5swzz84co3j8xtxmnj16v="" lywwycyytz5ylt6bt10vpvhfr8bod85cpvhaqbcnjyijqax0stulylyhqiaflgsg6d97jrbue89owhz1ugckcc3kbgoby+fpnym2++eflksczymplsbw31ir+maafqqkskxdcmpqamzs7o0tlsqcbw4mcburq6wcw2bdo0iur1dfwll7545mgry7lonj07ysqiadbnm5vnrlixorq6mje2bniwlpywr3izhqerchtbso4d4ybhs3v3x1ojawxtb0affm3aqz="" xp05xzluun0fhoodc3r17h3zwwqktjixatigxfo1gereavorijbjdhgzp16="" flstxll++xftbgwqfdu3avvhy2kdpn8gdb8disvmzziwtyxnz5o0epfqvv16jx+nccm55bm6ueiixppty+="" 2ztmbn83nfswpljqfn+k1x8wmgt85dvptbw6oo9btxsbk0buwobvgjpmwaqczuoqhv2lfj3lhxw7zs0xw9sbhr5="" p5="" f+cfmphskzpjlhq6up3330xajyuxdre3r5p06yngzbu1nqawiktj6lr6ohdhysqkhhjmzdvvnnzpqzppp8vk8kwxqsuabcjrlxkbqbkkuv="" vgugxee2trgcypnc2j7jxjd+ewxogswre+7jvnw7tutmjzigddor9oaba44fp75169zpp="" 10="" fr10wjune0vp2kxgkuuaobonxv06nhc3nzi4ulhw4fn5+cfpnx4ypqpqoj+="" fshaogngzcepxp07dq1o3fune0taolxeg5ubjabzywxxtlpdcqvoprssqwumkviynugfvrja0q6rhaoqsh74th0qtulzs4weuutcdw3v0wvgpdkzmmoovnt8elf58+fx7bgqxfxcw1t7woppuypnqzd7="" dxvfrikyuq5exli0eondfjhtdv7rnnnmphjg0cojaxvlvvtxz58lwrvu3evxvy5ml1dxvebc3pzw+hw4faaabs287lyxs0afa6nq4gg4wxscqiwuhimomzrbcttpt2kuvmjfblen0mokcfdtpjokrvblnd1r12zzlhxhq6fxvr27w3w3knlcvyxhohhmdikb2t2="" o9ku8="" oinotac0ohgt2im8ezoyrkrmogg7uqfeidkkjrpoipcgbfrqvaen3vmnhfbkewcsy="" rxypff5k3f="" rb="" zbzhuw2ofxap6f6f7v+d="" geg5nuounoniqaaaabjru5erkjggg="=&quot;+style=&quot;width:+55px;&quot;+data-filename=&quot;image.png&quot;">標識處進行無線上網(應為無線訊號較佳處)。</img+alt="itaiwan無線上網服務+標識"+src="data:image></img+alt="itaiwan無線上網服務+標識"+src="data:image></p>
+
+
+<h3>Q. 上網熱點每日開放時段為何?</h3>
+
+<p>(一)本服務之各上網熱點基於以提供室內服務為主，考量電源供應、現場服務等因素，以該公共區域開放時間為上網熱點服務時間。<br>
+(二)目前各熱點開放時間除火車站及高速公路休息區為全天24小時外，其餘熱點皆依各熱點對外開放服務時間，提供iTaiwan服務。</p>
+
+
+<h3>Q. iTaiwan熱點網路訊號可及範圍為何?</h3>
+
+<p>iTaiwan熱點是採用WiFi之無線連網技術，一般而言，各熱點是以所設無線基地台(AP)為中心方圓20公尺內為無線網路訊號較佳之範圍，且會因室內屏障產生訊號衰減，建議民眾至iTaiwan熱點上網時，請至貼有<img+alt="itaiwan無線上網服務+標識"+src="data:image png;base64,ivborw0kggoaaaansuheugaaadcaaaazcaiaaaaahyfxaaakduleqvryhcvxexbw1ru="" 9963feu+l18sskhcfhicw6pld2cbysvpqvhqmljkravbknbqwfummdbtybru6li3ssrsyo5stqkvhqevbyspsavcqhasl9="" 6vvfuu="" ee="" vfauvip+avnjzfn3xvp+z13zj3li4gi3sefhqtyqvgcaasacbskmaoeakmbahaabaabaapbunzqdsagejnkrnm9qtraznchjd21ehqauuimiuzdbuamlsdufq5kcbiudhuqaqymanaeyakuafwumxrxmriaberfma0q+o6ywvdmbaabqkrwcyrau6s6dut63v1ffxnqbho8mslndeuoqqicmhbkpjqbq4b4wsemukztpc4ybqqakuah1xnpfma3fskkeazxr6xfep2jd7yc7oxyevfr2beytg9xvdajodkorlsariwzqubvlc5c9pmfds8hchrexsoywlbjgollmadwdwmvu0ljxhe2ftfq="" hohyempzhlzz+cndbfeeq2mwixibnmzez8avbh0d1tlb="" 7skpjf+nx76i="" yqqfsqbsiqktkitet0g778v2pri1z9frjsc="" fr3l22tre6qx8csh65ut1b5rqqyqcun="" ixae1nauv5sudzdpvn35t8="" y="" l1+xzohj94cjofzqnaacqli61o172w0rt56fbdvff2dofzwvgbfe="" usnv3c0nwla6f00iahujpvweveb3in+rpz7z="" 16qy="" 88msvfthh0tdhd="" trqxqfgewnbfzhgpreddturhyxq6hdgcefzn6bgbpvuvefp="" zl4ewrpy2plhbfmpbhobopplk90mtrnxel93x100xkkfzsetgp0pjirrojqqkabkebeabuqiabjujjukhpggaopzrsjdfcijssqqkiqtzzi9kbv3rm7t+snk8ihdus+fjslwqi278qd8l3+06dohtatllnm3ygpkm4nwxdibwghdhgodd1nrac0osloa43tqyearuaihurfeqxqkakqzlukpguk="" ubpglootw0tseeiuq6dgcu6ykiyrge7y2cqu6ibtculbsm658fvlz69fplvxv8rnfbjk+t7vyknpvww="" cvemksi8pk0gd9f0jhcffksvcrqjsdaqeakbipiwiy5rmfkamuabqaxajccaycpuauieqhqnqc13oylplbnueci3ziia5agtxu80cf3zbu8pnb95yli7a44qv6jtq5l0+cvozi1rafqywvuy3ruq5t2x4vhebmwvzmcnxy2ge52b5xcrtvxp0uc6="" csltheecilddkuj0cjvhoktdq6ztinv1dh1egg0bauzzrhs+2bc9="" hbdbtk3tziy5iqzreymgiepaf73rmoxaxj4cp9+s0vrpuarpsulnw1djd59gdzca1zf+hqoax3fm0wrigji5nz="" yujezxea29ukyorycvex714ulf8dpunmfed+8ewifjawmkcwf1nas3bhv="" 4e="" vv78vxepeo5juhbo0khw1tbcwkihhk7rlmvxzktls8emggpgmqio+f0ffxsbemdzex8+8+yrbdb20ly7fr9mtq="" iaaodjaeezrlhgn4vl1iyxkztlfisralmaogmptjlhlzbndnqynujvgs8ei7txtbo+bef2hergkkbgsyoaqljx="" 0gj7esd58bcgcaentt67p1606fpp2xl3f9+vvijbioh23bhjt27nbxxwrcakaigk5bguubpk+dth1m1e5h5jxwf8aareupaq5gzg3i9+ztnm227waw6l0aeg4aeakvvx0vofk9innyq5zl9aoukykpkyujbh1+v05qaqugrttfaotkgwxsbhs5uqs4ainmirqvt3kgehbdt66urry8fopgjyiolpl7="" ofon2u4dsnlsqioqhpqvuf+srtqfm9ta2kfnnriw1ujzrqeet0jpvyqlxv5quebahr2dgjaquhbpuuxurq6gptu+h3bysqbfzx9hauewm2wzm+e4vont="" t94fky="" hrfnbcxmqlgiasiksfx1ux1zutu3fsu2oiusfc6xglztj19+vqls5ygyjabrcswtkutjk6pqhxcm3f4ywfw4snpdbyqllhx="" bafc54qmrtu7fr58x9ftcpyp5atnd9="" pudckbvs2blvq1fbtr1mzzri4ujxk8aw9et5x9hhfz="" 4scd0yvphfzxzxrx5c8fuvppzypjx4+vro0qlevopvbtfyleoad1kdv9f09qfuir5hddiiboucmosszmjy0cw+nzaiearevtpbxw7fujwodm7d="" 5t2653vj67dyjcvpx1hfpvriw7bpjg="" fv31tc3cuf273nvs88+a2ho4jwfphgwfaqzpjlz5swzz84co3j8xtxmnj16v="" lywwycyytz5ylt6bt10vpvhfr8bod85cpvhaqbcnjyijqax0stulylyhqiaflgsg6d97jrbue89owhz1ugckcc3kbgoby+fpnym2++eflksczymplsbw31ir+maafqqkskxdcmpqamzs7o0tlsqcbw4mcburq6wcw2bdo0iur1dfwll7545mgry7lonj07ysqiadbnm5vnrlixorq6mje2bniwlpywr3izhqerchtbso4d4ybhs3v3x1ojawxtb0affm3aqz="" xp05xzluun0fhoodc3r17h3zwwqktjixatigxfo1gereavorijbjdhgzp16="" flstxll++xftbgwqfdu3avvhy2kdpn8gdb8disvmzziwtyxnz5o0epfqvv16jx+nccm55bm6ueiixppty+="" 2ztmbn83nfswpljqfn+k1x8wmgt85dvptbw6oo9btxsbk0buwobvgjpmwaqczuoqhv2lfj3lhxw7zs0xw9sbhr5="" p5="" f+cfmphskzpjlhq6up3330xajyuxdre3r5p06yngzbu1nqawiktj6lr6ohdhysqkhhjmzdvvnnzpqzppp8vk8kwxqsuabcjrlxkbqbkkuv="" vgugxee2trgcypnc2j7jxjd+ewxogswre+7jvnw7tutmjzigddor9oaba44fp75169zpp="" 10="" fr10wjune0vp2kxgkuuaobonxv06nhc3nzi4ulhw4fn5+cfpnx4ypqpqoj+="" fshaogngzcepxp07dq1o3fune0taolxeg5ubjabzywxxtlpdcqvoprssqwumkviynugfvrja0q6rhaoqsh74th0qtulzs4weuutcdw3v0wvgpdkzmmoovnt8elf58+fx7bgqxfxcw1t7woppuypnqzd7="" dxvfrikyuq5exli0eondfjhtdv7rnnnmphjg0cojaxvlvvtxz58lwrvu3evxvy5ml1dxvebc3pzw+hw4faaabs287lyxs0afa6nq4gg4wxscqiwuhimomzrbcttpt2kuvmjfblen0mokcfdtpjokrvblnd1r12zzlhxhq6fxvr27w3w3knlcvyxhohhmdikb2t2="" o9ku8="" oinotac0ohgt2im8ezoyrkrmogg7uqfeidkkjrpoipcgbfrqvaen3vmnhfbkewcsy="" rxypff5k3f="" rb="" zbzhuw2ofxap6f6f7v+d="" geg5nuounoniqaaaabjru5erkjggg="=&quot;+style=&quot;width:+55px;&quot;+data-filename=&quot;image.png&quot;">標識處附近上網(應為無線訊號較佳處)；另本服務主要於室內公共空間提供服務，如於室外場所偵測到iTaiwan服務訊號時，應先行確認是否為iTaiwan所提供之服務，以確保使用安全。</img+alt="itaiwan無線上網服務+標識"+src="data:image></p>
+
+
+<h3>Q. <a+name="timeout">目前民眾使用iTaiwan免費無線上網服務有無連線時間上之限制?</a+name="timeout"></h3>
+
+<p>為促進公眾資源之有效合理運用及讓更多有上網需求之民眾皆能享有本項便民服務，iTaiwan無線上網服務設有以下連線使用時間限制:</p>
+<ul>
+<li>您如登入本服務後，逾15分鐘閒置未使用時，或連續使用4小時後，系統將會主動終止連線並自動登出，以避免長時間占用公共上網頻寬，影響其他使用者權益。</li>
+<li>若您於系統自動登出後仍有上網需求，可再行重新登入使用。</li>
+</ul>
+
+
+
+<h3>Q. 「中央行政機關室內公共區域提供免費無線上網」客服中心?</h3>
+
+<p><b>愛台灣客服提供24小時客服電話(0800-081-051)與客服信箱(service@itaiwan.gov.tw)供機關、民眾進線詢問。</b></p><p>
+
+<h3>Q. 如何申請介接iTaiwan無線上網單一認證服務</h3>
+<p>機關申請及異動方式，請參考 <a href="https://gsn.nat.gov.tw/GSNArticle/Contents?articleId=167" title="申請介接iTaiwan無線上網服務流程及相關表單">https://gsn.nat.gov.tw/GSNArticle/Contents?articleId=167</a></p>                            </div>
+                        </div>
+                            <!-- // 檔案下載 -->
+                            <div class="contents-box-download">
+                                <h3 class="headline"><i aria-hidden="true" class="fa fa-file-text-o"></i> 相關檔案：</h3>
+
+                                <div class="list-group">
+                                                <a aria-hidden="true" class="list-group-item" href="/ITaiwanDW/GetFile?fileName=faq.pdf&amp;type=2" title="下載：常見問題.pdf 255.545KB">常見問題.pdf 255.545KB</a>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        <!-- FOOTER -->
+		
+        <footer class="app-footer">
+            <div class="container">
+                <!--下方功能區塊導盲磚-->
+                    <a id="accesskeyZ" accesskey="Z" href="#accesskeyZ" title="下方功能區塊，此區塊呈現網頁聯絡方式與版權宣告">:::</a>
+                <div class="copyright">
+                    <div class="pull-left copyright-badge">
+                        <a href="https://accessibility.moda.gov.tw/Applications/Detail?category=20250728160732" title="無障礙網站">
+                            <img src="/img/accessibility_aa_2025.png" border="0" width="88" height="31" alt="通過AA無障礙網頁檢測">
+                        </a>
+                        <!--a title="移至無障礙標章資訊網頁" href="https://accessibility.moda.gov.tw/Applications/Detail?category=20220906154451"><img src="/img/accessibility_aa_new.png" alt="通過AA檢測等級無障礙網頁檢測"></a-->
+                    </div>
+                    <div class="pull-left copyright-info">
+                        <p>客服電話：0800-081-051　 客服信箱：<a href="mailto:service@itaiwan.gov.tw" title="寫信給客服信箱 service@itaiwan.gov.tw">service@itaiwan.gov.tw</a></p>
+                        <p><a href="/ITaiwanArticle/Rule" title="無線上網服務規章">無線上網服務規章</a></p>
+                    </div>
+                    <div class="pull-right copyright-announce">
+                        <p>數位發展部</p>
+                        <p>版權所有 ©copyright 2022</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+		
+    </div>
+
+    
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+	<script src="/Scripts/poper.min.js"></script>
+    <script src="/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="/Scripts/jquery-migrate.min.js"></script>
+    <script src="/Scripts/bootstrap.min.js"></script>
+    <!-- Plugins -->
+    <script src="/Scripts/owl.carousel.min.js"></script>
+    <!-- Demo JS -->
+    <script src="/Scripts/app.js"></script> 
+    <script src="/Scripts/ie10-viewport-bug-workaround.js"></script>
+    <script src="/Scripts/holder.min.js"></script>
+	
+    
+
+    <!-- only this page -->
+    <script>
+        function screencheck() {
+		console.log('screencheck function executed');
+            if (window.orientation == 180 || window.orientation == 0 || $(window).width() < $(window).height()) {
+                // console.log("豎屏狀態!")
+                $('.item-img-md').hide();
+                $('.item-img-xs').show();
+            }
+            if (window.orientation == 90 || window.orientation == -90 || $(window).width() > $(window).height()) {
+			console.log('Landscape mode detected');
+                // console.log("橫屏狀態!")
+                $('.item-img-md').show();
+                $('.item-img-xs').hide();
+            }
+        }
+		$(".navbar-xs-btn").on("click",function (e) {
+			var _win_w = $(window).width();
+			// console.log(_win_w);
+			console.log('1')
+			if (_win_w<=767) {
+			  // e.stopPropagation();
+			  $(".app-navbar-header .dropdown-menu>.nav>li>a").on("click",function (e) {
+				e.stopPropagation();
+				// $(this).parent().parent().find('.dropdown').removeClass('open');
+				// $(".app-navbar-header .nav-nemu").addClass('open');
+				$(this).parent().toggleClass('show');
+				// 
+			  })
+			}
+			$(this).parent().toggleClass('show');
+		})
+			
+		$(window).scroll(function(event){
+			var _win_w = $(window).width();
+			var _nav_menu_item = $('.nav-nemu .dropdown.show');
+			// console.log(event);
+			if (_win_w>=768) {
+			  _nav_menu_item.removeClass('show');
+			  // $(".dropdown>a:focus").blur();
+			}else{
+			  // 
+			}
+			// _nav_menu_item.find('.dropdown-menu').hide();
+		  });
+    </script>
+
+
+    
+</body>
+</html>
