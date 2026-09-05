@@ -1,4 +1,4 @@
-const CACHE_NAME = 'all-in-life-shell-v4';
+const CACHE_NAME = 'all-in-life-shell-v5';
 const APP_SHELL = [
   '/',
   '/manifest.webmanifest',

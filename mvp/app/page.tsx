@@ -28,6 +28,8 @@ import {
   Clock3,
   Compass,
   Copy,
+  Database,
+  Download,
   ExternalLink,
   Flag,
   Gamepad2,
@@ -40,12 +42,14 @@ import {
   Mic,
   Pencil,
   PackageCheck,
+  Power,
   Radar,
   ReceiptText,
   Share2,
   ShieldCheck,
   ShoppingBag,
   SlidersHorizontal,
+  Smartphone,
   Sparkles,
   Trash2,
   UserRound,
@@ -63,6 +67,12 @@ import {
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
+import {
+  catalogCategories,
+  categoryLabels,
+  type CatalogCategoryLabel,
+  type CatalogSummaryResponse,
+} from '@/lib/catalog-contract';
 import { type CpDimension } from '@/lib/cp-engine';
 
 type View =
@@ -84,7 +94,8 @@ type View =
   | 'report'
   | 'map';
 type Mode = 'daily' | 'team' | 'zero';
-type Category = '食品' | '日用品' | '免費／公益資源' | '活動' | '交通';
+type ExperienceMode = 'demo' | 'account';
+type Category = CatalogCategoryLabel;
 type Sort = 'cp' | 'cost' | 'distance';
 type LocationPermission = 'idle' | 'requesting' | 'granted' | 'declined' | 'denied';
 type GeoPoint = { latitude: number; longitude: number };
@@ -176,13 +187,29 @@ const modeNeedExamples: Record<Mode, string> = {
 };
 const publicAppUrl = 'https://all-in-life-ail.chiehlun.chatgpt.site/';
 const publicAppHost = new URL(publicAppUrl).host;
-const resultCategories: Category[] = [
-  '食品',
-  '日用品',
-  '免費／公益資源',
-  '活動',
-  '交通',
-];
+const copyText = async (text: string) => {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // 部分 in-app browser 會拒絕 Clipboard API，改走選取文字備援。
+  }
+
+  const field = document.createElement('textarea');
+  field.value = text;
+  field.setAttribute('readonly', '');
+  field.style.position = 'fixed';
+  field.style.opacity = '0';
+  document.body.appendChild(field);
+  field.select();
+  // oxlint-disable-next-line typescript/no-deprecated -- Required fallback for embedded browsers that block Clipboard API.
+  const copied = document.execCommand('copy');
+  field.remove();
+  return copied;
+};
+const resultCategories: Category[] = categoryLabels;
 const categoryColors: Record<Category, string> = {
   食品: 'var(--lime)',
   日用品: 'var(--amber)',
@@ -683,6 +710,45 @@ const localNow = () =>
     second: '2-digit',
     hourCycle: 'h23',
   }).format(new Date());
+const createInitialFilters = (experience: ExperienceMode): Filters => {
+  const now = taipeiDateTime();
+  return {
+    date: now.date,
+    time: now.time,
+    category: '全部',
+    budget: experience === 'demo' ? 500 : 0,
+    people: experience === 'demo' ? 2 : 1,
+    distance: 2,
+    exclusions: experience === 'demo' ? ['堅果'] : [],
+    preferences: experience === 'demo' ? ['安靜', '能坐'] : [],
+  };
+};
+const demoTransactions: Transaction[] = [
+  {
+    id: 'h1',
+    title: '圓山站日常補給',
+    category: '日用品',
+    amount: 126,
+    date: '09/03',
+    saved: 14,
+  },
+  {
+    id: 'h2',
+    title: '朋友共乘',
+    category: '交通',
+    amount: 52,
+    date: '08/30',
+    saved: 68,
+  },
+  {
+    id: 'h3',
+    title: '週末看展',
+    category: '活動',
+    amount: 30,
+    date: '08/24',
+    saved: 30,
+  },
+];
 const overlap = (a: string[] = [], b: string[] = []) =>
   a.filter((item) => b.includes(item));
 const cpFormulaScore = (item: Result, filters: Filters, params: CpParams) => {
@@ -724,6 +790,8 @@ const categoryIcon = (category: Category) =>
 export default function App() {
   const [view, setView] = useState<View>('welcome');
   const [history, setHistory] = useState<View[]>([]);
+  const [experienceMode, setExperienceMode] =
+    useState<ExperienceMode>('demo');
   const [profile, setProfile] = useState<Profile>({
     name: '小美',
     avatar: '#c9ff36',
@@ -731,19 +799,9 @@ export default function App() {
   });
   const [mode, setMode] = useState<Mode>('daily');
   const [need, setNeed] = useState(modeNeedExamples.daily);
-  const [filters, setFilters] = useState<Filters>(() => {
-    const now = taipeiDateTime();
-    return {
-      date: now.date,
-      time: now.time,
-      category: '全部',
-      budget: 500,
-      people: 2,
-      distance: 2,
-      exclusions: ['堅果'],
-      preferences: ['安靜', '能坐'],
-    };
-  });
+  const [filters, setFilters] = useState<Filters>(() =>
+    createInitialFilters('demo'),
+  );
   const [followCurrentTime, setFollowCurrentTime] = useState(true);
   const [selectedId, setSelectedId] = useState(results[0].id);
   const [saved, setSaved] = useState<string[]>([]);
@@ -754,7 +812,12 @@ export default function App() {
   const [toast, setToast] = useState('');
   const [evidenceOpen, setEvidenceOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
+  const [shareCopied, setShareCopied] = useState(false);
   const [showSopGuide, setShowSopGuide] = useState(false);
+  const [guideBeforeOnboarding, setGuideBeforeOnboarding] = useState(false);
+  const [catalogSource, setCatalogSource] = useState<
+    CatalogSummaryResponse['source'] | 'checking'
+  >('checking');
   const [sort, setSort] = useState<Sort>('cp');
   const [cpParams, setCpParams] = useState<CpParams>({
     price: 55,
@@ -771,32 +834,8 @@ export default function App() {
   const [locationPermission, setLocationPermission] =
     useState<LocationPermission>('idle');
   const [userLocation, setUserLocation] = useState<GeoPoint | null>(null);
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    {
-      id: 'h1',
-      title: '圓山站日常補給',
-      category: '日用品',
-      amount: 126,
-      date: '09/03',
-      saved: 14,
-    },
-    {
-      id: 'h2',
-      title: '朋友共乘',
-      category: '交通',
-      amount: 52,
-      date: '08/30',
-      saved: 68,
-    },
-    {
-      id: 'h3',
-      title: '週末看展',
-      category: '活動',
-      amount: 30,
-      date: '08/24',
-      saved: 30,
-    },
-  ]);
+  const [transactions, setTransactions] =
+    useState<Transaction[]>(demoTransactions);
   const [installPrompt, setInstallPrompt] = useState<Event | null>(null);
   const [pwaStatus, setPwaStatus] = useState('檢查中');
 
@@ -873,6 +912,23 @@ export default function App() {
     };
     window.addEventListener('beforeinstallprompt', capture);
     return () => window.removeEventListener('beforeinstallprompt', capture);
+  }, []);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/api/catalog/categories', {
+      cache: 'no-store',
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Catalog request failed');
+        return response.json() as Promise<CatalogSummaryResponse>;
+      })
+      .then((payload) => setCatalogSource(payload.source))
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        setCatalogSource('unconfigured');
+      });
+    return () => controller.abort();
   }, []);
   useEffect(() => {
     if (view !== 'search') return;
@@ -963,6 +1019,35 @@ export default function App() {
     );
   }
 
+  function beginExperience(next: ExperienceMode) {
+    setExperienceMode(next);
+    setProfile({
+      name: next === 'demo' ? '小美' : '',
+      avatar: '#c9ff36',
+      signedIn: next === 'account',
+    });
+    setMode('daily');
+    setNeed(next === 'demo' ? modeNeedExamples.daily : '');
+    setFilters(createInitialFilters(next));
+    setTransactions(next === 'demo' ? [...demoTransactions] : []);
+    setTeamCount(next === 'demo' ? 3 : 0);
+    setUnread(next === 'demo' ? 3 : 0);
+    setSaved([]);
+    setCompleted([]);
+    setJoinedTeam(false);
+    setHistory([]);
+    setGuideBeforeOnboarding(true);
+    setShowSopGuide(true);
+  }
+
+  function closeSopGuide() {
+    setShowSopGuide(false);
+    if (!guideBeforeOnboarding) return;
+    setGuideBeforeOnboarding(false);
+    setHistory([]);
+    setView('onboarding');
+  }
+
   function navigate(next: View, remember = true) {
     if (remember && next !== view)
       setHistory((items) => [...items.slice(-8), view]);
@@ -974,12 +1059,26 @@ export default function App() {
   }
   function chooseMode(next: Mode) {
     setMode(next);
-    setNeed(modeNeedExamples[next]);
-    const budget = next === 'zero' ? 0 : next === 'team' ? 800 : 500;
+    setNeed(experienceMode === 'demo' ? modeNeedExamples[next] : '');
+    const budget =
+      experienceMode === 'demo'
+        ? next === 'zero'
+          ? 0
+          : next === 'team'
+            ? 800
+            : 500
+        : 0;
     setFilters((current) => ({
       ...current,
       budget,
-      people: next === 'team' ? 5 : next === 'zero' ? 1 : 2,
+      people:
+        experienceMode === 'demo'
+          ? next === 'team'
+            ? 5
+            : next === 'zero'
+              ? 1
+              : 2
+          : 1,
     }));
     setToast(`已切換：${modes[next].title}`);
   }
@@ -1024,16 +1123,19 @@ export default function App() {
   }
   async function share(text: string) {
     const url = publicAppUrl;
+    setShareCopied(false);
     setShareUrl(url);
     try {
       if (navigator.share) {
         await navigator.share({ title: 'ALL IN LIFE', text, url });
         setToast('分享完成；公開連結仍保留在下方');
-      } else if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(`${text}\n${url}`);
-        setToast('分享內容與連結已複製');
       } else {
-        setToast('請使用下方的開啟或複製連結按鈕');
+        const copied = await copyText(`${text}\n${url}`);
+        setToast(
+          copied
+            ? '分享內容與連結已複製'
+            : '請使用下方的開啟或複製連結按鈕',
+        );
       }
     } catch {
       setToast('分享已取消；仍可掃描、開啟或複製連結');
@@ -1041,13 +1143,9 @@ export default function App() {
   }
   async function copyShareLink() {
     if (!shareUrl) return;
-    try {
-      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
-      await navigator.clipboard.writeText(shareUrl);
-      setToast('公開連結已複製');
-    } catch {
-      setToast('無法自動複製，請長按下方網址');
-    }
+    const copied = await copyText(shareUrl);
+    setShareCopied(copied);
+    setToast(copied ? '公開連結已複製' : '無法自動複製，請長按下方網址');
   }
   function startVoice() {
     type Recognition = {
@@ -1127,11 +1225,8 @@ export default function App() {
           <div key={view} className="screen-enter">
             {view === 'welcome' && (
               <WelcomeScreen
-                onGuest={() => navigate('onboarding')}
-                onLogin={() => {
-                  setProfile((p) => ({ ...p, signedIn: true }));
-                  navigate('onboarding');
-                }}
+                onDemo={() => beginExperience('demo')}
+                onAccount={() => beginExperience('account')}
               />
             )}
             {view === 'onboarding' && (
@@ -1141,15 +1236,21 @@ export default function App() {
                 onProfile={setProfile}
                 onFilters={setFilters}
                 onDone={() => {
+                  setProfile((current) => ({
+                    ...current,
+                    name:
+                      current.name.trim() ||
+                      (experienceMode === 'demo' ? '小美' : '旅人'),
+                  }));
                   setHistory([]);
                   setView('home');
-                  setShowSopGuide(true);
                 }}
               />
             )}
             {view === 'home' && (
               <HomeScreen
                 profile={profile}
+                experienceMode={experienceMode}
                 mode={mode}
                 filters={filters}
                 need={need}
@@ -1167,7 +1268,10 @@ export default function App() {
                   chooseMode('team');
                   navigate('team');
                 }}
-                onGuide={() => setShowSopGuide(true)}
+                onGuide={() => {
+                  setGuideBeforeOnboarding(false);
+                  setShowSopGuide(true);
+                }}
                 onRequestLocation={requestLocation}
                 onDeclineLocation={() => {
                   setUserLocation(null);
@@ -1194,6 +1298,7 @@ export default function App() {
                 allItems={locatedResults}
                 filters={filters}
                 locationLabel={userLocation ? '目前位置' : '圓山'}
+                catalogSource={catalogSource}
                 cpParams={cpParams}
                 sort={sort}
                 saved={saved}
@@ -1239,6 +1344,7 @@ export default function App() {
             )}
             {view === 'team' && (
               <TeamScreen
+                demo={experienceMode === 'demo'}
                 count={teamCount}
                 joined={joinedTeam}
                 onJoin={() => {
@@ -1260,6 +1366,7 @@ export default function App() {
                     '一起加入 ALL IN LIFE 的圓山晚餐團：滿 5 人每人省 NT$15',
                   )
                 }
+                onCreate={() => navigate('results')}
               />
             )}
             {view === 'settings' && (
@@ -1358,12 +1465,21 @@ export default function App() {
             />
         )}
         {toast && (
-          <div className="toast" role="status" aria-live="polite">
+          <output className="toast" aria-live="polite">
             <Check />
             {toast}
-          </div>
+          </output>
         )}
-        {showSopGuide && <SopGuide onClose={() => setShowSopGuide(false)} />}
+        {showSopGuide && (
+          <SopGuide
+            onClose={closeSopGuide}
+            onInstall={installPwa}
+            pwaStatus={pwaStatus}
+            finishLabel={
+              guideBeforeOnboarding ? '開始設定稱呼' : '回到 ALL IN LIFE'
+            }
+          />
+        )}
       </main>
       <Dialog open={evidenceOpen} onOpenChange={setEvidenceOpen}>
         <DialogContent className="evidence-sheet">
@@ -1402,7 +1518,11 @@ export default function App() {
       </Dialog>
       <Dialog
         open={Boolean(shareUrl)}
-        onOpenChange={(open) => !open && setShareUrl('')}
+        onOpenChange={(open) => {
+          if (open) return;
+          setShareUrl('');
+          setShareCopied(false);
+        }}
       >
         <DialogContent className="evidence-sheet share-sheet">
           <DialogHeader>
@@ -1449,8 +1569,8 @@ export default function App() {
               <ExternalLink />
             </a>
             <button type="button" onClick={copyShareLink}>
-              <Copy />
-              複製連結
+              {shareCopied ? <Check /> : <Copy />}
+              {shareCopied ? '已複製' : '複製連結'}
             </button>
           </div>
           <p className="fine-print">
@@ -1462,46 +1582,90 @@ export default function App() {
   );
 }
 
+function AiliMascot({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className={`aili-mascot ${compact ? 'compact' : ''}`}>
+      <span className="mascot-orbit" aria-hidden="true" />
+      <svg viewBox="0 0 180 180" aria-hidden="true" focusable="false">
+        <path className="mascot-tail" d="M131 124c31 1 35-24 17-35" />
+        <path className="mascot-ear" d="m53 52 5-29 23 20m46 9-5-29-23 20" />
+        <rect className="mascot-head" x="42" y="39" width="96" height="82" rx="30" />
+        <rect className="mascot-face" x="53" y="50" width="74" height="58" rx="22" />
+        <circle className="mascot-eye mascot-eye-left" cx="76" cy="77" r="7" />
+        <circle className="mascot-eye mascot-eye-right" cx="105" cy="77" r="7" />
+        <path className="mascot-mouth" d="M82 94q9 8 18 0" />
+        <path className="mascot-body" d="M62 116h56l12 42H50z" />
+        <rect className="mascot-badge" x="78" y="126" width="24" height="19" rx="7" />
+        <path className="mascot-badge-mark" d="m85 139 4-8h6l-4 8z" />
+        <circle className="mascot-signal" cx="90" cy="22" r="5" />
+      </svg>
+    </div>
+  );
+}
+
 function WelcomeScreen({
-  onGuest,
-  onLogin,
+  onDemo,
+  onAccount,
 }: {
-  onGuest: () => void;
-  onLogin: () => void;
+  onDemo: () => void;
+  onAccount: () => void;
 }) {
   return (
-    <section className="welcome-screen">
-      <div className="welcome-mark">
-        <span>ALL</span>
-        <span>IN</span>
-        <span>LIFE</span>
+    <section className="welcome-screen boot-welcome">
+      <div className="boot-brand">
+        <span>ALL IN LIFE</span>
+        <small>PERSONAL LIFE OS</small>
       </div>
-      <p>
-        把預算、時間、距離與偏好
-        <br />
-        變成今天真的做得到的選擇。
-      </p>
-      <div className="welcome-visual">
-        <Compass />
-        <i />
-        <i />
-        <i />
+      <div className="boot-console">
+        <span className="boot-grid" aria-hidden="true" />
+        <AiliMascot />
+        <div className="boot-copy">
+          <span><Power /> AILI CORE ONLINE</span>
+          <h1>生活獵人，<br />準備開機。</h1>
+          <p>把預算、時間、距離與偏好，變成今天做得到的選擇。</p>
+        </div>
+        <div className="boot-log" aria-label="系統啟動狀態">
+          <span><i />偏好引擎 READY</span>
+          <span><i />雙獵人 READY</span>
+          <span><i />離線外殼 READY</span>
+        </div>
       </div>
-      <button className="primary-action" onClick={onGuest}>
-        <Sparkles />
-        先匿名使用
-        <ArrowRight />
-      </button>
-      <button className="secondary-action" onClick={onLogin}>
-        <LogIn />
-        登入並保存紀錄
-      </button>
-      <small>匿名資料只留在這台裝置；登入後才能跨裝置保存。</small>
+      <div className="experience-picker">
+        <button className="experience-option demo" onClick={onDemo}>
+          <span className="experience-icon"><Sparkles /></span>
+          <span>
+            <i>DEMO</i>
+            <b>模擬體驗版</b>
+            <small>帶入預算、揪團與範例資料，評審可直接操作</small>
+          </span>
+          <ArrowRight />
+        </button>
+        <button className="experience-option account" onClick={onAccount}>
+          <span className="experience-icon"><LogIn /></span>
+          <span>
+            <i>LOGIN</i>
+            <b>登入／正式版</b>
+            <small>從空白帳戶開始，不預填金額、收藏與揪團</small>
+          </span>
+          <ArrowRight />
+        </button>
+      </div>
+      <small className="welcome-footnote">選擇版本後，會先播放操作與 PWA 安裝教學。</small>
     </section>
   );
 }
 
-function SopGuide({ onClose }: { onClose: () => void }) {
+function SopGuide({
+  onClose,
+  onInstall,
+  pwaStatus,
+  finishLabel,
+}: {
+  onClose: () => void;
+  onInstall: () => void;
+  pwaStatus: string;
+  finishLabel: string;
+}) {
   const [step, setStep] = useState(0);
   const guide = [
     {
@@ -1521,6 +1685,12 @@ function SopGuide({ onClose }: { onClose: () => void }) {
       title: '確認完成，雙獵人出動',
       copy: '按下開始探索後，CP 值獵人與零元獵人才會同步搜尋並帶回結果。',
       icon: <Radar />,
+    },
+    {
+      eyebrow: 'STEP 04 · 安裝 PWA',
+      title: '把 AILI 帶到主畫面',
+      copy: '安裝後可像 App 一樣全螢幕開啟；已快取的介面在網路不穩時仍可使用。',
+      icon: <Smartphone />,
     },
   ];
   useEffect(() => {
@@ -1557,6 +1727,15 @@ function SopGuide({ onClose }: { onClose: () => void }) {
               <i><b>0元</b><span /></i>
             </div>
           )}
+          {step === 3 && (
+            <div className="guide-pwa">
+              <AiliMascot compact />
+              <button type="button" onClick={onInstall}>
+                <Download />安裝 PWA
+              </button>
+              <small>{pwaStatus}</small>
+            </div>
+          )}
         </div>
         <div className="sop-guide-copy" key={step}>
           <span>{item.eyebrow}</span>
@@ -1577,7 +1756,7 @@ function SopGuide({ onClose }: { onClose: () => void }) {
           className="primary-action sop-guide-next"
           onClick={() => (step < guide.length - 1 ? setStep(step + 1) : onClose())}
         >
-          {step < guide.length - 1 ? '下一步' : '開始探索'}
+          {step < guide.length - 1 ? '下一步' : finishLabel}
           <ArrowRight />
         </button>
       </div>
@@ -1837,6 +2016,7 @@ function ReadyScreen({
 
 function HomeScreen({
   profile,
+  experienceMode,
   mode,
   filters,
   need,
@@ -1856,6 +2036,7 @@ function HomeScreen({
   onDeclineLocation,
 }: {
   profile: Profile;
+  experienceMode: ExperienceMode;
   mode: Mode;
   filters: Filters;
   need: string;
@@ -1874,6 +2055,7 @@ function HomeScreen({
   onRequestLocation: () => void;
   onDeclineLocation: () => void;
 }) {
+  const isDemo = experienceMode === 'demo';
   const [promptIndex, setPromptIndex] = useState(0);
   const [typedPrompt, setTypedPrompt] = useState('');
   const [deletingPrompt, setDeletingPrompt] = useState(false);
@@ -1916,7 +2098,7 @@ function HomeScreen({
     <section className="screen home-screen">
       <div className="greeting-row">
         <div className="typewriter-greeting">
-          <span className="kicker">嗨，{profile.name}</span>
+          <span className="kicker">嗨，{profile.name || '旅人'}</span>
           <h1 aria-live="polite">
             {typedPrompt}<i />
           </h1>
@@ -1927,30 +2109,41 @@ function HomeScreen({
           style={{ background: profile.avatar }}
           aria-label="編輯個人檔案"
         >
-          {profile.name.slice(0, 1)}
+          {(profile.name || '旅人').slice(0, 1)}
         </button>
       </div>
-      <button
-        className="wallet-card"
-        onClick={onAnalytics}
-        aria-label="查看消費分析"
-      >
-        <div>
-          <span className="wallet-label">
-            <WalletCards />
-            本月剩餘
+      {isDemo ? (
+        <button
+          className="wallet-card"
+          onClick={onAnalytics}
+          aria-label="查看 DEMO 消費分析"
+        >
+          <div>
+            <span className="wallet-label">
+              <WalletCards />
+              DEMO 本月剩餘
+            </span>
+            <strong>NT$ 8,000</strong>
+          </div>
+          <div className="wallet-side">
+            <span>本月省下</span>
+            <b>NT$ 1,240</b>
+            <small>查看模擬分析</small>
+          </div>
+          <div className="wallet-progress">
+            <i style={{ width: '80%' }} />
+          </div>
+        </button>
+      ) : (
+        <button className="account-empty-card" onClick={onAnalytics}>
+          <Database />
+          <span>
+            <b>正式帳戶尚未有消費資料</b>
+            <small>完成第一筆選擇後，這裡才會建立預算與省下金額。</small>
           </span>
-          <strong>NT$ 8,000</strong>
-        </div>
-        <div className="wallet-side">
-          <span>本月省下</span>
-          <b>NT$ 1,240</b>
-          <small>查看消費分析</small>
-        </div>
-        <div className="wallet-progress">
-          <i style={{ width: '80%' }} />
-        </div>
-      </button>
+          <ChevronRight />
+        </button>
+      )}
       <div className="mode-carousel">
         {(Object.keys(modes) as Mode[]).map((item) => (
           <button
@@ -2003,7 +2196,7 @@ function HomeScreen({
           <span>
             {filters.date.slice(5)} {filters.time}
           </span>
-          <span>NT${filters.budget}</span>
+          <span>{filters.budget > 0 ? `NT$${filters.budget}` : '預算未設'}</span>
           <span>{filters.people} 人</span>
           <span>{filters.distance} km</span>
         </div>
@@ -2016,18 +2209,22 @@ function HomeScreen({
       <button className="sop-launcher" onClick={onGuide}>
         <span className="sop-launcher-icon"><Sparkles /></span>
         <span>
-          <b>新手必看 · 快速動畫教學</b>
-          <small>輸入需求 → 確認需求與限制 → 開始探索</small>
+          <b>再次查看 · 動畫與 PWA 教學</b>
+          <small>輸入需求 → 確認條件 → 雙獵人 → 安裝主畫面</small>
         </span>
         <ChevronRight />
       </button>
-      <button className="quick-team" onClick={onTeam}>
+      <button className={`quick-team ${isDemo ? '' : 'empty'}`} onClick={onTeam}>
         <span className="quick-icon">
           <Users />
         </span>
         <span>
-          <b>附近有人正在湊團</b>
-          <small>五人晚餐團還差 2 位 · 可取消</small>
+          <b>{isDemo ? 'DEMO · 附近有人正在湊團' : '目前沒有加入的揪團'}</b>
+          <small>
+            {isDemo
+              ? '五人晚餐團還差 2 位 · 可取消'
+              : '建立或加入團體後，進度才會顯示在這裡。'}
+          </small>
         </span>
         <ChevronRight />
       </button>
@@ -2231,6 +2428,7 @@ function ResultsScreen({
   allItems,
   filters,
   locationLabel,
+  catalogSource,
   cpParams,
   sort,
   saved,
@@ -2245,6 +2443,7 @@ function ResultsScreen({
   allItems: Result[];
   filters: Filters;
   locationLabel: string;
+  catalogSource: CatalogSummaryResponse['source'] | 'checking';
   cpParams: CpParams;
   sort: Sort;
   saved: string[];
@@ -2258,8 +2457,11 @@ function ResultsScreen({
   const [sortOpen, setSortOpen] = useState(false);
   const activeSort =
     sortOptions.find((option) => option.value === sort) ?? sortOptions[0];
-  const dashboardCounts = resultCategories.map((category) => ({
+  const categoryCounts = resultCategories.map((category) => ({
     category,
+    shortLabel:
+      catalogCategories.find((entry) => entry.label === category)?.shortLabel ??
+      category,
     count: allItems.filter((item) => {
       const budgetMatch =
         filters.budget === 0
@@ -2272,10 +2474,16 @@ function ResultsScreen({
       );
     }).length,
   }));
-  const dashboardTotal = dashboardCounts.reduce(
+  const categoryTotal = categoryCounts.reduce(
     (total, item) => total + item.count,
     0,
   );
+  const catalogSourceText =
+    catalogSource === 'd1'
+      ? 'D1 類別索引已連線'
+      : catalogSource === 'checking'
+        ? '正在確認類別索引'
+        : 'DEMO 資料集 · 五類已對應 D1 欄位';
 
   return (
     <section className="screen results-screen">
@@ -2342,37 +2550,32 @@ function ResultsScreen({
           )}
         </div>
       </div>
-      <div className="category-dashboard">
-        <div className="category-dashboard-head">
-          <span>
-            <b>五類推薦 Dashboard</b>
-            <small>點選類別切換推薦結果</small>
-          </span>
+      <nav className="category-filter" aria-label="推薦結果分類">
+        <button
+          className={filters.category === '全部' ? 'active' : ''}
+          onClick={() => onFiltersChange({ ...filters, category: '全部' })}
+        >
+          <span>全部</span><i>{categoryTotal}</i>
+        </button>
+        {categoryCounts.map(({ category, shortLabel, count }) => (
           <button
-            className={filters.category === '全部' ? 'active' : ''}
-            onClick={() =>
-              onFiltersChange({ ...filters, category: '全部' })
+            key={category}
+            className={filters.category === category ? 'active' : ''}
+            style={
+              { '--category-color': categoryColors[category] } as CSSProperties
             }
+            onClick={() => onFiltersChange({ ...filters, category })}
+            aria-label={`${category} ${count} 筆`}
           >
-            全部 <b>{dashboardTotal}</b>
+            {categoryIcon(category)}
+            <span>{shortLabel}</span>
+            <i>{count}</i>
           </button>
-        </div>
-        <div className="category-dashboard-grid">
-          {dashboardCounts.map(({ category, count }) => (
-            <button
-              key={category}
-              className={filters.category === category ? 'active' : ''}
-              style={
-                { '--category-color': categoryColors[category] } as CSSProperties
-              }
-              onClick={() => onFiltersChange({ ...filters, category })}
-            >
-              <span>{categoryIcon(category)}</span>
-              <b>{category}</b>
-              <i>{count}</i>
-            </button>
-          ))}
-        </div>
+        ))}
+      </nav>
+      <div className={`catalog-connection source-${catalogSource}`}>
+        <Database />
+        <span>{catalogSourceText}</span>
       </div>
       <CpFormulaPanel
         params={cpParams}
@@ -2697,18 +2900,37 @@ function SavedScreen({
 }
 
 function TeamScreen({
+  demo,
   count,
   joined,
   onJoin,
   onCancel,
   onShare,
+  onCreate,
 }: {
+  demo: boolean;
   count: number;
   joined: boolean;
   onJoin: () => void;
   onCancel: () => void;
   onShare: () => void;
+  onCreate: () => void;
 }) {
+  if (!demo) {
+    return (
+      <section className="screen team-screen">
+        <span className="kicker">GROUP ORDER</span>
+        <h1>一起省更多</h1>
+        <p>登入版不會預放任何揪團；加入或建立後才會出現在這裡。</p>
+        <div className="empty-state team-empty-state">
+          <Users />
+          <h2>目前沒有進行中的團</h2>
+          <p>你可以先從探索結果建立團購或共乘邀請。</p>
+          <button type="button" onClick={onCreate}>從探索結果建立</button>
+        </div>
+      </section>
+    );
+  }
   const target = 5;
   const done = count >= target;
   const soloUnit = 100;

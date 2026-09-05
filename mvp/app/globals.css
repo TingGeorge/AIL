@@ -28,7 +28,7 @@
 .history-list .history-entry{width:100%;min-height:62px;padding:10px;border:1px solid var(--border);border-radius:15px;display:flex;align-items:center;gap:9px;background:#131815;text-align:left}.history-entry>span:nth-child(2){min-width:0;flex:1}.history-entry>span:nth-child(3){text-align:right}.history-entry>svg{width:13px;color:var(--muted)}
 
 /* 分享卡：QR 在本機產生，並提供同網址的可見連結與手機備援操作。 */
-.share-sheet{bottom:50%;max-height:calc(100dvh - 24px);overflow-y:auto;transform:translate(-50%,50%);border-radius:22px}
+.share-sheet{top:50%;bottom:auto;max-height:calc(100dvh - 24px);overflow-x:hidden;overflow-y:auto;translate:none;transform:translate(-50%,-50%);border-radius:22px}
 .share-preview{margin-top:14px;padding:12px;border:1px solid rgb(201 255 54/.22);border-radius:18px;display:grid;grid-template-columns:minmax(0,1fr) 170px;align-items:center;gap:12px;background:linear-gradient(140deg,#090d0a,#111812)}
 .share-preview-copy{min-width:0;padding-left:4px}
 .share-preview-mark{display:block;color:var(--lime);font:950 18px var(--font-geist-mono);letter-spacing:-.05em}
@@ -161,7 +161,7 @@ dialog.sop-overlay{width:auto;max-width:none;height:auto;margin:0;border:0;color
 /* STEP 1 的主按鈕維持清楚但不搶走輸入區焦點。 */
 .mission-card>.flow-action{min-height:44px;padding:0 12px;border-radius:13px;font-size:10px}
 
-/* 探索頁：明確的排序下拉選單與五類推薦 Dashboard。 */
+/* 探索頁：明確的排序下拉選單與資料庫共用的五類標籤。 */
 .results-screen .filter-row{align-items:stretch;overflow:visible}
 .results-screen .filter-summary{min-width:0;padding:7px 10px;text-align:left}
 .filter-summary>span{min-width:0;flex:1}
@@ -185,22 +185,86 @@ dialog.sop-overlay{width:auto;max-width:none;height:auto;margin:0;border:0;color
 .sort-menu b{font-size:9px}
 .sort-menu small{margin-top:2px;color:var(--muted);font-size:7px}
 .sort-menu svg{width:14px;color:var(--lime)}
-.category-dashboard{margin:4px 0 10px;padding:10px;border:1px solid var(--border);border-radius:17px;background:linear-gradient(145deg,rgb(201 255 54/.045),rgb(139 92 255/.035)),#101512}
-.category-dashboard-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.category-dashboard-head>span{min-width:0}
-.category-dashboard-head>span b,.category-dashboard-head>span small{display:block}
-.category-dashboard-head>span b{font-size:10px}
-.category-dashboard-head>span small{margin-top:2px;color:var(--muted);font-size:7px}
-.category-dashboard-head>button{min-height:29px;padding:0 9px;border:1px solid var(--border);border-radius:10px;background:#111713;color:#aeb8af;font-size:8px}
-.category-dashboard-head>button b{margin-left:3px;color:var(--lime)}
-.category-dashboard-head>button.active{border-color:var(--lime);background:rgb(201 255 54/.12);color:var(--lime)}
-.category-dashboard-grid{margin-top:9px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
-.category-dashboard-grid button{--category-color:var(--lime);min-width:0;min-height:58px;padding:7px 5px;position:relative;grid-column:span 2;border:1px solid color-mix(in srgb,var(--category-color) 28%,transparent);border-radius:13px;display:grid;grid-template-columns:26px 1fr;align-items:center;gap:5px;overflow:hidden;background:color-mix(in srgb,var(--category-color) 5%,#111713);text-align:left;transition:border-color .18s ease,background .18s ease,transform .16s ease,box-shadow .18s ease}
-.category-dashboard-grid button:nth-child(n+4){grid-column:span 3}
-.category-dashboard-grid button>span{width:26px;height:26px;display:grid;place-items:center;border-radius:9px;background:color-mix(in srgb,var(--category-color) 15%,transparent);color:var(--category-color)}
-.category-dashboard-grid button>span svg{width:14px}
-.category-dashboard-grid button>b{font-size:8px;line-height:1.25}
-.category-dashboard-grid button>i{min-width:16px;height:16px;padding:0 4px;position:absolute;right:5px;top:5px;border-radius:8px;display:grid;place-items:center;background:rgb(255 255 255/.07);color:#a8b2a9;font:750 7px var(--font-geist-mono);font-style:normal}
-.category-dashboard-grid button:hover,.category-dashboard-grid button.active{border-color:var(--category-color);background:color-mix(in srgb,var(--category-color) 11%,#111713);box-shadow:0 0 18px color-mix(in srgb,var(--category-color) 12%,transparent)}
-.category-dashboard-grid button:active{transform:scale(.97)}
-.category-dashboard-grid button.active>i{background:var(--category-color);color:#0a0e0b}
+.category-filter{margin:3px 0 6px;padding-bottom:2px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.category-filter button{--category-color:var(--lime);width:100%;min-width:0;min-height:34px;padding:0 7px;border:1px solid color-mix(in srgb,var(--category-color) 30%,var(--border));border-radius:999px;display:flex;align-items:center;justify-content:center;gap:4px;background:color-mix(in srgb,var(--category-color) 5%,#111713);color:#c4cec5;font-size:8px;font-weight:800;white-space:nowrap;transition:.16s ease}
+.category-filter button>svg{width:12px;height:12px;color:var(--category-color)}
+.category-filter button>i{min-width:15px;height:15px;padding:0 4px;border-radius:8px;display:grid;place-items:center;background:rgb(255 255 255/.07);color:#9ba69d;font:700 7px var(--font-geist-mono);font-style:normal}
+.category-filter button:hover,.category-filter button.active{border-color:var(--category-color);background:color-mix(in srgb,var(--category-color) 15%,#111713);color:white;box-shadow:0 0 15px color-mix(in srgb,var(--category-color) 12%,transparent)}
+.category-filter button.active>i{background:var(--category-color);color:#09100a}
+.catalog-connection{min-height:24px;margin-bottom:8px;padding:0 7px;border-radius:9px;display:flex;align-items:center;gap:5px;background:rgb(255 255 255/.035);color:#7f8c82;font-size:7px}
+.catalog-connection svg{width:11px;height:11px;flex:0 0 11px;color:var(--blue)}
+.catalog-connection.source-d1{background:rgb(201 255 54/.07);color:#bfcabf}
+.catalog-connection.source-d1 svg{color:var(--lime)}
+
+/* AILI 開機寵物、雙版本入口與 PWA 教學。 */
+.boot-welcome{padding:18px 20px 22px;overflow-y:auto}
+.boot-brand{display:flex;align-items:end;justify-content:space-between;color:var(--lime);font:950 15px var(--font-geist-mono);letter-spacing:-.04em}
+.boot-brand small{color:#69766c;font-size:7px;letter-spacing:.14em}
+.boot-console{min-height:425px;margin-top:12px;padding:13px;position:relative;overflow:hidden;border:1px solid rgb(201 255 54/.2);border-radius:28px;background:radial-gradient(circle at 50% 24%,rgb(201 255 54/.13),transparent 35%),linear-gradient(160deg,#121a13,#090d0a)}
+.boot-console:after{content:'';height:1px;position:absolute;z-index:1;left:8px;right:8px;top:0;background:linear-gradient(90deg,transparent,var(--lime),transparent);box-shadow:0 0 18px var(--lime);animation:bootScan 3.2s linear infinite}
+.boot-grid{position:absolute;inset:0;opacity:.17;background-image:linear-gradient(rgb(201 255 54/.12) 1px,transparent 1px),linear-gradient(90deg,rgb(201 255 54/.12) 1px,transparent 1px);background-size:24px 24px;mask-image:linear-gradient(to bottom,#000,transparent 75%)}
+.aili-mascot{width:190px;height:190px;margin:3px auto -8px;position:relative;z-index:2;filter:drop-shadow(0 0 22px rgb(201 255 54/.16));animation:mascotFloat 2.6s ease-in-out infinite}
+.aili-mascot svg{width:100%;height:100%;overflow:visible}
+.mascot-orbit{position:absolute;inset:18px;border:1px solid rgb(201 255 54/.25);border-radius:50%;animation:mascotOrbit 7s linear infinite}
+.mascot-orbit:after{content:'';width:7px;height:7px;position:absolute;left:17px;top:18px;border-radius:50%;background:var(--violet);box-shadow:0 0 13px var(--violet)}
+.mascot-tail,.mascot-ear,.mascot-mouth{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.mascot-tail{stroke:var(--violet);stroke-width:10;stroke-dasharray:90;animation:mascotTail 2.5s ease-in-out infinite}
+.mascot-ear{fill:var(--lime);stroke:var(--lime);stroke-width:5}
+.mascot-head{fill:var(--lime)}
+.mascot-face{fill:#0c120d}
+.mascot-eye-left{fill:var(--violet)}
+.mascot-eye-right{fill:var(--blue)}
+.mascot-eye{transform-box:fill-box;transform-origin:center;animation:mascotBlink 4.4s infinite}
+.mascot-mouth{stroke:var(--lime);stroke-width:5}
+.mascot-body{fill:#121a14;stroke:var(--lime);stroke-width:4;stroke-linejoin:round}
+.mascot-badge{fill:var(--lime)}
+.mascot-badge-mark{fill:#0b100c}
+.mascot-signal{fill:var(--coral);filter:drop-shadow(0 0 7px var(--coral));animation:livePulse 1.1s infinite}
+.boot-copy{position:relative;z-index:2;text-align:center}
+.boot-copy>span{display:flex;align-items:center;justify-content:center;gap:5px;color:var(--lime);font:750 7px var(--font-geist-mono);letter-spacing:.12em}
+.boot-copy>span svg{width:11px}
+.boot-copy h1{margin-top:7px;font-size:29px;line-height:.98;letter-spacing:-.055em}
+.boot-copy p{max-width:285px;margin:9px auto 0;color:#aab4ab;font-size:9px;line-height:1.55}
+.boot-log{margin-top:14px;position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.boot-log span{min-height:27px;padding:0 5px;border:1px solid rgb(255 255 255/.07);border-radius:8px;display:flex;align-items:center;justify-content:center;gap:4px;background:rgb(8 12 9/.65);color:#89958b;font:650 6px var(--font-geist-mono)}
+.boot-log i{width:5px;height:5px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px var(--lime);animation:livePulse 1.3s infinite}
+.experience-picker{margin-top:10px;display:grid;gap:7px}
+.experience-option{--experience-color:var(--lime);min-height:72px;padding:9px 10px;border:1px solid color-mix(in srgb,var(--experience-color) 38%,transparent);border-radius:17px;display:grid;grid-template-columns:38px 1fr 15px;align-items:center;gap:8px;background:color-mix(in srgb,var(--experience-color) 6%,#101512);text-align:left;transition:.18s ease}
+.experience-option.account{--experience-color:var(--violet)}
+.experience-option:hover{transform:translateY(-2px);border-color:var(--experience-color);box-shadow:0 0 24px color-mix(in srgb,var(--experience-color) 14%,transparent)}
+.experience-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--experience-color) 17%,transparent);color:var(--experience-color)}
+.experience-icon svg{width:17px}
+.experience-option>span:nth-child(2){min-width:0}
+.experience-option i,.experience-option b,.experience-option small{display:block}
+.experience-option i{color:var(--experience-color);font:800 7px var(--font-geist-mono);font-style:normal;letter-spacing:.12em}
+.experience-option b{margin-top:2px;font-size:11px}
+.experience-option small{margin-top:2px;color:#909b92;font-size:8px;line-height:1.35}
+.experience-option>svg{width:14px;color:var(--experience-color)}
+.welcome-footnote{margin-top:10px!important;color:#6f7b72!important;font-size:7px!important}
+.sop-guide-progress{grid-template-columns:repeat(4,1fr)}
+.guide-pwa{position:absolute;z-index:4;inset:14px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.guide-pwa .aili-mascot.compact{width:105px;height:105px;margin:-12px 0 -5px}
+.guide-pwa button{min-height:34px;padding:0 13px;border:0;border-radius:11px;display:flex;align-items:center;gap:6px;background:var(--lime);color:#0b100c;font-size:9px;font-weight:900}
+.guide-pwa button svg{width:14px}
+.guide-pwa small{margin-top:7px;color:#9fa9a0;font-size:7px}
+.account-empty-card{width:100%;min-height:68px;margin-top:10px;padding:10px 11px;border:1px dashed rgb(54 168 255/.3);border-radius:17px;display:flex;align-items:center;gap:9px;background:rgb(54 168 255/.055);text-align:left}
+.home-screen .account-empty-card{order:1}
+.account-empty-card>svg:first-child{width:19px;color:var(--blue)}
+.account-empty-card>span{min-width:0;flex:1}
+.account-empty-card b,.account-empty-card small{display:block}
+.account-empty-card b{font-size:10px}
+.account-empty-card small{margin-top:3px;color:#8d9990;font-size:8px;line-height:1.4}
+.account-empty-card>svg:last-child{width:14px;color:#738078}
+.quick-team.empty{border-style:dashed;background:rgb(139 92 255/.035)}
+.team-empty-state{margin-top:22px}
+
+/* 圖示固定尺寸與基線，避免定位圖釘壓到地點文字。 */
+.location-consent{align-items:start}
+.location-consent-icon{grid-row:1;align-self:start;margin-top:1px}
+.detail-meta{align-items:flex-start;line-height:1.45}
+.detail-meta svg{width:13px;height:13px;flex:0 0 13px;margin-top:1px}
+@keyframes bootScan{from{top:0}to{top:100%}}
+@keyframes mascotFloat{50%{transform:translateY(-7px) rotate(1deg)}}
+@keyframes mascotOrbit{to{transform:rotate(360deg)}}
+@keyframes mascotTail{50%{stroke-dashoffset:24}}
+@keyframes mascotBlink{0%,45%,49%,100%{transform:scaleY(1)}47%{transform:scaleY(.12)}}
