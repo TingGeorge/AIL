@@ -9,7 +9,7 @@ export function reduceSearch(state:SearchState,event:SearchEvent):SearchState {
   return {...state,complete:true,pending:event.pending,excluded:event.excluded,warnings:[...new Set([...state.warnings,...(event.warnings??[]).map(w=>w.message)])]};
  }
  const key=`${event.agent}:${event.category}`;
- return {...state,groups:{...state.groups,[key]:{agent:event.agent,category:event.category,status:event.status,records:event.status==="ranking"?[]:event.records}}};
+ return {...state,warnings:event.status==="failed"&&event.error?[...new Set([...state.warnings,`${event.category}：${event.error}`])]:state.warnings,groups:{...state.groups,[key]:{agent:event.agent,category:event.category,status:event.status,records:event.status==="ranking"?[]:event.records}}};
 }
 // Each category interleaves paid/free ranks. Arrival order never changes the final result order.
 export function rankedRecords(state:SearchState,survival=false):Rec[]{

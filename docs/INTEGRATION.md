@@ -53,7 +53,7 @@ flowchart LR
 | 註冊／登入 | `POST /api/auth/register`、`login` | Argon2id；回 user/data/session_token/expires_at |
 | 登入還原／登出 | `GET /api/auth/me`；`POST /api/auth/logout` | Bearer token；固定 30 分鐘、DB 只存 SHA-256 token hash |
 | 改密碼 | `POST /api/auth/change-password` | 驗證舊密碼、鎖定使用者並重驗工作階段；撤銷所有 session |
-| 收藏／清單／設定 | `GET`、`PUT /api/me/data` | 只允許 list/favs/settings/profile；nickname 以 users 為唯一來源 |
+| 收藏／清單／設定 | `GET`、`PUT /api/me/data` | 只允許 list/favs/settings/profile 與 revision／updated_at；revision 是寫入前置條件，nickname 以 users 為唯一來源 |
 | 回報 | `GET`、`POST /api/candidates/:id/reports` | 可公開讀取，寫入需登入；七種原因，不自動改資料狀態 |
 | 團體優惠 | 候選 `group_offer` | 真實碼、門檻與試算；沒有 join/team-members 假 API |
 
@@ -83,10 +83,10 @@ flowchart LR
 | 前端 fixture 形狀 vs 後端 Rec | 移除有效路徑上的假資料，真實 id 查詢、null/來源/份量直顯 | 未補造圖片或不存在的欄位 |
 | 三個模式 vs 五個資料類別 | 日常／優惠／零元保留為體驗入口；資料類別依後端五類，free_only 獨立。`target_categories` 依語音規格 §3 只調整結果頁順序與初選；仍搜尋五類。手動模式允許只選類別啟動搜尋 | 目標類別不是硬限制；零筆也不偷偷切換其他類別 |
 | 假計時器／CP 分數 vs 真實搜尋 | 真正 SSE 進度、分組 LLM 排序／fallback；不呈現虛構 CP 數字 | 外部模型品質仍需 live provider 驗收 |
-| 匿名收藏 vs 私有帳號資料 | 收藏／清單需登入；匿名只有 sessionStorage 設定，登入不合併匿名資料 | 多裝置同時 PUT 是最後寫入優先 |
+| 匿名收藏 vs 私有帳號資料 | 收藏／清單需登入；匿名只有 sessionStorage 設定，登入不合併匿名資料 | revision CAS；獨立欄位三方合併，同欄位衝突不覆蓋 |
 | 假支出圖 vs 有證據支出 | 自填月支出；非 demo 且成本已知時可「標記已買」，不是付款 | 無銀行連接、無交易歷史 |
 | 揪團加入／假成員數 vs 商家優惠 | 顯示商家條件、兌換碼、試算；不假裝已加入團體 | 無真正團隊／聊天／付款系統 |
-| 無法確定人數／日期／資格／過敏原 | 顯著警告；不宣稱完全符合，不猜測缺少標籤 | 需擴充資料欄位與來源證據才能精準篩選 |
+| 無法確定人數／日期／資格／過敏原 | 已知不符排除；缺少符合證據待確認，不進主要推薦 | 需擴充資料欄位與來源證據才能精準篩選 |
 | 範例資料有「已驗證」欄位 | 原有 fixture 保留但 API 預設隱藏；demo 模式需明確開啟且禁止導購/地圖/兌換/標記已買 | 真實資料的來源與必要費用另做匯入驗證 |
 | localhost session 與 service worker | API no-store；只快取公開 app shell；拒絕未完成 SSE；加入 ErrorBoundary | 未做完整跨瀏覽器 PWA 安裝驗收 |
 | 密碼變更與登入並行 | 使用者 row lock、重驗 password hash/session，防止舊密碼在撤銷後建立新 session | 公開環境需邊界限流、監控與備份 |
@@ -125,7 +125,7 @@ flowchart LR
 
 **不當作已驗證：** 真實麥克風／Gemini 音訊品質、Gemini 文字與排名語意品質、使用者真實定位、跨裝置 PWA 安裝與離線升級、公開生產部署。歷史 6 個 live-provider skip 不表示新契約通過。
 
-**最新遷移驗證（2026-09-05）：151 pass / 28 skip / 0 fail，942 assertions**；typecheck 與 production build 通過。已納入 multipart MIME 保留與 30,000 ms 錄音上限回歸；fixture suite 未觸及真實 DB。另以實際 `gemini-3.5-flash-lite` 通過文字解析、合成中文 WebM 音訊，以及 39 筆真實 catalog 的 UI 確認→搜尋→AI 排序；修正排序 `maxItems:500` 造成的 HTTP 400，後端仍保留 500 筆上限與嚴格驗證。這是有限樣本 live smoke，真機麥克風／其他 codec／廣泛語意品質仍待驗收；詳見 [Gemini 查核紀錄](research/gemini-audio-structured.md)。
+**遷移階段驗證（歷史，2026-09-05）：151 pass / 28 skip / 0 fail，942 assertions**；typecheck 與 production build 通過。已納入 multipart MIME 保留與 30,000 ms 錄音上限回歸；fixture suite 未觸及真實 DB。另以實際 `gemini-3.5-flash-lite` 通過文字解析、合成中文 WebM 音訊，以及 39 筆真實 catalog 的 UI 確認→搜尋→AI 排序；修正排序 `maxItems:500` 造成的 HTTP 400，後端仍保留 500 筆上限與嚴格驗證。這是有限樣本 live smoke，真機麥克風／其他 codec／廣泛語意品質仍待驗收；詳見 [Gemini 查核紀錄](research/gemini-audio-structured.md)。
 
 
 ## 7. 真實來源資料管線（2026-09-05 更新）
@@ -151,3 +151,13 @@ flowchart LR
 - 原有故意矛盾／過期的合成案例仍在 `data/食品.json` 與單元測試；不製造真實商家矛盾案例來充數。
 - `API_URL=http://127.0.0.1:3000 bun run data:smoke` 對啟動中的 App 做唯讀 HTTP 驗收：五類 SSE、免費成本限制、證據詳情、catalog 數量一致與示範隔離。
 - CI 明確匯入 fixture 執行隔離測試後，再匯入真實資料、啟動 build 並執行同一份 HTTP smoke 驗收。遠端是否成功需以實際 Actions 執行結果為準。
+
+
+## 8. 嚴格需求與帳號衝突修復（2026-09-05）
+
+- `request_match` 是搜尋回應的暫時 metadata，包含 pending／excluded 及原因；不改寫資料庫原本的 `data_status`。排名僅接收主要候選，不能把待確認者重新放回。
+- 人數／日期／時間／資格的證據只接受目前支援的有限明確格式；不能判定就待確認。店家 24H 不代表早餐全天供應；×2 套餐不當作三人餐，也不自動乘價。結果可以為空。
+- 對未知成分的食品不宣稱「不含牛／無過敏原」。非食品不會僅因缺少食品標籤而被判待確認。
+- 新增 `account_data.revision bigint not null default 0`；PUT 的 revision 失配回 409，canonical nickname 與帳號內容同交易更新。前端保存同步基準，最多三次 CAS；明確衝突保留本機變更，允許使用者重載。
+- Gemini 502 錯誤回傳固定 `gemini_auth`／`gemini_quota`／`gemini_unavailable`／`gemini_request`／`gemini_network`／`gemini_invalid_response` 類別，可帶安全數字 `upstream_status`；不暴露上游 body、URL、key。排序群組備援保留安全診斷供 UI 顯示。
+- 本輪只遷移隔離測試 DB，未部署到原本 3100 服務或真實 DB。詳細通過與缺口見 [驗收報告](testing/full-app-acceptance-2026-09-05.md)。

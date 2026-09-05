@@ -15,6 +15,8 @@ export type SearchCategoryCheck = {
   rankable: number;
   ranked: number;
   pending: number;
+  evidencePending: number;
+  requestPending: number;
   excluded: number;
 };
 export type ValidatedSearch = { ids: Set<string>; categories: SearchCategoryCheck[] };
@@ -35,8 +37,18 @@ export function validateSearchSnapshot(catalog: CatalogSummary, snapshot: Search
   for (const record of [...snapshot.ranked, ...snapshot.excluded]) {
     requireCondition(passesGate(record), `${record.id}: rankable bucket 混入待確認或過期資料`);
   }
+  for (const record of snapshot.ranked) {
+    requireCondition(!record.request_match, `${record.id}: ranked bucket 混入需求待確認或已排除資料`);
+  }
+  for (const record of snapshot.excluded) {
+    requireCondition(record.request_match?.status !== "pending", `${record.id}: excluded bucket 混入需求待確認資料`);
+  }
   for (const record of snapshot.pending) {
-    requireCondition(!passesGate(record), `${record.id}: pending bucket 混入可排序資料`);
+    // Catalog quality and request-specific eligibility are separate: verified
+    // evidence can still be pending for this search, with explicit reasons.
+    requireCondition(!passesGate(record) || (record.request_match?.status === "pending"
+      && record.request_match.reasons.some(reason => reason.trim())),
+    `${record.id}: pending bucket 缺少資料或需求待確認原因`);
   }
   if (freeOnly) {
     for (const record of snapshot.ranked) {
@@ -55,17 +67,21 @@ export function validateSearchSnapshot(catalog: CatalogSummary, snapshot: Search
     const pending = countCategory(snapshot.pending, category);
     const excluded = countCategory(snapshot.excluded, category);
     requireCondition(ranked + pending + excluded === expected.total, `${category}: 搜尋 total 與 catalog 不一致`);
-    requireCondition(ranked + excluded === expected.rankable, `${category}: 搜尋 rankable 與 catalog 不一致`);
-    requireCondition(pending === expected.pending, `${category}: 搜尋 pending 與 catalog 不一致`);
-    return { category, total: expected.total, rankable: expected.rankable, ranked, pending, excluded };
+    const evidenceRankable = all.filter(record => record.category === category && passesGate(record)).length;
+    const evidencePending = expected.total - evidenceRankable;
+    const requestPending = snapshot.pending.filter(record => record.category === category && passesGate(record)).length;
+    requireCondition(evidenceRankable === expected.rankable, `${category}: 搜尋 evidence rankable 與 catalog 不一致`);
+    requireCondition(evidencePending === expected.pending, `${category}: 搜尋 evidence pending 與 catalog 不一致`);
+    requireCondition(pending === evidencePending + requestPending, `${category}: 待確認分類加總不一致`);
+    return { category, total: expected.total, rankable: expected.rankable, ranked, pending, evidencePending, requestPending, excluded };
   });
 
   requireCondition(all.length === catalog.total, "搜尋總筆數與 catalog 不一致");
-  requireCondition(snapshot.ranked.length + snapshot.excluded.length === catalog.rankable, "搜尋可排序總數與 catalog 不一致");
-  requireCondition(snapshot.pending.length === catalog.pending, "搜尋待確認總數與 catalog 不一致");
+  requireCondition(all.filter(record => passesGate(record)).length === catalog.rankable, "搜尋證據可排序總數與 catalog 不一致");
+  requireCondition(all.filter(record => !passesGate(record)).length === catalog.pending, "搜尋證據待確認總數與 catalog 不一致");
   requireCondition(categories.reduce((sum, row) => sum + row.total, 0) === catalog.total, "catalog 分類 total 加總不一致");
   requireCondition(categories.reduce((sum, row) => sum + row.rankable, 0) === catalog.rankable, "catalog 分類 rankable 加總不一致");
-  requireCondition(categories.reduce((sum, row) => sum + row.pending, 0) === catalog.pending, "catalog 分類 pending 加總不一致");
+  requireCondition(categories.reduce((sum, row) => sum + row.evidencePending, 0) === catalog.pending, "catalog 分類 evidence pending 加總不一致");
   return { ids, categories };
 }
 
@@ -138,7 +154,10 @@ export async function runLiveSmoke(): Promise<void> {
     const count = catalog.categories.find(row => row.category === category);
     requireCondition(count && count.total > 0, `${category}: 沒有真實資料`);
     requireCondition(count.rankable > 0, `${category}: 沒有可供詳情驗證的可排序資料`);
-    const selected = [...normal.ranked, ...normal.excluded].find(record => record.category === category);
+    // Even if every record in a category needs eligibility confirmation, its
+    // source detail must remain testable without promoting it to a recommendation.
+    const selected = [...normal.ranked, ...normal.excluded, ...normal.pending]
+      .find(record => record.category === category && passesGate(record));
     requireCondition(selected, `${category}: 找不到可排序詳情樣本`);
     const detail: Rec = await get(`/api/candidates/${encodeURIComponent(selected.id)}`);
     requireCondition(detail.id === selected.id && detail.category === category, `${category}: 詳情 id 或類別不一致`);
@@ -154,10 +173,11 @@ export async function runLiveSmoke(): Promise<void> {
   console.table(normalCheck.categories.map(row => ({
     category: row.category,
     total: row.total,
-    rankable: row.rankable,
+    evidence_rankable: row.rankable,
     ranked: row.ranked,
     excluded: row.excluded,
-    pending: row.pending,
+    evidence_pending: row.evidencePending,
+    request_pending: row.requestPending,
     free_ranked: freeCheck.categories.find(item => item.category === row.category)?.ranked ?? 0,
   })));
   console.log(`✓ ${catalog.total} 筆公開資料：target 不限類別、五類 bucket/count、免費成本、id 完整性、來源詳情、示範隔離均通過。未建立帳號或修改資料。`);

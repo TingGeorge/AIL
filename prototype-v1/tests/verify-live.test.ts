@@ -89,3 +89,33 @@ test("free-only requires zero cost only in ranked results and accounts for paid 
   expect(() => validateSearchSnapshot(catalog([free, paid]), { ranked: [free], excluded: [paid], pending: [] }, true)).not.toThrow();
   expect(() => validateSearchSnapshot(catalog([free, paid]), { ranked: [paid], excluded: [free], pending: [] }, true)).toThrow("不是零總成本");
 });
+
+
+test("request-pending evidence remains catalog-rankable without entering recommendations", () => {
+  const normal = rec("public-fare", "交通");
+  const eligibilityUnknown = rec("member-only", "交通", {
+    eligibility: ["註冊會員"],
+    request_match: { status: "pending", reasons: ["使用資格缺乏足夠證據，待確認"] },
+  });
+  const unverified = rec("unverified-fare", "交通", { data_status: "部分驗證／待確認" });
+  const checked = validateSearchSnapshot(catalog([normal, eligibilityUnknown], [unverified]), {
+    ranked: [normal], excluded: [], pending: [eligibilityUnknown, unverified],
+  }, false);
+  expect(checked.categories.find(row => row.category === "交通")).toMatchObject({
+    total: 3, rankable: 2, ranked: 1, excluded: 0, pending: 2,
+  });
+  expect(checked.ids.size).toBe(3);
+});
+
+
+test("request-pending records cannot be promoted to ranked or mislabelled excluded buckets", () => {
+  const unknown = rec("unknown-eligibility", "交通", {
+    request_match: { status: "pending", reasons: ["使用資格缺乏足夠證據，待確認"] },
+  });
+  expect(() => validateSearchSnapshot(catalog([unknown]), { ranked: [unknown], pending: [], excluded: [] }, false))
+    .toThrow("需求待確認或已排除");
+  expect(() => validateSearchSnapshot(catalog([unknown]), { ranked: [], pending: [], excluded: [unknown] }, false))
+    .toThrow("excluded bucket 混入需求待確認");
+  expect(() => validateSearchSnapshot(catalog([unknown]), { ranked: [], pending: [{ ...unknown, request_match: { status: "pending", reasons: [] } }], excluded: [] }, false))
+    .toThrow("缺少資料或需求待確認原因");
+});

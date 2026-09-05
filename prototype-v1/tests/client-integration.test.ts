@@ -303,3 +303,11 @@ describe("search state integration", () => {
     expect(rankedRecords(state).map((record) => record.id)).toEqual(["fallback-cheap", "fallback-expensive"]);
   });
 });
+
+test("ranking fallback preserves safe provider diagnostics for the results banner", () => {
+  const state = reduceSearch(initialSearch(), {
+    agent: "paid", category: "食品", status: "failed", records: [],
+    error: "Gemini 配額或速率限制（429）",
+  });
+  expect(state.warnings).toContain("食品：Gemini 配額或速率限制（429）");
+});

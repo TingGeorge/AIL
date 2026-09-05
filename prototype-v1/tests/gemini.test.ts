@@ -138,3 +138,21 @@ test("provider schema omits undocumented annotations without weakening local val
     required: ["pattern", "default"], additionalProperties: false,
   });
 });
+
+test("provider authentication, quota, network and malformed output have safe distinct diagnostics", async () => {
+  for (const [status, kind] of [[401,"auth"],[403,"auth"],[429,"quota"],[503,"unavailable"],[400,"request"]] as const) {
+    mockResponse({error:"test-only-secret"},status);
+    try { await generateStructured({system:"test",input:[],schema:z.string()}); throw new Error("unexpected success"); }
+    catch (error) {
+      expect(error).toMatchObject({name:"GeminiError",kind,status});
+      expect(JSON.stringify(error)).not.toContain("test-only-secret");
+    }
+  }
+});
+
+test("network transport failures and invalid provider JSON are distinguishable and sanitized", async () => {
+  globalThis.fetch = (async()=>{throw new TypeError("private-url-with-key")}) as unknown as typeof fetch;
+  await expect(generateStructured({system:"test",input:[],schema:z.string()})).rejects.toMatchObject({kind:"network",status:0});
+  globalThis.fetch = (async()=>new Response("private invalid response")) as unknown as typeof fetch;
+  await expect(generateStructured({system:"test",input:[],schema:z.string()})).rejects.toMatchObject({kind:"invalid_response",status:0});
+});

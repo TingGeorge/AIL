@@ -34,6 +34,6 @@ export function NeedEditor({need,onChange}:{need:Need;onChange:(next:Need)=>void
   <label className="field">資格說明<input maxLength={500} value={need.eligibility_notes??""} onChange={e=>set("eligibility_notes",e.target.value||null)} placeholder="未指定"/></label>
   </div></details>
   {need.unresolved.length>0&&<aside className="notice warning"><b>尚未解析，請自行確認</b><p>{need.unresolved.join("、")}</p><button className="text-button" type="button" onClick={()=>set("unresolved",[])}>已了解並完成手動確認</button></aside>}
-  <details className="detail-disclosure"><summary><span>篩選說明</span><ChevronDown aria-hidden="true"/></summary><div className="disclosure-body"><p className="detail-explanation">空白表示未知，並非 0。人數、時段、資格與未標示成分無法自動保證符合；有過敏需求請向提供者確認。</p></div></details>
+  <details className="detail-disclosure"><summary><span>篩選說明</span><ChevronDown aria-hidden="true"/></summary><div className="disclosure-body"><p className="detail-explanation">空白表示未知，並非 0。已知不符條件者排除，缺少份量、日期、時段、資格或成分證據者待確認，不列入主要推薦；有過敏需求請向提供者確認。</p></div></details>
  </div>;
 }

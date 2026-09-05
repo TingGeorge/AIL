@@ -40,7 +40,7 @@
 | 距離 | `candidates.lat／lng`；使用者座標由瀏覽器原生 `navigator.geolocation` 在搜尋當下取得、放在請求 body、不保存、不寫 log。伺服器以 haversine 算直線公里數，標示「估算」；`max_minutes` 以 km ÷ 0.08（步行每分鐘 80 公尺）換算，標示「估算」。沒有座標 → 距離為 null → 不做距離篩選。`address` 與 `lat／lng` 的取得與寫入見 [SPEC-geocoding.md](./SPEC-geocoding.md)。 |
 | 候選紀錄持久化 | 五類共用一張 `candidates` 表；保留 `agent` 欄位（`paid`／`free`）；證據放 `jsonb` 陣列（逐欄摘錄）；類別特有零碎欄位放 `extra jsonb`。 |
 | 帳號 | 照 PRD／SPEC：username `^[a-z0-9_-]{3,30}$`（不分大小寫唯一，小寫儲存）、password ≥ 12 字元、`Bun.password` Argon2id、32 bytes 隨機 opaque token、只存 SHA-256 hash、固定 30 分鐘到期、`Authorization: Bearer`、token 放 `sessionStorage`。不用 Cookie。忘記密碼只顯示 `SUPPORT_EMAIL`。 |
-| 帳號資料 | 每個帳號一列：`account_data(user_id, list, favs, settings, profile, updated_at)` 全部 `jsonb`；`GET／PUT /api/me/data` 整包讀寫。每個帳號一份清單。 |
+| 帳號資料 | 每個帳號一列：`account_data(user_id, list, favs, settings, profile, updated_at, revision)` 全部 `jsonb`；`GET／PUT /api/me/data` 整包讀寫。每個帳號一份清單。 |
 | 已花費 | 沿用整合版的生活設定／清單行為：清單頁按「標記已買」→ 該筆移出清單、`settings.spent += 總可比成本`。加入清單不累加（加入清單不等於花錢）。跨月歸零：`settings.spent_month` 存 `"2026-09"`，前端載入帳號資料時若不等於當月就把 `spent` 歸零並更新月份。`ponytail:` 純前端、不做記帳歷史；升級路徑是加一張 `monthly_spend` 表。 |
 | 匿名使用者 | 可以搜尋、可以改設定（只存在該分頁 `sessionStorage`）。**★ 與加入清單需要登入**（點擊時提示登入）。不做匿名→帳號合併；登入後帳號資料取代 session-local 資料。這推翻 PRD FR-12／FR-15 與 SPEC Case A8。 |
 | 回報 | 共享資料，需登入。`reports(id, candidate_id, user_id, reason, note, created_at)`。七種原因（4 種資料回報 + 3 種體驗回報）。回報不自動改 `data_status`。體驗回報顯示時標示「使用者回報，非系統判斷」。 |
@@ -245,11 +245,11 @@ create index if not exists reports_candidate on reports (candidate_id, created_a
 | 413 | `too_large` | 檔案或總請求超限 |
 | 415 | `unsupported_audio` | 不支援 MIME 或基本檔頭不符 |
 | 422 | `no_speech` | 沒有可辨識語音 |
-| 502 | `voice_failed` | 上游失敗或回應不符 JSON／Zod 契約 |
+| 502 | `gemini_*` | 安全分類的 Gemini 上游、連線或 JSON／Zod 錯誤；可帶數字 upstream_status |
 | 503 | `voice_failed` | Gemini 未設定 |
 | 504 | `timeout` | 處理逾時 |
 
-`/api/parse` 400／502／503 對應 `parse_failed`，413 為 `too_large`，504 為 `timeout`。錯誤格式 `{error,message}` 固定，不洩漏 provider body、音訊、key；多個錯誤同時存在時以實際檢查順序為準。所有 API no-store。
+`/api/parse` 400／503 對應 `parse_failed`，Gemini 502 為 `gemini_*`，413 為 `too_large`，504 為 `timeout`。錯誤格式 `{error,message,upstream_status?}` 固定，不洩漏 provider body、音訊、key；多個錯誤同時存在時以實際檢查順序為準。所有 API no-store。
 
 ### 其他 API（保留搜尋／資料／帳號契約）
 
@@ -323,7 +323,7 @@ SSE（Server-Sent Events）是同一個 HTTP 連線保持打開，伺服器有�
 
 - `api.ts`：`search()` 用 `fetch` + `ReadableStream` 讀 SSE；auth 呼叫；`me/data` GET／PUT；reports；`candidates?ids=` 批次取回。
 - `screens/ListScreen.tsx`：現在的 `items: Rec[]` 來自搜尋當下的記憶體，重新整理就空了。改為進入清單／收藏頁時以 `list`／`favs` 的 id 呼叫 `GET /api/candidates?ids=`。
-- `App.tsx`：token 存 `sessionStorage` key `ail.token`；啟動時呼叫 `/api/auth/me`；匿名時 ★／清單按鈕提示登入；登入後以帳號資料取代本機清單／收藏／設定；每次變更 debounce 後 PUT。
+- `App.tsx`：token 存 `sessionStorage` key `ail.token`；啟動時呼叫 `/api/auth/me`；匿名時 ★／清單按鈕提示登入；登入後以帳號資料取代本機清單／收藏／設定；每次變更序列化 PUT，攜帶 revision 並處理 409 三方合併。
 - `screens/Search.tsx`：消費事件；維持兩個面板；步驟改為篩選 → 推薦排序 n/m → 完成；各類失敗文案。
 - `screens/Team.tsx`：移除成員與加入代碼；顯示 `group_offer.redeem_code`、條件、成本列、分享。
 - `screens/Detail.tsx`：顯示 `reason`、「免費」標籤、`address`（`extra.address_source` 為 `geocoded` 時標示為系統比對所得）與不需金鑰的開地圖連結（`google.com/maps/search/?api=1&query=`）、「直線距離估算」文字、來自 API 的回報列表、「使用者回報，非系統判斷」標示。
@@ -399,3 +399,20 @@ Session 固定 1,800 秒，不因請求延長；不是可調的 env 參數。所
 - `people_or_servings`、`date`、`time_window`、`eligibility_notes` 不做機器篩選（紀錄沒有結構化欄位）。
 - `prototype-v1/` 是複製 `old_version/` 原始碼再修改，不是重寫。
 - `/api/auth/me` 在同一個回應裡回傳帳號資料。
+
+
+## 11. 2026-09-05 嚴格篩選與帳號寫入補充
+
+本節優先於前文舊版「完整文件直接覆寫／僅提醒文字條件」描述。
+
+### 帳號 revision
+
+`GET /api/me/data` 與 auth 的 data 回傳非負整數 `revision`。`PUT /api/me/data` 必須携帶讀取到的 revision；成功 200 回傳 revision + 1，過期 409 `{error:"account_conflict",message:"…"}`，缺少或格式錯誤 400。設定、收藏、清單與 canonical nickname 同交易。`updated_at` 只供顯示，不作為版本比對。
+
+前端序列化保存並以三方合併套用使用者實際 delta：不同欄位合併、收藏／清單明確增刪、相同欄位不同值則拒絕盲覆蓋。標記已買同時涉及支出與清單；不同購買不得因金額相同而靜默少算。重載須明示會丟棄未同步本機變更。
+
+### 搜尋需求的三種結果
+
+資料閘門未通過 → pending；通過後已知不符合硬限制 → excluded；通過但缺少符合證據 → pending；只有可判定符合者進 main。`request_match?:{status:"pending"|"excluded",reasons:string[]}` 只存在搜尋結果，不寫回資料證據狀態。
+
+新增 `excluded_by.people/date/time/eligibility`。份量、日期、時段、成分／資格只判定明確有限格式；未知不能交给 LLM 猜測，不放大份量或價格。來源未明示食品成分不存在時，帶排除需求的該食品會待確認。地圖／定位仍沿用既有契約，未納入本次驗收。

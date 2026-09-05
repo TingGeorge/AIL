@@ -132,7 +132,7 @@ const parseJson = async (c: { req: { json: () => Promise<unknown> } }) => c.req.
 
 const accountRow = async (db: typeof sql, userId: string, nickname: string) => {
   await db`insert into account_data (user_id) values (${userId}) on conflict (user_id) do nothing`;
-  const rows = await db`select list, favs, settings, profile, updated_at from account_data where user_id = ${userId}`;
+  const rows = await db`select list, favs, settings, profile, updated_at, revision from account_data where user_id = ${userId}`;
   if (!rows[0]) throw new Error("account_data_missing_after_upsert");
   return accountDataFromStorage(rows[0] as Record<string, unknown>, nickname);
 };

@@ -224,11 +224,11 @@ Database 為本機 PostgreSQL；完整 schema 與其餘 API（搜尋、帳號資
 | 413 | `too_large` | 檔案超過 5 MiB 或請求超過 6 MiB |
 | 415 | `unsupported_audio` | MIME 不在清單，或 bytes 不符基本檔頭 |
 | 422 | `no_speech` | 模型回傳無可辨識語音 |
-| 502 | `voice_failed` | Gemini 失敗、非 completed、錯誤／缺失輸出或 JSON／Zod 驗證失敗 |
+| 502 | `gemini_*` | Gemini 認證／配額／服務／請求／網路／回應格式的安全錯誤分類 |
 | 503 | `voice_failed` | Gemini 未設定 |
 | 504 | `timeout` | 語音處理逾時 |
 
-錯誤皆 `{error,message}` 固定文案，不回傳 key、provider body 或錄音；多個錯誤同時存在時依 middleware／route 檢查順序回應。
+錯誤皆 `{error,message,upstream_status?}` 固定文案（upstream_status 僅安全數字），不回傳 key、provider body 或錄音；多個錯誤同時存在時依 middleware／route 檢查順序回應。
 
 ### `POST /api/parse`
 
@@ -237,7 +237,7 @@ Database 為本機 PostgreSQL；完整 schema 與其餘 API（搜尋、帳號資
 - `current:null` 是全新文字／逐字稿解析；非 null 是文字 correction，只更新提到的欄位，其餘保留。
 - 使用者主動提交文字、編輯後重新解析或送出 correction 時才使用；**不得在 `/api/voice` 後自動串接**。
 - `today` 由 server 以 Asia/Taipei 決定，不由 client 指定；模型 timeout 30 秒。
-- 400／502／503：`{error:"parse_failed",message:"…"}`；413 為 `too_large`，504 為 `timeout`。保留文字與原 Need，讓使用者重試或手動修正。
+- 400／503：`{error:"parse_failed",message:"…"}`；Gemini 502 使用 `gemini_auth/quota/unavailable/request/network/invalid_response`，可帶 upstream_status；413 為 `too_large`，504 為 `timeout`。保留文字與原 Need，讓使用者重試或手動修正。
 
 ## 5. 語音辨識與解析規則
 

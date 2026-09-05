@@ -200,7 +200,7 @@ test("constraintWarnings：只對目前無法保證的硬限制與缺少距離�
     need({ people_or_servings: 2, date: "2026-09-06", time_window: "晚上", eligibility_notes: "限學生", max_distance_km: 1 }),
     [rec({ distance_km: null })],
   );
-  expect(warnings.map((w) => w.code)).toEqual(["text_constraints_not_filtered", "distance_not_evaluated"]);
+  expect(warnings.map((w) => w.code)).toEqual(["strict_constraints_applied", "distance_not_evaluated"]);
   expect(warnings[0]?.fields).toEqual(["people_or_servings", "date", "time_window", "eligibility_notes"]);
 });
 
@@ -213,7 +213,7 @@ test("constraintWarnings：need 與設定排除遇到未知標籤或候選缺標
   expect(warnings).toEqual([{
     code: "exclude_tags_not_guaranteed",
     fields: ["exclude_tags", "exclude"],
-    message: "排除項目「堅果」不在目前可辨識標籤內；部分候選缺少成分標籤；無法保證已完整排除，請逐筆核對。",
+    message: "排除項目「堅果」不在目前可辨識標籤內；部分候選缺少成分標籤；缺乏排除證據的食品列待確認，不進主要推薦。",
   }]);
 });
 

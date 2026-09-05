@@ -37,7 +37,7 @@ describe("Gemini API contract without live provider", () => {
   test("parse: upstream failure is 502 with a fixed message, no leaked detail", async () => {
     const res = await post("/api/parse", JSON.stringify({ transcript: "晚餐" }), { "content-type": "application/json" });
     expect(res.status).toBe(502);
-    expect(await res.json()).toEqual({ error: "parse_failed", message: "解析失敗" });
+    expect(await res.json()).toEqual({ error: "gemini_unavailable", message: "Gemini 服務暫時無法使用", upstream_status: 502 });
   });
   test("voice: 400 without audio or on an empty clip", async () => {
     const noAudio = new FormData();
@@ -129,20 +129,21 @@ describe.skipIf(!dbLive)("搜尋與候選查詢 (live database)", () => {
   };
 
   test("SSE 推 filter → 各組 ranking → 可交錯的 failed fallback → final done", async () => {
-    const es = await events({ need, exclude: [], location: null, costco_ok: false });
+    const es = await events({ need: {...need,people_or_servings:null}, exclude: [], location: null, costco_ok: false });
     const filter = es[0];
     expect(filter.step).toBe("filter");
     expect(filter.found).toBeGreaterThanOrEqual(10);
     expect(filter.passed).toBeGreaterThan(0);
-    expect(Object.keys(filter.excluded_by).sort()).toEqual(["budget", "costco", "distance", "exclude", "free_only", "registration"]);
-    expect(filter.warnings[0].code).toBe("text_constraints_not_filtered");
+    expect(Object.keys(filter.excluded_by).sort()).toEqual(["budget", "costco", "date", "distance", "eligibility", "exclude", "free_only", "people", "registration", "time"]);
+    expect(filter.warnings.some((w: {code:string})=>w.code==="strict_constraints_applied")).toBe(false);
     // 預算 300 排掉那筆 780 的鍋物。
     expect(filter.excluded_by.budget).toBeGreaterThan(0);
 
     const last = es[es.length - 1];
     expect(last.step).toBe("done");
     // 過期、無法納入比較、衝突待確認的三筆都落在待確認，不進主要排序。
-    expect(last.pending.map((r: Rec) => r.id).sort()).toEqual(["f_m4n5", "f_p6q7", "f_r8s9"]);
+    expect(last.pending.map((r: Rec) => r.id)).toEqual(expect.arrayContaining(["f_m4n5", "f_p6q7", "f_r8s9"]));
+    expect(last.pending.length).toBe(filter.pending);
 
     const middle = es.slice(1, -1);
     const rankings = middle.filter((event) => event.status === "ranking");
@@ -179,6 +180,25 @@ describe.skipIf(!dbLive)("搜尋與候選查詢 (live database)", () => {
     expect(needOnly[0].excluded_by.exclude).toBeGreaterThan(0);
     expect(needOnly[0].warnings.find((item: { code: string }) => item.code === "exclude_tags_not_guaranteed").fields)
       .toEqual(["exclude_tags"]);
+  });
+
+  test("strict exclusions partition uncertain food away from every ranked SSE group", async () => {
+    const es = await events({ need: { ...EMPTY_NEED, exclude_tags: ["牛"] }, exclude: [], location: null, costco_ok: false });
+    const main = es.flatMap(event => event.status === "done" || event.status === "failed" ? event.records : []);
+    const final = es.at(-1);
+    expect(main.filter((record: Rec) => record.category === "食品")).toHaveLength(0);
+    const food = [...final.pending, ...final.excluded].filter((record: Rec) => record.category === "食品");
+    expect(food.length).toBeGreaterThan(0);
+    expect(food.some((record: Rec) => record.request_match?.status === "pending")).toBe(true);
+    expect(food.some((record: Rec) => record.request_match?.status === "excluded")).toBe(true);
+    const ids = [...main, ...final.pending, ...final.excluded].map((record: Rec) => record.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids.length).toBe(es[0].found);
+    expect(main.length).toBe(es[0].passed);
+    // Request-specific matching must not rewrite the stored evidence status.
+    const stored = await (await app.request("/api/candidates/f_a3k9")).json();
+    expect(stored.data_status).toBe("已驗證");
+    expect(stored.request_match).toBeUndefined();
   });
 
   test("free_only fallback 只留下總可比成本 0 的紀錄", async () => {

@@ -96,12 +96,13 @@ Session 固定 **1,800 秒**，不是 sliding expiration；舊範本的 `AUTH_SE
 
 ```bash
 # 安全的離線測試；明確覆蓋本機 .env，不連資料庫或真實 Gemini。
-DATABASE_URL= GEMINI_API_KEY= GEMINI_MODEL= RUN_LIVE_GEMINI_TESTS=0 bun test
+DATABASE_URL= TEST_DATABASE_URL= GEMINI_API_KEY= GEMINI_MODEL= RUN_LIVE_GEMINI_TESTS=0 bun test
 bun run typecheck
 bun run build
 
 # DB 整合測試必須使用獨立測試資料庫；會 upsert fixture，不能指向正式資料庫。
-DATABASE_URL=postgres://USER:PASSWORD@127.0.0.1:5432/ail_test \
+DATABASE_URL=postgres://USER:PASSWORD@127.0.0.1:55482/ail_test \
+TEST_DATABASE_URL=postgres://USER:PASSWORD@127.0.0.1:55482/ail_test \
 GEMINI_API_KEY= GEMINI_MODEL= RUN_LIVE_GEMINI_TESTS=0 bun test
 ```
 
@@ -113,10 +114,14 @@ GEMINI_API_KEY= GEMINI_MODEL= RUN_LIVE_GEMINI_TESTS=0 bun test
 ## 仍需明確知道的限制
 
 - 所選類別只決定優先顯示，依規格仍搜尋全部五類；不是類別硬篩選。
-- 人數／份量、日期、時段與資格部分仍是文字欄位，無法保證結構化硬篩選。未標示成分不等於無過敏原；距離未知不等於符合限制。
+- 人數／份量、日期、時段、資格與成分採保守判定：已知不符者排除，缺少符合證據者待確認，不進主要推薦。文字欄位只支援明確且有限的格式；不猜份量、不倍增價格，缺少標籤不代表無過敏原。距離／地圖不在這次嚴格文字限制修正範圍。
 - 資料主要為圓山／大龍峒／花博，另含明示的士林場館、線上配送與全臺服務；與原 PRD 固定圓山範圍的差異記錄於整合文件，不保證全部是步行內選項。
 - 真實資料與測試 fixture 分開；首頁 `/api/catalog` 顯示實際資料庫五類涵蓋。網頁來源是查核快照，不代表即時價格、庫存、名額或完整覆蓋所有圓山商家。
 - 团購是商家優惠資訊與試算，不是成員管理、付款或下單。
-- 目前帳號 PUT 是完整文件、單分頁序列化；不同裝置同時儲存是最後寫入者優先，未實作多裝置衝突合併。
+- 帳號 PUT 必須攜帶 `revision`，伺服器以 compare-and-swap 防止過期覆蓋。單分頁序列化；不同欄位與收藏／清單增刪做三方合併，同欄位衝突則保留本機變更並提示重新載入。部署新版時須一併執行冪等 schema migration；舊版 client 不支援新寫入契約。
 - 登入限流是有上限的單程序防護；正式公開部署仍需 edge／反向代理針對註冊、搜尋、語音與回報設置流量／成本限制，多實例需共享限流。
 - 音訊、逐字稿、Need、精確位置不寫入本應用資料庫。語音送往 Gemini，文字／修正與必要候選內容也會送往 Gemini。`store:false` 不保存可供後續取回的 Interaction，**不是整體零保留、不用於訓練或無安全日誌的承諾**；部署者須核對服務層級、地區及 Google 當期條款。精確座標不送到排名模型。
+
+### 2026-09-05 全功能驗收
+
+最新修復、隔離資料庫／Gemini 實測、語音品質與未完成的瀏覽器項目，見 [完整驗收報告](docs/testing/full-app-acceptance-2026-09-05.md)。自動測試全綠不等於所有真機、模型品質與部署驗收都完成。

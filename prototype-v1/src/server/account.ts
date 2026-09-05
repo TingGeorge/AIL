@@ -24,7 +24,7 @@ const parseJson = async (c: { req: { json: () => Promise<unknown> } }) => c.req.
 
 const accountRow = async (userId: string, nickname: string) => {
   await sql`insert into account_data (user_id) values (${userId}) on conflict (user_id) do nothing`;
-  const rows = await sql`select list, favs, settings, profile, updated_at from account_data where user_id = ${userId}`;
+  const rows = await sql`select list, favs, settings, profile, updated_at, revision from account_data where user_id = ${userId}`;
   if (!rows[0]) throw new Error("account_data_missing_after_upsert");
   return accountDataFromStorage(rows[0] as Record<string, unknown>, nickname);
 };
@@ -54,24 +54,21 @@ account.put("/api/me/data", requireUser, accountBodyLimit, async (c) => {
   const body = accountDataUpdateSchema.safeParse(await parseJson(c));
   if (!body.success) return c.json({ error: "invalid_account_data", message: "帳號資料格式錯誤" }, 400);
 
-  const { list, favs, settings, profile } = body.data;
+  const { list, favs, settings, profile, revision } = body.data;
   try {
     const row = await sql.begin(async (tx) => {
+      // Compare and swap the account document before touching the canonical nickname.
+      const rows = await tx`update account_data set
+        list = ${list}::jsonb, favs = ${favs}::jsonb, settings = ${settings}::jsonb,
+        profile = ${{ color: profile.color }}::jsonb, updated_at = now(), revision = revision + 1
+        where user_id = ${c.var.user.id} and revision = ${revision}
+        returning list, favs, settings, profile, updated_at, revision`;
+      if (!rows[0]) return null;
       await tx`update users set nickname = ${profile.nickname}, updated_at = now()
         where id = ${c.var.user.id}`;
-      const rows = await tx`insert into account_data (user_id, list, favs, settings, profile, updated_at)
-        values (${c.var.user.id}, ${list}::jsonb, ${favs}::jsonb,
-          ${settings}::jsonb, ${{ color: profile.color }}::jsonb, now())
-        on conflict (user_id) do update set
-          list = excluded.list,
-          favs = excluded.favs,
-          settings = excluded.settings,
-          profile = excluded.profile,
-          updated_at = now()
-        returning list, favs, settings, profile, updated_at`;
-      if (!rows[0]) throw new Error("account_data_missing_after_update");
       return rows[0] as Record<string, unknown>;
     });
+    if (!row) return c.json({ error: "account_conflict", message: "帳號已在其他裝置更新，請重新整理後確認變更。" }, 409);
     return c.json(accountDataFromStorage(row, profile.nickname));
   } catch (error) {
     console.error("account_write_failed", error instanceof Error ? error.name : "unknown_error");

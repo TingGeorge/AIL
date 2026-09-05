@@ -146,6 +146,24 @@ describe.skipIf(!live)("account data and reports with isolated PostgreSQL rows",
     expect(meBody.data.profile.nickname).toBe("新暱稱");
   });
 
+  test("stale device cannot overwrite another device's favorites or nickname", async () => {
+    const session = await register();
+    const first = structuredClone(session.data);
+    const stale = structuredClone(session.data);
+    first.favs = ["f_m037"];
+    const a = await request("/api/me/data", "PUT", first, session.session_token);
+    expect(a.status).toBe(200);
+    stale.settings.monthly_budget = 900;
+    stale.profile.nickname = "過期裝置";
+    const b = await request("/api/me/data", "PUT", stale, session.session_token);
+    expect(b.status).toBe(409);
+    const final = await request("/api/auth/me", "GET", undefined, session.session_token);
+    const saved = await final.json() as any;
+    expect(saved.data.favs).toEqual(["f_m037"]);
+    expect(saved.user.nickname).toBe("原暱稱");
+    expect(saved.data.settings.monthly_budget).toBe(null);
+  });
+
   test("PUT rejects forbidden account fields and over-200 IDs", async () => {
     const session = await register();
     const valid = defaultAccountData("原暱稱");

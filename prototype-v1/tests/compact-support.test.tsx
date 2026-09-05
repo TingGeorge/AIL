@@ -19,6 +19,8 @@ function mockAccount(user: User | null = null): Account {
     setError: () => {},
     authenticate: async () => {},
     update: async (transform) => { transform(data); },
+    reloadCount: 0,
+    reload: async () => {},
     signOut: async () => {},
     password: async () => {},
     clear: () => {},
@@ -121,4 +123,15 @@ test("compact support CSS retains accessible disclosure targets, focus and the s
   expect(css).toContain("overflow-wrap: anywhere");
   expect(css).toContain(".compact-settings > form + .secondary-action");
   expect(css).toContain("margin-top: 12px");
+});
+
+
+test("settings expose selected exclusions and preferences to assistive technology", () => {
+  const account = mockAccount();
+  account.data.settings.exclude = ["牛"];
+  account.data.settings.prefs = ["可外帶"];
+  const html = renderToStaticMarkup(<SettingsView account={account} onLogin={() => {}} onInstall={() => {}} installable={false} />);
+  expect(html).toMatch(/<button[^>]*aria-pressed="true"[^>]*>牛<\/button>/);
+  expect(html).toMatch(/<button[^>]*aria-pressed="true"[^>]*>可外帶<\/button>/);
+  expect(html).toMatch(/<button[^>]*aria-pressed="false"[^>]*>豬<\/button>/);
 });

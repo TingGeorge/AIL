@@ -64,7 +64,7 @@ search.post("/api/search", async (c) => {
   const effectiveExclude = [...new Set([...need.exclude_tags, ...exclude])];
   const stage = filterStage(recs, need, effectiveExclude, costco_ok);
   const groups = grouped(stage.main);
-  const warnings = constraintWarnings(need, stage.main, exclude);
+  const warnings = constraintWarnings(need, [...stage.main, ...stage.pending], exclude);
   const groupsOf = (agent: Rec["agent"]) => groups.filter((group) => group.agent === agent).length;
 
   return streamSSE(c, async (stream) => {

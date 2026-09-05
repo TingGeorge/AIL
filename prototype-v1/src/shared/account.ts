@@ -53,7 +53,8 @@ const accountDataValuesShape = {
 
 export const accountDataUpdateSchema = z.strictObject({
   ...accountDataValuesShape,
-  // A GET response can be sent back unchanged. The server never trusts this value and replaces it.
+  revision: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+  // Informational only; revision is the atomic write precondition.
   updated_at: isoTimestampSchema.optional(),
 });
 export type AccountDataUpdate = z.infer<typeof accountDataUpdateSchema>;
@@ -61,6 +62,7 @@ export type AccountDataUpdate = z.infer<typeof accountDataUpdateSchema>;
 export const accountDataSchema = z.strictObject({
   ...accountDataValuesShape,
   updated_at: isoTimestampSchema,
+  revision: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
 });
 export type AccountData = z.infer<typeof accountDataSchema>;
 
@@ -137,6 +139,7 @@ export const defaultAccountData = (nickname = "使用者", now = new Date(), upd
   settings: defaultAccountSettings(now),
   profile: defaultAccountProfile(nickname),
   updated_at: updatedAt,
+  revision: 0,
 });
 
 // Database jsonb defaults are intentionally `{}` for forward-compatible schema setup. This reader
@@ -173,5 +176,6 @@ export const accountDataFromStorage = (row: Record<string, unknown>, nickname: s
     },
     profile: { nickname, color: profile.color ?? defaults.profile.color },
     updated_at: timestamp ?? defaults.updated_at,
+    revision: Number(row.revision ?? 0),
   });
 };

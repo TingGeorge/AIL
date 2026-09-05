@@ -1,3 +1,4 @@
+import { GeminiError } from "./gemini.ts";
 import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
 import { z } from "zod";
@@ -28,7 +29,8 @@ const withTimeout = <T>(run:(signal:AbortSignal)=>Promise<T>, requestSignal:Abor
 // Upstream errors are logged, never echoed: they can embed the provider URL or headers.
 const fail = (c: { json: (o: unknown, s: 502 | 504) => Response }, kind: "voice_failed" | "parse_failed", e: unknown) => {
   if (e instanceof Timeout || (e instanceof DOMException && e.name === "TimeoutError")) return c.json({ error: "timeout", message: "逾時" }, 504);
-  console.error(kind, e instanceof Error ? e.name : "unknown_error");
+  console.error(kind, e instanceof GeminiError ? `${e.kind}:${e.status}` : e instanceof Error ? e.name : "unknown_error");
+  if (e instanceof GeminiError) return c.json({ error: `gemini_${e.kind}`, message: e.publicMessage, upstream_status: e.status || undefined }, 502);
   return c.json({ error: kind, message: kind === "voice_failed" ? "語音解析失敗，請重試或改用文字" : "解析失敗" }, 502);
 };
 

@@ -181,7 +181,7 @@ function StatusLine({ item }: { item: Rec }) {
   return (
     <span className={`result-status ${demo ? "result-status-demo" : ""}`}>
       <span className={`status-dot ${demo ? "status-demo" : `status-${statusPip(item.data_status)}`}`} aria-hidden="true" />
-      {demo ? "示範測試資料" : item.data_status}
+      {item.request_match ? (item.request_match.status === "pending" ? "本次需求待確認" : "不符合本次需求") : demo ? "示範測試資料" : item.data_status}
     </span>
   );
 }
@@ -235,6 +235,7 @@ function ResultCard({
           </span>
           <span className="result-title">{item.title}</span>
           <span className="result-copy">{item.provider}</span>
+          {item.request_match && <span className="result-copy">{item.request_match.reasons.join("；")}</span>}
           <span className="result-price">
             <strong className={comparableTotal(item) === null ? "result-price-unknown" : undefined}>
               <small>總可比成本</small>{priceLabel(item)}
@@ -401,7 +402,7 @@ export function ResultsView({
         <div className="empty-state">
           <SlidersHorizontal aria-hidden="true" />
           <h2>這個類別沒有主要候選</h2>
-          <p>可查看待確認／已排除項目，或調整可檢查條件；文字型限制仍需逐項確認。</p>
+          <p>可查看待確認／已排除項目及原因。沒有足夠證據符合條件的項目，不會放入主要推薦。</p>
           <button type="button" onClick={onAdjust}>修改條件</button>
         </div>
       ) : (
@@ -420,12 +421,12 @@ export function ResultsView({
       )}
 
       <DetailDisclosure title="搜尋與比較說明">
-        <p className="candidate-caveat">主要候選通過資料閘門與可檢查條件。所選類別優先顯示，仍搜尋全部五類。人數、日期、時段與文字資格仍需依來源逐項確認；線上配送要核對運費與配送範圍，不同計價單位／份量（例如單人票）不可直接視為多人總價。</p>
+        <p className="candidate-caveat">主要候選通過資料閘門與本次硬限制；缺少符合證據者放入待確認，已知不符合者排除。所選類別優先顯示，仍搜尋全部五類。不猜份量、不放大價格；線上配送要核對運費與配送範圍，不同計價單位／份量（例如單人票）不可直接視為多人總價。使用前仍請確認來源最新資訊。</p>
       </DetailDisclosure>
       <div className="secondary-results">
         <SecondaryBucket
           title="待確認"
-          description="資料狀態、價格或有效期尚未通過主要比較門檻"
+          description="資料、費用或本次需求的符合證據不足；不列入主要推薦"
           items={categoryPending}
           favs={favs}
           onOpen={onOpen}
@@ -434,7 +435,7 @@ export function ResultsView({
         />
         <SecondaryBucket
           title="已排除"
-          description="未符合目前硬限制；此畫面不推測個別排除原因"
+          description="已知不符合本次硬限制；各項目列出可判定的原因"
           items={categoryExcluded}
           favs={favs}
           onOpen={onOpen}
@@ -620,6 +621,7 @@ export function DetailView({
         </span>
       </div>
 
+      {item.request_match && <p className="notice warning">本次需求：{item.request_match.reasons.join("；")}。原始資料狀態：{item.data_status}。</p>}
       {demo && (
         <aside className="demo-record-notice" role="note">
           <ShieldCheck aria-hidden="true" />
@@ -683,7 +685,7 @@ export function DetailView({
 
         <DetailDisclosure title={demo ? "測試欄位與示範來源" : "來源與查核"} hint={demo ? "測試資料" : dateLabel(item.verified_at)}>
           <div className="facts-grid">
-            <Fact label="資料狀態" value={demo ? "示範測試資料" : item.data_status} icon={CheckCircle2} />
+            <Fact label="資料狀態" value={item.request_match ? (item.request_match.status === "pending" ? "本次需求待確認" : "不符合本次需求") : demo ? "示範測試資料" : item.data_status} icon={CheckCircle2} />
             <Fact label={demo ? "測試資料日期" : "資料確認"} value={dateLabel(item.verified_at)} icon={ShieldCheck} />
             <Fact label="座標" value={hasCoordinates ? `${item.lat}, ${item.lng}${demo ? "（測試資料）" : ""}` : "未提供"} icon={MapPin} />
           </div>

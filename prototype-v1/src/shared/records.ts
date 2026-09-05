@@ -1,5 +1,6 @@
 // Candidate record (PRD §9.1) as the client renders it, plus the comparison rules of §9.3,
 // and the session-local community objects (profile, settings, reports, teams).
+import { constraintLabels, matchConstraints, type ConstraintKey } from "./constraints.ts";
 import { z } from "zod";
 import type { Need } from "./need.ts";
 import { CATEGORIES } from "./need.ts";
@@ -52,6 +53,7 @@ export type Rec = {
   // 搜尋流程後填，不在資料庫裡
   distance_km?: number | null;
   reason?: string | null;
+  request_match?: { status: "pending" | "excluded"; reasons: string[] };
 };
 
 // Repository seed records are fixtures, never real-world verified offers.
@@ -96,17 +98,16 @@ export const COSTCO_MEMBER = "Costco 會員";
 export const passesGate = (r: Rec, now = Date.now()) =>
   r.data_status === "已驗證" && comparableTotal(r) !== null && !isExpired(r, now);
 
-export type ExcludedBy = { budget: number; free_only: number; distance: number; exclude: number; registration: number; costco: number };
+export type ExcludedBy = Record<Exclude<ConstraintKey, "exclude">, number> & { budget: number; free_only: number; distance: number; exclude: number; registration: number; costco: number };
 
 // 硬限制（PRD FR-04、SPEC-backend §8.3）：回傳被哪些限制擋下，空陣列 = 通過。
-// ponytail: people_or_servings、date、time_window、eligibility_notes 維持文字，只顯示、交給 LLM，
-// 不做機器篩選 —— 紀錄上沒有對應的結構化欄位。
+// Unsupported or incomplete constraint evidence is pending, never delegated to ranking as a guess.
 export const hardViolations = (r: Rec, n: Need, exclude: string[], costcoOk: boolean): (keyof ExcludedBy)[] => {
   const out: (keyof ExcludedBy)[] = [];
   const total = comparableTotal(r);
   if (n.free_only && total !== 0) out.push("free_only");
   if (n.budget_total_twd !== null && total !== null && total > n.budget_total_twd) out.push("budget");
-  if (r.tags && exclude.some((t) => r.tags!.includes(t))) out.push("exclude");
+  out.push(...matchConstraints(r, n, exclude).incompatible);
   const km = r.distance_km;   // null／undefined = 沒有座標，顯示但不做距離篩選（SPEC-geocoding）
   if (km !== null && km !== undefined
     && ((n.max_distance_km !== null && km > n.max_distance_km) || (n.max_minutes !== null && walkMinutes(km) > n.max_minutes))) out.push("distance");
@@ -116,7 +117,7 @@ export const hardViolations = (r: Rec, n: Need, exclude: string[], costcoOk: boo
 };
 
 export const passesHard = (r: Rec, n: Need, exclude: string[], costcoOk = true) =>
-  hardViolations(r, n, exclude, costcoOk).length === 0;
+  hardViolations(r, n, exclude, costcoOk).length === 0 && matchConstraints(r, n, exclude).unknown.length === 0;
 
 // 總可比成本由低至高，同成本時新確認的在前。生存模式：免費永遠在前。
 export const costOrder = (survival = false) => (a: Rec, b: Rec) => {
@@ -129,14 +130,9 @@ export type Bucket = { main: Rec[]; pending: Rec[]; excluded: Rec[] };
 
 // 先過閘門，再套硬限制，最後依成本排序。
 export const bucket = (recs: Rec[], n: Need, exclude: string[], survival: boolean, costcoOk = true): Bucket => {
-  const out: Bucket = { main: [], pending: [], excluded: [] };
-  for (const r of recs) {
-    if (!passesGate(r)) out.pending.push(r);
-    else if (!passesHard(r, n, exclude, costcoOk)) out.excluded.push(r);
-    else out.main.push(r);
-  }
-  out.main.sort(costOrder(survival));
-  return out;
+  const { main, pending, excluded } = filterStage(recs, n, exclude, costcoOk);
+  main.sort(costOrder(survival));
+  return { main, pending, excluded };
 };
 
 export type Stage1 = { main: Rec[]; pending: Rec[]; excluded: Rec[]; excluded_by: ExcludedBy };
@@ -146,13 +142,16 @@ export type Stage1 = { main: Rec[]; pending: Rec[]; excluded: Rec[]; excluded_by
 export const filterStage = (recs: Rec[], n: Need, exclude: string[], costcoOk: boolean, now = Date.now()): Stage1 => {
   const out: Stage1 = {
     main: [], pending: [], excluded: [],
-    excluded_by: { budget: 0, free_only: 0, distance: 0, exclude: 0, registration: 0, costco: 0 },
+    excluded_by: { budget: 0, free_only: 0, distance: 0, exclude: 0, registration: 0, costco: 0, people: 0, date: 0, time: 0, eligibility: 0 },
   };
   for (const r of recs) {
     if (!passesGate(r, now)) { out.pending.push(r); continue; }
     const hit = hardViolations(r, n, exclude, costcoOk);
     for (const k of hit) out.excluded_by[k]++;
-    (hit.length === 0 ? out.main : out.excluded).push(r);
+    const unknown = matchConstraints(r, n, exclude).unknown;
+    if (hit.length) out.excluded.push({ ...r, request_match: { status: "excluded", reasons: hit.map(k => `${({budget:"預算",free_only:"僅限免費",distance:"距離",registration:"登記",costco:"Costco 會員",...constraintLabels})[k]}不符合`) } });
+    else if (unknown.length) out.pending.push({ ...r, request_match: { status: "pending", reasons: unknown.map(k => `${constraintLabels[k]}缺乏足夠證據，待確認`) } });
+    else out.main.push(r);
   }
   out.main.sort(costOrder(false));   // 生存模式的「免費在前」在前端合併時處理
   return out;

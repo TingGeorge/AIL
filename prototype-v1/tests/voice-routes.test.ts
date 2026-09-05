@@ -68,10 +68,14 @@ test("silence returns a retryable no-speech message",async()=>{
   expect(await res.json()).toEqual({error:"no_speech",message:"沒有辨識到語音，請重錄或改用文字"});
 });
 test("invalid model output and upstream failures never leak private provider detail",async()=>{
-  for(const response of [Response.json(completed({...result,need:{...result.need,date:"2026-02-30"}})),Response.json({error:"fake-test-key PRIVATE TRANSCRIPT"},{status:429})]){
+  const cases = [
+    [Response.json(completed({...result,need:{...result.need,date:"2026-02-30"}})), {error:"gemini_invalid_response",message:"Gemini 回應格式不正確，請重試"}],
+    [Response.json({error:"fake-test-key PRIVATE TRANSCRIPT"},{status:429}), {error:"gemini_quota",message:"Gemini 額度或呼叫頻率受限，請稍後重試",upstream_status:429}],
+  ] as const;
+  for(const [response, expected] of cases){
     globalThis.fetch=(async()=>response) as unknown as typeof fetch;
     const res=await voice(upload());expect(res.status).toBe(502);
-    expect(await res.json()).toEqual({error:"voice_failed",message:"語音解析失敗，請重試或改用文字"});
+    expect(await res.json()).toEqual(expected);
   }
 });
 test("text parsing still supports manual text/corrections using the same native provider",async()=>{

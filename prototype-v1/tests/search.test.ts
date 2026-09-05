@@ -47,9 +47,10 @@ test("filterStage：六個硬限制各自計數（FR-13 要說得出是哪一個
   ];
   const s = stage(recs, need({ budget_total_twd: 300, max_distance_km: 1, registration_ok: false }), ["牛"]);
 
-  expect(s.main.map((r) => r.id)).toEqual(["ok"]);
+  expect(s.main).toEqual([]);
+  expect(s.pending.map((r) => r.id)).toEqual(["ok"]);
   expect(s.excluded.map((r) => r.id).sort()).toEqual(["會員", "牛", "要報名", "貴", "遠"].sort());
-  expect(s.excluded_by).toEqual({ budget: 1, free_only: 0, distance: 1, exclude: 1, registration: 1, costco: 1 });
+  expect(s.excluded_by).toEqual({ budget: 1, free_only: 0, distance: 1, exclude: 1, registration: 1, costco: 1, people: 0, date: 0, time: 0, eligibility: 0 });
 });
 
 test("filterStage：free_only 只留下總可比成本為 0 的", () => {
@@ -95,14 +96,15 @@ test("filterStage：一筆被多個限制排除時每個限制都計數", () => 
 });
 
 // 這些欄位目前沒有可供 deterministic filter 使用的結構化候選欄位：不可假稱已保證符合。
-test("filterStage：文字型人數／日期／時段／資格不會靜默刪除候選", async () => {
+test("filterStage：文字型人數／日期／時段／資格缺乏證據時列待確認", async () => {
   const { constraintWarnings } = await import("../src/server/rank.ts");
   const n = need({ people_or_servings: 4, date: "2026-09-06", time_window: "晚上", eligibility_notes: "限學生" });
   const candidate = rec({ quantity_or_servings: "約 2 人份", availability_or_event_time: "週一白天", eligibility: ["一般民眾"] });
-  expect(stage([candidate], n).main.map((r) => r.id)).toEqual([candidate.id]);
+  expect(stage([candidate], n).main).toEqual([]);
+  expect(stage([candidate], n).pending.map((r) => r.id)).toEqual([candidate.id]);
   expect(constraintWarnings(n, [candidate])).toEqual([{
-    code: "text_constraints_not_filtered",
+    code: "strict_constraints_applied",
     fields: ["people_or_servings", "date", "time_window", "eligibility_notes"],
-    message: "人數／份量、日期、時段與資格目前只有文字資料，未作結構化硬限制篩選；請逐筆核對。",
+    message: "採嚴格條件篩選：明確不符者排除，缺乏份量、日期、時段或資格證據者列待確認，不進主要推薦。",
   }]);
 });

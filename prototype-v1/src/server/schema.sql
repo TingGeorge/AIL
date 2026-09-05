@@ -74,3 +74,6 @@ create index if not exists reports_candidate on reports (candidate_id, created_a
 -- Idempotent upgrade: preserve existing data while representing unknown required fees.
 alter table candidates alter column mandatory_fees_twd drop not null;
 alter table candidates alter column mandatory_fees_twd drop default;
+
+-- Monotonic optimistic concurrency token; safe to apply repeatedly to existing installations.
+alter table account_data add column if not exists revision bigint not null default 0;

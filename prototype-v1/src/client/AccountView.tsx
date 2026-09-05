@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, LogIn, Save, ShieldCheck, UserRound } from "lucide-react";
 import { DOT_COLORS, PREFS, TAGS } from "../shared/records.ts";
+import { mergeAccountChanges } from "../shared/account-merge.ts";
 import { currentAccountMonth } from "../shared/account.ts";
 import type { useAccount } from "./useAccount.ts";
 import "./compact-support.css";
@@ -134,7 +135,13 @@ export function AccountView({ account, onDone, supportEmail }: AccountViewProps)
 }
 
 export function SettingsView({ account, onLogin, onInstall, installable }: SettingsViewProps) {
-  const [draft, setDraft] = useState(account.data);
+  const [draft, setDraftValue] = useState(account.data);
+  const baseline = useRef(account.data);
+  const dirty = useRef(false);
+  const setDraft = (value: typeof draft) => { dirty.current = true; setDraftValue(value); };
+  useEffect(() => {
+    if (!dirty.current) { baseline.current = account.data; setDraftValue(account.data); }
+  }, [account.data]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [current, setCurrent] = useState("");
@@ -165,10 +172,13 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
           setBusy(true);
           setMessage("");
           try {
-            await account.update((latest) => ({ ...latest, settings: draft.settings, profile: draft.profile }));
+            await account.update((latest) => mergeAccountChanges(baseline.current, draft, latest));
+            dirty.current = false;
+            baseline.current = draft;
             setMessage(account.user ? "設定已儲存到帳號。" : "已套用本次匿名設定。");
           } catch (caught) {
-            setMessage((caught as Error).message);
+            // Shared account.error owns save failures and clears after a successful retry.
+            setMessage("");
           } finally {
             setBusy(false);
           }
@@ -226,7 +236,7 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
           <legend>預設排除</legend>
           <div>
             {TAGS.map((tag) => (
-              <button type="button" key={tag} className={settings.exclude.includes(tag) ? "active" : ""} onClick={() => set("exclude", settings.exclude.includes(tag) ? settings.exclude.filter((value) => value !== tag) : [...settings.exclude, tag])}>{tag}</button>
+              <button type="button" key={tag} aria-pressed={settings.exclude.includes(tag)} className={settings.exclude.includes(tag) ? "active" : ""} onClick={() => set("exclude", settings.exclude.includes(tag) ? settings.exclude.filter((value) => value !== tag) : [...settings.exclude, tag])}>{tag}</button>
             ))}
           </div>
         </fieldset>
@@ -234,7 +244,7 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
           <legend>預設偏好</legend>
           <div>
             {PREFS.map((pref) => (
-              <button type="button" key={pref} className={settings.prefs.includes(pref) ? "active" : ""} onClick={() => set("prefs", settings.prefs.includes(pref) ? settings.prefs.filter((value) => value !== pref) : [...settings.prefs, pref])}>{pref}</button>
+              <button type="button" key={pref} aria-pressed={settings.prefs.includes(pref)} className={settings.prefs.includes(pref) ? "active" : ""} onClick={() => set("prefs", settings.prefs.includes(pref) ? settings.prefs.filter((value) => value !== pref) : [...settings.prefs, pref])}>{pref}</button>
             ))}
           </div>
         </fieldset>

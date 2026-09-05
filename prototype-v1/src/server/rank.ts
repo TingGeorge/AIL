@@ -1,4 +1,5 @@
 import { generateStructured, geminiConfigured } from "./gemini.ts";
+import { GeminiError } from "./gemini.ts";
 import { z } from "zod";
 import type { Need } from "../shared/need.ts";
 import { comparableTotal, TAGS, type Category, type Rec } from "../shared/records.ts";
@@ -51,9 +52,9 @@ export const constraintWarnings = (need: Need, records: Rec[], settingsExclude: 
   ].filter((field): field is string => field !== null);
   const warnings: RankingWarning[] = [];
   if (fields.length > 0) warnings.push({
-    code: "text_constraints_not_filtered",
+    code: "strict_constraints_applied",
     fields,
-    message: "人數／份量、日期、時段與資格目前只有文字資料，未作結構化硬限制篩選；請逐筆核對。",
+    message: "採嚴格條件篩選：明確不符者排除，缺乏份量、日期、時段或資格證據者列待確認，不進主要推薦。",
   });
   if ((need.max_distance_km !== null || need.max_minutes !== null)
       && records.some((record) => record.distance_km === null || record.distance_km === undefined)) {
@@ -70,7 +71,7 @@ export const constraintWarnings = (need: Need, records: Rec[], settingsExclude: 
   if (requestedExclusions.length > 0) {
     const supported = new Set<string>(TAGS);
     const unrecognized = requestedExclusions.filter((tag) => !supported.has(tag));
-    const hasMissingTags = records.some((record) => record.tags === null);
+    const hasMissingTags = records.some((record) => record.category === "食品" && record.tags === null);
     if (unrecognized.length > 0 || hasMissingTags) {
       const details = [
         unrecognized.length > 0 ? `排除項目「${unrecognized.slice(0, 3).join("、")}」不在目前可辨識標籤內` : null,
@@ -80,7 +81,7 @@ export const constraintWarnings = (need: Need, records: Rec[], settingsExclude: 
         code: "exclude_tags_not_guaranteed",
         fields: [need.exclude_tags.length > 0 ? "exclude_tags" : null, settingsExclude.length > 0 ? "exclude" : null]
           .filter((field): field is string => field !== null),
-        message: `${details.join("；")}；無法保證已完整排除，請逐筆核對。`,
+        message: `${details.join("；")}；缺乏排除證據的食品列待確認，不進主要推薦。`,
       });
     }
   }
@@ -268,6 +269,6 @@ export async function rankGroup(input: {
     if (error instanceof RankingTimeout) return failed(input.records, "推薦排序逾時，已改依總可比成本排列");
     if (input.signal?.aborted || error instanceof RankingAborted) return failed(input.records, "搜尋已取消");
     input.onError?.(error);
-    return failed(input.records, "推薦排序失敗，已改依總可比成本排列");
+    return failed(input.records, `${error instanceof GeminiError ? error.publicMessage : "推薦排序失敗"}，已改依總可比成本排列`);
   }
 }

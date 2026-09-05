@@ -61,8 +61,8 @@ test("ResultsView：五個後端類別都出現，推薦順序保留伺服器陣
   }
   expect(html).toContain("推薦順序");
   expect(html.indexOf("後端第一")).toBeLessThan(html.indexOf("後端第二"));
-  expect(html).toContain("通過資料閘門與可檢查條件");
-  expect(html).toContain("文字資格仍需依來源逐項確認");
+  expect(html).toContain("通過資料閘門與本次硬限制");
+  expect(html).toContain("缺少符合證據者放入待確認，已知不符合者排除");
   expect(html).not.toContain("未提供推薦理由");
   expect(html).not.toContain("可行選擇");
   expect(html).not.toContain("CP");
