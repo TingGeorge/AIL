@@ -1,26 +1,26 @@
 # `codex/all-in-life-mvp` 與 `main` 差異、取捨與整合建議
 
-> 最新比對：2026-09-05。`origin/main` = `3def882`，本輪更新前的功能分支基準 = `990cbea`；當時相對主支為 5 個提交在前、12 個提交在後。以下比較已納入本輪 UI、PWA、資料表與文件更新。
+> 最新比對：2026-09-05。`origin/main` = `45f57ed`，目前功能分支 `codex/all-in-life-mvp` = `07c34b0`。本文件已納入 PWA HTTPS 上線整理、送件文件、官方 checklist 保留、更新後團隊名單，以及最新 merge-tree 衝突檢查。
 
 ## 結論
 
-兩邊是平行實作，不宜直接混合 runtime。`main` 的作品位於 `old_version/`，採 Bun + Vite + React + Hono，強項是可回上一頁的 hash routing、共享 Zod schema、API timeout／錯誤邊界、台北日期解析與 Bun 測試。功能分支的作品位於 `mvp/`，採 npm + Vinext + React + Tailwind，自成一套較完整的手機 App 體驗、CP／evidence 規則、PWA、D1 schema 與 Sites 部署設定。
+兩邊是平行實作，不宜直接混合 runtime。`main` 的可執行作品位於 `old_version/` 與 `prototype-v1/`，採 Bun + Vite + React + Hono，強項是 hash routing、共享 Zod schema、API timeout／錯誤邊界、台北日期解析、事先匯入資料、兩階段搜尋與 Bun 測試。功能分支的作品位於 `mvp/`，採 npm + Vinext + React + Tailwind，自成一套較完整的手機 App 體驗、CP／evidence 規則、PWA、D1 schema、Sites 部署設定與公開 HTTPS 展示。
 
-建議以 `mvp/` 作為展示入口，保留兩套程式碼目錄但不交叉覆蓋 lockfile 或 build config；將 `main` 較成熟的路由、schema、API client、server validation 與測試觀念移植到 `mvp/`。本輪已先吸收產品流程和互動設計，後端部分則以 API contract 與 migration 預留，不假裝已上線。
+建議以 `mvp/` 作為本次送件與展示入口，保留 `main` 的 `prototype-v1/` 作為後端/API 參考，不交叉覆蓋 lockfile 或 build config；將 `main` 較成熟的路由、schema、API client、server validation、資料匯入與測試觀念選擇性移植到 `mvp/`。本輪已完成公開站與 PWA 驗收，後端部分則以 API contract 與 migration 預留，不假裝已正式上線。
 
 ## 快速比較
 
 | 面向 | `main` | 目前分支 | 決策 |
 | --- | --- | --- | --- |
-| App 位置 | `old_version/` | `mvp/` | `mvp/` 為目前展示入口；`old_version/` 保留作參考 |
-| 工具鏈 | Bun、Vite 8 | npm、Vinext、Cloudflare Vite plugin | 不共用 lockfile；部署前只選一套入口 |
+| App 位置 | `old_version/`、`prototype-v1/` | `mvp/` | `mvp/` 為目前展示入口；`prototype-v1/` 作後端/API 移植來源 |
+| 工具鏈 | Bun、Vite 8、Hono | npm、Vinext、Cloudflare Vite plugin | 不共用 lockfile；部署前只選一套入口 |
 | 導覽 | hash route，可使用瀏覽器返回 | 16 個 state-driven screens | 短期保留 state flow；下一階段移植 hash/history 行為 |
 | 需求模型 | `Need` + Zod，client/server 共用 | `Filters` + TypeScript types | 採用 `main` 的 runtime validation，對齊 `SearchConstraints` |
-| API | Hono `/api/parse`、`/api/transcribe`，30 秒 timeout | 正式 API 尚未接 | 沿用 timeout、payload 限制、錯誤不洩漏 upstream 細節 |
+| API | Hono `/api/parse`、`/api/transcribe`，並規格化 `/api/search` SSE、auth、account data | 正式 API 尚未接 | 沿用 timeout、payload 限制、錯誤不洩漏 upstream 細節 |
 | 日期 | server 以 `Asia/Taipei` 解析 | 前端日期欄位 | 正式 API 採 `main` 的 server-resolved date |
 | UI | 黑底酸綠、清楚多畫面流程 | 黑底酸綠加紫／藍／珊瑚狀態色 | 保留主支高對比與節奏，分支補資訊層級和多類別辨識 |
 | PWA | manifest、icons、safe area | manifest、icons、SW 註冊、安裝提示 | 以分支版本為準，HTTPS 部署後驗收 installability |
-| 資料 | mock records、server parser | 圓山資料、CP engine、D1 migrations | 以 evidence、freshness、total cost 與 hard filter 統一 |
+| 資料 | 事先匯入候選資料、PostgreSQL schema 規格、geocoding/ingestion spec | 圓山展示資料、CP engine、D1 migrations | 以 evidence、freshness、total cost 與 hard filter 統一 |
 | 測試 | Bun parser／routes tests | TypeScript、oxlint、build | 移植 parser contract test，再補核心 journey smoke test |
 
 ## 已從 `main` 採用的好設計
@@ -69,7 +69,7 @@ Cloudflare Worker API
 
 ## Merge 衝突與風險
 
-目前可預測的文字衝突集中於：
+`git merge-tree --write-tree --messages HEAD origin/main` 已確認直接合併會產生文字衝突：
 
 - `.gitignore`：雙方新增規則不同；合併時取聯集，不覆蓋任一套 build cache／secret 規則。
 - `docs/PRD-all-in-life.md`：雙方都修改端到端流程。本分支已整合為「匿名直接用、登入後保存；文字與語音共用同一份可編輯結構化需求」。
