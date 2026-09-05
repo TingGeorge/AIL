@@ -33,7 +33,6 @@ import {
   QrCode,
   Radar,
   ReceiptText,
-  Search,
   Share2,
   ShieldCheck,
   ShoppingBag,
@@ -61,6 +60,7 @@ type View =
   | 'welcome'
   | 'onboarding'
   | 'home'
+  | 'ready'
   | 'search'
   | 'results'
   | 'detail'
@@ -151,6 +151,13 @@ const modes: Record<
     color: 'var(--coral)',
   },
 };
+const homePrompts = [
+  '今天要解決什麼？',
+  '今晚想吃得省，還是吃得爽？',
+  '附近有沒有免費驚喜？',
+  '想少走一點，還是多省一點？',
+  '揪朋友一起，能省多少？',
+];
 const results: Result[] = [
   {
     id: 'jianjia',
@@ -920,7 +927,8 @@ export default function App() {
       window.setTimeout(() => {
         setNeed('今晚兩人吃飯，預算五百，可以外帶，不吃堅果');
         setRecording(false);
-        setToast('這個瀏覽器不支援語音，已保留文字輸入');
+        setToast('已轉成文字，請確認需求與限制');
+        navigate('filters');
       }, 1300);
       return;
     }
@@ -928,7 +936,12 @@ export default function App() {
     recognition.lang = 'zh-TW';
     recognition.interimResults = false;
     setRecording(true);
-    recognition.onresult = (event) => setNeed(event.results[0][0].transcript);
+    recognition.onresult = (event) => {
+      setNeed(event.results[0][0].transcript);
+      setRecording(false);
+      setToast('語音輸入完成，請確認需求與限制');
+      navigate('filters');
+    };
     recognition.onend = () => setRecording(false);
     recognition.onerror = () => {
       setRecording(false);
@@ -957,6 +970,7 @@ export default function App() {
         {!shellLess && (
           <AppHeader
             view={view}
+            nowText={nowText}
             unread={unread}
             savedCount={saved.length}
             onBack={goBack}
@@ -995,15 +1009,13 @@ export default function App() {
                 mode={mode}
                 filters={filters}
                 need={need}
-                nowText={nowText}
                 locationStatus={locationStatus}
                 savedCount={saved.length}
                 onMode={chooseMode}
                 onNeed={setNeed}
                 onVoice={startVoice}
                 recording={recording}
-                onSearch={startSearch}
-                onFilters={() => navigate('filters')}
+                onConfirm={() => navigate('filters')}
                 onProfile={() => navigate('profile')}
                 onAnalytics={() => navigate('analytics')}
                 onTeam={() => {
@@ -1011,6 +1023,15 @@ export default function App() {
                   navigate('team');
                 }}
                 onGuide={() => setShowSopGuide(true)}
+              />
+            )}
+            {view === 'ready' && (
+              <ReadyScreen
+                filters={filters}
+                need={need}
+                mode={mode}
+                onEdit={() => navigate('filters')}
+                onStart={startSearch}
               />
             )}
             {view === 'search' && (
@@ -1121,8 +1142,8 @@ export default function App() {
                 followCurrentTime={followCurrentTime}
                 onFollowCurrentTime={setFollowCurrentTime}
                 onApply={() => {
-                  setToast('條件已套用');
-                  goBack();
+                  setToast('需求與限制已確認');
+                  navigate('ready');
                 }}
               />
             )}
@@ -1168,6 +1189,7 @@ export default function App() {
         {!shellLess &&
           ![
             'search',
+            'ready',
             'settings',
             'profile',
             'filters',
@@ -1310,21 +1332,21 @@ function SopGuide({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(0);
   const guide = [
     {
-      eyebrow: 'STEP 01 · 說出需求',
-      title: '語音或打字都可以',
-      copy: '像聊天一樣說出人數、預算與不喜歡的項目，內容之後都能修改。',
+      eyebrow: 'STEP 01 · 語音／打字輸入需求',
+      title: '先把需求說清楚',
+      copy: '語音完成或按下一步後，系統會強制帶你到條件確認，不會直接搜尋。',
       icon: <Mic />,
     },
     {
-      eyebrow: 'STEP 02 · 確認界線',
-      title: '先確認，再開始搜尋',
-      copy: '時間、預算、距離是硬限制；喜好用來排序，排斥成分會清楚警告。',
+      eyebrow: 'STEP 02 · 確認需求與限制',
+      title: '逐項確認搜尋界線',
+      copy: '檢查時間、預算、距離、喜好與排斥成分；確認後才會進到準備探索。',
       icon: <SlidersHorizontal />,
     },
     {
-      eyebrow: 'STEP 03 · 雙獵人出動',
-      title: 'CP 與零元同步探索',
-      copy: '兩個 Agent 同時找方案，回來後可看 CP 公式、來源與可執行的下一步。',
+      eyebrow: 'STEP 03 · 開始探索',
+      title: '確認完成，雙獵人出動',
+      copy: '按下開始探索後，CP 值獵人與零元獵人才會同步搜尋並帶回結果。',
       icon: <Radar />,
     },
   ];
@@ -1519,6 +1541,7 @@ function OnboardingScreen({
 
 function AppHeader({
   view,
+  nowText,
   unread,
   savedCount,
   onBack,
@@ -1527,6 +1550,7 @@ function AppHeader({
   onSettings,
 }: {
   view: View;
+  nowText: string;
   unread: number;
   savedCount: number;
   onBack: () => void;
@@ -1537,6 +1561,7 @@ function AppHeader({
   const root = ['home', 'results', 'saved', 'team', 'analytics'].includes(view);
   const titles: Partial<Record<View, string>> = {
     detail: '選項詳情',
+    ready: '準備探索',
     search: '獵人出發',
     settings: '設定',
     profile: '個人檔案',
@@ -1548,10 +1573,11 @@ function AppHeader({
     map: '位置與交通',
   };
   return (
-    <header className="app-header glass">
+    <header className={`app-header glass ${root ? 'root-header' : ''}`}>
       {root ? (
-        <button className="brand" onClick={onHome}>
-          ALL IN LIFE
+        <button className="brand-lockup" onClick={onHome}>
+          <b>ALL IN LIFE</b>
+          <small><i />{nowText} · 圓山生活圈</small>
         </button>
       ) : (
         <button className="icon-button" onClick={onBack} aria-label="返回">
@@ -1560,12 +1586,6 @@ function AppHeader({
       )}
       {!root && <strong className="header-title">{titles[view]}</strong>}
       <div className="header-actions">
-        {root && (
-          <span className="place-pill">
-            <MapPin />
-            圓山
-          </span>
-        )}
         {savedCount > 0 && root && (
           <span className="header-count">{savedCount}</span>
         )}
@@ -1591,20 +1611,88 @@ function AppHeader({
   );
 }
 
+function JourneyRail({ active }: { active: 1 | 2 | 3 }) {
+  const steps = ['輸入需求', '確認需求與限制', '開始探索'];
+  return (
+    <div className="journey-rail" aria-label={`目前位於步驟 ${active}`}>
+      {steps.map((label, index) => {
+        const step = index + 1;
+        return (
+          <span
+            key={label}
+            className={step === active ? 'active' : step < active ? 'done' : ''}
+          >
+            <i>{step < active ? <Check /> : step}</i>
+            <b>{label}</b>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+function ReadyScreen({
+  filters,
+  need,
+  mode,
+  onEdit,
+  onStart,
+}: {
+  filters: Filters;
+  need: string;
+  mode: Mode;
+  onEdit: () => void;
+  onStart: () => void;
+}) {
+  return (
+    <section className="screen ready-screen">
+      <JourneyRail active={3} />
+      <span className="kicker lime-text">STEP 03 · START HUNTING</span>
+      <h1>條件確認完成<br />準備開始探索</h1>
+      <p>最後看一次摘要；按下按鈕後，兩個獵人才會正式出動。</p>
+      <div className="ready-brief interactive-shine">
+        <span className="ready-label"><Check />已確認的需求</span>
+        <blockquote>{need || '尚未輸入文字需求'}</blockquote>
+        <div className="ready-metrics">
+          <span><Clock3 /><b>{filters.date.slice(5)} {filters.time}</b></span>
+          <span><CircleDollarSign /><b>NT${filters.budget}</b></span>
+          <span><Users /><b>{filters.people} 人</b></span>
+          <span><MapPin /><b>{filters.distance} km</b></span>
+        </div>
+        <div className="ready-tags">
+          {filters.preferences.map((tag) => <i key={tag}>喜好 · {tag}</i>)}
+          {filters.exclusions.map((tag) => <i className="exclude" key={tag}>排斥 · {tag}</i>)}
+        </div>
+      </div>
+      <div className="ready-agent-pair">
+        <span><i className="lime-agent"><CircleDollarSign /></i><b>CP 值獵人</b><small>價格、距離、喜好</small></span>
+        <span><i className="blue-agent"><Sparkles /></i><b>零元獵人</b><small>免費、資格、時間</small></span>
+      </div>
+      <div className="ready-mode">目前模式：<b>{modes[mode].title}</b></div>
+      <button className="primary-action flow-action ready-start" onClick={onStart}>
+        <Radar />
+        開始探索
+        <ArrowRight />
+      </button>
+      <button className="secondary-action ready-edit" onClick={onEdit}>
+        <Pencil />返回修改條件
+      </button>
+    </section>
+  );
+}
+
 function HomeScreen({
   profile,
   mode,
   filters,
   need,
-  nowText,
   locationStatus,
   savedCount,
   onMode,
   onNeed,
   onVoice,
   recording,
-  onSearch,
-  onFilters,
+  onConfirm,
   onProfile,
   onAnalytics,
   onTeam,
@@ -1614,30 +1702,58 @@ function HomeScreen({
   mode: Mode;
   filters: Filters;
   need: string;
-  nowText: string;
   locationStatus: string;
   savedCount: number;
   onMode: (m: Mode) => void;
   onNeed: (s: string) => void;
   onVoice: () => void;
   recording: boolean;
-  onSearch: () => void;
-  onFilters: () => void;
+  onConfirm: () => void;
   onProfile: () => void;
   onAnalytics: () => void;
   onTeam: () => void;
   onGuide: () => void;
 }) {
+  const [promptIndex, setPromptIndex] = useState(0);
+  const [typedPrompt, setTypedPrompt] = useState('');
+  const [deletingPrompt, setDeletingPrompt] = useState(false);
+  useEffect(() => {
+    const target = homePrompts[promptIndex];
+    const complete = typedPrompt === target;
+    const empty = typedPrompt.length === 0;
+    const delay = complete && !deletingPrompt ? 1_900 : deletingPrompt ? 38 : 72;
+    const timer = window.setTimeout(() => {
+      if (complete && !deletingPrompt) {
+        setDeletingPrompt(true);
+        return;
+      }
+      if (empty && deletingPrompt) {
+        setDeletingPrompt(false);
+        setPromptIndex((current) => (current + 1) % homePrompts.length);
+        return;
+      }
+      setTypedPrompt(
+        target.slice(0, typedPrompt.length + (deletingPrompt ? -1 : 1)),
+      );
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [deletingPrompt, promptIndex, typedPrompt]);
+  function nextPrompt() {
+    setTypedPrompt('');
+    setDeletingPrompt(false);
+    setPromptIndex((current) => (current + 1) % homePrompts.length);
+  }
   return (
     <section className="screen home-screen">
       <div className="greeting-row">
-        <div>
-          <span className="kicker">{nowText} · 圓山生活圈</span>
-          <h1>
-            {profile.name}，今天要
-            <br />
-            解決什麼？
+        <div className="typewriter-greeting">
+          <span className="kicker">嗨，{profile.name}</span>
+          <h1 aria-live="polite">
+            {typedPrompt}<i />
           </h1>
+          <button className="prompt-switch" onClick={nextPrompt}>
+            <Sparkles />換一句
+          </button>
         </div>
         <button
           className="avatar-button"
@@ -1693,13 +1809,10 @@ function HomeScreen({
         ))}
       </div>
       <div className="mission-card">
+        <JourneyRail active={1} />
         <div className="mission-top">
           <span className="mode-dot" />
-          <span>{modes[mode].title}</span>
-          <button onClick={onFilters}>
-            <SlidersHorizontal />
-            調整條件
-          </button>
+          <span>STEP 1 · 輸入需求</span>
         </div>
         <button
           className={`voice-action ${recording ? 'recording' : ''}`}
@@ -1718,7 +1831,7 @@ function HomeScreen({
             onChange={(e) => onNeed(e.target.value)}
             aria-label="文字輸入需求"
           />
-          <span>可直接修改</span>
+          <span>輸入完成後，下一步會強制確認條件</span>
         </label>
         <div className="constraint-row">
           <span>
@@ -1728,9 +1841,9 @@ function HomeScreen({
           <span>{filters.people} 人</span>
           <span>{filters.distance} km</span>
         </div>
-        <button className="primary-action" onClick={onSearch}>
-          <Search />
-          開始探索
+        <button className="primary-action flow-action" onClick={onConfirm}>
+          <SlidersHorizontal />
+          下一步：確認需求與限制
           <ArrowRight />
         </button>
       </div>
@@ -1738,7 +1851,7 @@ function HomeScreen({
         <span className="sop-launcher-icon"><Sparkles /></span>
         <span>
           <b>新手必看 · 快速動畫教學</b>
-          <small>語音／打字 → 確認限制 → 雙獵人探索</small>
+          <small>輸入需求 → 確認需求與限制 → 開始探索</small>
         </span>
         <ChevronRight />
       </button>
@@ -2475,9 +2588,10 @@ function FiltersScreen({
 }) {
   return (
     <section className="screen filters-screen">
-      <span className="kicker">HARD FILTER FIRST</span>
-      <h1>需求與限制</h1>
-      <p>日期、時間、預算與距離是硬限制；喜好只影響排序。</p>
+      <JourneyRail active={2} />
+      <span className="kicker">STEP 02 · CONFIRM</span>
+      <h1>確認需求與限制</h1>
+      <p>請逐項確認；日期、時間、預算與距離是硬限制，喜好只影響排序。</p>
       <label className="field-label">
         需求
         <textarea value={need} onChange={(e) => onNeed(e.target.value)} />
@@ -2588,7 +2702,8 @@ function FiltersScreen({
       />
       <button className="primary-action" onClick={onApply}>
         <Check />
-        套用條件
+        確認完成，前往開始探索
+        <ArrowRight />
       </button>
     </section>
   );
