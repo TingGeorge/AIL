@@ -12,3 +12,7 @@ html,body,#root{min-height:100%;margin:0}body{font-family:var(--font-geist-sans)
 .mission-card > .need-input + .primary-action {
   margin-top: 12px;
 }
+
+.settings-screen > form + .secondary-action {
+  margin-top: 12px;
+}
