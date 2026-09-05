@@ -185,8 +185,10 @@ dialog.sop-overlay{width:auto;max-width:none;height:auto;margin:0;border:0;color
 .sort-menu b{font-size:9px}
 .sort-menu small{margin-top:2px;color:var(--muted);font-size:7px}
 .sort-menu svg{width:14px;color:var(--lime)}
-.category-filter{margin:3px 0 6px;padding-bottom:2px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
-.category-filter button{--category-color:var(--lime);width:100%;min-width:0;min-height:34px;padding:0 7px;border:1px solid color-mix(in srgb,var(--category-color) 30%,var(--border));border-radius:999px;display:flex;align-items:center;justify-content:center;gap:4px;background:color-mix(in srgb,var(--category-color) 5%,#111713);color:#c4cec5;font-size:8px;font-weight:800;white-space:nowrap;transition:.16s ease}
+.category-filter{margin:3px 0 6px;padding:1px 0 5px;display:flex;gap:6px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:none;touch-action:pan-x;cursor:grab}
+.category-filter::-webkit-scrollbar{display:none}
+.category-filter:active{cursor:grabbing}
+.category-filter button{--category-color:var(--lime);width:auto;min-width:68px;min-height:34px;padding:0 10px;flex:0 0 auto;border:1px solid color-mix(in srgb,var(--category-color) 30%,var(--border));border-radius:999px;display:flex;align-items:center;justify-content:center;gap:4px;background:color-mix(in srgb,var(--category-color) 5%,#111713);color:#c4cec5;font-size:8px;font-weight:800;white-space:nowrap;scroll-snap-align:start;transition:.16s ease}
 .category-filter button>svg{width:12px;height:12px;color:var(--category-color)}
 .category-filter button>i{min-width:15px;height:15px;padding:0 4px;border-radius:8px;display:grid;place-items:center;background:rgb(255 255 255/.07);color:#9ba69d;font:700 7px var(--font-geist-mono);font-style:normal}
 .category-filter button:hover,.category-filter button.active{border-color:var(--category-color);background:color-mix(in srgb,var(--category-color) 15%,#111713);color:white;box-shadow:0 0 15px color-mix(in srgb,var(--category-color) 12%,transparent)}
@@ -195,6 +197,32 @@ dialog.sop-overlay{width:auto;max-width:none;height:auto;margin:0;border:0;color
 .catalog-connection svg{width:11px;height:11px;flex:0 0 11px;color:var(--blue)}
 .catalog-connection.source-d1{background:rgb(201 255 54/.07);color:#bfcabf}
 .catalog-connection.source-d1 svg{color:var(--lime)}
+
+/* 簡潔入口：保留原始構圖，以稀疏粒子和可傾斜指南針補上互動層次。 */
+.simple-welcome{position:relative;isolation:isolate;overflow:hidden}
+.simple-welcome>*:not(.welcome-particles){position:relative;z-index:2}
+.welcome-particles{position:absolute;z-index:0;inset:0;width:100%;height:100%;pointer-events:none;background:radial-gradient(circle at 72% 62%,rgb(54 168 255/.045),transparent 28%),radial-gradient(circle at 18% 16%,rgb(201 255 54/.055),transparent 31%)}
+.welcome-aili{width:74px;height:66px;position:absolute!important;z-index:4!important;top:16px;right:15px;pointer-events:none}
+.welcome-aili .aili-mascot{width:60px;height:60px;margin:0;filter:drop-shadow(0 0 12px rgb(201 255 54/.2));animation:ailiWalk 5.8s ease-in-out infinite}
+.welcome-aili .mascot-orbit{inset:7px;opacity:.55}
+.simple-welcome .welcome-mark{margin-top:4px}
+.simple-welcome>p{max-width:315px}
+.compass-interactive{height:235px;perspective:440px;touch-action:pan-y}
+.compass-stage{--tilt-x:-5deg;--tilt-y:7deg;width:126px;height:126px;position:relative;display:grid;place-items:center;transform-style:preserve-3d;transform:perspective(440px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));transition:transform .16s ease-out;filter:drop-shadow(0 18px 19px rgb(0 0 0/.42))}
+.compass-stage:before{content:'';position:absolute;inset:23px;border:1px solid rgb(201 255 54/.46);border-radius:50%;background:radial-gradient(circle at 35% 28%,rgb(255 255 255/.14),transparent 24%),linear-gradient(145deg,#172219,#080d09);box-shadow:inset -10px -13px 22px rgb(0 0 0/.5),inset 8px 8px 17px rgb(201 255 54/.08),0 0 26px rgb(201 255 54/.15);transform:translateZ(10px)}
+.compass-ring{position:absolute;border-radius:50%;transform-style:preserve-3d}
+.compass-ring-outer{--ring-z:-8px;inset:5px;border:1px solid rgb(201 255 54/.28);box-shadow:0 0 24px rgb(201 255 54/.08);transform:translateZ(var(--ring-z));animation:compassOrbit 11s linear infinite}
+.compass-ring-outer:after{content:'';width:7px;height:7px;position:absolute;top:11px;right:19px;border-radius:50%;background:var(--coral);box-shadow:0 0 12px var(--coral)}
+.compass-ring-inner{--ring-z:3px;inset:16px;border:1px solid rgb(139 92 255/.32);transform:translateZ(var(--ring-z));animation:compassOrbit 7s linear infinite reverse}
+.compass-core{width:61px;height:61px;z-index:2;border:5px solid var(--lime);border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#1d2a1e,#071008);color:var(--lime);box-shadow:inset -6px -7px 13px rgb(0 0 0/.55),inset 4px 4px 9px rgb(255 255 255/.08),0 0 18px rgb(201 255 54/.3);transform:translateZ(29px) rotate(-10deg)}
+.simple-welcome .compass-core svg{width:35px;height:35px;animation:none;filter:none}
+.compass-node{width:8px!important;height:8px!important;position:absolute;border-radius:50%;transform:translateZ(38px);animation:nodeDrift 3.8s ease-in-out infinite}
+.compass-node.node-violet{left:-31px;top:32px;background:var(--violet);box-shadow:0 0 14px var(--violet)}
+.compass-node.node-blue{right:-38px;bottom:20px;background:var(--blue);box-shadow:0 0 14px var(--blue);animation-delay:-1.2s}
+.compass-node.node-coral{right:-13px;top:-20px;background:var(--coral);box-shadow:0 0 14px var(--coral);animation-delay:-2.1s}
+.welcome-actions{margin-top:auto;display:grid;gap:8px}
+.simple-welcome .welcome-actions .secondary-action{margin-top:0}
+.simple-welcome>small{position:relative;z-index:2;margin-top:12px}
 
 /* AILI 開機寵物、雙版本入口與 PWA 教學。 */
 .boot-welcome{padding:18px 20px 22px;overflow-y:auto}
@@ -242,8 +270,8 @@ dialog.sop-overlay{width:auto;max-width:none;height:auto;margin:0;border:0;color
 .experience-option>svg{width:14px;color:var(--experience-color)}
 .welcome-footnote{margin-top:10px!important;color:#6f7b72!important;font-size:7px!important}
 .sop-guide-progress{grid-template-columns:repeat(4,1fr)}
-.guide-pwa{position:absolute;z-index:4;inset:14px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.guide-pwa .aili-mascot.compact{width:105px;height:105px;margin:-12px 0 -5px}
+.sop-demo-4 .sop-demo-icon{transform:translateY(-26px)}
+.guide-pwa{position:absolute;z-index:4;left:12px;right:12px;bottom:18px;display:flex;flex-direction:column;align-items:center;gap:4px}
 .guide-pwa button{min-height:34px;padding:0 13px;border:0;border-radius:11px;display:flex;align-items:center;gap:6px;background:var(--lime);color:#0b100c;font-size:9px;font-weight:900}
 .guide-pwa button svg{width:14px}
 .guide-pwa small{margin-top:7px;color:#9fa9a0;font-size:7px}
@@ -258,12 +286,22 @@ dialog.sop-overlay{width:auto;max-width:none;height:auto;margin:0;border:0;color
 .quick-team.empty{border-style:dashed;background:rgb(139 92 255/.035)}
 .team-empty-state{margin-top:22px}
 
-/* 圖示固定尺寸與基線，避免定位圖釘壓到地點文字。 */
-.location-consent{align-items:start}
-.location-consent-icon{grid-row:1;align-self:start;margin-top:1px}
+/* 定位卡片壓縮成單列操作，圖示固定基線。 */
+.home-screen .location-consent{width:calc(100% - 12px);min-height:58px;margin:8px auto 0;padding:8px 9px;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:7px}
+.location-consent-icon{width:28px;height:28px;grid-row:1;align-self:center;margin:0;border-radius:9px}
+.location-consent-icon svg{width:13px;height:13px}
+.location-consent-copy small{margin-top:2px;font-size:7px;line-height:1.3}
+.location-consent-actions{grid-column:3;grid-row:1;gap:4px}
+.location-consent-actions button{min-height:28px;padding:0 7px;font-size:8px}
+.location-consent>em{grid-column:3;grid-row:1}
 .detail-meta{align-items:flex-start;line-height:1.45}
 .detail-meta svg{width:13px;height:13px;flex:0 0 13px;margin-top:1px}
+.result-condition svg{width:11px;height:11px;flex:0 0 11px;margin-top:1px}
+.ready-metrics svg,.live-time-button svg,.field-title svg{height:14px;flex:0 0 14px;align-self:center;margin:0}
 @keyframes bootScan{from{top:0}to{top:100%}}
+@keyframes ailiWalk{0%,100%{transform:translate(9px,0) rotate(-3deg)}50%{transform:translate(-9px,-4px) rotate(3deg)}}
+@keyframes compassOrbit{to{transform:translateZ(var(--ring-z)) rotate(360deg)}}
+@keyframes nodeDrift{50%{transform:translate3d(2px,-6px,46px)}}
 @keyframes mascotFloat{50%{transform:translateY(-7px) rotate(1deg)}}
 @keyframes mascotOrbit{to{transform:rotate(360deg)}}
 @keyframes mascotTail{50%{stroke-dashoffset:24}}

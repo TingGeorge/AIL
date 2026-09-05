@@ -42,7 +42,6 @@ import {
   Mic,
   Pencil,
   PackageCheck,
-  Power,
   Radar,
   ReceiptText,
   Share2,
@@ -1603,6 +1602,183 @@ function AiliMascot({ compact = false }: { compact?: boolean }) {
   );
 }
 
+function WelcomeParticles() {
+  useEffect(() => {
+    const canvas = document.querySelector<HTMLCanvasElement>(
+      '[data-welcome-particles]',
+    );
+    const context = canvas?.getContext('2d');
+    if (!canvas || !context) return;
+
+    type Particle = {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      radius: number;
+      color: string;
+    };
+
+    let width = 1;
+    let height = 1;
+    let animationFrame = 0;
+    let seed = 20_260_905;
+    let particles: Particle[] = [];
+    const pointer = { x: -1_000, y: -1_000 };
+    const colors = ['#c9ff36', '#36a8ff', '#8b5cff', '#ffffff', '#ff5d5d'];
+    const random = () => {
+      seed = (seed * 1_664_525 + 1_013_904_223) >>> 0;
+      return seed / 4_294_967_296;
+    };
+
+    const rebuild = () => {
+      seed = 20_260_905;
+      particles = Array.from({ length: 20 }, (_, index) => ({
+        x: random() * width,
+        y: random() * height,
+        vx: (random() - 0.5) * 0.15,
+        vy: (random() - 0.5) * 0.15,
+        radius: index % 5 === 0 ? 2.1 : 1.1 + random() * 0.65,
+        color: colors[index % colors.length],
+      }));
+    };
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      rebuild();
+    };
+
+    const draw = (move: boolean) => {
+      context.clearRect(0, 0, width, height);
+      if (move) {
+        for (const particle of particles) {
+          const dx = particle.x - pointer.x;
+          const dy = particle.y - pointer.y;
+          const distance = Math.hypot(dx, dy);
+          if (distance < 76 && distance > 0) {
+            particle.x += (dx / distance) * 0.2;
+            particle.y += (dy / distance) * 0.2;
+          }
+          particle.x = (particle.x + particle.vx + width) % width;
+          particle.y = (particle.y + particle.vy + height) % height;
+        }
+      }
+
+      for (let index = 0; index < particles.length; index += 1) {
+        const particle = particles[index];
+        for (let next = index + 1; next < particles.length; next += 1) {
+          const neighbor = particles[next];
+          const distance = Math.hypot(
+            particle.x - neighbor.x,
+            particle.y - neighbor.y,
+          );
+          if (distance > 92) continue;
+          context.beginPath();
+          context.moveTo(particle.x, particle.y);
+          context.lineTo(neighbor.x, neighbor.y);
+          context.strokeStyle = `rgba(201,255,54,${(1 - distance / 92) * 0.13})`;
+          context.lineWidth = 0.55;
+          context.stroke();
+        }
+        context.beginPath();
+        context.arc(
+          particle.x,
+          particle.y,
+          particle.radius,
+          0,
+          Math.PI * 2,
+        );
+        context.fillStyle = particle.color;
+        context.globalAlpha = particle.color === '#ffffff' ? 0.65 : 0.88;
+        context.shadowColor = particle.color;
+        context.shadowBlur = particle.radius > 1.5 ? 8 : 4;
+        context.fill();
+        context.globalAlpha = 1;
+        context.shadowBlur = 0;
+      }
+    };
+
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    const animate = () => {
+      draw(true);
+      animationFrame = window.requestAnimationFrame(animate);
+    };
+    const trackPointer = (event: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const inside =
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom;
+      pointer.x = inside ? event.clientX - rect.left : -1_000;
+      pointer.y = inside ? event.clientY - rect.top : -1_000;
+    };
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
+    window.addEventListener('pointermove', trackPointer, { passive: true });
+    resize();
+    if (reduceMotion) draw(false);
+    else animate();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('pointermove', trackPointer);
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
+  return (
+    <canvas
+      className="welcome-particles"
+      data-welcome-particles
+      aria-hidden="true"
+    />
+  );
+}
+
+function InteractiveCompass() {
+  const [tilt, setTilt] = useState({ x: -5, y: 7 });
+  return (
+    <div
+      className="welcome-visual compass-interactive"
+      onPointerMove={(event) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        setTilt({
+          x: ((event.clientY - rect.top) / rect.height - 0.5) * -18,
+          y: ((event.clientX - rect.left) / rect.width - 0.5) * 20,
+        });
+      }}
+      onPointerLeave={() => setTilt({ x: -5, y: 7 })}
+    >
+      <div
+        className="compass-stage"
+        style={
+          {
+            '--tilt-x': `${tilt.x}deg`,
+            '--tilt-y': `${tilt.y}deg`,
+          } as CSSProperties
+        }
+      >
+        <span className="compass-ring compass-ring-outer" />
+        <span className="compass-ring compass-ring-inner" />
+        <span className="compass-core"><Compass /></span>
+        <i className="compass-node node-violet" />
+        <i className="compass-node node-blue" />
+        <i className="compass-node node-coral" />
+      </div>
+    </div>
+  );
+}
+
 function WelcomeScreen({
   onDemo,
   onAccount,
@@ -1611,46 +1787,34 @@ function WelcomeScreen({
   onAccount: () => void;
 }) {
   return (
-    <section className="welcome-screen boot-welcome">
-      <div className="boot-brand">
-        <span>ALL IN LIFE</span>
-        <small>PERSONAL LIFE OS</small>
+    <section className="welcome-screen simple-welcome">
+      <WelcomeParticles />
+      <div className="welcome-aili" aria-hidden="true">
+        <AiliMascot compact />
       </div>
-      <div className="boot-console">
-        <span className="boot-grid" aria-hidden="true" />
-        <AiliMascot />
-        <div className="boot-copy">
-          <span><Power /> AILI CORE ONLINE</span>
-          <h1>生活獵人，<br />準備開機。</h1>
-          <p>把預算、時間、距離與偏好，變成今天做得到的選擇。</p>
-        </div>
-        <div className="boot-log" aria-label="系統啟動狀態">
-          <span><i />偏好引擎 READY</span>
-          <span><i />雙獵人 READY</span>
-          <span><i />離線外殼 READY</span>
-        </div>
+      <div className="welcome-mark">
+        <span>ALL</span>
+        <span>IN</span>
+        <span>LIFE</span>
       </div>
-      <div className="experience-picker">
-        <button className="experience-option demo" onClick={onDemo}>
-          <span className="experience-icon"><Sparkles /></span>
-          <span>
-            <i>DEMO</i>
-            <b>模擬體驗版</b>
-            <small>帶入預算、揪團與範例資料，評審可直接操作</small>
-          </span>
+      <p>
+        把預算、時間、距離與偏好
+        <br />
+        變成今天真的做得到的選擇。
+      </p>
+      <InteractiveCompass />
+      <div className="welcome-actions">
+        <button className="primary-action" onClick={onDemo}>
+          <Sparkles />
+          DEMO 模擬體驗
           <ArrowRight />
         </button>
-        <button className="experience-option account" onClick={onAccount}>
-          <span className="experience-icon"><LogIn /></span>
-          <span>
-            <i>LOGIN</i>
-            <b>登入／正式版</b>
-            <small>從空白帳戶開始，不預填金額、收藏與揪團</small>
-          </span>
-          <ArrowRight />
+        <button className="secondary-action" onClick={onAccount}>
+          <LogIn />
+          登入／正式版
         </button>
       </div>
-      <small className="welcome-footnote">選擇版本後，會先播放操作與 PWA 安裝教學。</small>
+      <small>DEMO 帶入範例；正式版從空白開始。</small>
     </section>
   );
 }
@@ -1729,7 +1893,6 @@ function SopGuide({
           )}
           {step === 3 && (
             <div className="guide-pwa">
-              <AiliMascot compact />
               <button type="button" onClick={onInstall}>
                 <Download />安裝 PWA
               </button>
