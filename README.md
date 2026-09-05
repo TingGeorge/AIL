@@ -2,6 +2,20 @@
 
 > 圓山生活圈的 CP 值、零元機會與 Team 協作平台。
 
+## 評審快速入口
+
+| 項目 | 連結／狀態 |
+| --- | --- |
+| HTTPS 展示站 | [all-in-life-ail.chiehlun.chatgpt.site](https://all-in-life-ail.chiehlun.chatgpt.site)（新版已公開上線） |
+| PWA 驗收 | Chrome 已顯示「可安裝到主畫面」；manifest、icons、service worker 與離線 fallback 已驗證 |
+| 本次交付規格 | [`SPEC.md`](SPEC.md) |
+| 官方作品繳交檢查表 | [`submission-checklist.md`](submission-checklist.md) |
+| 系統架構 | [互動式架構圖](docs/architecture/all-in-life-architecture.html) |
+| 產品流程 | [互動式流程圖](docs/architecture/all-in-life-product-flow.html) |
+| 評選影片 | 待上傳；需不超過 2:00 並設為「知道連結即可觀看」 |
+
+目前展示以可操作前端與 PWA 為主；正式搜尋 Agent、登入與雲端資料仍是下一階段。Fixture、估算與已查證來源會在介面及文件中明確區分。
+
 ALL IN LIFE 是一個以「限制優先、證據可追溯、成本不造假」為原則的圓山生活決策 App。使用者可匿名直接使用，或選擇登入以銜接日後的跨裝置保存；文字與語音都會進入同一份可編輯的結構化需求，再比較餐飲、日用、育樂與交通選項。
 
 目前版本是可操作的手機 App 型前端，共 16 個畫面：首次設定、首頁、搜尋、結果、詳情、清單、揪團、設定、個人檔案、篩選、通知、消費分析、歷史、回報與地圖等。它包含頁面轉場、語音／文字輸入、前端搜尋載入演出、收藏與到期提醒、標記已買、預算統計、分享及成團成本比較。正式 API、帳號驗證與雲端持久化尚未接上；畫面中的估算與整理資料會標示來源、查核時間與適用條件。
@@ -38,7 +52,7 @@ ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的�
 | 搜尋流程 | 前端可操作 | 計時器與狀態管理呈現處理步驟；尚未呼叫正式搜尋或 AI API |
 | Team 多人協作 | 設計／Demo | UI 與 D1 schema 已備妥，尚無登入、邀請與交易式後端 |
 | Cloudflare D1 | Schema ready | migration 已建立，尚未綁定資料庫；hosting config 的 `d1` 目前為 `null` |
-| PWA | 技術就緒、待驗收 | manifest、icons、service worker 註冊與安裝提示已完成；仍需 HTTPS 部署後做 installability／離線驗收 |
+| PWA | 已公開驗收 | HTTPS、manifest、192/512 icons、service worker、Chrome installability 與離線 app-shell fallback 已驗證 |
 
 ## 系統架構
 
@@ -58,6 +72,7 @@ ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的�
 
 文件導覽：
 
+- [本次送件與部署規格](SPEC.md)
 - [互動式產品流程圖](docs/architecture/all-in-life-product-flow.html)
 - [互動式系統架構圖](docs/architecture/all-in-life-architecture.html)
 - [目前分支與 main 的架構、語言與衝突比較](docs/branch-main-comparison.md)
@@ -77,7 +92,7 @@ ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的�
 | 後端目標 | Cloudflare Workers | Route handlers / server actions；目前尚未實作 |
 | 資料庫目標 | Cloudflare D1 / SQLite schema | 已提供 `0001_p0_core.sql` 與 `0002_product_flow.sql`，尚未綁定或 seed |
 | 物件儲存目標 | Cloudflare R2 | 規劃存放證據照片與收據；目前未啟用 |
-| 部署 | OpenAI Sites + Cloudflare toolchain | 已有公開站，但目前仍是舊版；本次版本尚未發布 |
+| 部署 | OpenAI Sites + Cloudflare toolchain | 新版已發布到公開 HTTPS 展示站 |
 | AI 模型 | 尚未串接 | 目前 Agent 是可辨識的 UX 模擬，不會宣稱模型產生即時結果 |
 
 ## 專案結構
@@ -147,7 +162,7 @@ npm run start
 
 ## 作品展示
 
-- 公開展示網址：[https://all-in-life-ail.chiehlun.chatgpt.site](https://all-in-life-ail.chiehlun.chatgpt.site)（目前為舊版，本分支需另行發布後才會更新）
+- 公開展示網址：[https://all-in-life-ail.chiehlun.chatgpt.site](https://all-in-life-ail.chiehlun.chatgpt.site)（新版已公開上線）
 - 評選影片：待上傳後補上（需不超過 2:00，且設為知道連結即可觀看）
 - 本機展示：依上方「安裝與執行」使用 `npm run dev`
 
@@ -160,7 +175,7 @@ npm run start
 - 沒有正式 crawler、AI 模型、後端 API、D1 binding 或 R2 evidence upload。
 - Google 地圖採 embed/search URL，沒有 2 km geofence、Places attribution pipeline 或路線導航。
 - 語音辨識依賴瀏覽器能力，結果不會上傳至本專案後端，但瀏覽器供應商可能依其政策處理語音。
-- Service worker 已在 app 中註冊，但仍需在 HTTPS 公開站以 DevTools 驗證安裝資格與離線 fallback，暫不宣稱完整離線。
+- Chrome 已確認觸發 PWA installability，service worker 與離線 app-shell fallback 亦已驗證；正式送件前仍建議在目標 Android／iOS 實機各完成一次安裝與飛航模式重載。
 - CP 分數使用 Demo 維度值；正式上線需加入 cohort normalization、policy version、freshness 與 score audit。
 - Community report、食安事件與商家合作需先完成 moderation、隱私、濫用防護及法務規則。
 
@@ -183,13 +198,14 @@ npm run start
 
 ## 團隊成員
 
-| 姓名／提交者 | 分工 |
-| --- | --- |
-| Ting | 產品流程、語音輸入、PWA、主要 UI 與互動流程 |
-| Jay | 月度生存任務 UI、Team / CP / Zero-Cost 規格與送件文件 |
-| Codex | MVP 實作協作、Budget / Squad / Community 規劃 |
+| 姓名 | Email | 大致分工 |
+| --- | --- | --- |
+| 丁肇志（Ting） | [conanlong911@gmail.com](mailto:conanlong911@gmail.com) | 產品方向、核心流程、語音輸入、PWA 與 Demo 串場 |
+| 林軒緯（緯） | [xuanweilin805@gmail.com](mailto:xuanweilin805@gmail.com) | 前端協作、互動與跨裝置測試、部署驗收 |
+| Andrew Fai（AF） | [andydrewie@gmail.com](mailto:andydrewie@gmail.com) | 資料來源整理、Evidence 驗證、影片錄製與備援素材 |
+| 楊杰倫（Jay Yang） | [cl.yang04@gmail.com](mailto:cl.yang04@gmail.com) | CP / Team / Zero-Cost 規格、README、送件文件與發布整合 |
 
-正式送件前請由團隊確認顯示姓名、隊伍資料、聯絡人與最終分工。
+分工是送件用的大方向，實際工作可互相支援。正式送件前請由主要聯絡人確認表單上的姓名、Email 與最終分工一致。
 
 ## License
 
