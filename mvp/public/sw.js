@@ -1,4 +1,4 @@
-const CACHE_NAME = 'all-in-life-shell-v3';
+const CACHE_NAME = 'all-in-life-shell-v4';
 const APP_SHELL = [
   '/',
   '/manifest.webmanifest',
@@ -8,6 +8,10 @@ const APP_SHELL = [
   '/app-icon.svg',
   '/app-icon-maskable.svg',
   '/bento-neon.png',
+  '/images/food-grid.svg',
+  '/images/leisure-grid.svg',
+  '/images/transport-grid.svg',
+  '/images/daily-grid.svg',
 ];
 
 self.addEventListener('install', (event) => {

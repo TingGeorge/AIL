@@ -30,6 +30,7 @@ import {
   Mic,
   Pencil,
   PackageCheck,
+  QrCode,
   Radar,
   ReceiptText,
   Search,
@@ -54,11 +55,7 @@ import {
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
-import {
-  BASE_WEIGHTS,
-  calculateCpScore,
-  type CpDimension,
-} from '@/lib/cp-engine';
+import { type CpDimension } from '@/lib/cp-engine';
 
 type View =
   | 'welcome'
@@ -81,6 +78,7 @@ type Mode = 'daily' | 'team' | 'zero';
 type Category = '餐飲' | '日用' | '育樂' | '交通';
 type Sort = 'cp' | 'cost' | 'distance';
 type Profile = { name: string; avatar: string; signedIn: boolean };
+type CpParams = { price: number; distance: number; preference: number };
 type Filters = {
   date: string;
   time: string;
@@ -122,6 +120,9 @@ type Result = {
   expiresAt?: string;
   reportCount: number;
   image?: string;
+  tags?: string[];
+  preferenceTags?: string[];
+  agent?: 'cp' | 'zero';
   tone: 'lime' | 'violet' | 'blue' | 'coral' | 'amber';
   dimensions: Partial<Record<CpDimension, number>>;
 };
@@ -149,24 +150,6 @@ const modes: Record<
     color: 'var(--coral)',
   },
 };
-const weights: Record<Mode, Record<CpDimension, number>> = {
-  daily: BASE_WEIGHTS,
-  team: {
-    price: 0.24,
-    food: 0.18,
-    quality: 0.16,
-    convenience: 0.12,
-    discount: 0.3,
-  },
-  zero: {
-    price: 0.44,
-    food: 0.08,
-    quality: 0.18,
-    convenience: 0.18,
-    discount: 0.12,
-  },
-};
-
 const results: Result[] = [
   {
     id: 'jianjia',
@@ -190,7 +173,10 @@ const results: Result[] = [
     verifiedAt: '2026-09-05',
     mapQuery: '大龍峒簡家肉圓',
     reportCount: 2,
-    image: '/bento-neon.png',
+    image: '/images/food-grid.svg',
+    tags: ['豬肉', '油炸'],
+    preferenceTags: ['快速', '可外帶', '低預算'],
+    agent: 'cp',
     tone: 'lime',
     dimensions: {
       price: 92,
@@ -222,6 +208,10 @@ const results: Result[] = [
     verifiedAt: '2026-09-05',
     mapQuery: '不萊梅 圓山店',
     reportCount: 0,
+    image: '/images/food-grid.svg',
+    tags: ['麩質', '乳製品'],
+    preferenceTags: ['安靜', '能坐', '有冷氣'],
+    agent: 'cp',
     tone: 'violet',
     dimensions: {
       price: 68,
@@ -255,6 +245,10 @@ const results: Result[] = [
     mapQuery: '臺北市立美術館',
     expiresAt: '今天 17:00',
     reportCount: 0,
+    image: '/images/leisure-grid.svg',
+    tags: [],
+    preferenceTags: ['安靜', '有冷氣', '免費'],
+    agent: 'zero',
     tone: 'blue',
     dimensions: {
       price: 100,
@@ -285,6 +279,10 @@ const results: Result[] = [
     verifiedAt: '2026-09-05',
     mapQuery: '臺北市孔廟',
     reportCount: 0,
+    image: '/images/leisure-grid.svg',
+    tags: [],
+    preferenceTags: ['安靜', '免費', '少走路'],
+    agent: 'zero',
     tone: 'coral',
     dimensions: {
       price: 100,
@@ -317,6 +315,10 @@ const results: Result[] = [
     mapQuery: '花博公園圓山園區',
     expiresAt: '週日 18:00',
     reportCount: 0,
+    image: '/images/leisure-grid.svg',
+    tags: ['戶外'],
+    preferenceTags: ['免費', '市集', '親子'],
+    agent: 'zero',
     tone: 'amber',
     dimensions: {
       price: 100,
@@ -348,6 +350,10 @@ const results: Result[] = [
     verifiedAt: '2026-09-05',
     mapQuery: '捷運圓山站 YouBike',
     reportCount: 1,
+    image: '/images/transport-grid.svg',
+    tags: ['騎乘', '戶外'],
+    preferenceTags: ['低預算', '不用等', '少走路'],
+    agent: 'zero',
     tone: 'blue',
     dimensions: {
       price: 100,
@@ -380,6 +386,10 @@ const results: Result[] = [
     verifiedAt: '2026-09-05',
     mapQuery: '捷運圓山站',
     reportCount: 0,
+    image: '/images/transport-grid.svg',
+    tags: ['共乘'],
+    preferenceTags: ['不用等', '少走路', '揪團'],
+    agent: 'cp',
     tone: 'violet',
     dimensions: {
       price: 76,
@@ -411,6 +421,10 @@ const results: Result[] = [
     verifiedAt: '2026-09-05',
     mapQuery: '7-ELEVEN 圓泉門市',
     reportCount: 0,
+    image: '/images/daily-grid.svg',
+    tags: ['24小時', '便利商店'],
+    preferenceTags: ['不用等', '有冷氣', '少走路'],
+    agent: 'cp',
     tone: 'coral',
     dimensions: {
       price: 78,
@@ -420,26 +434,164 @@ const results: Result[] = [
       discount: 52,
     },
   },
+  {
+    id: 'ys-food-002',
+    category: '餐飲',
+    title: '圓山麵食快餐方案',
+    provider: '圓山資料庫餐飲 YS_FOOD_002',
+    subcategory: '麵食／快速晚餐',
+    totalCost: 220,
+    benchmarkCost: 300,
+    servings: 2,
+    distanceKm: 0.55,
+    walkMin: 7,
+    hours: '11:00–20:30',
+    serviceModes: ['內用', '外帶'],
+    condition: 'Excel 圓山餐飲資料匯入；名稱待資料清洗後替換為完整店名',
+    source: 'Yuanshan_APP_AI_Database_Design.xlsx / 02_Places',
+    sourceUrl: 'https://www.google.com/maps/search/?api=1&query=圓山 麵食',
+    evidence:
+      '02_Places 顯示圓山餐飲資料有 12 筆 active places；本卡片先以資料集 record id 補入展示候選。',
+    reliability: 78,
+    verifiedAt: '2026-09-05',
+    mapQuery: '圓山 麵食',
+    reportCount: 0,
+    image: '/images/food-grid.svg',
+    tags: ['牛肉', '麩質'],
+    preferenceTags: ['快速', '能坐', '低預算'],
+    agent: 'cp',
+    tone: 'amber',
+    dimensions: { price: 86, food: 78, quality: 72, convenience: 86, discount: 68 },
+  },
+  {
+    id: 'ys-food-003',
+    category: '餐飲',
+    title: '圓山便當外帶方案',
+    provider: '圓山資料庫餐飲 YS_FOOD_003',
+    subcategory: '便當／外帶',
+    totalCost: 190,
+    benchmarkCost: 260,
+    servings: 2,
+    distanceKm: 1.1,
+    walkMin: 14,
+    hours: '10:30–19:30',
+    serviceModes: ['外帶'],
+    condition: '可能含堅果或芝麻醬料；排斥者需現場確認',
+    source: 'Yuanshan_APP_AI_Database_Design.xlsx / 02_Places',
+    sourceUrl: 'https://www.google.com/maps/search/?api=1&query=圓山 便當',
+    evidence:
+      '資料集提供 active food record，前端先將它納入 CP 探索候選；正式版需補齊 evidence assertion。',
+    reliability: 76,
+    verifiedAt: '2026-09-05',
+    mapQuery: '圓山 便當',
+    reportCount: 1,
+    image: '/images/food-grid.svg',
+    tags: ['堅果', '雞肉'],
+    preferenceTags: ['可外帶', '低預算', '不用等'],
+    agent: 'cp',
+    tone: 'lime',
+    dimensions: { price: 90, food: 76, quality: 70, convenience: 78, discount: 72 },
+  },
+  {
+    id: 'ys-food-004',
+    category: '餐飲',
+    title: '圓山早午餐座位方案',
+    provider: '圓山資料庫餐飲 YS_FOOD_004',
+    subcategory: '早午餐／咖啡',
+    totalCost: 320,
+    benchmarkCost: 420,
+    servings: 2,
+    distanceKm: 0.9,
+    walkMin: 11,
+    hours: '09:00–17:00',
+    serviceModes: ['內用', '有座位'],
+    condition: '熱門時段可能需等候；適合安靜與能坐偏好',
+    source: 'Yuanshan_APP_AI_Database_Design.xlsx / 02_Places',
+    sourceUrl: 'https://www.google.com/maps/search/?api=1&query=圓山 早午餐',
+    evidence:
+      '資料集 02_Places 含餐飲與停留時間欄位；目前以前端 fixture 呈現，等待後端匯入正式欄位。',
+    reliability: 80,
+    verifiedAt: '2026-09-05',
+    mapQuery: '圓山 早午餐',
+    reportCount: 0,
+    image: '/images/food-grid.svg',
+    tags: ['乳製品', '蛋'],
+    preferenceTags: ['安靜', '能坐', '有冷氣'],
+    agent: 'cp',
+    tone: 'blue',
+    dimensions: { price: 74, food: 84, quality: 82, convenience: 82, discount: 60 },
+  },
+  {
+    id: 'taxi-carpool-night',
+    category: '交通',
+    title: '夜間計程車順風團',
+    provider: '圓山短程共乘',
+    subcategory: '計程車／順風車',
+    totalCost: 160,
+    benchmarkCost: 520,
+    servings: 4,
+    distanceKm: 2.2,
+    walkMin: 1,
+    hours: '20:00–23:30',
+    serviceModes: ['共乘', '叫車', '揪團'],
+    condition: '每人約 NT$40；需自行確認叫車平台與實際跳表',
+    source: 'Yuanshan_APP_AI_Database_Design.xlsx / 04_Transport',
+    sourceUrl: 'https://www.google.com/maps/search/?api=1&query=圓山 計程車',
+    evidence:
+      '04_Transport 提供交通類資料；本卡片加入順風共乘作為揪團候選，不代表平台代叫車或代付款。',
+    reliability: 82,
+    verifiedAt: '2026-09-05',
+    mapQuery: '捷運圓山站 計程車',
+    reportCount: 0,
+    image: '/images/transport-grid.svg',
+    tags: ['共乘', '夜間'],
+    preferenceTags: ['少走路', '不用等', '揪團'],
+    agent: 'cp',
+    tone: 'violet',
+    dimensions: { price: 82, food: 40, quality: 78, convenience: 94, discount: 86 },
+  },
 ];
 
-const laborSteps = [
-  { at: 8, label: '拆解日期、預算與排除條件' },
-  { at: 25, label: '掃描圓山資料庫 26 筆紀錄' },
-  { at: 46, label: '核對營業時間與資料有效日' },
-  { at: 67, label: '計算餐費、交通與人均成本' },
-  { at: 84, label: '排除超出預算與距離的選項' },
-  { at: 96, label: '產生 CP 排序與可讀理由' },
-];
 const money = (value: number) =>
   new Intl.NumberFormat('zh-TW').format(Math.round(value));
-const score = (item: Result, mode: Mode) =>
-  calculateCpScore({
-    dimensions: item.dimensions,
-    reliability: item.reliability,
-    weights: weights[mode],
-    requiredEvidence: true,
-    hardConstraintsPassed: true,
-  }).score;
+const localNow = () =>
+  new Intl.DateTimeFormat('zh-TW', {
+    timeZone: 'Asia/Taipei',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(new Date());
+const overlap = (a: string[] = [], b: string[] = []) =>
+  a.filter((item) => b.includes(item));
+const cpFormulaScore = (
+  item: Result,
+  filters: Filters,
+  params: CpParams,
+) => {
+  const priceScore =
+    filters.budget <= 0
+      ? item.totalCost === 0
+        ? 100
+        : 0
+      : Math.max(0, 100 - (item.totalCost / filters.budget) * 100);
+  const distanceScore = Math.max(
+    0,
+    100 - (item.distanceKm / Math.max(filters.distance, 0.5)) * 100,
+  );
+  const preferenceScore = Math.min(
+    100,
+    overlap(item.preferenceTags, filters.preferences).length * 34,
+  );
+  const totalWeight = params.price + params.distance + params.preference;
+  return Math.round(
+    (priceScore * params.price +
+      distanceScore * params.distance +
+      preferenceScore * params.preference) /
+      Math.max(1, totalWeight),
+  );
+};
 const categoryIcon = (category: Category) =>
   category === '餐飲' ? (
     <Utensils />
@@ -479,10 +631,18 @@ export default function App() {
   const [joinedTeam, setJoinedTeam] = useState(false);
   const [toast, setToast] = useState('');
   const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState('');
   const [sort, setSort] = useState<Sort>('cp');
+  const [cpParams, setCpParams] = useState<CpParams>({
+    price: 55,
+    distance: 30,
+    preference: 15,
+  });
   const [recording, setRecording] = useState(false);
   const [reminders, setReminders] = useState(true);
   const [unread, setUnread] = useState(3);
+  const [nowText, setNowText] = useState(localNow());
+  const [locationStatus, setLocationStatus] = useState('尚未定位');
   const [transactions, setTransactions] = useState<Transaction[]>([
     {
       id: 'h1',
@@ -514,8 +674,8 @@ export default function App() {
 
   const selected = results.find((item) => item.id === selectedId) ?? results[0];
   const ordered = useMemo(
-    () =>
-      results
+    () => {
+      const ranked = results
         .filter((item) => {
           const categoryMatch =
             filters.category === '全部' || item.category === filters.category;
@@ -527,14 +687,25 @@ export default function App() {
             categoryMatch && budgetMatch && item.distanceKm <= filters.distance
           );
         })
-        .sort((a, b) =>
-          sort === 'cost'
-            ? a.totalCost - b.totalCost
-            : sort === 'distance'
-              ? a.distanceKm - b.distanceKm
-              : (score(b, mode) ?? 0) - (score(a, mode) ?? 0),
-        ),
-    [filters, mode, sort],
+        .sort((a, b) => {
+          const aExcluded = overlap(a.tags, filters.exclusions).length > 0;
+          const bExcluded = overlap(b.tags, filters.exclusions).length > 0;
+          if (aExcluded !== bExcluded) return aExcluded ? 1 : -1;
+          const aPreference = overlap(a.preferenceTags, filters.preferences).length;
+          const bPreference = overlap(b.preferenceTags, filters.preferences).length;
+          if (aPreference !== bPreference) return bPreference - aPreference;
+          if (sort === 'cost') return a.totalCost - b.totalCost;
+          if (sort === 'distance') return a.distanceKm - b.distanceKm;
+          return (
+            cpFormulaScore(b, filters, cpParams) -
+            cpFormulaScore(a, filters, cpParams)
+          );
+        });
+      return mode === 'zero'
+        ? ranked.sort((a, b) => (b.agent === 'zero' ? 1 : 0) - (a.agent === 'zero' ? 1 : 0))
+        : ranked;
+    },
+    [filters, mode, sort, cpParams],
   );
 
   useEffect(() => {
@@ -577,6 +748,24 @@ export default function App() {
     const timer = window.setTimeout(() => setToast(''), 2300);
     return () => window.clearTimeout(timer);
   }, [toast]);
+  useEffect(() => {
+    const timer = window.setInterval(() => setNowText(localNow()), 30_000);
+    return () => window.clearInterval(timer);
+  }, []);
+  useEffect(() => {
+    if (!('geolocation' in navigator)) {
+      queueMicrotask(() => setLocationStatus('此裝置不支援定位'));
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) =>
+        setLocationStatus(
+          `已定位，精度約 ${Math.round(position.coords.accuracy)} m`,
+        ),
+      () => setLocationStatus('未授權定位，先用圓山站估算'),
+      { timeout: 8000, maximumAge: 300000 },
+    );
+  }, []);
 
   function navigate(next: View, remember = true) {
     if (remember && next !== view)
@@ -637,9 +826,16 @@ export default function App() {
     setToast(wasDone ? '已取消購買標記' : '已買，消費分析已更新');
   }
   async function share(text: string) {
-    if (navigator.share) await navigator.share({ title: 'ALL IN LIFE', text });
-    else await navigator.clipboard?.writeText(text);
-    setToast('分享內容已準備好');
+    const url = `https://all-in-life-ail.chiehlun.chatgpt.site/?share=${encodeURIComponent(text.slice(0, 60))}`;
+    setShareUrl(url);
+    try {
+      if (navigator.share)
+        await navigator.share({ title: 'ALL IN LIFE', text, url });
+      else await navigator.clipboard?.writeText(`${text}\n${url}`);
+      setToast('分享連結與 QR Code 已準備好');
+    } catch {
+      setToast('已保留 QR Code，可改用掃碼分享');
+    }
   }
   function startVoice() {
     type Recognition = {
@@ -736,6 +932,8 @@ export default function App() {
                 mode={mode}
                 filters={filters}
                 need={need}
+                nowText={nowText}
+                locationStatus={locationStatus}
                 savedCount={saved.length}
                 onMode={chooseMode}
                 onNeed={setNeed}
@@ -751,15 +949,19 @@ export default function App() {
                 }}
               />
             )}
-            {view === 'search' && <SearchScreen progress={searchProgress} />}
+            {view === 'search' && (
+              <SearchScreen progress={searchProgress} filters={filters} />
+            )}
             {view === 'results' && (
               <ResultsScreen
                 items={ordered}
-                mode={mode}
                 filters={filters}
+                cpParams={cpParams}
                 sort={sort}
                 saved={saved}
                 onSort={setSort}
+                onFiltersChange={setFilters}
+                onCpParams={setCpParams}
                 onFilters={() => navigate('filters')}
                 onOpen={openResult}
                 onSave={toggleSaved}
@@ -768,7 +970,9 @@ export default function App() {
             {view === 'detail' && (
               <DetailScreen
                 item={selected}
-                itemScore={score(selected, mode)}
+                itemScore={cpFormulaScore(selected, filters, cpParams)}
+                cpParams={cpParams}
+                filters={filters}
                 saved={saved.includes(selected.id)}
                 onSave={() => toggleSaved(selected.id)}
                 onEvidence={() => setEvidenceOpen(true)}
@@ -876,7 +1080,7 @@ export default function App() {
               />
             )}
             {view === 'history' && (
-              <HistoryScreen transactions={transactions} />
+              <HistoryScreen transactions={transactions} onOpen={openResult} />
             )}
             {view === 'report' && (
               <ReportScreen
@@ -934,7 +1138,7 @@ export default function App() {
             <Metric label="可信度" value={`${selected.reliability}%`} />
             <Metric
               label="CP 分數"
-              value={String(score(selected, mode) ?? '—')}
+              value={String(cpFormulaScore(selected, filters, cpParams))}
             />
             <Metric label="確認日期" value={selected.verifiedAt.slice(5)} />
           </div>
@@ -953,6 +1157,31 @@ export default function App() {
           <p className="fine-print">
             價格、營業與庫存可能改變，出發或購買前請再次向原始提供者確認。
           </p>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={Boolean(shareUrl)} onOpenChange={(open) => !open && setShareUrl('')}>
+        <DialogContent className="evidence-sheet share-sheet">
+          <DialogHeader>
+            <span className="kicker lime-text">可掃描分享</span>
+            <DialogTitle>ALL IN LIFE 分享連結</DialogTitle>
+            <DialogDescription>可直接掃描 QR Code，或開啟下方連結。</DialogDescription>
+          </DialogHeader>
+          <div className="qr-frame">
+            <QrCode aria-hidden="true" />
+            <Image
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(shareUrl)}`}
+              alt="ALL IN LIFE 分享 QR Code"
+              width="180"
+              height="180"
+              unoptimized
+              loader={({ src }) => src}
+            />
+          </div>
+          <a className="source-link" href={shareUrl} target="_blank" rel="noreferrer">
+            開啟分享連結
+            <ExternalLink />
+          </a>
+          <p className="fine-print">QR 圖片需要網路載入；分享連結本身可直接複製使用。</p>
         </DialogContent>
       </Dialog>
     </div>
@@ -1016,7 +1245,7 @@ function OnboardingScreen({
     <section className="screen onboarding-screen">
       <div className="onboarding-top">
         <span className="brand-inline">ALL IN LIFE</span>
-        <span>{step} / 3</span>
+        <button className="skip-button" onClick={onDone}>略過</button>
       </div>
       <Progress value={step * 33.4} />
       {step === 1 && (
@@ -1202,6 +1431,8 @@ function HomeScreen({
   mode,
   filters,
   need,
+  nowText,
+  locationStatus,
   savedCount,
   onMode,
   onNeed,
@@ -1217,6 +1448,8 @@ function HomeScreen({
   mode: Mode;
   filters: Filters;
   need: string;
+  nowText: string;
+  locationStatus: string;
   savedCount: number;
   onMode: (m: Mode) => void;
   onNeed: (s: string) => void;
@@ -1232,7 +1465,7 @@ function HomeScreen({
     <section className="screen home-screen">
       <div className="greeting-row">
         <div>
-          <span className="kicker">09/05 · 圓山生活圈</span>
+          <span className="kicker">{nowText} · 圓山生活圈</span>
           <h1>
             {profile.name}，今天要
             <br />
@@ -1330,6 +1563,15 @@ function HomeScreen({
           <ArrowRight />
         </button>
       </div>
+      <div className="sop-strip">
+        <span>1 語音/打字</span>
+        <span>2 確認限制</span>
+        <span>3 雙獵人探索</span>
+      </div>
+      <div className="location-tip">
+        <MapPin />
+        <span>{locationStatus} · 距離會用於 CP 值與最大距離篩選</span>
+      </div>
       <button className="quick-team" onClick={onTeam}>
         <span className="quick-icon">
           <Users />
@@ -1345,7 +1587,15 @@ function HomeScreen({
   );
 }
 
-function SearchScreen({ progress }: { progress: number }) {
+function SearchScreen({
+  progress,
+  filters,
+}: {
+  progress: number;
+  filters: Filters;
+}) {
+  const cpProgress = Math.min(100, progress + 10);
+  const zeroProgress = Math.min(100, Math.max(8, progress - 8));
   return (
     <section className="screen search-screen">
       <div className="search-orbit">
@@ -1354,36 +1604,31 @@ function SearchScreen({ progress }: { progress: number }) {
         <Radar />
         <span>{progress}%</span>
       </div>
-      <span className="kicker lime-text">條件比對中</span>
+      <span className="kicker lime-text">雙 Agent 探索中</span>
       <h1>
-        生活獵人
-        <br />
-        正在替你排除雜訊
+        CP 值獵人
+        <br />與零元獵人出動
       </h1>
-      <p>同步整理條件、來源與成本，完成後只保留真正可行的選項。</p>
-      <div className="labor-list">
-        {laborSteps.map((step) => (
-          <div
-            key={step.at}
-            className={
-              progress >= step.at
-                ? 'done'
-                : progress + 12 >= step.at
-                  ? 'working'
-                  : ''
-            }
-          >
-            <span>{progress >= step.at ? <Check /> : <i />}</span>
-            <b>{step.label}</b>
-            <small>
-              {progress >= step.at
-                ? '完成'
-                : progress + 12 >= step.at
-                  ? '處理中'
-                  : '等待'}
-            </small>
-          </div>
-        ))}
+      <p>先套硬限制，再依偏好、價格與距離排序；排斥成分會標警告並放到後段。</p>
+      <div className="agent-grid">
+        <AgentPanel
+          title="CP 值獵人"
+          subtitle="付費選項搜尋"
+          progress={cpProgress}
+          labels={['查詢來源', '讀取證據', '正規化', 'CP 排序']}
+          count="候選 18"
+          passed="通過 10"
+          tone="lime"
+        />
+        <AgentPanel
+          title="零元獵人"
+          subtitle="免費資源搜尋"
+          progress={zeroProgress}
+          labels={['查詢來源', '資格條件', '開放時間', '零元排序']}
+          count="候選 8"
+          passed={filters.budget === 0 ? '優先顯示' : '混合顯示'}
+          tone="blue"
+        />
       </div>
       <Progress value={progress} className="search-progress" />
       <div className="scan-stats">
@@ -1395,23 +1640,135 @@ function SearchScreen({ progress }: { progress: number }) {
   );
 }
 
+function AgentPanel({
+  title,
+  subtitle,
+  progress,
+  labels,
+  count,
+  passed,
+  tone,
+}: {
+  title: string;
+  subtitle: string;
+  progress: number;
+  labels: string[];
+  count: string;
+  passed: string;
+  tone: 'lime' | 'blue';
+}) {
+  const activeIndex = Math.min(labels.length - 1, Math.floor(progress / 26));
+  return (
+    <div className={`agent-panel agent-${tone}`}>
+      <div className="agent-panel-top">
+        <span><i />{title}</span>
+        <b>{subtitle}</b>
+      </div>
+      <div className="agent-steps">
+        {labels.map((label, index) => (
+          <span key={label} className={index <= activeIndex ? 'active' : ''}>
+            <small>0{index + 1}</small>
+            {label}
+          </span>
+        ))}
+      </div>
+      <div className="agent-stats">
+        <span>{count}</span>
+        <span>{passed}</span>
+      </div>
+      <Progress value={progress} />
+    </div>
+  );
+}
+
+function CpFormulaPanel({
+  params,
+  onChange,
+  sample,
+  filters,
+}: {
+  params: CpParams;
+  onChange: (params: CpParams) => void;
+  sample?: Result;
+  filters: Filters;
+}) {
+  const fields: Array<{ key: keyof CpParams; label: string }> = [
+    { key: 'price', label: '價格' },
+    { key: 'distance', label: '距離' },
+    { key: 'preference', label: '喜好' },
+  ];
+  return (
+    <details className="cp-formula">
+      <summary>
+        <span>
+          <CircleDollarSign />
+          <b>我的 CP 值公式</b>
+        </span>
+        <strong>{sample ? cpFormulaScore(sample, filters, params) : '—'}</strong>
+      </summary>
+      <p>CP = 價格分 × 權重＋距離分 × 權重＋喜好符合分 × 權重</p>
+      <small>先依喜好分組；含排斥成分的選項標示警告並排到後段。</small>
+      <div className="formula-controls">
+        {fields.map(({ key, label }) => (
+          <label key={key}>
+            <span>{label}</span>
+            <Slider
+              value={[params[key]]}
+              min={0}
+              max={100}
+              step={5}
+              onValueChange={(value) =>
+                onChange({
+                  ...params,
+                  [key]: Array.isArray(value) ? value[0] : value,
+                })
+              }
+            />
+            <b>{params[key]}%</b>
+          </label>
+        ))}
+      </div>
+    </details>
+  );
+}
+
+function TagLine({ item, filters }: { item: Result; filters: Filters }) {
+  const blocked = overlap(item.tags, filters.exclusions);
+  const liked = overlap(item.preferenceTags, filters.preferences);
+  return (
+    <span className="result-tags">
+      {blocked.length > 0 && (
+        <b className="warning-tag">注意：含 {blocked.join('、')}</b>
+      )}
+      {liked.map((tag) => (
+        <i key={tag}>符合 {tag}</i>
+      ))}
+      {item.agent === 'zero' && <i className="zero-tag">零元獵人</i>}
+    </span>
+  );
+}
+
 function ResultsScreen({
   items,
-  mode,
   filters,
+  cpParams,
   sort,
   saved,
   onSort,
+  onFiltersChange,
+  onCpParams,
   onFilters,
   onOpen,
   onSave,
 }: {
   items: Result[];
-  mode: Mode;
   filters: Filters;
+  cpParams: CpParams;
   sort: Sort;
   saved: string[];
   onSort: (s: Sort) => void;
+  onFiltersChange: (f: Filters) => void;
+  onCpParams: (p: CpParams) => void;
   onFilters: () => void;
   onOpen: (id: string) => void;
   onSave: (id: string) => void;
@@ -1448,6 +1805,25 @@ function ResultsScreen({
               : '距離優先'}
         </button>
       </div>
+      <div className="category-tabs">
+        {(['全部', '餐飲', '日用', '育樂', '交通'] as Filters['category'][]).map(
+          (category) => (
+            <button
+              key={category}
+              className={filters.category === category ? 'active' : ''}
+              onClick={() => onFiltersChange({ ...filters, category })}
+            >
+              {category}
+            </button>
+          ),
+        )}
+      </div>
+      <CpFormulaPanel
+        params={cpParams}
+        onChange={onCpParams}
+        sample={items[0]}
+        filters={filters}
+      />
       {items.length === 0 ? (
         <div className="empty-state">
           <SlidersHorizontal />
@@ -1496,13 +1872,14 @@ function ResultsScreen({
                       人均 <b>{money(item.totalCost / item.servings)}</b>
                     </span>
                     <span>
-                      CP <b>{score(item, mode)}</b>
+                      CP <b>{cpFormulaScore(item, filters, cpParams)}</b>
                     </span>
                   </span>
                   <span className="result-condition">
                     <Clock3 />
                     {item.condition}
                   </span>
+                  <TagLine item={item} filters={filters} />
                 </span>
               </button>
               <button
@@ -1523,6 +1900,8 @@ function ResultsScreen({
 function DetailScreen({
   item,
   itemScore,
+  cpParams,
+  filters,
   saved,
   onSave,
   onEvidence,
@@ -1532,6 +1911,8 @@ function DetailScreen({
 }: {
   item: Result;
   itemScore: number | null;
+  cpParams: CpParams;
+  filters: Filters;
   saved: boolean;
   onSave: () => void;
   onEvidence: () => void;
@@ -1587,6 +1968,11 @@ function DetailScreen({
             <small>符合目前偏好</small>
           </div>
         </div>
+        <div className="detail-formula">
+          CP = 價格 × {cpParams.price}% ＋ 距離 × {cpParams.distance}% ＋ 喜好 ×{' '}
+          {cpParams.preference}%
+        </div>
+        <TagLine item={item} filters={filters} />
         {item.benchmarkCost && (
           <div className="saving-card">
             <BadgePercent />
@@ -1847,6 +2233,23 @@ function TeamScreen({
         <Share2 />
         分享訂單給朋友
       </button>
+      <div className="more-teams">
+        <button>
+          <span className="campaign-logo transport"><Bike /></span>
+          <span><b>夜間計程車順風團</b><small>22:10 圓山站出發 · 2 / 4 人</small></span>
+          <strong>每人約 NT$40</strong>
+        </button>
+        <button>
+          <span className="campaign-logo food"><Utensils /></span>
+          <span><b>週末早午餐併桌</b><small>明天 11:30 · 3 / 6 人</small></span>
+          <strong>預估省 18%</strong>
+        </button>
+        <button>
+          <span className="campaign-logo daily"><ShoppingBag /></span>
+          <span><b>日用品箱購分攤</b><small>今晚截止 · 4 / 5 人</small></span>
+          <strong>還差 1 人</strong>
+        </button>
+      </div>
       <div className="team-note">
         <ShieldCheck />
         <div>
@@ -1941,6 +2344,7 @@ function FiltersScreen({
             })
           }
         />
+        <p className="slider-tip">拖曳亮綠色圓點調整搜尋半徑；距離越短，CP 距離分越高。</p>
       </div>
       <TagPicker
         title="類別"
@@ -2303,15 +2707,29 @@ function AnalyticsScreen({
   );
 }
 
-function HistoryScreen({ transactions }: { transactions: Transaction[] }) {
+function HistoryScreen({
+  transactions,
+  onOpen,
+}: {
+  transactions: Transaction[];
+  onOpen: (id: string) => void;
+}) {
   return (
     <section className="screen history-screen">
       <span className="kicker">ACTIVITY</span>
       <h1>歷史紀錄</h1>
       <p>日後推薦會參考你主動標記的收藏與購買。</p>
       <div className="history-list">
-        {transactions.map((item) => (
-          <article key={item.id}>
+        {transactions.map((item) => {
+          const targetId = item.id.startsWith('buy-')
+            ? item.id.replace('buy-', '')
+            : item.category === '交通'
+              ? 'taxi-share'
+              : item.category === '育樂'
+                ? 'tfam'
+                : 'daily-store';
+          return (
+          <button className="history-entry" key={item.id} onClick={() => onOpen(targetId)}>
             <span className="history-icon">{categoryIcon(item.category)}</span>
             <span>
               <b>{item.title}</b>
@@ -2323,8 +2741,10 @@ function HistoryScreen({ transactions }: { transactions: Transaction[] }) {
               <strong>NT${money(item.amount)}</strong>
               <small>省 NT${money(item.saved)}</small>
             </span>
-          </article>
-        ))}
+            <ChevronRight />
+          </button>
+          );
+        })}
       </div>
       <div className="privacy-note">
         <ShieldCheck />

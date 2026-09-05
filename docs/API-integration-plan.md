@@ -22,6 +22,29 @@ Cloudflare Worker API
 
 AI 適合負責「把自然語言轉成結構化條件」與「把已驗證結果說得容易懂」，不應自行產生店名、價格、營業時間或優惠。
 
+## OpenAI Agent 與金鑰放置
+
+這裡應串接 **OpenAI Responses API**，而不是把「Codex」直接當成瀏覽器端 API。兩個獵人共用同一個後端 API client，但使用不同 developer instructions：
+
+- CP 值獵人：只對已通過 Evidence Gate 與硬限制的付費候選產生排序理由。
+- 零元獵人：只對直接費用為零的候選說明資格、開放時間與必要成本。
+- 最終分數、排斥標籤與排序仍由 deterministic code 計算；模型不可改寫價格、距離或營業事實。
+
+正式環境請在 Cloudflare Worker 專案目錄設定 secret：
+
+```powershell
+cd mvp
+npx wrangler secret put OPENAI_API_KEY
+```
+
+本機開發可建立 `mvp/.dev.vars`：
+
+```dotenv
+OPENAI_API_KEY=請貼上自己的金鑰
+```
+
+`mvp/.dev.vars` 已列入 `.gitignore`，不可提交。前端 React 元件不得讀取或輸出此金鑰；只能呼叫同源的 `/api/v1/agents/*`，再由 Worker 讀取 `env.OPENAI_API_KEY`。Responses API 支援文字／圖片輸入、結構化輸出與自訂工具，可用來做條件解析與排序說明：[OpenAI Responses API 官方文件](https://developers.openai.com/api/reference/cli/resources/responses/methods/create)。
+
 ## 第一批 API
 
 | Method | Path | 用途 |
