@@ -77,6 +77,7 @@ type View =
 type Mode = 'daily' | 'team' | 'zero';
 type Category = '餐飲' | '日用' | '育樂' | '交通';
 type Sort = 'cp' | 'cost' | 'distance';
+type LocationPermission = 'idle' | 'requesting' | 'granted' | 'declined' | 'denied';
 type Profile = { name: string; avatar: string; signedIn: boolean };
 type CpParams = { price: number; distance: number; preference: number };
 type Filters = {
@@ -696,7 +697,11 @@ export default function App() {
   const [reminders, setReminders] = useState(true);
   const [unread, setUnread] = useState(3);
   const [nowText, setNowText] = useState(localNow());
-  const [locationStatus, setLocationStatus] = useState('尚未定位');
+  const [locationStatus, setLocationStatus] = useState(
+    '未授權定位，先用圓山站估算',
+  );
+  const [locationPermission, setLocationPermission] =
+    useState<LocationPermission>('idle');
   const [transactions, setTransactions] = useState<Transaction[]>([
     {
       id: 'h1',
@@ -824,17 +829,30 @@ export default function App() {
   useEffect(() => {
     if (!('geolocation' in navigator)) {
       queueMicrotask(() => setLocationStatus('此裝置不支援定位'));
+      queueMicrotask(() => setLocationPermission('denied'));
+    }
+  }, []);
+
+  function requestLocation() {
+    if (!('geolocation' in navigator)) {
+      setLocationPermission('denied');
+      setLocationStatus('此裝置不支援定位');
       return;
     }
+    setLocationPermission('requesting');
+    setLocationStatus('等待瀏覽器定位授權');
     navigator.geolocation.getCurrentPosition(
-      (position) =>
-        setLocationStatus(
-          `已定位，精度約 ${Math.round(position.coords.accuracy)} m`,
-        ),
-      () => setLocationStatus('未授權定位，先用圓山站估算'),
+      (position) => {
+        setLocationPermission('granted');
+        setLocationStatus(`定位成功，精度約 ${Math.round(position.coords.accuracy)} m`);
+      },
+      () => {
+        setLocationPermission('denied');
+        setLocationStatus('未取得定位，將使用圓山站估算');
+      },
       { timeout: 8000, maximumAge: 300000 },
     );
-  }, []);
+  }
 
   function navigate(next: View, remember = true) {
     if (remember && next !== view)
@@ -1010,6 +1028,7 @@ export default function App() {
                 filters={filters}
                 need={need}
                 locationStatus={locationStatus}
+                locationPermission={locationPermission}
                 savedCount={saved.length}
                 onMode={chooseMode}
                 onNeed={setNeed}
@@ -1023,6 +1042,11 @@ export default function App() {
                   navigate('team');
                 }}
                 onGuide={() => setShowSopGuide(true)}
+                onRequestLocation={requestLocation}
+                onDeclineLocation={() => {
+                  setLocationPermission('declined');
+                  setLocationStatus('已選擇使用圓山站估算');
+                }}
               />
             )}
             {view === 'ready' && (
@@ -1139,8 +1163,7 @@ export default function App() {
                 need={need}
                 onNeed={setNeed}
                 onChange={setFilters}
-                followCurrentTime={followCurrentTime}
-                onFollowCurrentTime={setFollowCurrentTime}
+                onManualSchedule={() => setFollowCurrentTime(false)}
                 onApply={() => {
                   setToast('需求與限制已確認');
                   navigate('ready');
@@ -1611,26 +1634,6 @@ function AppHeader({
   );
 }
 
-function JourneyRail({ active }: { active: 1 | 2 | 3 }) {
-  const steps = ['輸入需求', '確認需求與限制', '開始探索'];
-  return (
-    <div className="journey-rail" aria-label={`目前位於步驟 ${active}`}>
-      {steps.map((label, index) => {
-        const step = index + 1;
-        return (
-          <span
-            key={label}
-            className={step === active ? 'active' : step < active ? 'done' : ''}
-          >
-            <i>{step < active ? <Check /> : step}</i>
-            <b>{label}</b>
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
 function ReadyScreen({
   filters,
   need,
@@ -1646,8 +1649,7 @@ function ReadyScreen({
 }) {
   return (
     <section className="screen ready-screen">
-      <JourneyRail active={3} />
-      <span className="kicker lime-text">STEP 03 · START HUNTING</span>
+      <span className="kicker step-kicker">STEP 3 · 開始探索</span>
       <h1>條件確認完成<br />準備開始探索</h1>
       <p>最後看一次摘要；按下按鈕後，兩個獵人才會正式出動。</p>
       <div className="ready-brief interactive-shine">
@@ -1687,6 +1689,7 @@ function HomeScreen({
   filters,
   need,
   locationStatus,
+  locationPermission,
   savedCount,
   onMode,
   onNeed,
@@ -1697,12 +1700,15 @@ function HomeScreen({
   onAnalytics,
   onTeam,
   onGuide,
+  onRequestLocation,
+  onDeclineLocation,
 }: {
   profile: Profile;
   mode: Mode;
   filters: Filters;
   need: string;
   locationStatus: string;
+  locationPermission: LocationPermission;
   savedCount: number;
   onMode: (m: Mode) => void;
   onNeed: (s: string) => void;
@@ -1713,6 +1719,8 @@ function HomeScreen({
   onAnalytics: () => void;
   onTeam: () => void;
   onGuide: () => void;
+  onRequestLocation: () => void;
+  onDeclineLocation: () => void;
 }) {
   const [promptIndex, setPromptIndex] = useState(0);
   const [typedPrompt, setTypedPrompt] = useState('');
@@ -1738,11 +1746,20 @@ function HomeScreen({
     }, delay);
     return () => window.clearTimeout(timer);
   }, [deletingPrompt, promptIndex, typedPrompt]);
-  function nextPrompt() {
-    setTypedPrompt('');
-    setDeletingPrompt(false);
-    setPromptIndex((current) => (current + 1) % homePrompts.length);
-  }
+  const locationHeading =
+    locationPermission === 'granted'
+      ? '已取得目前位置'
+      : locationPermission === 'requesting'
+        ? '正在等待定位授權'
+        : locationPermission === 'declined'
+          ? '目前使用圓山站估算'
+          : locationPermission === 'denied'
+            ? '無法取得目前位置'
+            : '是否同意使用目前位置？';
+  const canRequestLocation =
+    locationPermission === 'idle' ||
+    locationPermission === 'declined' ||
+    locationPermission === 'denied';
   return (
     <section className="screen home-screen">
       <div className="greeting-row">
@@ -1751,9 +1768,6 @@ function HomeScreen({
           <h1 aria-live="polite">
             {typedPrompt}<i />
           </h1>
-          <button className="prompt-switch" onClick={nextPrompt}>
-            <Sparkles />換一句
-          </button>
         </div>
         <button
           className="avatar-button"
@@ -1809,7 +1823,6 @@ function HomeScreen({
         ))}
       </div>
       <div className="mission-card">
-        <JourneyRail active={1} />
         <div className="mission-top">
           <span className="mode-dot" />
           <span>STEP 1 · 輸入需求</span>
@@ -1855,10 +1868,6 @@ function HomeScreen({
         </span>
         <ChevronRight />
       </button>
-      <div className="location-tip">
-        <MapPin />
-        <span>{locationStatus} · 距離會用於 CP 值與最大距離篩選</span>
-      </div>
       <button className="quick-team" onClick={onTeam}>
         <span className="quick-icon">
           <Users />
@@ -1869,6 +1878,29 @@ function HomeScreen({
         </span>
         <ChevronRight />
       </button>
+      <div className={`location-consent ${locationPermission}`}>
+        <span className="location-consent-icon">
+          <MapPin />
+        </span>
+        <span className="location-consent-copy">
+          <b>{locationHeading}</b>
+          <small>
+            {locationStatus} · 距離會用於 CP 值與最大距離篩選
+          </small>
+        </span>
+        {canRequestLocation && (
+          <span className="location-consent-actions">
+            <button onClick={onRequestLocation}>
+              {locationPermission === 'idle' ? '同意定位' : '重新授權'}
+            </button>
+            {locationPermission === 'idle' && (
+              <button onClick={onDeclineLocation}>暫不</button>
+            )}
+          </span>
+        )}
+        {locationPermission === 'requesting' && <em>等待授權…</em>}
+        {locationPermission === 'granted' && <Check />}
+      </div>
       <p className="home-footnote">{savedCount} 個收藏會顯示到期提醒</p>
     </section>
   );
@@ -2574,55 +2606,50 @@ function FiltersScreen({
   need,
   onNeed,
   onChange,
-  followCurrentTime,
-  onFollowCurrentTime,
+  onManualSchedule,
   onApply,
 }: {
   filters: Filters;
   need: string;
   onNeed: (s: string) => void;
   onChange: (f: Filters) => void;
-  followCurrentTime: boolean;
-  onFollowCurrentTime: (follow: boolean) => void;
+  onManualSchedule: () => void;
   onApply: () => void;
 }) {
   return (
     <section className="screen filters-screen">
-      <JourneyRail active={2} />
-      <span className="kicker">STEP 02 · CONFIRM</span>
-      <h1>確認需求與限制</h1>
-      <p>請逐項確認；日期、時間、預算與距離是硬限制，喜好只影響排序。</p>
-      <label className="field-label">
-        需求
+      <span className="kicker step-kicker">STEP 2 · 確認需求與限制</span>
+      <h1>把條件調到剛剛好</h1>
+      <p>硬條件先篩選，喜好再決定推薦順序。</p>
+      <label className="field-label need-field">
+        <span className="field-title"><Pencil />需求</span>
         <textarea value={need} onChange={(e) => onNeed(e.target.value)} />
       </label>
-      <div className="compact-grid">
+      <div className="filter-basics">
         <label className="field-label">
-          <CalendarDays />
-          日期
+          <span className="field-title"><CalendarDays />日期</span>
           <input
             type="date"
             value={filters.date}
             onChange={(e) => {
-              onFollowCurrentTime(false);
+              onManualSchedule();
               onChange({ ...filters, date: e.target.value });
             }}
           />
         </label>
         <label className="field-label">
-          <Clock3 />
-          時段
+          <span className="field-title"><Clock3 />時段</span>
           <input
             type="time"
             value={filters.time}
             onChange={(e) => {
-              onFollowCurrentTime(false);
+              onManualSchedule();
               onChange({ ...filters, time: e.target.value });
             }}
           />
         </label>
         <label className="field-label">
-          預算
+          <span className="field-title"><WalletCards />預算</span>
           <input
             type="number"
             min="0"
@@ -2634,7 +2661,7 @@ function FiltersScreen({
           />
         </label>
         <label className="field-label">
-          人數
+          <span className="field-title"><Users />人數</span>
           <input
             type="number"
             min="1"
@@ -2646,24 +2673,16 @@ function FiltersScreen({
           />
         </label>
       </div>
-      <button
-        className={`live-time-button ${followCurrentTime ? 'active' : ''}`}
-        onClick={() => {
-          const now = taipeiDateTime();
-          onFollowCurrentTime(true);
-          onChange({ ...filters, date: now.date, time: now.time });
-        }}
-      >
-        <Clock3 />
-        {followCurrentTime ? '正在跟隨台北即時時間' : '改用現在時間'}
-        <i />
-      </button>
-      <div className="setting-group distance-setting">
-        <div className="setting-label">
-          <span>最大距離</span>
-          <strong>{filters.distance} km</strong>
+      <div className="distance-control">
+        <div className="distance-heading">
+          <span>
+            <MapPin />
+            <span><b>最大距離</b><small>從目前位置或圓山站估算</small></span>
+          </span>
+          <strong>{filters.distance}<small> km</small></strong>
         </div>
         <Slider
+          className="distance-slider"
           value={[filters.distance]}
           min={0.5}
           max={5}
@@ -2675,31 +2694,36 @@ function FiltersScreen({
             })
           }
         />
+        <div className="distance-scale" aria-hidden="true">
+          <span>0.5 km</span><i>近</i><i>適中</i><i>較遠</i><span>5 km</span>
+        </div>
         <p className="slider-tip">
-          拖曳亮綠色圓點調整搜尋半徑；距離越短，CP 距離分越高。
+          拖曳亮綠圓點調整搜尋半徑；距離越短，CP 距離分越高。
         </p>
       </div>
-      <TagPicker
-        title="類別"
-        values={['全部', '餐飲', '日用', '育樂', '交通']}
-        selected={[filters.category]}
-        single
-        onChange={(values) =>
-          onChange({ ...filters, category: values[0] as Filters['category'] })
-        }
-      />
-      <TagPicker
-        title="硬排除"
-        values={['堅果', '牛肉', '海鮮', '麩質', '乳製品', '辣']}
-        selected={filters.exclusions}
-        onChange={(exclusions) => onChange({ ...filters, exclusions })}
-      />
-      <TagPicker
-        title="喜好"
-        values={['安靜', '能坐', '不用等', '有冷氣', '少走路', '可外帶']}
-        selected={filters.preferences}
-        onChange={(preferences) => onChange({ ...filters, preferences })}
-      />
+      <div className="filter-tag-stack">
+        <TagPicker
+          title="類別"
+          values={['全部', '餐飲', '日用', '育樂', '交通']}
+          selected={[filters.category]}
+          single
+          onChange={(values) =>
+            onChange({ ...filters, category: values[0] as Filters['category'] })
+          }
+        />
+        <TagPicker
+          title="硬排除"
+          values={['堅果', '牛肉', '海鮮', '麩質', '乳製品', '辣']}
+          selected={filters.exclusions}
+          onChange={(exclusions) => onChange({ ...filters, exclusions })}
+        />
+        <TagPicker
+          title="喜好"
+          values={['安靜', '能坐', '不用等', '有冷氣', '少走路', '可外帶']}
+          selected={filters.preferences}
+          onChange={(preferences) => onChange({ ...filters, preferences })}
+        />
+      </div>
       <button className="primary-action" onClick={onApply}>
         <Check />
         確認完成，前往開始探索
