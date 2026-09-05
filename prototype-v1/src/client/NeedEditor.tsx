@@ -34,7 +34,7 @@ export function NeedEditor({need,onChange}:{need:Need;onChange:(next:Need)=>void
   <label className="field">其他偏好（逗號分隔）<DelimitedInput maxLength={1000} values={need.soft_preferences} onChange={values=>set("soft_preferences",values)} list="pref-options"/><datalist id="pref-options">{PREFS.map(p=><option key={p} value={p}/>)}</datalist></label>
   <label className="field">資格說明<input maxLength={500} value={need.eligibility_notes??""} onChange={e=>set("eligibility_notes",e.target.value||null)} placeholder="未指定"/></label>
   </div></details>
-  {need.unresolved.length>0&&<aside className="notice warning"><b>尚未整理清楚，請確認</b><p>{need.unresolved.join("、")}</p><button className="text-button" type="button" onClick={()=>set("unresolved",[])}>已確認這些內容，繼續設定條件</button></aside>}
+  {need.unresolved.length>0&&<aside className="unresolved-field"><b>尚未整理清楚，請確認</b><p>{need.unresolved.join("、")}</p><button type="button" onClick={()=>set("unresolved",[])}>已確認這些內容，繼續設定條件</button></aside>}
   <details className="detail-disclosure"><summary><span>篩選說明</span><ChevronDown aria-hidden="true"/></summary><div className="disclosure-body"><p className="detail-explanation">空白表示未知，並非 0。食品份量不超過人數即可推薦，份量越接近需求越優先；較小份量仍列出，但不代表全員足量，也不自動倍增價格。其他已知不符條件者排除，缺少份量、日期、時段、資格或成分證據者標示待確認並列於清單後段，仍需核對；有過敏需求請向提供者確認。</p></div></details>
  </div>;
 }

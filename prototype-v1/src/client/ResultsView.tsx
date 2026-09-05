@@ -42,6 +42,7 @@ import {
   type Rec,
 } from "../shared/records.ts";
 import { displayDataStatus } from "./display.ts";
+import { distanceDisplay, estimatedDistanceKm, type LocationStatus, type UserPosition } from "./location.ts";
 import "./results-view.css";
 
 export type ResultsViewProps = {
@@ -55,6 +56,8 @@ export type ResultsViewProps = {
   survival: boolean;
   preferredCategories?: Category[];
   browsing?: boolean;
+  position?: UserPosition | null;
+  locationStatus?: LocationStatus;
 };
 
 export type DetailViewProps = {
@@ -64,6 +67,8 @@ export type DetailViewProps = {
   onFavorite: () => void;
   onList: () => void;
   onReport: () => void;
+  position?: UserPosition | null;
+  locationStatus?: LocationStatus;
 };
 
 type SortMode = "rank" | "cost" | "distance" | "verified";
@@ -272,6 +277,8 @@ function ResultCard({
   onList,
   compact = false,
   needsConfirmation = false,
+  position,
+  locationStatus,
 }: {
   item: Rec;
   index: number;
@@ -280,12 +287,15 @@ function ResultCard({
   onList: () => void;
   compact?: boolean;
   needsConfirmation?: boolean;
+  position: UserPosition | null;
+  locationStatus: LocationStatus;
 }) {
   const demo = isDemoRecord(item);
   const context = recordContext(item);
   const hasTerms = item.eligibility.length > 0 || item.registration_required
     || Boolean(context.pricingContext) || context.reviewNotes.length > 0;
   const fees = item.mandatory_fees_twd;
+  const distance = distanceDisplay(demo ? null : estimatedDistanceKm(item, position), locationStatus);
 
   return (
     <article className={`result-card result-card-summary tone-${item.category} ${compact ? "result-card-compact" : ""} ${demo ? "result-card-demo" : ""}`}>
@@ -297,6 +307,7 @@ function ResultCard({
           </span>
           <span className="result-title">{item.title}</span>
           <span className="result-copy">{item.provider}</span>
+          <span className="result-distance"><MapPin aria-hidden="true" /><small>距離</small><b>{distance}</b></span>
           <span className="result-price">
             <strong className={comparableTotal(item) === null ? "result-price-unknown" : undefined}>
               <small>預估總費用</small>{priceLabel(item)}
@@ -341,6 +352,8 @@ function SecondaryBucket({
   onOpen,
   onList,
   tone,
+  position,
+  locationStatus,
 }: {
   title: string;
   description: string;
@@ -349,6 +362,8 @@ function SecondaryBucket({
   onOpen: (id: string) => void;
   onList: (id: string) => void;
   tone: "pending" | "excluded";
+  position: UserPosition | null;
+  locationStatus: LocationStatus;
 }) {
   return (
     <details className={`result-bucket result-bucket-${tone}`}>
@@ -373,6 +388,8 @@ function SecondaryBucket({
               onOpen={() => onOpen(item.id)}
               onList={() => onList(item.id)}
               compact
+              position={position}
+              locationStatus={locationStatus}
             />
           ))}
         </div>
@@ -392,6 +409,8 @@ export function ResultsView({
   survival,
   preferredCategories = [],
   browsing = false,
+  position = null,
+  locationStatus = "unavailable",
 }: ResultsViewProps) {
   const allItems = useMemo(() => [...records, ...pending, ...excluded], [records, pending, excluded]);
   // Target categories emphasize the dashboard, never filter out the other categories (voice spec §3).
@@ -484,6 +503,8 @@ export function ResultsView({
               listed={list.includes(item.id)}
               onOpen={() => onOpen(item.id)}
               onList={() => onList(item.id)}
+              position={position}
+              locationStatus={locationStatus}
             />
           ))}
         </div>
@@ -498,6 +519,8 @@ export function ResultsView({
           onOpen={onOpen}
           onList={onList}
           tone="excluded"
+          position={position}
+          locationStatus={locationStatus}
         />
       </div>
     </section>
@@ -645,6 +668,8 @@ export function DetailView({
   onFavorite,
   onList,
   onReport,
+  position = null,
+  locationStatus = "unavailable",
 }: DetailViewProps) {
   const demo = isDemoRecord(item);
   const verified = !demo && item.data_status === "已驗證";
@@ -653,16 +678,11 @@ export function DetailView({
   const sourceUrl = safeHttpUrl(item.source_url);
   const actionUrl = demo ? null : safeHttpUrl(item.action_url);
   const hasCoordinates = item.lat !== null && item.lng !== null;
-  const mapQuery = hasCoordinates ? `${item.lat},${item.lng}` : item.address?.trim() || null;
+  const mapQuery = item.address?.trim() || (hasCoordinates ? `${item.lat},${item.lng}` : null);
   const mapUrl = !demo && mapQuery
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
     : null;
-  const distance = item.distance_km;
-  const detailDistance = demo
-    ? "測試位置資料（不可據此前往）"
-    : distance === null || distance === undefined
-      ? "目前沒有座標，無法估算距離"
-      : `直線 ${distance.toFixed(1)} km（估算）`;
+  const detailDistance = distanceDisplay(demo ? null : estimatedDistanceKm(item, position), locationStatus);
   const locationLabel = demo ? "測試地點，不可據此前往" : item.address?.trim() || detailDistance;
   const expired = isExpired(item);
   const fees = item.mandatory_fees_twd;
@@ -728,7 +748,7 @@ export function DetailView({
             <Fact label={quantityCopy.timeLabel} value={exactText(item.availability_or_event_time)} icon={Clock3} />
             <Fact label="是否需登記" value={item.registration_required ? "需要" : "不需要"} icon={Tag} />
             <Fact label="有效期限" value={item.valid_until ? `${expired ? "已於" : "至"} ${dateLabel(item.valid_until)}${expired ? " 到期" : ""}` : "來源未明示"} icon={CalendarDays} />
-            <Fact label="距離／交通" value={`${detailDistance} · ${exactText(item.distance_or_time_text, "交通時間未提供")}`} icon={MapPin} />
+            <Fact label="交通資訊" value={exactText(item.distance_or_time_text, "交通時間未提供")} icon={MapPin} />
             <Fact label="地址" value={demo && item.address ? `${item.address}（測試資料）` : exactText(item.address)} icon={MapPin} />
           </div>
           {item.reason?.trim() && <div className="condition-box"><Sparkles aria-hidden="true" /><div><b>推薦理由</b><p>{displayGeneratedCopy(item.reason)}</p></div></div>}
@@ -740,7 +760,7 @@ export function DetailView({
           <div className="facts-grid">
             <Fact label="資料狀態" value={item.request_match ? (item.request_match.status === "pending" ? "本次需求待確認" : "不符合本次需求") : demo ? "示範測試資料" : displayDataStatus(item.data_status)} icon={CheckCircle2} />
             <Fact label={demo ? "測試資料日期" : "資料確認"} value={dateLabel(item.verified_at)} icon={Info} />
-            <Fact label="座標" value={hasCoordinates ? `${item.lat}, ${item.lng}${demo ? "（測試資料）" : ""}` : "未提供"} icon={MapPin} />
+            <Fact label="距離" value={detailDistance} icon={MapPin} />
           </div>
           <section className="evidence-section">
             <h2>{demo ? "示範來源" : "費用與來源依據"}</h2>

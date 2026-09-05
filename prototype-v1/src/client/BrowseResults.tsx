@@ -3,7 +3,7 @@ import { isDemoRecord, type Bucket } from "../shared/records.ts";
 import { browse } from "./api.ts";
 import { ResultsView, type ResultsViewProps } from "./ResultsView.tsx";
 
-type BrowseProps = Pick<ResultsViewProps, "list" | "onOpen" | "onList" | "onAdjust">;
+type BrowseProps = Pick<ResultsViewProps, "list" | "onOpen" | "onList" | "onAdjust" | "position" | "locationStatus">;
 export type BrowseState =
   | { status: "loading" }
   | { status: "error"; message: string }

@@ -34,15 +34,6 @@ export function AccountView({ account, onDone, supportEmail }: AccountViewProps)
       <h1>{account.user ? "你的帳號" : mode === "login" ? "登入生活帳號" : "建立生活帳號"}</h1>
       <p className="section-copy compact-lede">不登入也能搜尋；登入後才能儲存清單與收藏。</p>
 
-      <details className="compact-disclosure compact-account-disclosure">
-        <summary>
-          <span className="compact-summary-label">儲存方式</span>
-          <small>不會自動合併</small>
-        </summary>
-        <div className="compact-disclosure-body">
-          <p>不登入也能搜尋；登入後才能儲存清單與收藏。匿名資料不會自動與帳號合併。</p>
-        </div>
-      </details>
 
       {account.restoring ? (
         <p role="status">正在載入帳號資料…</p>
@@ -156,15 +147,6 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
       <h1>我的生活設定</h1>
       <p className="section-copy compact-lede">{account.user ? "設定會同步到帳號。" : "匿名設定只留在此分頁。"}</p>
 
-      <details className="compact-disclosure compact-settings-disclosure">
-        <summary>
-          <span className="compact-summary-label">設定儲存方式</span>
-          <small>{account.user ? "跨裝置同步" : "登入後會取代"}</small>
-        </summary>
-        <div className="compact-disclosure-body">
-          <p>{account.user ? "設定儲存後會同步到你的帳號。" : "目前是匿名設定，只保留在這個分頁；登入後會以帳號設定取代，不會自動合併。"}</p>
-        </div>
-      </details>
 
       <form
         onSubmit={async (event) => {

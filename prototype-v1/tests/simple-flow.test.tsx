@@ -30,6 +30,8 @@ test("manual search reports active extra conditions and keeps unresolved warning
   expect(visible).toContain("7 項已設定");
   expect(visible).toContain("日期請確認");
   expect(visible).toContain("已確認這些內容，繼續設定條件");
+  expect(html).toContain('class="unresolved-field"');
+  expect(html).not.toContain('class="notice warning"');
   expect(html).toContain('value="0"');
   expect(html).toContain('value="false" selected=""');
   expect(html).toContain('value="學生"');
