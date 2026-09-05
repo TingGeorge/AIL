@@ -1,57 +1,57 @@
-# ALL IN LIFE backend integration decision
+# ALL IN LIFE 後端整合決策
 
-Date: 2026-09-05
-Branch: `codex/all-in-life-backend-plan`
-Frontend baseline: `codex/all-in-life-mvp` / `mvp/`
-Compared with: `origin/main` at `45f57ed`
+- 日期：2026-09-05
+- 分支：`codex/all-in-life-backend-plan`
+- 前端基準：`codex/all-in-life-mvp` / `mvp/`
+- 比對對象：`origin/main`（`45f57ed`）
 
-## Decision
+## 決策
 
-Use `mvp/` as the product frontend and delivery surface. Do not replace it with `main`'s `old_version/` or `prototype-v1/`.
+前端以目前 `mvp/` 為主。不要把前端退回 `main` 裡的 `old_version/` 或 `prototype-v1/`。
 
-For backend direction, take the stronger ideas from `main`, but implement them in the `mvp/` deployment model:
+後端方向採用「擇優整合」：保留 `mvp/` 的部署模型與 D1 資料方向，同時吸收 `main` 已經整理得比較成熟的後端設計原則。
 
-- Cloudflare Worker style API, because the current deploy target already uses the `mvp/` Sites/PWA shape.
-- D1 migrations from this branch as the persistence base.
-- `main`'s backend discipline: pre-ingested data, deterministic filtering first, two ranking agents second, shared Zod schema, timeout/error boundaries, Taipei server time, and contract tests.
+簡單說：
 
-In short: frontend from this branch, backend rules from `main`, runtime shape from `mvp`.
+- 前端：用本分支的 `mvp/`。
+- 後端規則：吸收 `main` 的設計。
+- 部署形態：以 `mvp/` 對應的 Cloudflare Worker / D1 方向為主。
 
-## Why not directly merge `main`
+## 為什麼不要直接合併 `main`
 
-`main` and this branch are parallel implementations, not two small edits to the same app.
+`main` 和目前分支不是同一套程式的小改版，而是兩條平行實作。
 
-Direct merge currently conflicts in:
+目前用 Git 實測，直接合併會在這兩個檔案產生文字衝突：
 
 - `.gitignore`
 - `docs/PRD-all-in-life.md`
 
-There is also a larger architecture conflict even where Git can merge text:
+即使其他檔案沒有產生文字衝突，也仍有架構上的衝突：
 
-- `main` has `old_version/` and `prototype-v1/` with Bun, Vite, Hono, local/Postgres-oriented specs.
-- This branch has `mvp/` with Vinext/React/Tailwind, PWA assets, D1 schema, and Sites deployment.
-- `main` uses five product categories: 食品、日用品、免費／公益資源、活動、交通.
-- `mvp/` UI currently groups the experience around DINING, DAILY, LEISURE, TRANSPORT and richer mobile screens.
+- `main` 有 `old_version/` 和 `prototype-v1/`，偏 Bun、Vite、Hono、本機 PostgreSQL 的後端原型。
+- 本分支有 `mvp/`，偏 Vinext、React、Tailwind、PWA、D1 schema 與 Sites 發布。
+- `main` 的類別是五類：食品、日用品、免費／公益資源、活動、交通。
+- `mvp/` 目前前端體驗整理成 DINING、DAILY、LEISURE、TRANSPORT 等較完整手機流程。
 
-So the good merge is selective migration, not a raw branch merge.
+因此比較好的做法不是整包 merge，而是把 `main` 的好設計移植到 `mvp/` 後端。
 
-## Comparison
+## 對比
 
-| Area | `main` strength | Current branch strength | Pick |
+| 面向 | `main` 的強項 | 目前分支的強項 | 建議 |
 | --- | --- | --- | --- |
-| Frontend | Hash routing and earlier lightweight flow | Complete mobile PWA in `mvp/`, richer screens, public HTTPS deployment | Keep `mvp/`; migrate routing behavior later |
-| Backend runtime | Bun/Hono prototype is simple and testable | Cloudflare/D1 direction fits hosting target | Use Worker/D1 for deploy; borrow Hono route contracts conceptually |
-| Data source | Pre-ingested candidate records; no runtime web search | D1 schema models users, places, evidence, teams, reports, notifications | Use pre-ingestion rule with D1 tables |
-| Search | Deterministic filter stage before agents | CP engine and evidence-first product language | Combine: evidence gate + hard filter + CP/cost ranking |
-| Agents | Two ranking agents: paid and free | UI already shows CP, Team, Zero-cost stories | Keep two agents as backend rankers, not crawlers |
-| Validation | Zod `Need` schema shared across client/server | `SearchConstraints` type exists but not runtime-enforced | Build shared Zod schema first |
-| Dates/location | Taipei date resolved server-side; user location not saved | PWA/location UX already expected | Adopt `main` privacy and Taipei-time rules |
-| Tests | Parser/routes/search contracts in Bun prototype | Build and PWA smoke checks already done | Port contract tests to `mvp` API layer |
+| 前端 | hash routing、較輕量流程 | `mvp/` 已是完整手機 PWA，且已公開 HTTPS 部署 | 保留 `mvp/`，之後移植返回鍵與深層連結 |
+| 後端 runtime | Bun / Hono 原型簡單、好測 | Cloudflare / D1 較符合目前部署方向 | 最終採 Worker / D1，概念上吸收 Hono route 設計 |
+| 資料來源 | 事先匯入候選資料，不 runtime web search | D1 schema 已涵蓋 users、places、evidence、teams、reports、notifications | 用 D1 實作 pre-ingestion 模型 |
+| 搜尋流程 | 先 deterministic filter，再交給 Agent 排序 | 已有 CP engine 與 evidence-first 產品語言 | 合併為 evidence gate + hard filter + CP/cost ranking |
+| Agent | paid / free 兩個 Agent 的責任清楚 | UI 已能呈現 CP、Team、Zero-cost 故事 | Agent 只負責排序與說明，不負責創造資料 |
+| 驗證 | `Need` + Zod schema，可前後端共用 | `SearchConstraints` 目前偏 TypeScript type | 優先建立共用 Zod schema |
+| 日期與位置 | 台北日期由 server 解析，使用者位置不保存 | PWA / location UX 已準備好 | 採用 `main` 的隱私與台北時區規則 |
+| 測試 | parser / routes / search contract test 方向明確 | 已有 build 與 PWA smoke 驗證 | 把 contract test 移植到 `mvp` API 層 |
 
-## Recommended backend architecture
+## 建議後端架構
 
 ```text
-mvp/ PWA frontend
+mvp/ PWA 前端
   -> POST /api/v1/search/parse
   -> POST /api/v1/search
   -> GET/PATCH /api/v1/profile
@@ -60,84 +60,84 @@ mvp/ PWA frontend
   -> POST /api/v1/reports
 
 Cloudflare Worker API
-  -> shared Zod SearchConstraints
-  -> Taipei server date normalization
-  -> evidence gate
-  -> hard filters
+  -> 共用 Zod SearchConstraints
+  -> 台北時區日期正規化
+  -> Evidence Gate
+  -> Hard Filter
   -> deterministic cost / CP ranking
   -> paid options agent + free resources agent
   -> D1 persistence
 
-Offline ingestion jobs
-  -> official/provider/public sources
+離線資料匯入工作
+  -> 官方 / 店家 / 公開來源
   -> candidate records
   -> evidence assertions
   -> optional Places geocoding
-  -> freshness/status checks
+  -> freshness / status checks
 ```
 
-## Backend build order
+## 後端建置順序
 
-1. Define shared `SearchConstraints` with Zod.
+1. 建立共用 `SearchConstraints` Zod schema。
 
-   Replace loose TypeScript-only assumptions with runtime validation. This should be shared by parse, search, and frontend form confirmation.
+   文字輸入、語音解析、搜尋 API、前端確認畫面都應共用同一份 runtime schema，避免只有 TypeScript 型別但實際 API 接受錯誤資料。
 
-2. Implement the API client and route shell.
+2. 建立 API client 與 route shell。
 
-   Add 30 second timeout, request id, typed errors, cancellation, and a fixture fallback so the demo flow does not collapse if the backend is unavailable.
+   先補 30 秒 timeout、request id、錯誤分類、取消搜尋，以及 fixture fallback。這樣後端還沒完全接好時，Demo 主流程不會直接斷掉。
 
-3. Bring D1 online using the existing migrations.
+3. 啟用 D1 與既有 migrations。
 
-   Start with profile, saved lists, purchase history, notifications, and reports. These are lower AI risk and immediately improve the current frontend.
+   先接 profile、saved lists、purchase history、notifications、reports。這些功能 AI 風險較低，也能讓目前前端狀態跨 session 保存。
 
-4. Implement search as deterministic first.
+4. 先完成 deterministic search。
 
-   Search should read pre-ingested candidates, apply evidence gate and hard filters, compute comparable cost/CP, and return sorted results without LLM first.
+   搜尋先讀取已匯入候選資料，套 evidence gate、hard filters、可比成本與 CP 排序。這一步先不要接 LLM，方便驗證核心商業邏輯。
 
-5. Add the two agents only after deterministic search works.
+5. deterministic search 穩定後再加入兩個 Agent。
 
-   The agents should rank already-valid candidates and write short reasons. They must not invent candidates, prices, hours, or eligibility.
+   paid options agent 與 free resources agent 只排序已通過篩選的候選資料，並產生一句推薦理由。Agent 不可以發明店名、價格、營業時間、資格或優惠。
 
-6. Add ingestion/geocoding.
+6. 補上 ingestion / geocoding。
 
-   Take `main`'s ingestion and geocoding rules: one source equals one record, unknown cost is not zero, expired/conflicted data leaves the main ranking, and user location is never saved.
+   採用 `main` 的資料規則：一個來源一筆紀錄、未知價格不可當 0、過期或衝突資料退出主要排序、使用者位置只用於當次搜尋且不保存。
 
-7. Port tests.
+7. 移植測試。
 
-   Move contract tests for parse/search/routes into the `mvp` backend shape. Add one browser smoke test for onboarding -> search -> result -> saved.
+   把 `main` 的 parse/search/routes contract test 移到 `mvp` 後端形態，並新增 onboarding -> search -> result -> saved 的瀏覽器 smoke test。
 
-## What to migrate from `main`
+## 應該從 `main` 移植的內容
 
-- `needSchema` shape and the idea of one shared parser/search schema.
-- `/api/parse` and `/api/transcribe` trust boundaries: input size limits, 30 second timeout, fixed error messages.
-- `/api/search` event model: filter event, per-agent/per-category ranking events, done event.
-- Data rules from `SPEC-ingestion.md`: one source one record, required evidence, null for unknown price, data status handling.
-- Location rules from `SPEC-geocoding.md`: candidate coordinates can be stored, user coordinates are one-request-only.
-- Test ideas from `prototype-v1/tests`.
+- `needSchema` 的概念：parser 與 search 共用同一份 schema。
+- `/api/parse`、`/api/transcribe` 的 trust boundaries：輸入大小限制、30 秒 timeout、固定錯誤訊息。
+- `/api/search` 的事件模型：filter event、各 Agent / category ranking event、done event。
+- `SPEC-ingestion.md` 的資料規則：一個來源一筆紀錄、必要 evidence、未知價格用 null、資料狀態處理。
+- `SPEC-geocoding.md` 的位置規則：候選地點座標可保存，使用者座標只用於單次 request。
+- `prototype-v1/tests` 的 contract test 思路。
 
-## What not to migrate directly
+## 不應該直接移植的內容
 
-- Do not move the frontend back to `old_version/` or `prototype-v1/`.
-- Do not use local Postgres as the final deployment dependency unless the hosting target changes.
-- Do not make agents perform live web search at request time.
-- Do not store raw audio, transcript, or precise user location by default.
-- Do not make Team a real transaction/commitment system before moderation, abuse, and privacy rules exist.
+- 不要把前端換回 `old_version/` 或 `prototype-v1/`。
+- 除非部署目標改變，否則不要把本機 PostgreSQL 當成最終上線依賴。
+- 不要讓 Agent 在使用者搜尋當下即時上網搜尋。
+- 不要預設保存原始音檔、逐字稿或精準使用者位置。
+- Team 不要在 moderation、abuse、privacy 規則完成前做成真實交易或承諾系統。
 
-## Conflict resolution guidance
+## 衝突解法
 
-For `.gitignore`, take the union of both sides: keep build caches, local env files, temporary artifacts, and deployment output ignored.
+`.gitignore`：取雙方聯集。保留 build cache、local env、暫存檔、部署輸出等 ignore 規則。
 
-For `docs/PRD-all-in-life.md`, keep the official product framing but align the implementation section to this decision:
+`docs/PRD-all-in-life.md`：不要直接覆蓋。保留官方產品敘事，但把實作章節對齊以下原則：
 
-- Anonymous users can search.
-- Login is for saving state and shared/report actions.
-- Search uses pre-ingested candidates, not runtime crawling.
-- Agents rank filtered candidates; they do not create facts.
-- User location is only used for the current search and is not persisted.
-- The current deliverable frontend is `mvp/`.
+- 匿名使用者可以搜尋。
+- 登入主要用於保存狀態與進行共享 / 回報動作。
+- 搜尋使用事先匯入的候選資料，不在 request 當下爬網。
+- Agent 只排序已通過篩選的候選資料，不創造事實。
+- 使用者位置只用於當次搜尋，不持久化。
+- 目前可交付前端是 `mvp/`。
 
-## Final recommendation
+## 最終建議
 
-Open a PR from `codex/all-in-life-backend-plan` or `codex/all-in-life-mvp` into `main`, but do not press merge until the PR resolves the two textual conflicts and agrees on the architecture above.
+如果目標是先完成 hackathon 送件，建議先把 PWA / 前端 / README / SPEC / checklist 相關內容合進 `main`，後端只合併文件與規劃，不急著把 runtime 混在一起。
 
-If the goal is hackathon submission first, merge only the PWA/frontend/docs delivery pieces now. Then create follow-up issues for schema, API client, deterministic search, D1 persistence, ingestion, agents, and tests.
+後續再依序開 task 實作：共用 schema、API client、D1 persistence、deterministic search、ingestion、Agent ranking、contract tests。
