@@ -36,7 +36,12 @@ const todayInTaipei = () => new Date().toLocaleDateString("en-CA", { timeZone: "
 
 export const app = new Hono();
 app.use("*", secureHeaders({ referrerPolicy: "no-referrer", xFrameOptions: "DENY" }));
-app.use("/api/*", async (c, next) => { c.header("Cache-Control", "no-store"); await next(); });
+app.use("/api/*", async (c, next) => {
+  c.header("Cache-Control", "no-store");
+  await next();
+  // Streaming helpers set their own cache policy; personal search responses must still not be stored.
+  c.header("Cache-Control", "no-store");
+});
 app.use("/api/*", bodyLimit({ maxSize: 6 * 1024 * 1024, onError: c => c.json({error:"too_large",message:"請求內容過大"},413) }));
 app.use("/api/parse", bodyLimit({maxSize:32*1024,onError:c=>c.json({error:"too_large",message:"請求內容過大"},413)}));
 app.use("/api/search", bodyLimit({maxSize:32*1024,onError:c=>c.json({error:"too_large",message:"請求內容過大"},413)}));

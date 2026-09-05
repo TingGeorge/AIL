@@ -1,0 +1,599 @@
+[
+  {
+    "id": "t_m1dy",
+    "category": "交通",
+    "agent": "paid",
+    "title": "一日票",
+    "provider": "臺北大眾捷運股份有限公司",
+    "price_total_twd": 150,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張",
+    "quantity_or_servings": "每張限一人；啟用當日可不限次數、里程搭乘",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "驗票閘門啟用後至當天營運結束",
+    "valid_until": null,
+    "address": "103032臺北市大同區酒泉街9之1號",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "捷運圓山站詢問處可購買",
+    "tags": null,
+    "source_url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "一日票 150元",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "可不限次數、里程重複搭乘，每次搭乘限一人使用",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "車站驗票閘門自動感應啟用後至當天營運結束",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "車站地址 103032臺北市大同區酒泉街9之1號",
+        "url": "https://web.metro.taipei/pages2026/WebStation/056/1",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:05:00+08:00",
+    "verified_at": "2026-09-05T16:05:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+    "action_label": "查看票種說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "可於捷運圓山站詢問處購買並由圓山站啟用；適用臺北捷運及新北捷運環狀線。",
+      "pricing_context": "每張150元；未替任何特定行程推定是否划算。",
+      "review_notes": [
+        "票卡限啟用當日有效，不是連續24小時。",
+        "每次搭乘限一人使用。",
+        "官方頁面列各車站詢問處販售；未見另列必要費用。"
+      ],
+      "address_source": "official_station_page"
+    }
+  },
+  {
+    "id": "t_h24r",
+    "category": "交通",
+    "agent": "paid",
+    "title": "24小時票",
+    "provider": "臺北大眾捷運股份有限公司",
+    "price_total_twd": 180,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張",
+    "quantity_or_servings": "每張限一人；有效期內可不限次數、里程搭乘",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "驗票閘門啟用後連續24小時內",
+    "valid_until": null,
+    "address": "103032臺北市大同區酒泉街9之1號",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "捷運圓山站詢問處可購買",
+    "tags": null,
+    "source_url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "24小時票 180元",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "可不限次數、里程重複搭乘，每次搭乘限一人使用",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "車站驗票閘門自動感應啟用後，連續24小時內",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "車站地址 103032臺北市大同區酒泉街9之1號",
+        "url": "https://web.metro.taipei/pages2026/WebStation/056/1",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:05:00+08:00",
+    "verified_at": "2026-09-05T16:05:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+    "action_label": "查看票種說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "可於捷運圓山站詢問處購買並由圓山站啟用；適用臺北捷運及新北捷運環狀線。",
+      "pricing_context": "每張180元，從首次驗票啟用起連續24小時計；未推定任何行程總額或適用性。",
+      "review_notes": [
+        "可自由選擇啟用日期。",
+        "每次搭乘限一人使用。",
+        "官方頁面列各車站詢問處販售；未見另列必要費用。"
+      ],
+      "address_source": "official_station_page"
+    }
+  },
+  {
+    "id": "t_h48v",
+    "category": "交通",
+    "agent": "paid",
+    "title": "48小時票",
+    "provider": "臺北大眾捷運股份有限公司",
+    "price_total_twd": 280,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張",
+    "quantity_or_servings": "每張限一人；有效期內可不限次數、里程搭乘",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "驗票閘門啟用後連續48小時內",
+    "valid_until": null,
+    "address": "103032臺北市大同區酒泉街9之1號",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "捷運圓山站詢問處可購買",
+    "tags": null,
+    "source_url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "48小時票 280元",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "可不限次數、里程重複搭乘，每次搭乘限一人使用",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "車站驗票閘門自動感應啟用後，連續48小時內",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "車站地址 103032臺北市大同區酒泉街9之1號",
+        "url": "https://web.metro.taipei/pages2026/WebStation/056/1",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:05:00+08:00",
+    "verified_at": "2026-09-05T16:05:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+    "action_label": "查看票種說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "可於捷運圓山站詢問處購買並由圓山站啟用；適用臺北捷運及新北捷運環狀線。",
+      "pricing_context": "每張280元，從首次驗票啟用起連續48小時計；未推定任何行程總額或適用性。",
+      "review_notes": [
+        "可自由選擇啟用日期。",
+        "每次搭乘限一人使用。",
+        "官方頁面列各車站詢問處販售；未見另列必要費用。"
+      ],
+      "address_source": "official_station_page"
+    }
+  },
+  {
+    "id": "t_h72x",
+    "category": "交通",
+    "agent": "paid",
+    "title": "72小時票",
+    "provider": "臺北大眾捷運股份有限公司",
+    "price_total_twd": 380,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張",
+    "quantity_or_servings": "每張限一人；有效期內可不限次數、里程搭乘",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "驗票閘門啟用後連續72小時內",
+    "valid_until": null,
+    "address": "103032臺北市大同區酒泉街9之1號",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "捷運圓山站詢問處可購買",
+    "tags": null,
+    "source_url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "72小時票 380元",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "可不限次數、里程重複搭乘，每次搭乘限一人使用",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "車站驗票閘門自動感應啟用後，連續72小時內",
+        "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "車站地址 103032臺北市大同區酒泉街9之1號",
+        "url": "https://web.metro.taipei/pages2026/WebStation/056/1",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:05:00+08:00",
+    "verified_at": "2026-09-05T16:05:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+    "action_label": "查看票種說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "可於捷運圓山站詢問處購買並由圓山站啟用；適用臺北捷運及新北捷運環狀線。",
+      "pricing_context": "每張380元，從首次驗票啟用起連續72小時計；未推定任何行程總額或適用性。",
+      "review_notes": [
+        "可自由選擇啟用日期。",
+        "每次搭乘限一人使用。",
+        "官方頁面列各車站詢問處販售；未見另列必要費用。"
+      ],
+      "address_source": "official_station_page"
+    }
+  },
+  {
+    "id": "t_r14b",
+    "category": "交通",
+    "agent": "paid",
+    "title": "R14 圓山 → BL12 R10 台北車站",
+    "provider": "臺北大眾捷運股份有限公司",
+    "price_total_twd": 20,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "全票每人每次單程",
+    "quantity_or_servings": "圓山站至台北車站單程1人次",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "圓山站往象山首班06:03、末班00:34；實際班距依官方時刻表",
+    "valid_until": null,
+    "address": "103032臺北市大同區酒泉街9之1號",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "官方查詢乘車時間8分鐘，不包含候車時間",
+    "tags": null,
+    "source_url": "https://web.metro.taipei/pages2026/WebStation/056/8",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "R14 圓山 → BL12 R10 台北車站：全票20",
+        "url": "https://web.metro.taipei/pages2026/WebStation/056/8",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "單一車站至所有車站之查詢結果：起站 → 訖站、全票",
+        "url": "https://web.metro.taipei/pages2026/WebStation/056/8",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "所查詢之乘車時間係包含列車實際運行時間及轉乘步行時間，不包含候車時間。",
+        "url": "https://web.metro.taipei/pages2026/WebStation/056/8",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "車站地址 103032臺北市大同區酒泉街9之1號",
+        "url": "https://web.metro.taipei/pages2026/WebStation/056/1",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:05:00+08:00",
+    "verified_at": "2026-09-05T16:05:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://web.metro.taipei/pages2026/WebStation/056/8",
+    "action_label": "查看票價及乘車時間",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "從捷運圓山站搭乘至台北車站的成人全票單程選項。",
+      "pricing_context": "每人每次單程全票20元；未推定回程、轉乘、多人或每日總額。",
+      "review_notes": [
+        "官方查詢列乘車時間8分鐘；此數字不包含候車時間。",
+        "往台北車站為往象山方向；圓山站時刻表所列首末班為06:03與00:34。",
+        "儲值卡普通卡、學生卡及優待卡依官方頁面以全票票價扣款，常客回饋另計，本紀錄未先扣除。"
+      ],
+      "address_source": "official_station_page",
+      "timetable_url": "https://web.metro.taipei/img/ALL/TTPDF/056.pdf?t=1203160000"
+    }
+  },
+  {
+    "id": "t_y2fr",
+    "category": "交通",
+    "agent": "free",
+    "title": "2024/02/28起，臺北市YouBike 2.0 前30分鐘免費",
+    "provider": "微笑單車股份有限公司",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人每次前30分鐘",
+    "quantity_or_servings": "YouBike 2.0一車；前30分鐘",
+    "eligibility": [
+      "微笑單車註冊會員",
+      "須在臺北市場站借車"
+    ],
+    "registration_required": true,
+    "availability_or_event_time": "2024/02/28起；補助截止日期依臺北市政府公告",
+    "valid_until": null,
+    "address": "捷運圓山站(1號出口)東側",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "捷運圓山站(1號出口)場站",
+    "tags": null,
+    "source_url": "https://www.youbike.com.tw/region/taipei/news/service/65dc48e2b507cedede07c6e2/",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "會員在臺北市境內任一YouBike 場站借車，騎乘前30分鐘免費(由臺北市政府補助)",
+        "url": "https://www.youbike.com.tw/region/taipei/news/service/65dc48e2b507cedede07c6e2/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "超過30分鐘至4小時內每 30 分鐘10元；4~8 小時內每 30 分鐘 20 元；超過 8 小時每 30 分鐘 40 元",
+        "url": "https://www.youbike.com.tw/region/taipei/news/service/65dc48e2b507cedede07c6e2/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "凡為微笑單車註冊會員於臺北市YouBike場站租借YouBike 2.0，即享有前30分鐘免費喔！",
+        "url": "https://www.youbike.com.tw/region/taipei/news/service/65dc48e2b507cedede07c6e2/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "優惠時間 : 2024/02/28(三)起，補助截止日期依臺北市政府公告。",
+        "url": "https://www.youbike.com.tw/region/taipei/news/service/65dc48e2b507cedede07c6e2/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "YouBike2.0_捷運圓山站(1號出口)；捷運圓山站(1號出口)東側",
+        "url": "https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:05:00+08:00",
+    "verified_at": "2026-09-05T16:05:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.youbike.com.tw/region/taipei/rate/",
+    "action_label": "查看收費與租借條件",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "於臺北市捷運圓山站(1號出口)場站租借YouBike 2.0的會員前30分鐘方案。",
+      "pricing_context": "符合資格時每人每次前30分鐘0元；逾30分鐘按官方階梯費率計，不延伸估算總額。",
+      "review_notes": [
+        "只限微笑單車註冊會員；單次租車（臨時會員）不適用騎乘補助。",
+        "優惠只看借車地點：須在臺北市境內場站借車。",
+        "同站還車後，再借YouBike 2.0須等10分鐘。",
+        "官方提醒免費公共自行車傷害險；公告所列臺北市YouBike 2.0E有未投保不得租借限制，未把該限制誤套到本臺北市YouBike 2.0紀錄。",
+        "場站即時車數會變動，本紀錄未保存或保證有車。"
+      ],
+      "address_source": "official_open_data",
+      "source_coordinates": {
+        "lat": 25.07133,
+        "lng": 121.52024,
+        "url": "https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json"
+      }
+    }
+  },
+  {
+    "id": "t_y2eg",
+    "category": "交通",
+    "agent": "paid",
+    "title": "YouBike 2.0E",
+    "provider": "微笑單車股份有限公司",
+    "price_total_twd": 20,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人每次首30分鐘",
+    "quantity_or_servings": "YouBike 2.0E一車；未滿30分鐘以30分鐘計",
+    "eligibility": [
+      "微笑單車註冊會員",
+      "會員票卡餘額≧0元",
+      "已投保免費公共自行車傷害險"
+    ],
+    "registration_required": true,
+    "availability_or_event_time": "前2小時每30分鐘20元；超過2小時每30分鐘40元",
+    "valid_until": null,
+    "address": "捷運圓山站(1號出口)東側",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "捷運圓山站(1號出口)場站",
+    "tags": null,
+    "source_url": "https://www.youbike.com.tw/region/taipei/rate/",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "YouBike 2.0E 前 2 小時每 30 分鐘 20；超過２小時每 30 分鐘 40 元",
+        "url": "https://www.youbike.com.tw/region/taipei/rate/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "未滿 30 分鐘以 30 分鐘計算",
+        "url": "https://www.youbike.com.tw/region/taipei/rate/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "若未投保則無法於臺北市、新北市、桃園市租借YouBike 2.0E",
+        "url": "https://www.youbike.com.tw/region/taipei/news/service/65dc48e2b507cedede07c6e2/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "前 2 小時每 30 分鐘 20；超過２小時每 30 分鐘 40 元",
+        "url": "https://www.youbike.com.tw/region/taipei/rate/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "YouBike2.0_捷運圓山站(1號出口)；捷運圓山站(1號出口)東側",
+        "url": "https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:05:00+08:00",
+    "verified_at": "2026-09-05T16:05:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.youbike.com.tw/region/taipei/rate/",
+    "action_label": "查看收費與租借條件",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "於臺北市捷運圓山站(1號出口)場站租借YouBike 2.0E的註冊會員基本費率。",
+      "pricing_context": "每人每次首30分鐘20元；超過首30分鐘按每30分鐘級距累加，未預算行程總額。",
+      "review_notes": [
+        "票卡租車時，會員票卡餘額須大於或等於0元。",
+        "YouBike 2.0E未投保免費公共自行車傷害險即無法租借。",
+        "臺北YouBike 2.0E不適用TPASS基北北桃1200都會通優惠。",
+        "臺北市境內道路救援為偶發服務，官方列酌收150元；不是每次租借的必要費用，故未列入mandatory_fees_twd。",
+        "場站即時車數會變動，本紀錄未保存或保證有電輔車。"
+      ],
+      "address_source": "official_open_data",
+      "source_coordinates": {
+        "lat": 25.07133,
+        "lng": 121.52024,
+        "url": "https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json"
+      }
+    }
+  },
+  {
+    "id": "t_y2es",
+    "category": "交通",
+    "agent": "free",
+    "title": "臺北YouBike 2.0E 適用臺北敬老卡、愛心卡",
+    "provider": "微笑單車股份有限公司",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人每次前30分鐘",
+    "quantity_or_servings": "YouBike 2.0E一車；前30分鐘",
+    "eligibility": [
+      "微笑單車註冊會員",
+      "臺北敬老卡或愛心卡",
+      "會員票卡餘額≧0元",
+      "已投保免費公共自行車傷害險"
+    ],
+    "registration_required": true,
+    "availability_or_event_time": "2026/07/01起；前30分鐘騎乘補助，餘額依2.0E費率",
+    "valid_until": null,
+    "address": "捷運圓山站(1號出口)東側",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "捷運圓山站(1號出口)場站",
+    "tags": null,
+    "source_url": "https://www.youbike.com.tw/region/taipei/rate/",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "2026年7月1日起，臺北市敬老/愛心卡於臺北市租借YouBike 2.0E電輔車前30分鐘免費由臺北市政府補助",
+        "url": "https://www.youbike.com.tw/region/taipei/rate/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "臺北YouBike 2.0E 適用臺北敬老卡、愛心卡，且享前30分鐘騎乘補助，餘騎乘費用需由民眾自行支付。",
+        "url": "https://www.youbike.com.tw/region/taipei/rate/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "臺北YouBike 2.0E 適用臺北敬老卡、愛心卡，且享前30分鐘騎乘補助",
+        "url": "https://www.youbike.com.tw/region/taipei/rate/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "2026年7月1日起，臺北市敬老/愛心卡於臺北市租借YouBike 2.0E電輔車前30分鐘免費",
+        "url": "https://www.youbike.com.tw/region/taipei/rate/",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "YouBike2.0_捷運圓山站(1號出口)；捷運圓山站(1號出口)東側",
+        "url": "https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json",
+        "checked_at": "2026-09-05T16:05:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:05:00+08:00",
+    "verified_at": "2026-09-05T16:05:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.youbike.com.tw/region/taipei/rate/",
+    "action_label": "查看收費與租借條件",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "於臺北市捷運圓山站(1號出口)場站，以臺北敬老卡或愛心卡租借YouBike 2.0E的前30分鐘補助。",
+      "pricing_context": "符合卡別與會員條件時每人每次前30分鐘0元；超過30分鐘的費用由使用者支付，未延伸估算。",
+      "review_notes": [
+        "政策自2026年7月1日起，於本批次查核日2026年9月5日已生效；補助截止日依臺北市政府交通局公告，來源未給固定日期。",
+        "限臺北敬老卡或愛心卡，且仍須完成YouBike會員與票卡設定。",
+        "YouBike 2.0E未投保免費公共自行車傷害險即無法租借。",
+        "以臺北敬老卡或愛心卡租借YouBike 2.0E，同站還車後再次租借限制時間為10分鐘。",
+        "前30分鐘以外依一般2.0E費率付費，且不適用TPASS基北北桃1200都會通優惠。",
+        "場站即時車數會變動，本紀錄未保存或保證有電輔車。"
+      ],
+      "address_source": "official_open_data",
+      "source_coordinates": {
+        "lat": 25.07133,
+        "lng": 121.52024,
+        "url": "https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json"
+      }
+    }
+  }
+]

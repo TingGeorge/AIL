@@ -10,6 +10,9 @@
     "test": "bun test",
     "db:import": "bun run scripts/import.ts",
     "data:check": "bun run scripts/check-data.ts",
+    "data:validate": "bun run scripts/check-data.ts --files",
+    "data:smoke": "bun run scripts/verify-live.ts",
+    "data:manifest": "bun run scripts/research-manifest.ts",
     "check": "bun run typecheck && bun test && bun run build"
   },
   "dependencies": {

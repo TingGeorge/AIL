@@ -272,11 +272,30 @@
 
 .price-row { margin-top: 10px; display: flex; align-items: end; justify-content: space-between; gap: 8px; }
 .price-row strong { color: var(--lime); font-size: 18px; line-height: 1; letter-spacing: -0.03em; }
-.price-row > span { max-width: 48%; color: #bac3bb; font-size: 8px; line-height: 1.3; text-align: right; }
+.price-row strong > small { display: block; margin-bottom: 4px; color: #8e988f; font-size: 7px; letter-spacing: 0.04em; }
+.price-row > span { max-width: 52%; color: #bac3bb; font-size: 8px; line-height: 1.3; text-align: right; }
+.price-basis b,
+.price-basis small { display: block; overflow-wrap: anywhere; }
+.price-basis b { color: #dce3dc; font-size: 8px; }
+.price-basis small { margin-top: 3px; color: #8f9990; font-size: 7px; }
 
 .result-condition { margin-top: 9px; display: flex; align-items: flex-start; gap: 5px; color: #d8ded8; font-size: 9px; line-height: 1.4; }
 .result-condition svg { width: 12px; height: 12px; flex: 0 0 auto; color: var(--amber); }
-.result-supporting { display: block; margin-top: 6px; color: #7f8981; font-size: 8px; line-height: 1.4; }
+.result-supporting { display: block; margin-top: 6px; color: #a3ada5; font-size: 10px; line-height: 1.5; }
+
+.record-terms { margin-top: 12px; padding: 11px; border: 1px solid rgb(255 202 66 / 0.22); border-radius: 13px; background: rgb(255 202 66 / 0.045); color: #d9ded9; font-size: 12px; line-height: 1.65; }
+.record-terms p { margin: 0; overflow-wrap: anywhere; }
+.record-terms p + p { margin-top: 5px; }
+.record-terms p > b { color: var(--amber); }
+.review-notes { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgb(255 202 66 / 0.16); }
+.review-notes > b { display: block; color: var(--amber); font-size: 10px; }
+.review-notes ul { margin: 5px 0 0; padding-left: 15px; }
+.review-notes li + li { margin-top: 3px; }
+.record-terms-compact { display: block; margin-top: 8px; padding: 7px 8px; font-size: 10px; line-height: 1.55; }
+.record-terms-compact > span { display: block; overflow-wrap: anywhere; }
+.record-terms-compact > span + span { margin-top: 3px; }
+.record-terms-compact .review-notes { display: block; margin-top: 5px; padding-top: 5px; }
+.record-terms-compact .review-notes > span { display: block; margin-top: 2px; }
 
 .save-fab {
   width: 34px;

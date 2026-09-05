@@ -1,0 +1,650 @@
+[
+  {
+    "id": "f_m859",
+    "category": "食品",
+    "agent": "paid",
+    "title": "超級大麥海洋珍珠堡 ×2（單點）",
+    "provider": "摩斯漢堡｜台北重慶店",
+    "price_total_twd": 170,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "兩個單點",
+    "quantity_or_servings": "2個超級大麥海洋珍珠堡；官方品項頁以「單份」標示，每人各1個",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "官方元氣早餐頁：05:00–10:30；台北重慶店官方門市頁：24H",
+    "valid_until": null,
+    "address": "台北市大同區重慶北路三段271號1.2樓",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "大龍峒周邊；距圓山站的實際步行路線尚未確認",
+    "tags": null,
+    "source_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000859",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "超級大麥海洋珍珠堡；single 85",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000859",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "單份超級大麥海洋珍珠堡營養標示",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000859",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "元氣早餐 5:00 AM ~ 10:30 AM 供應",
+        "url": "https://www.mos.com.tw/menu/breakfast.aspx",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "台北重慶店；台北市大同區重慶北路三段271號1.2樓；24H",
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:15:00+08:00",
+    "verified_at": "2026-09-05T16:15:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000859",
+    "action_label": "查看官方品項",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "大龍峒周邊的摩斯漢堡台北重慶店；本筆以門市現場購買兩個單點品項為範圍。",
+      "local_or_online": "本地門市現場單點；未採線上外送價格。",
+      "notes": "兩人各1個單品；不宣稱套餐、飲料、配餐或足量完整一餐。",
+      "pricing_context": "官方品項頁 single 欄為每個85元；兩個單點以 85×2=170 元計。門市現場購買不需配送，未加入任何可選加購，故本筆必要費用記0；若改用外送，平台費、運費與外送價不在本筆範圍。",
+      "review_notes": [
+        "官方早餐總頁於研究日仍列此品項，且未標示為季節限定、限店供應或限量供應。",
+        "官方總頁註明「實際販售內容以門市供應為主」；本資料不宣稱研究時點的現場庫存，前往前宜向門市確認。",
+        "價格基準是兩個單點品項，不是套餐、折扣、團購或會員價。",
+        "成分與過敏資訊尚未完整核對；請向門市確認，不可由本筆推定安全。",
+        "官方未明示價格有效期限；前往前請再次確認售價。"
+      ],
+      "menu_item_id": "M000859",
+      "unit_single_price_twd": 85,
+      "calculation": "85 * 2 = 170",
+      "address_source": "provider_store_page",
+      "source_coordinates": {
+        "lat": 25.0722368,
+        "lng": 121.5140671,
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088"
+      },
+      "merchant_supply_disclaimer": "實際販售內容以門市供應為主。"
+    }
+  },
+  {
+    "id": "f_m977",
+    "category": "食品",
+    "agent": "paid",
+    "title": "海洋珍珠堡 ×2（單點）",
+    "provider": "摩斯漢堡｜台北重慶店",
+    "price_total_twd": 160,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "兩個單點",
+    "quantity_or_servings": "2個海洋珍珠堡；官方品項頁以「單份」標示，每人各1個",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "官方元氣早餐頁：05:00–10:30；台北重慶店官方門市頁：24H",
+    "valid_until": null,
+    "address": "台北市大同區重慶北路三段271號1.2樓",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "大龍峒周邊；距圓山站的實際步行路線尚未確認",
+    "tags": null,
+    "source_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000977",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "海洋珍珠堡；single 80",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000977",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "單份海洋珍珠堡營養標示",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000977",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "元氣早餐 5:00 AM ~ 10:30 AM 供應",
+        "url": "https://www.mos.com.tw/menu/breakfast.aspx",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "台北重慶店；台北市大同區重慶北路三段271號1.2樓；24H",
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:15:00+08:00",
+    "verified_at": "2026-09-05T16:15:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000977",
+    "action_label": "查看官方品項",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "大龍峒周邊的摩斯漢堡台北重慶店；本筆以門市現場購買兩個單點品項為範圍。",
+      "local_or_online": "本地門市現場單點；未採線上外送價格。",
+      "notes": "兩人各1個單品；不宣稱套餐、飲料、配餐或足量完整一餐。",
+      "pricing_context": "官方品項頁 single 欄為每個80元；兩個單點以 80×2=160 元計。門市現場購買不需配送，未加入任何可選加購，故本筆必要費用記0；若改用外送，平台費、運費與外送價不在本筆範圍。",
+      "review_notes": [
+        "官方早餐總頁於研究日仍列此品項，且未標示為季節限定、限店供應或限量供應。",
+        "官方總頁註明「實際販售內容以門市供應為主」；本資料不宣稱研究時點的現場庫存，前往前宜向門市確認。",
+        "價格基準是兩個單點品項，不是套餐、折扣、團購或會員價。",
+        "成分與過敏資訊尚未完整核對；請向門市確認，不可由本筆推定安全。",
+        "官方未明示價格有效期限；前往前請再次確認售價。"
+      ],
+      "menu_item_id": "M000977",
+      "unit_single_price_twd": 80,
+      "calculation": "80 * 2 = 160",
+      "address_source": "provider_store_page",
+      "source_coordinates": {
+        "lat": 25.0722368,
+        "lng": 121.5140671,
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088"
+      },
+      "merchant_supply_disclaimer": "實際販售內容以門市供應為主。"
+    }
+  },
+  {
+    "id": "f_m858",
+    "category": "食品",
+    "agent": "paid",
+    "title": "超級大麥杏鮑菇珍珠堡 ×2（單點）",
+    "provider": "摩斯漢堡｜台北重慶店",
+    "price_total_twd": 160,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "兩個單點",
+    "quantity_or_servings": "2個超級大麥杏鮑菇珍珠堡；官方品項頁以「單份」標示，每人各1個",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "官方元氣早餐頁：05:00–10:30；台北重慶店官方門市頁：24H",
+    "valid_until": null,
+    "address": "台北市大同區重慶北路三段271號1.2樓",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "大龍峒周邊；距圓山站的實際步行路線尚未確認",
+    "tags": null,
+    "source_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000858",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "超級大麥杏鮑菇珍珠堡；single 80",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000858",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "單份超級大麥杏鮑菇珍珠堡營養標示",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000858",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "元氣早餐 5:00 AM ~ 10:30 AM 供應",
+        "url": "https://www.mos.com.tw/menu/breakfast.aspx",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "台北重慶店；台北市大同區重慶北路三段271號1.2樓；24H",
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:15:00+08:00",
+    "verified_at": "2026-09-05T16:15:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000858",
+    "action_label": "查看官方品項",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "大龍峒周邊的摩斯漢堡台北重慶店；本筆以門市現場購買兩個單點品項為範圍。",
+      "local_or_online": "本地門市現場單點；未採線上外送價格。",
+      "notes": "兩人各1個單品；不宣稱套餐、飲料、配餐或足量完整一餐。",
+      "pricing_context": "官方品項頁 single 欄為每個80元；兩個單點以 80×2=160 元計。門市現場購買不需配送，未加入任何可選加購，故本筆必要費用記0；若改用外送，平台費、運費與外送價不在本筆範圍。",
+      "review_notes": [
+        "官方早餐總頁於研究日仍列此品項，且未標示為季節限定、限店供應或限量供應。",
+        "官方總頁註明「實際販售內容以門市供應為主」；本資料不宣稱研究時點的現場庫存，前往前宜向門市確認。",
+        "價格基準是兩個單點品項，不是套餐、折扣、團購或會員價。",
+        "成分與過敏資訊尚未完整核對；請向門市確認，不可由本筆推定安全。",
+        "官方未明示價格有效期限；前往前請再次確認售價。"
+      ],
+      "menu_item_id": "M000858",
+      "unit_single_price_twd": 80,
+      "calculation": "80 * 2 = 160",
+      "address_source": "provider_store_page",
+      "source_coordinates": {
+        "lat": 25.0722368,
+        "lng": 121.5140671,
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088"
+      },
+      "merchant_supply_disclaimer": "實際販售內容以門市供應為主。"
+    }
+  },
+  {
+    "id": "f_m978",
+    "category": "食品",
+    "agent": "paid",
+    "title": "杏鮑菇珍珠堡 ×2（單點）",
+    "provider": "摩斯漢堡｜台北重慶店",
+    "price_total_twd": 150,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "兩個單點",
+    "quantity_or_servings": "2個杏鮑菇珍珠堡；官方品項頁以「單份」標示，每人各1個",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "官方元氣早餐頁：05:00–10:30；台北重慶店官方門市頁：24H",
+    "valid_until": null,
+    "address": "台北市大同區重慶北路三段271號1.2樓",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "大龍峒周邊；距圓山站的實際步行路線尚未確認",
+    "tags": null,
+    "source_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000978",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "杏鮑菇珍珠堡；single 75",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000978",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "單份杏鮑菇珍珠堡營養標示",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000978",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "元氣早餐 5:00 AM ~ 10:30 AM 供應",
+        "url": "https://www.mos.com.tw/menu/breakfast.aspx",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "台北重慶店；台北市大同區重慶北路三段271號1.2樓；24H",
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:15:00+08:00",
+    "verified_at": "2026-09-05T16:15:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000978",
+    "action_label": "查看官方品項",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "大龍峒周邊的摩斯漢堡台北重慶店；本筆以門市現場購買兩個單點品項為範圍。",
+      "local_or_online": "本地門市現場單點；未採線上外送價格。",
+      "notes": "兩人各1個單品；不宣稱套餐、飲料、配餐或足量完整一餐。",
+      "pricing_context": "官方品項頁 single 欄為每個75元；兩個單點以 75×2=150 元計。門市現場購買不需配送，未加入任何可選加購，故本筆必要費用記0；若改用外送，平台費、運費與外送價不在本筆範圍。",
+      "review_notes": [
+        "官方早餐總頁於研究日仍列此品項，且未標示為季節限定、限店供應或限量供應。",
+        "官方總頁註明「實際販售內容以門市供應為主」；本資料不宣稱研究時點的現場庫存，前往前宜向門市確認。",
+        "價格基準是兩個單點品項，不是套餐、折扣、團購或會員價。",
+        "成分與過敏資訊尚未完整核對；請向門市確認，不可由本筆推定安全。",
+        "官方未明示價格有效期限；前往前請再次確認售價。"
+      ],
+      "menu_item_id": "M000978",
+      "unit_single_price_twd": 75,
+      "calculation": "75 * 2 = 150",
+      "address_source": "provider_store_page",
+      "source_coordinates": {
+        "lat": 25.0722368,
+        "lng": 121.5140671,
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088"
+      },
+      "merchant_supply_disclaimer": "實際販售內容以門市供應為主。"
+    }
+  },
+  {
+    "id": "f_1002",
+    "category": "食品",
+    "agent": "paid",
+    "title": "摩斯豬排堡 ×2（單點）",
+    "provider": "摩斯漢堡｜台北重慶店",
+    "price_total_twd": 130,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "兩個單點",
+    "quantity_or_servings": "2個摩斯豬排堡；官方品項頁以「單份」標示，每人各1個",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "官方元氣早餐頁：05:00–10:30；台北重慶店官方門市頁：24H",
+    "valid_until": null,
+    "address": "台北市大同區重慶北路三段271號1.2樓",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "大龍峒周邊；距圓山站的實際步行路線尚未確認",
+    "tags": null,
+    "source_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001002",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "摩斯豬排堡；single 65",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001002",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "單份摩斯豬排堡營養標示",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001002",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "元氣早餐 5:00 AM ~ 10:30 AM 供應",
+        "url": "https://www.mos.com.tw/menu/breakfast.aspx",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "台北重慶店；台北市大同區重慶北路三段271號1.2樓；24H",
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:15:00+08:00",
+    "verified_at": "2026-09-05T16:15:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001002",
+    "action_label": "查看官方品項",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "大龍峒周邊的摩斯漢堡台北重慶店；本筆以門市現場購買兩個單點品項為範圍。",
+      "local_or_online": "本地門市現場單點；未採線上外送價格。",
+      "notes": "兩人各1個單品；不宣稱套餐、飲料、配餐或足量完整一餐。",
+      "pricing_context": "官方品項頁 single 欄為每個65元；兩個單點以 65×2=130 元計。門市現場購買不需配送，未加入任何可選加購，故本筆必要費用記0；若改用外送，平台費、運費與外送價不在本筆範圍。",
+      "review_notes": [
+        "官方早餐總頁於研究日仍列此品項，且未標示為季節限定、限店供應或限量供應。",
+        "官方總頁註明「實際販售內容以門市供應為主」；本資料不宣稱研究時點的現場庫存，前往前宜向門市確認。",
+        "價格基準是兩個單點品項，不是套餐、折扣、團購或會員價。",
+        "成分與過敏資訊尚未完整核對；請向門市確認，不可由本筆推定安全。",
+        "官方未明示價格有效期限；前往前請再次確認售價。"
+      ],
+      "menu_item_id": "M001002",
+      "unit_single_price_twd": 65,
+      "calculation": "65 * 2 = 130",
+      "address_source": "provider_store_page",
+      "source_coordinates": {
+        "lat": 25.0722368,
+        "lng": 121.5140671,
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088"
+      },
+      "merchant_supply_disclaimer": "實際販售內容以門市供應為主。"
+    }
+  },
+  {
+    "id": "f_1000",
+    "category": "食品",
+    "agent": "paid",
+    "title": "摩斯炸蝦堡 ×2（單點）",
+    "provider": "摩斯漢堡｜台北重慶店",
+    "price_total_twd": 160,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "兩個單點",
+    "quantity_or_servings": "2個摩斯炸蝦堡；官方品項頁以「單份」標示，每人各1個",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "官方品項頁：全時段供應；台北重慶店官方門市頁：24H",
+    "valid_until": null,
+    "address": "台北市大同區重慶北路三段271號1.2樓",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "大龍峒周邊；距圓山站的實際步行路線尚未確認",
+    "tags": null,
+    "source_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001000",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "摩斯炸蝦堡；single 80",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001000",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "單份摩斯炸蝦堡營養標示",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001000",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "供應時間：全時段供應",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001000",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "台北重慶店；台北市大同區重慶北路三段271號1.2樓；24H",
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:15:00+08:00",
+    "verified_at": "2026-09-05T16:15:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001000",
+    "action_label": "查看官方品項",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "大龍峒周邊的摩斯漢堡台北重慶店；本筆以門市現場購買兩個單點品項為範圍。",
+      "local_or_online": "本地門市現場單點；未採線上外送價格。",
+      "notes": "兩人各1個單品；不宣稱套餐、飲料、配餐或足量完整一餐。",
+      "pricing_context": "官方品項頁 single 欄為每個80元；兩個單點以 80×2=160 元計。門市現場購買不需配送，未加入任何可選加購，故本筆必要費用記0；若改用外送，平台費、運費與外送價不在本筆範圍。",
+      "review_notes": [
+        "官方早餐總頁於研究日仍列此品項，且未標示為季節限定、限店供應或限量供應。",
+        "官方總頁註明「實際販售內容以門市供應為主」；本資料不宣稱研究時點的現場庫存，前往前宜向門市確認。",
+        "價格基準是兩個單點品項，不是套餐、折扣、團購或會員價。",
+        "成分與過敏資訊尚未完整核對；請向門市確認，不可由本筆推定安全。",
+        "官方未明示價格有效期限；前往前請再次確認售價。"
+      ],
+      "menu_item_id": "M001000",
+      "unit_single_price_twd": 80,
+      "calculation": "80 * 2 = 160",
+      "address_source": "provider_store_page",
+      "source_coordinates": {
+        "lat": 25.0722368,
+        "lng": 121.5140671,
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088"
+      },
+      "merchant_supply_disclaimer": "實際販售內容以門市供應為主。"
+    }
+  },
+  {
+    "id": "f_m038",
+    "category": "食品",
+    "agent": "paid",
+    "title": "黃金塔塔鱈魚堡 ×2（單點）",
+    "provider": "摩斯漢堡｜台北重慶店",
+    "price_total_twd": 140,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "兩個單點",
+    "quantity_or_servings": "2個黃金塔塔鱈魚堡；官方品項頁以「單份」標示，每人各1個",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "官方元氣早餐頁：05:00–10:30；台北重慶店官方門市頁：24H",
+    "valid_until": null,
+    "address": "台北市大同區重慶北路三段271號1.2樓",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "大龍峒周邊；距圓山站的實際步行路線尚未確認",
+    "tags": null,
+    "source_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000038",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "黃金塔塔鱈魚堡；single 70",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000038",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "單份黃金塔塔鱈魚堡營養標示",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000038",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "元氣早餐 5:00 AM ~ 10:30 AM 供應",
+        "url": "https://www.mos.com.tw/menu/breakfast.aspx",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "台北重慶店；台北市大同區重慶北路三段271號1.2樓；24H",
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:15:00+08:00",
+    "verified_at": "2026-09-05T16:15:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000038",
+    "action_label": "查看官方品項",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "大龍峒周邊的摩斯漢堡台北重慶店；本筆以門市現場購買兩個單點品項為範圍。",
+      "local_or_online": "本地門市現場單點；未採線上外送價格。",
+      "notes": "兩人各1個單品；不宣稱套餐、飲料、配餐或足量完整一餐。",
+      "pricing_context": "官方品項頁 single 欄為每個70元；兩個單點以 70×2=140 元計。門市現場購買不需配送，未加入任何可選加購，故本筆必要費用記0；若改用外送，平台費、運費與外送價不在本筆範圍。",
+      "review_notes": [
+        "官方早餐總頁於研究日仍列此品項，且未標示為季節限定、限店供應或限量供應。",
+        "官方總頁註明「實際販售內容以門市供應為主」；本資料不宣稱研究時點的現場庫存，前往前宜向門市確認。",
+        "價格基準是兩個單點品項，不是套餐、折扣、團購或會員價。",
+        "成分與過敏資訊尚未完整核對；請向門市確認，不可由本筆推定安全。",
+        "官方未明示價格有效期限；前往前請再次確認售價。"
+      ],
+      "menu_item_id": "M000038",
+      "unit_single_price_twd": 70,
+      "calculation": "70 * 2 = 140",
+      "address_source": "provider_store_page",
+      "source_coordinates": {
+        "lat": 25.0722368,
+        "lng": 121.5140671,
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088"
+      },
+      "merchant_supply_disclaimer": "實際販售內容以門市供應為主。"
+    }
+  },
+  {
+    "id": "f_m037",
+    "category": "食品",
+    "agent": "paid",
+    "title": "元氣牛肉蛋堡 ×2（單點）",
+    "provider": "摩斯漢堡｜台北重慶店",
+    "price_total_twd": 130,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "兩個單點",
+    "quantity_or_servings": "2個元氣牛肉蛋堡；官方品項頁以「單份」標示，每人各1個",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "官方元氣早餐頁：05:00–10:30；台北重慶店官方門市頁：24H",
+    "valid_until": null,
+    "address": "台北市大同區重慶北路三段271號1.2樓",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "大龍峒周邊；距圓山站的實際步行路線尚未確認",
+    "tags": null,
+    "source_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000037",
+    "source_type": "web-searched",
+    "source_authority": "provider",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "元氣牛肉蛋堡；single 65",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000037",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "單份元氣牛肉蛋堡營養標示",
+        "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000037",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "元氣早餐 5:00 AM ~ 10:30 AM 供應",
+        "url": "https://www.mos.com.tw/menu/breakfast.aspx",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "台北重慶店；台北市大同區重慶北路三段271號1.2樓；24H",
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088",
+        "checked_at": "2026-09-05T16:15:00+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:15:00+08:00",
+    "verified_at": "2026-09-05T16:15:00+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000037",
+    "action_label": "查看官方品項",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "大龍峒周邊的摩斯漢堡台北重慶店；本筆以門市現場購買兩個單點品項為範圍。",
+      "local_or_online": "本地門市現場單點；未採線上外送價格。",
+      "notes": "兩人各1個單品；不宣稱套餐、飲料、配餐或足量完整一餐。",
+      "pricing_context": "官方品項頁 single 欄為每個65元；兩個單點以 65×2=130 元計。門市現場購買不需配送，未加入任何可選加購，故本筆必要費用記0；若改用外送，平台費、運費與外送價不在本筆範圍。",
+      "review_notes": [
+        "官方早餐總頁於研究日仍列此品項，且未標示為季節限定、限店供應或限量供應。",
+        "官方總頁註明「實際販售內容以門市供應為主」；本資料不宣稱研究時點的現場庫存，前往前宜向門市確認。",
+        "價格基準是兩個單點品項，不是套餐、折扣、團購或會員價。",
+        "成分與過敏資訊尚未完整核對；請向門市確認，不可由本筆推定安全。",
+        "官方未明示價格有效期限；前往前請再次確認售價。"
+      ],
+      "menu_item_id": "M000037",
+      "unit_single_price_twd": 65,
+      "calculation": "65 * 2 = 130",
+      "address_source": "provider_store_page",
+      "source_coordinates": {
+        "lat": 25.0722368,
+        "lng": 121.5140671,
+        "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088"
+      },
+      "merchant_supply_disclaimer": "實際販售內容以門市供應為主。"
+    }
+  }
+]

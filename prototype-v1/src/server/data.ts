@@ -2,7 +2,8 @@
 // 兩條路徑與 /api/search 共用同一個 rowToRec：資料庫列到畫面物件只有這一個轉換。
 import { Hono } from "hono";
 import { rowToRec } from "../shared/records.ts";
-import { sql } from "./db.ts";
+import { sql, dbConfigured } from "./db.ts";
+import { publicRecords, summarizeCatalog } from "./catalog.ts";
 
 const MAX_IDS = 200;   // trust boundary：query string 帶進來的 id 數量要有上限
 
@@ -20,7 +21,7 @@ data.get("/api/candidates", async (c) => {
   try {
     // 查不到的 id 只是不在結果裡，不讓整個請求失敗（票 11）。
     const rows = await sql`select * from candidates where id = any(${sql.array(ids, "text")})`;
-    return c.json(rows.map(rowToRec));
+    return c.json(publicRecords(rows.map(rowToRec)));
   } catch (e) {
     return failed(c, e);
   }
@@ -29,9 +30,17 @@ data.get("/api/candidates", async (c) => {
 data.get("/api/candidates/:id", async (c) => {
   try {
     const rows = await sql`select * from candidates where id = ${c.req.param("id")}`;
-    if (rows.length === 0) return c.json({ error: "not_found", message: "找不到這筆紀錄" }, 404);
-    return c.json(rowToRec(rows[0]));
+    const visible = publicRecords(rows.map(rowToRec));
+    if (visible.length === 0) return c.json({ error: "not_found", message: "找不到這筆紀錄" }, 404);
+    return c.json(visible[0]);
   } catch (e) {
     return failed(c, e);
   }
+});
+
+// Public coverage/readiness, without user data or provider secrets.
+data.get("/api/catalog", async c => {
+  if (!dbConfigured()) return c.json({error:"database_unconfigured",message:"尚未設定資料庫"},503);
+  try { return c.json(summarizeCatalog(publicRecords((await sql`select * from candidates`).map(rowToRec)))); }
+  catch(error) { return failed(c,error); }
 });

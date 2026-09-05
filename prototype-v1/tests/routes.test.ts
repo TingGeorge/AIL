@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { beforeEach, afterEach, describe, expect, test } from "bun:test";
 import { app } from "../src/server/index.ts";
 import { sql } from "../src/server/db.ts";
 import { EMPTY_NEED, type Need } from "../src/shared/need.ts";
@@ -80,6 +80,21 @@ test("candidates: no ids is an empty list, not an error", async () => {
 const dbLive = Boolean(process.env.DATABASE_URL);
 
 describe.skipIf(!dbLive)("搜尋與候選查詢 (live database)", () => {
+  let originalDemo: string | undefined;
+  beforeEach(() => { originalDemo = process.env.ALLOW_DEMO_DATA; process.env.ALLOW_DEMO_DATA = "1"; });
+  afterEach(() => { if (originalDemo === undefined) delete process.env.ALLOW_DEMO_DATA; else process.env.ALLOW_DEMO_DATA = originalDemo; });
+
+  test("catalog/candidates hide persisted demo records by default", async () => {
+    process.env.ALLOW_DEMO_DATA = "0";
+    expect((await app.request("/api/candidates/f_a3k9")).status).toBe(404);
+    expect(await (await app.request("/api/candidates?ids=f_a3k9,f_b1c2")).json()).toEqual([]);
+    const response = await app.request("/api/catalog");
+    expect(response.status).toBe(200);
+    const summary = await response.json();
+    expect(summary.demonstration).toBe(0);
+    expect(summary.categories).toHaveLength(5);
+  });
+
   const need: Need = {
     ...EMPTY_NEED, target_categories: ["食品"], people_or_servings: 2, budget_total_twd: 300,
   };
@@ -93,6 +108,7 @@ describe.skipIf(!dbLive)("搜尋與候選查詢 (live database)", () => {
       const res = await post("/api/search", JSON.stringify(body), { "content-type": "application/json" });
       expect(res.status).toBe(200);
       expect(res.headers.get("content-type")).toContain("text/event-stream");
+      expect(res.headers.get("cache-control")).toBe("no-store");
       const text = await res.text();
       return text.split("\n\n").filter(Boolean)
         .map((f) => f.split("\n").filter((l) => l.startsWith("data:")).map((l) => l.slice(5).trim()).join("\n"))

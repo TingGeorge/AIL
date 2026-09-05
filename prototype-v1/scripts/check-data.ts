@@ -1,79 +1,35 @@
-// 匯入驗收檢查（SPEC-ingestion §9）。全過才算匯入完成；失敗印出 id 與原因並 exit 1。
-// 帶類別參數（bun run scripts/check-data.ts 食品）只檢查那幾類；不帶就是規格的五類全查。
+// Default: inspect the real DB. --files validates the curated batch without needing PostgreSQL.
 import { sql, dbConfigured } from "../src/server/db.ts";
 import { CATEGORIES } from "../src/shared/need.ts";
-import { TAGS, isExpired, missingEvidence, rowToRec, selfConflicting, type Rec } from "../src/shared/records.ts";
+import { rowToRec, type Category, type Rec } from "../src/shared/records.ts";
+import { assessCatalog } from "../src/shared/catalog-quality.ts";
+import { readCatalog } from "./catalog-files.ts";
 
-const MIN_PER_CATEGORY = 7;
-const TAIWAN = { lat: [21.5, 25.5], lng: [118, 122.5] };
-
-if (!dbConfigured()) {
-  console.error("缺少 DATABASE_URL（見 .env.example）。");
-  process.exit(1);
-}
-
-const asked = process.argv.slice(2);
-const unknown = asked.filter((c) => !(CATEGORIES as readonly string[]).includes(c));
-if (unknown.length > 0) {
-  console.error(`不認得的類別：${unknown.join("、")}。可用：${CATEGORIES.join("、")}`);
-  process.exit(1);
-}
-const scope = asked.length > 0 ? asked : [...CATEGORIES];
-
-const recs: Rec[] = (await sql`select * from candidates where category = any(${sql.array(scope, "text")})`).map(rowToRec);
-const verified = recs.filter((r) => r.data_status === "已驗證");
-
-const failures: string[] = [];
-const check = (name: string, bad: string[]) => {
-  console.log(`${bad.length === 0 ? "✓" : "✗"} ${name}`);
-  for (const b of bad) console.log(`    ${b}`);
-  failures.push(...bad);
-};
-
-check(`1. 每類 ≥ ${MIN_PER_CATEGORY} 筆，其中已驗證 ≥ ${MIN_PER_CATEGORY}`, scope.flatMap((c) => {
-  const all = recs.filter((r) => r.category === c).length;
-  const ok = verified.filter((r) => r.category === c).length;
-  return all >= MIN_PER_CATEGORY && ok >= MIN_PER_CATEGORY ? [] : [`${c}：${all} 筆、已驗證 ${ok} 筆`];
-}));
-
-check("2. 已驗證的紀錄必要摘錄齊全", verified.flatMap((r) => {
-  const missing = missingEvidence(r);
-  return missing.length === 0 ? [] : [`${r.id} 缺少 ${missing.join("、")} 的摘錄`];
-}));
-
-check("3. 沒有價格 0 卻標 paid 的列", recs.filter((r) => r.agent === "paid" && r.price_total_twd === 0).map((r) => `${r.id} agent=paid 但價格 0`));
-
-check("4. tags 為 [] 卻在證據裡看得到成分描述", recs.flatMap((r) => {
-  if (r.tags === null || r.tags.length > 0) return [];
-  const hit = TAGS.filter((t) => r.evidence.some((e) => e.quote.includes(t)));
-  return hit.length === 0 ? [] : [`${r.id} 證據提到 ${hit.join("、")}，tags 應填實際標籤或改成 null`];
-}));
-
-check("5. 有座標的列落在台灣範圍內", recs.flatMap((r) => {
-  if (r.lat === null || r.lng === null) return [];
-  const ok = r.lat >= TAIWAN.lat[0]! && r.lat <= TAIWAN.lat[1]! && r.lng >= TAIWAN.lng[0]! && r.lng <= TAIWAN.lng[1]!;
-  return ok ? [] : [`${r.id} 座標 ${r.lat}, ${r.lng} 不在台灣範圍`];
-}));
-
-// §3：刻意準備的邊界資料，缺一項就無法示範例外處理。
-const sameStoreTwoSources = recs.some((r) =>
-  recs.some((o) => o.id !== r.id && o.provider === r.provider && o.source_url !== r.source_url
-    && r.data_status === "已驗證" && o.data_status === "已驗證"));
-check("6. §3 的邊界資料都在", [
-  [recs.some((r) => r.price_total_twd === null), "缺少未知價格（price_total_twd = null）的紀錄"],
-  [recs.some((r) => isExpired(r)), "缺少已過期（valid_until 已過）的紀錄"],
-  [recs.some((r) => selfConflicting(r)), "缺少同一來源自我矛盾的紀錄"],
-  [sameStoreTwoSources, "缺少同店不同來源、兩筆各自已驗證的紀錄"],
-  [recs.some((r) => r.address === null), "缺少沒有地址的紀錄"],
-  [recs.some((r) => r.baseline === null), "缺少沒有 baseline 的紀錄"],
-].flatMap(([ok, why]) => (ok ? [] : [why as string])));
-
-check("7. 每個 source_url 都是 https", recs.filter((r) => !r.source_url.startsWith("https://")).map((r) => `${r.id} ${r.source_url}`));
-
-console.log(`\n檢查範圍：${scope.join("、")}，共 ${recs.length} 筆（已驗證 ${verified.length} 筆）`);
-await sql.end();
-if (failures.length > 0) {
-  console.error(`${failures.length} 項不合格。`);
-  process.exit(1);
-}
-console.log("全部通過。");
+const args = process.argv.slice(2);
+const fromFiles = args.includes("--files");
+const requested = args.filter(arg => arg !== "--files");
+const unknown = requested.filter(category => !(CATEGORIES as readonly string[]).includes(category));
+let readingDB = false;
+try {
+  if (unknown.length) throw new Error(`不認得的參數：${unknown.join("、")}；可用 --files 及 ${CATEGORIES.join("、")}`);
+  const scope = requested.length ? requested as Category[] : CATEGORIES;
+  let records: Rec[];
+  if (fromFiles) records = (await readCatalog(undefined, false)).records.map(row => rowToRec(row));
+  else {
+    if (!dbConfigured()) throw new Error("缺少 DATABASE_URL；可用 data:validate 檢查來源檔。");
+    readingDB = true;
+    records = (await sql`select * from candidates`).map(rowToRec);
+  }
+  const report = assessCatalog(records, scope);
+  console.log(`真實資料驗收（${fromFiles ? "來源檔" : "資料庫"}）：${report.total} 筆；忽略 ${report.ignored} 筆示範／封存／範圍外資料。`);
+  console.table(report.categories);
+  for (const issue of report.issues) console.error(`✗ ${issue}`);
+  console.log("可比較 = 成本與必要證據完整且未到期；不是即時庫存／開放保證。配額每類 7 筆。合成邊界情境另由 bun test 驗收。");
+  if (!report.ready) {
+    console.error("尚未達到欄位與五類筆數門檻；請補證據或真實來源，不要用示範資料補數。");
+    process.exitCode = 1;
+  } else console.log("✓ 真實資料欄位與五類涵蓋檢查通過。");
+} catch(error) {
+  console.error(readingDB ? "資料庫檢查失敗；請確認連線及 schema。" : error instanceof Error ? error.message : "檢查失敗");
+  process.exitCode = 1;
+} finally { await sql.end(); }

@@ -23,7 +23,7 @@ export type Rec = {
   title: string;
   provider: string;
   price_total_twd: number | null;
-  mandatory_fees_twd: number;
+  mandatory_fees_twd: number | null;
   discount_twd: number;
   price_unit: string | null;
   quantity_or_servings: string | null;
@@ -74,7 +74,7 @@ export const recentExperience = (reports: Report[], recId: string, now = Date.no
 
 // 總可比成本 = 價格 + 必要費用 − 明確適用折扣；未知價格不視為 0。
 export const comparableTotal = (r: Rec) =>
-  r.price_total_twd === null ? null : r.price_total_twd + r.mandatory_fees_twd - r.discount_twd;
+  r.price_total_twd == null || r.mandatory_fees_twd == null ? null : r.price_total_twd + r.mandatory_fees_twd - r.discount_twd;
 
 export const groupTotal = (r: Rec, people: number) => {
   const t = comparableTotal(r);
@@ -189,7 +189,7 @@ export const rowToRec = (row: Record<string, unknown>): Rec => {
     title: row.title as string,
     provider: row.provider as string,
     price_total_twd: row.price_total_twd as number | null,
-    mandatory_fees_twd: row.mandatory_fees_twd as number,
+    mandatory_fees_twd: row.mandatory_fees_twd as number | null,
     discount_twd: row.discount_twd as number,
     price_unit: row.price_unit as string | null,
     quantity_or_servings: row.quantity_or_servings as string | null,
@@ -235,9 +235,9 @@ const candidateShape = {
   agent: z.enum(["paid", "free"]),
   title: z.string().min(1),
   provider: z.string().min(1),
-  price_total_twd: z.number().int().nullable(),          // null = 未知；絕不填 0
-  mandatory_fees_twd: z.number().int().default(0),
-  discount_twd: z.number().int().default(0),
+  price_total_twd: z.number().int().nonnegative().max(100_000_000).nullable(),          // null = 未知；絕不填 0
+  mandatory_fees_twd: z.number().int().nonnegative().max(100_000_000).nullable(),
+  discount_twd: z.number().int().nonnegative().max(100_000_000).default(0),
   price_unit: z.string().nullable().default(null),
   quantity_or_servings: z.string().nullable().default(null),
   eligibility: z.array(z.string()).default([]),
@@ -245,7 +245,7 @@ const candidateShape = {
   availability_or_event_time: z.string().nullable().default(null),
   valid_until: timestamp.nullable().default(null),
   address: z.string().nullable().default(null),
-  lat: z.null().default(null),                           // 匯入者不填，由 scripts/geocode.ts 寫入
+  lat: z.null().default(null),                           // 不猜座標；importer 只提升 extra.source_coordinates 的來源證據
   lng: z.null().default(null),
   distance_or_time_text: z.string().nullable().default(null),
   tags: z.array(z.enum(TAGS)).nullable().default(null),  // null = 成分未標示，和 [] 不同意思
@@ -265,14 +265,14 @@ const candidateShape = {
   action_label: z.string().nullable().default(null),
   baseline: z.object({
     name: z.string().min(1),
-    total_twd: z.number().int(),
+    total_twd: z.number().int().positive().max(100_000_000),
     basis: z.enum(["user_plan", "local_common", "costco"]),
     as_of: z.string().min(1),
   }).nullable().default(null),
   group_offer: z.object({
     min_people: z.number().int().positive(),
-    discount_pct: z.number().optional(),
-    price_per_person: z.number().int().optional(),
+    discount_pct: z.number().min(0).max(100).optional(),
+    price_per_person: z.number().int().nonnegative().optional(),
     redeem_code: z.string().min(1),
     note: z.string().min(1),
   }).nullable().default(null),
@@ -284,6 +284,9 @@ export const CANDIDATE_COLUMNS = Object.keys(candidateShape);
 
 export const candidateSchema = z.strictObject(candidateShape).superRefine((r, ctx) => {
   const bad = (message: string, path: string) => ctx.addIssue({ code: "custom", message, path: [path] });
+  if (r.price_total_twd !== null && r.mandatory_fees_twd !== null && r.discount_twd > r.price_total_twd + r.mandatory_fees_twd) bad("折扣不可超過已知總成本", "discount_twd");
+  if (r.agent === "free" && r.price_total_twd !== 0) bad("免費來源的直接價格必須明確為 0", "agent");
+  if (r.data_status === "已驗證" && dataStatusOf(r) !== "已驗證") bad("證據、成本或有效期限不足，不可標示已驗證", "data_status");
   if (r.agent === "paid" && r.price_total_twd === 0) bad("價格 0 卻標 paid（§9 檢查 3）", "agent");
   if (r.data_status === "已驗證" && r.verified_at === null) bad("沒有 verified_at 就不能是「已驗證」（§4）", "data_status");
   if (r.address !== null && r.extra.address_source === undefined) bad("有 address 就要設 extra.address_source（§6.2）", "extra");
@@ -303,10 +306,10 @@ export const selfConflicting = (r: { evidence: Evidence[] }) =>
 
 // §6 決策表：由上往下，第一個成立的就是答案。
 export const dataStatusOf = (
-  r: { price_total_twd: number | null; valid_until: string | null; verified_at: string | null; evidence: Evidence[]; eligibility: string[]; address: string | null },
+  r: { price_total_twd: number | null; mandatory_fees_twd: number | null; valid_until: string | null; verified_at: string | null; evidence: Evidence[]; eligibility: string[]; address: string | null },
   now = Date.now(),
 ): DataStatus => {
-  if (r.price_total_twd === null) return "無法納入比較";
+  if (r.price_total_twd == null || r.mandatory_fees_twd == null) return "無法納入比較";
   if (selfConflicting(r)) return "衝突待確認";
   if (isExpired(r, now)) return "過期／待確認";
   if (r.verified_at === null || r.verified_at === "" || missingEvidence(r).length > 0) return "部分驗證／待確認";

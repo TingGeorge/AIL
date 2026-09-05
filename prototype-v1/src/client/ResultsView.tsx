@@ -48,6 +48,7 @@ export type ResultsViewProps = {
   onFavorite: (id: string) => void;
   onAdjust: () => void;
   survival: boolean;
+  preferredCategories?: Category[];
 };
 
 export type DetailViewProps = {
@@ -115,9 +116,33 @@ function exactText(value: string | null | undefined, fallback = "未提供"): st
   return text ? text : fallback;
 }
 
+type RecordContext = {
+  scope: string | null;
+  pricingContext: string | null;
+  reviewNotes: string[];
+};
+
+function extraString(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const text = value.trim();
+  return text || null;
+}
+
+function recordContext(item: Rec): RecordContext {
+  const reviewValue = item.extra.review_notes;
+  const reviewNotes = (Array.isArray(reviewValue) ? reviewValue : [reviewValue])
+    .map(extraString)
+    .filter((value): value is string => value !== null);
+  return {
+    scope: extraString(item.extra.scope),
+    pricingContext: extraString(item.extra.pricing_context),
+    reviewNotes,
+  };
+}
+
 function priceLabel(item: Rec): string {
   const total = comparableTotal(item);
-  return total === null ? "價格未提供" : money(total);
+  return total === null ? "總成本不可比較" : money(total);
 }
 
 function stableSort(items: Rec[], compare: (a: Rec, b: Rec) => number): Rec[] {
@@ -160,6 +185,42 @@ function StatusLine({ item }: { item: Rec }) {
   );
 }
 
+function RecordTerms({ item, compact = false }: { item: Rec; compact?: boolean }) {
+  const context = recordContext(item);
+  if (item.eligibility.length === 0 && !context.scope && !context.pricingContext && context.reviewNotes.length === 0) return null;
+
+  if (compact) {
+    return (
+      <span className="record-terms record-terms-compact">
+        {item.eligibility.length > 0 && <span>資格：{item.eligibility.join("、")}</span>}
+        {context.scope && <span>適用範圍：{context.scope}</span>}
+        {context.pricingContext && <span>價格脈絡：{context.pricingContext}</span>}
+        {context.reviewNotes.length > 0 && (
+          <span className="review-notes">
+            <b>審閱提醒</b>
+            <span>{context.reviewNotes[0]}</span>
+            {context.reviewNotes.length > 1 && <span>另有 {context.reviewNotes.length - 1} 項提醒，點開詳情查看完整查核內容。</span>}
+          </span>
+        )}
+      </span>
+    );
+  }
+
+  return (
+    <div className="record-terms">
+      {item.eligibility.length > 0 && <p>資格：{item.eligibility.join("、")}</p>}
+      {context.scope && <p>適用範圍：{context.scope}</p>}
+      {context.pricingContext && <p>價格脈絡：{context.pricingContext}</p>}
+      {context.reviewNotes.length > 0 && (
+        <div className="review-notes">
+          <b>審閱提醒</b>
+          <ul>{context.reviewNotes.map((note, index) => <li key={`${index}-${note}`}>{note}</li>)}</ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ResultCard({
   item,
   index,
@@ -186,7 +247,7 @@ function ResultCard({
 
   return (
     <article className={`result-card tone-${item.category} ${compact ? "result-card-compact" : ""} ${demo ? "result-card-demo" : ""}`}>
-      <button className="result-open" type="button" onClick={onOpen}>
+      <button className="result-open" type="button" onClick={onOpen} aria-label={`查看 ${item.title} 詳情`}>
         <CategoryArt category={item.category} />
         <span className="result-body">
           <span className="result-meta">
@@ -196,8 +257,12 @@ function ResultCard({
           <span className="result-title">{item.title}</span>
           <span className="result-copy">{item.provider}</span>
           <span className="price-row">
-            <strong>{priceLabel(item)}</strong>
-            <span>{exactText(item.quantity_or_servings, "份量未提供")}</span>
+            <strong><small>總可比成本</small>{priceLabel(item)}</strong>
+            <span className="price-basis">
+              <b>計價：{exactText(item.price_unit, "單位未提供")}</b>
+              <small>份量：{exactText(item.quantity_or_servings, "未提供")}</small>
+              {item.mandatory_fees_twd !== 0 && <small>{item.mandatory_fees_twd === null ? "必要費用未知" : `已含必要費用 ${money(item.mandatory_fees_twd)}`}</small>}
+            </span>
           </span>
           <span className="result-condition">
             <Sparkles aria-hidden="true" />
@@ -206,6 +271,7 @@ function ResultCard({
           {supporting.length > 0 && (
             <span className="result-supporting">{supporting.join(" · ")}</span>
           )}
+          <RecordTerms item={item} compact />
         </span>
       </button>
       <button
@@ -278,10 +344,13 @@ export function ResultsView({
   onFavorite,
   onAdjust,
   survival,
+  preferredCategories = [],
 }: ResultsViewProps) {
   const allItems = useMemo(() => [...records, ...pending, ...excluded], [records, pending, excluded]);
-  const firstPopulatedCategory = CATEGORIES.find((entry) => allItems.some((item) => item.category === entry));
-  const [category, setCategory] = useState<Category>(() => firstPopulatedCategory ?? CATEGORIES[0]);
+  // Target categories emphasize the dashboard, never filter out the other categories (voice spec §3).
+  const orderedCategories = [...new Set([...preferredCategories, ...CATEGORIES])];
+  const firstCategory = preferredCategories[0] ?? CATEGORIES.find((entry) => allItems.some((item) => item.category === entry)) ?? CATEGORIES[0];
+  const [category, setCategory] = useState<Category>(() => firstCategory);
   const [sort, setSort] = useState<SortMode>("rank");
   const previousResults = useRef({ records, pending, excluded });
 
@@ -291,8 +360,8 @@ export function ResultsView({
     const previous = previousResults.current;
     if (previous.records === records && previous.pending === pending && previous.excluded === excluded) return;
     previousResults.current = { records, pending, excluded };
-    setCategory(firstPopulatedCategory ?? CATEGORIES[0]);
-  }, [records, pending, excluded, firstPopulatedCategory]);
+    setCategory(firstCategory);
+  }, [records, pending, excluded, firstCategory]);
 
   const categoryRecords = useMemo(
     () => sortRecords(records.filter((item) => item.category === category), sort, survival),
@@ -313,11 +382,11 @@ export function ResultsView({
           {category} · 通過資料閘門與可檢查條件
           {survival ? " · 生存模式" : ""}
         </p>
-        <p className="candidate-caveat">人數、日期、時段與文字資格仍需依來源逐項確認，這裡不宣稱完全符合。</p>
+        <p className="candidate-caveat">所選類別優先顯示，仍搜尋全部五類。人數、日期、時段與文字資格仍需依來源逐項確認；線上配送要核對運費與配送範圍，不同計價單位／份量（例如單人票）不可直接視為多人總價。</p>
       </div>
 
       <nav className="category-tabs" aria-label="結果類別">
-        {CATEGORIES.map((entry) => (
+        {orderedCategories.map((entry) => (
           <button
             key={entry}
             className={`category-tab ${entry === category ? "active" : ""}`}
@@ -573,17 +642,19 @@ export function DetailView({
             <small>價格＋必要費用－明確折扣</small>
           </div>
           <div>
-            <span>份量／數量</span>
-            <strong>{exactText(item.quantity_or_servings)}</strong>
-            <small>{exactText(item.price_unit, "單位未提供")}</small>
+            <span>計價與份量</span>
+            <strong>計價：{exactText(item.price_unit, "單位未提供")}</strong>
+            <small>份量：{exactText(item.quantity_or_servings)}</small>
           </div>
         </div>
 
         <div className="cost-breakdown">
           <span><small>標示價格</small><b>{item.price_total_twd === null ? "未提供" : money(item.price_total_twd)}</b></span>
-          <span><small>必要費用</small><b>{money(item.mandatory_fees_twd)}</b></span>
-          <span><small>明確折扣</small><b>{money(item.discount_twd)}</b></span>
+          <span><small>必要費用</small><b>{item.mandatory_fees_twd === null ? "未知，總成本不可比較" : `NT$${item.mandatory_fees_twd.toLocaleString("zh-TW")}`}</b></span>
+          <span><small>明確折扣</small><b>{`NT$${item.discount_twd.toLocaleString("zh-TW")}`}</b></span>
         </div>
+
+        <RecordTerms item={item} />
 
         <div className="condition-box">
           <Sparkles aria-hidden="true" />
@@ -653,7 +724,7 @@ export function DetailView({
             <ExternalLinkButton href={actionUrl}><CircleDollarSign aria-hidden="true" />{exactText(item.action_label, "前往行動頁")}</ExternalLinkButton>
           )}
         </div>
-        <p className={`fine-print ${demo ? "demo-fine-print" : ""}`}>{demo ? "示範資料不可用於購買、前往或兌換；所有欄位只用於測試。" : "請以原始來源為準；本畫面不推測即時庫存、名額、照片或成功結果。"}</p>
+        <p className={`fine-print ${demo ? "demo-fine-print" : ""}`}>{demo ? "示範資料不可用於購買、前往或兌換；所有欄位只用於測試。" : "請以原始來源為準；本畫面不推測即時庫存、名額、照片或成功結果。線上配送需核對運費與配送範圍；不同計價單位／份量（例如單人票）不可直接視為多人總價。"}</p>
       </div>
 
       <div className="detail-actions glass">

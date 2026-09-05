@@ -33,7 +33,7 @@ create table if not exists candidates (
   title                      text not null,
   provider                   text not null,
   price_total_twd            integer,            -- null = 未知；絕不當 0
-  mandatory_fees_twd         integer not null default 0,
+  mandatory_fees_twd         integer,   -- null = 費用未知，不能進入成本比較
   discount_twd               integer not null default 0,
   price_unit                 text,
   quantity_or_servings       text,
@@ -70,3 +70,7 @@ create table if not exists reports (
   created_at   timestamptz not null default now()
 );
 create index if not exists reports_candidate on reports (candidate_id, created_at desc);
+
+-- Idempotent upgrade: preserve existing data while representing unknown required fees.
+alter table candidates alter column mandatory_fees_twd drop not null;
+alter table candidates alter column mandatory_fees_twd drop default;

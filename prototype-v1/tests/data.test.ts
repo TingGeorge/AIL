@@ -1,4 +1,7 @@
 import { describe, expect, test } from "bun:test";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { sql } from "../src/server/db.ts";
 import {
   candidateSchema, dataStatusOf, missingEvidence, rowToRec, selfConflicting,
@@ -44,7 +47,7 @@ test("食品資料集涵蓋票 01 的邊界情境", () => {
 
 const base = {
   id: "f_z9z9", category: "食品", agent: "paid", title: "測試", provider: "測試店",
-  price_total_twd: 100, source_url: "https://example.com/x", source_type: "curated",
+  price_total_twd: 100, mandatory_fees_twd: 0, source_url: "https://example.com/x", source_type: "curated",
   source_authority: "provider", collected_at: "2026-09-05T14:00:00+08:00",
   verified_at: "2026-09-05T14:00:00+08:00", data_status: "已驗證",
   evidence: ["價格", "份量", "時間"].map((field) => ({ field, quote: "x", url: "https://example.com/x", checked_at: "2026-09-05T14:00:00+08:00" })),
@@ -66,7 +69,7 @@ test("candidateSchema：tags 的 null 與 [] 是兩件事，省略等於 null", 
 
 const ev = (field: string): Evidence => ({ field, quote: "x", url: "https://example.com/x", checked_at: "2026-09-05T14:00:00+08:00" });
 const row = (over: Partial<Parameters<typeof dataStatusOf>[0]> = {}) => ({
-  price_total_twd: 100 as number | null, valid_until: null as string | null,
+  price_total_twd: 100 as number | null, mandatory_fees_twd: 0 as number | null, valid_until: null as string | null,
   verified_at: "2026-09-05T14:00:00+08:00" as string | null,
   evidence: [ev("價格"), ev("份量"), ev("時間")], eligibility: [] as string[], address: null as string | null,
   ...over,
@@ -103,7 +106,7 @@ const ROOT = Bun.fileURLToPath(new URL("..", import.meta.url));
 
 describe.skipIf(!dbLive)("匯入管線 (live database)", () => {
   const runImport = async () => {
-    const p = Bun.spawn(["bun", "run", "scripts/import.ts"], { cwd: ROOT, env: {...process.env, ALLOW_DEMO_DATA:"1"}, stdout: "pipe", stderr: "pipe" });
+    const p = Bun.spawn(["bun", "run", "scripts/import.ts"], { cwd: ROOT, env: {...process.env, ALLOW_DEMO_DATA:"1", DATA_DIR:`${ROOT}/data`}, stdout: "pipe", stderr: "pipe" });
     const code = await p.exited;
     if (code !== 0) throw new Error(await new Response(p.stderr).text());
   };
@@ -113,13 +116,59 @@ describe.skipIf(!dbLive)("匯入管線 (live database)", () => {
   test("示範資料未明確允許時拒絕匯入，資料庫維持不變", async () => {
     const before = await snapshot();
     const p = Bun.spawn(["bun", "run", "scripts/import.ts"], {
-      cwd: ROOT, env: { ...process.env, ALLOW_DEMO_DATA: "0", DATA_DIR: "" },
+      cwd: ROOT, env: { ...process.env, ALLOW_DEMO_DATA: "0", DATA_DIR: `${ROOT}/data` },
       stdout: "pipe", stderr: "pipe",
     });
     const stderr = new Response(p.stderr).text();
     expect(await p.exited).not.toBe(0);
     expect(await stderr).toContain("ALLOW_DEMO_DATA=1");
     expect(await snapshot()).toEqual(before);
+  });
+
+  test("a malformed later row cannot partially import an earlier valid row", async () => {
+    const before = await snapshot();
+    const directory = await mkdtemp(join(tmpdir(), "ail-atomic-import-"));
+    try {
+      await Bun.write(join(directory, "batch.json"), JSON.stringify([
+        { ...食品[0], id: "f_zq91" },
+        { ...食品[0], id: "f_zq92", price_total_twd: -5 },
+      ]));
+      const p = Bun.spawn(["bun", "run", "scripts/import.ts"], {
+        cwd: ROOT, env: { ...process.env, ALLOW_DEMO_DATA: "1", DATA_DIR: directory }, stdout: "pipe", stderr: "pipe",
+      });
+      const stderr = new Response(p.stderr).text();
+      expect(await p.exited).not.toBe(0);
+      expect(await stderr).toContain("第 2 筆");
+      expect(await snapshot()).toEqual(before);
+    } finally { await rm(directory, { recursive: true, force: true }); }
+  });
+
+  test("import preserves SQL NULL mandatory fees instead of defaulting unknown costs to zero", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "ail-null-fees-import-"));
+    let id: string;
+    do { id = `f_${crypto.randomUUID().replaceAll("-", "").slice(0, 4)}`; }
+    while ((await sql`select id from candidates where id = ${id}`).length > 0);
+    try {
+      await Bun.write(join(directory, "batch.json"), JSON.stringify([
+        { ...食品[0], id, mandatory_fees_twd: null, data_status: "無法納入比較" },
+      ]));
+      const p = Bun.spawn(["bun", "run", "scripts/import.ts"], {
+        cwd: ROOT, env: { ...process.env, ALLOW_DEMO_DATA: "1", DATA_DIR: directory }, stdout: "pipe", stderr: "pipe",
+      });
+      await new Response(p.stderr).text();
+      expect(await p.exited).toBe(0);
+      const rows = await sql`select * from candidates where id = ${id}`;
+      expect(rows.length).toBe(1);
+      expect(rows[0].mandatory_fees_twd).toBeNull();
+      expect(rowToRec(rows[0]).mandatory_fees_twd).toBeNull();
+      expect(dataStatusOf(rowToRec(rows[0]))).toBe("無法納入比較");
+      const columns = await sql`select column_default, is_nullable from information_schema.columns where table_schema = current_schema() and table_name = 'candidates' and column_name = 'mandatory_fees_twd'`;
+      expect(columns[0].column_default).toBeNull();
+      expect(columns[0].is_nullable).toBe("YES");
+    } finally {
+      await sql`delete from candidates where id = ${id}`;
+      await rm(directory, { recursive: true, force: true });
+    }
   });
 
   test("import.ts 連跑兩次：列數與內容都不變", async () => {

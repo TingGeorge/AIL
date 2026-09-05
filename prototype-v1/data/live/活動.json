@@ -1,0 +1,820 @@
+[
+  {
+    "id": "a_fm37",
+    "category": "活動",
+    "agent": "paid",
+    "title": "臺北花博農民市集",
+    "provider": "臺北市政府產業發展局",
+    "price_total_twd": null,
+    "mandatory_fees_twd": null,
+    "discount_twd": 0,
+    "price_unit": "每人入場",
+    "quantity_or_servings": "每人1次市集參觀；商品另行購買",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-12至2026-09-13，10:00–18:00",
+    "valid_until": "2026-09-13T18:00:00+08:00",
+    "address": "花博圓山園區長廊廣場",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "花博公園圓山園區；鄰近捷運圓山站",
+    "tags": null,
+    "source_url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4451",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "自由入場，市集活動",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4451",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "本活動採自由入場，歡迎民眾於營業時間內自由參觀與採買。",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4451",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "活動展期(起)\n115-09-12\n活動展期(訖)\n115-09-13\n活動時間\n10:00-18:00",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4451",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "活動地點位於花博圓山園區長廊廣場，鄰近捷運圓山站。",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4451",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": null,
+    "data_status": "無法納入比較",
+    "action_url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4451",
+    "action_label": "查看活動頁",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "圓山站、大龍峒或花博圓山園區／美術公園周邊的本地實體場館與活動。",
+      "review_notes": [
+        "官方本頁只有「自由入場，市集活動」，沒有明說免費；撤回「免費入場」假引文，直接價格及必要費用皆為null，無法納入比較。",
+        "「份量」以每人1次參觀為比較單位，不包括任何攤位商品。",
+        "schema只有paid/free；此筆暫存paid不代表查到收費，實際費用分類為未知。",
+        "保留穩定ID，但標題改回官方「臺北花博農民市集」，不再把第37週當成官方名稱。"
+      ],
+      "address_source": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4451",
+      "scope_type": "local_physical",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4451",
+        "page_title": "臺北花博農民市集",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:19+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。",
+      "price_classification": "unknown"
+    }
+  },
+  {
+    "id": "a_ctrl",
+    "category": "活動",
+    "agent": "free",
+    "title": "「這我！青少年音樂祭——Ctrl＋？」",
+    "provider": "社團法人臺灣青年民主協會",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人入場",
+    "quantity_or_servings": "每人1次一般入場；個別體驗與贈品不包含",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-12 15:00–20:00",
+    "valid_until": "2026-09-12T20:00:00+08:00",
+    "address": "花海廣場",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "花博公園圓山園區；鄰近捷運圓山站",
+    "tags": null,
+    "source_url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4534",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "活動為免費入場。",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4534",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "一般參觀無須購票",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4534",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "活動展期(起)\n115-09-12\n活動展期(訖)\n115-09-12\n活動時間\n1500 - 2000",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4534",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "活動場館\n花海廣場",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4534",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4534",
+    "action_label": "查看音樂祭資訊",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "圓山站、大龍峒或花博圓山園區／美術公園周邊的本地實體場館與活動。",
+      "review_notes": [
+        "更正名稱、主辦方與開始時間：官方為臺灣青年民主協會主辦，15:00開始，不是先前寫的市府中心或16:00。",
+        "0元只適用一般入場；個別互動體驗、集點、贈品或限定活動可能有名額、時段及其他參與條件。",
+        "戶外活動及節目可能因天候調整；未承諾特定卡司、贈品或無限量參與。",
+        "地址欄僅為官方場地名稱，不是完整門牌；不使用網站頁尾基金會地址冒充活動地址。"
+      ],
+      "address_source": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4534",
+      "scope_type": "local_physical",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4534",
+        "page_title": "「這我！青少年音樂祭——Ctrl＋？」",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:19+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  },
+  {
+    "id": "a_cori",
+    "category": "活動",
+    "agent": "free",
+    "title": "森之市｜2026香菜市集在台北",
+    "provider": "路易斯行銷文化有限公司",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人入場",
+    "quantity_or_servings": "每人1次一般市集入場；餐飲、商品另購",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "2026-09-26至2026-09-27，13:00–19:00",
+    "valid_until": "2026-09-27T19:00:00+08:00",
+    "address": "花海廣場",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "花博公園圓山園區；鄰近捷運圓山站",
+    "tags": null,
+    "source_url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4515",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "General admission is free, and no advance reservation is required.",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4515",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "本場活動採自由入場，不需購票或事先預約。",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4515",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "活動展期(起)\n115-09-26\n活動展期(訖)\n115-09-27\n活動時間\n1300 - 1900",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4515",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "活動場館\n花海廣場",
+        "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4515",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4515",
+    "action_label": "查看市集資訊",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "圓山站、大龍峒或花博圓山園區／美術公園周邊的本地實體場館與活動。",
+      "review_notes": [
+        "官方中文FAQ說「不需購票或事先預約」，英文明說General admission is free；不再把不存在的中文「活動免費入場」當引文。",
+        "更正主辦方為路易斯行銷文化有限公司、開始時間為13:00；撤回舊版11:00及無來源的禁止寵物說法。",
+        "0元只適用一般入場；餐飲、商品及限定內容各自收費，特殊互動條件另依主辦公告。",
+        "地址欄為官方場地名稱，非完整門牌；未使用頁尾辦公室地址。"
+      ],
+      "address_source": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4515",
+      "scope_type": "local_physical",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4515",
+        "page_title": "森之市｜2026香菜市集在台北",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:19+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  },
+  {
+    "id": "a_conf",
+    "category": "活動",
+    "agent": "free",
+    "title": "臺北市孔廟",
+    "provider": "臺北市孔廟管理委員會",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人參觀",
+    "quantity_or_servings": "每人1次一般入園參觀；不含另行申請服務",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "週二至週日08:30–21:00；週一休館",
+    "valid_until": null,
+    "address": "臺北市大同區大龍街275號",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "大龍峒在地常設文化場館",
+    "tags": null,
+    "source_url": "https://www.tctcc.taipei/zh-tw/C/service/visiting/1/1.htm?1",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "免費入園參觀。",
+        "url": "https://www.tctcc.taipei/zh-tw/C/service/visiting/1/1.htm?1",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "免費入園參觀。",
+        "url": "https://www.tctcc.taipei/zh-tw/C/service/visiting/1/1.htm?1",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "開放時間：週二至週日(含國定假日)08:30-21:00。",
+        "url": "https://www.tctcc.taipei/zh-tw/C/service/visiting/1/1.htm?1",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "臺北市大同區大龍街275號",
+        "url": "https://www.tctcc.taipei/zh-tw/C/service/visiting/1/1.htm?1",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.tctcc.taipei/zh-tw/C/service/visiting/1/1.htm?1",
+    "action_label": "查看孔廟參觀資訊",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "圓山站、大龍峒或花博圓山園區／美術公園周邊的本地實體場館與活動。",
+      "review_notes": [
+        "舊路徑實測HTTP500；改為官方參觀資訊正頁（資料更新2026-07-10）。",
+        "常態入園參觀，不是特別祭典、導覽預約或商業拍攝；週一休館。",
+        "場館規則要求入園寵物裝籠不落地；特殊休館以館方公告為準。"
+      ],
+      "address_source": "https://www.tctcc.taipei/zh-tw/C/service/visiting/1/1.htm?1",
+      "scope_type": "local_physical",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://www.tctcc.taipei/zh-tw/C/service/visiting/1/1.htm?1",
+        "page_title": "臺北市孔廟儒學文化網(Taipei Confucius Temple Confucian Culture)-首頁-參觀資訊-參觀服務-參觀須知",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:19+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  },
+  {
+    "id": "a_tffr",
+    "category": "活動",
+    "agent": "free",
+    "title": "臺北市立美術館17:00後免費入館（待確認／已封存）",
+    "provider": "臺北市立美術館",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人入館",
+    "quantity_or_servings": "同一一般入館服務的17:00後免費時段（已併入a_tf30）",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "開館日17:00後；週二至週五、週日至17:30，週六至20:30；週一休館",
+    "valid_until": null,
+    "address": "臺北市中山區中山北路三段181號",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "美術公園旁，圓山站周邊常設文化場館",
+    "tags": null,
+    "source_url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "開放時間17:00後停止售票，免費參觀。",
+        "url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "免費參觀。",
+        "url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "週六: 09:30 - 20:30",
+        "url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "104227臺北市中山區中山北路三段181號",
+        "url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": null,
+    "data_status": "部分驗證／待確認",
+    "action_url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+    "action_label": "查看票價與開放時間",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "圓山站、大龍峒或花博圓山園區／美術公園周邊的本地實體場館與活動。",
+      "review_notes": [
+        "官方2026-08-31更新頁明示：2F、3F(3C)、BF及兒童藝術教育中心暫停開放；1F及3F其他區依公告開放。不可推定全館皆可參觀。",
+        "本筆是a_tf30同一入館服務的免費時段，不是另一個獨立服務。為避免重複造數已封存，免費時段已併入a_tf30備註，不計活動配額。",
+        "週二至週五及週日17:30閉館；週六20:30閉館。王大閎建築劇場週六只到17:30。",
+        "與民間單位合作特展票券不包含在一般入館票內。",
+        "官方票價頁雖保留17:00後免費文字，適用目前新制與當日展區的情況尚待確認；不能據此保證當日免費入館。本筆verified_at為null，維持pending及封存。"
+      ],
+      "address_source": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+      "scope_type": "local_physical",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+        "page_title": "時間票價 | 臺北市立美術館",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:19+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。",
+      "archived": true,
+      "superseded_by": "a_tf30"
+    }
+  },
+  {
+    "id": "a_lant",
+    "category": "活動",
+    "agent": "free",
+    "title": "林安泰古厝民俗文物館",
+    "provider": "臺北市政府民政局",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人參觀",
+    "quantity_or_servings": "每人1次一般入園參觀；不含預約導覽或場地租借",
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": "週二至週日09:00–17:00，16:45最後入園；週一及春節連假、清明節、端午節、中秋節休館",
+    "valid_until": null,
+    "address": "臺北市中山區濱江街5號",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "花博公園新生園區附近；非圓山站場館",
+    "tags": null,
+    "source_url": "https://linantai.taipei/cp.aspx?n=4BDF0CDB6F73C496",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "免費入園參觀，歡迎租借場地。",
+        "url": "https://linantai.taipei/cp.aspx?n=4BDF0CDB6F73C496",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "免費入園參觀",
+        "url": "https://linantai.taipei/cp.aspx?n=4BDF0CDB6F73C496",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "每星期二至星期日09:00-17:00（最後入園時間為16:45）",
+        "url": "https://linantai.taipei/cp.aspx?n=4BDF0CDB6F73C496",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "臺北市中山區濱江街5號",
+        "url": "https://linantai.taipei/cp.aspx?n=4BDF0CDB6F73C496",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://linantai.taipei/cp.aspx?n=4BDF0CDB6F73C496",
+    "action_label": "查看古厝參觀資訊",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "花博新生園區及濱江街周邊相鄰場館；圓山居民可前往，但不是圓山站實體場館。",
+      "review_notes": [
+        "改用林安泰古厝官方參觀資訊，不再把民政局「宗教禮俗科」業務職掌頁當成免費參觀證據。",
+        "9月一般開放至17:00，16:45最後入園；週一及春節連假、清明、端午、中秋休館。",
+        "官方另列7–8月延至18:00、17:45最後入園，但不套用到本批9月時段。",
+        "本筆是一般參觀，未包含另須提前7天申請、10人以上團體才受理的免費導覽。",
+        "位於濱江街／新生園區周邊，非圓山站場館。"
+      ],
+      "address_source": "https://linantai.taipei/cp.aspx?n=4BDF0CDB6F73C496",
+      "scope_type": "adjacent_physical",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://linantai.taipei/cp.aspx?n=4BDF0CDB6F73C496",
+        "page_title": "林安泰古厝民俗文物館中文版-參觀資訊-參觀資訊說明",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:19+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  },
+  {
+    "id": "a_botn",
+    "category": "活動",
+    "agent": "paid",
+    "title": "臺北典藏植物園",
+    "provider": "臺北市政府工務局公園路燈工程管理處",
+    "price_total_twd": null,
+    "mandatory_fees_twd": null,
+    "discount_twd": 0,
+    "price_unit": null,
+    "quantity_or_servings": null,
+    "eligibility": [],
+    "registration_required": false,
+    "availability_or_event_time": null,
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "候選地點尚待官方可讀來源確認；暫不做距離或費用比較",
+    "tags": null,
+    "source_url": "https://www.travel.taipei/zh-tw/attraction/details/1612",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": null,
+    "data_status": "無法納入比較",
+    "action_url": "https://www.travel.taipei/zh-tw/attraction/details/1612",
+    "action_label": "查看植物園資訊",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "候選範圍為花博新生園區周邊；官方頁目前無法讀取，實體位置待核，不能視為圓山站場館。",
+      "review_notes": [
+        "原官方旅遊頁實測HTTP403、標題Just a moment...，未取得景點正文，無法證實頁面ID與植物園對應。",
+        "撤回此前未實讀而填入的免費、地址與開放時間引文；費用、份量、地址及時間皆null。",
+        "保留原穩定ID與候選名稱待查，不宣稱名稱已由本頁核實。",
+        "schema只有paid/free；暫存paid不是收費事實，實際費用分類未知。"
+      ],
+      "scope_type": "adjacent_physical",
+      "source_http_check": {
+        "http_status": 403,
+        "effective_url": "https://www.travel.taipei/zh-tw/attraction/details/1612",
+        "page_title": "Just a moment...",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:19+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。",
+      "price_classification": "unknown"
+    }
+  },
+  {
+    "id": "a_tf30",
+    "category": "活動",
+    "agent": "paid",
+    "title": "臺北市立美術館普通票",
+    "provider": "臺北市立美術館",
+    "price_total_twd": 30,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張",
+    "quantity_or_servings": "每人1張一般入館普通票；僅適用開放區域，不含另售特展",
+    "eligibility": [
+      "一般民眾；本筆不套用優待票、臺北市民票或免票資格"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "週二至週日09:30–17:00售票時段；週一休館。17:00後停止售票、一般入館免費",
+    "valid_until": null,
+    "address": "臺北市中山區中山北路三段181號",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "美術公園旁，圓山站周邊常設文化場館",
+    "tags": null,
+    "source_url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "普通票:30 (一般民眾。)",
+        "url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "一般民眾。",
+        "url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "週二: 09:30 - 17:30",
+        "url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "一般民眾。",
+        "url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "104227臺北市中山區中山北路三段181號",
+        "url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+    "action_label": "查看票價與開放時間",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "圓山站、大龍峒或花博圓山園區／美術公園周邊的本地實體場館與活動。",
+      "review_notes": [
+        "官方2026-08-31更新頁明示：2F、3F(3C)、BF及兒童藝術教育中心暫停開放；1F及3F其他區依公告開放。不可推定全館皆可參觀。",
+        "普通票30元僅為一般入館票，未包含與民間單位合作的特別展覽票券；本筆以現場一般普通票比較，不套用優待。",
+        "官方票價頁仍列17:00後停止售票、免費參觀，但該免費時段是否適用目前新制尚待確認；不以此保證當日免費。原a_tffr維持pending及封存，不另計活動數。",
+        "週二至週五及週日17:30閉館；週六20:30閉館，王大閎建築劇場週六只到17:30。",
+        "週一休館。部分展區暫停開放不等同全館閉館，也未把它當成整館免費公告。"
+      ],
+      "address_source": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+      "scope_type": "local_physical",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+        "page_title": "時間票價 | 臺北市立美術館",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:19+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  },
+  {
+    "id": "a_ntsc",
+    "category": "活動",
+    "agent": "paid",
+    "title": "國立臺灣科學教育館常設展全票",
+    "provider": "國立臺灣科學教育館",
+    "price_total_twd": 120,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張",
+    "quantity_or_servings": "每人1張常設展全票，可進入3–6樓常設展；不含另行收費體驗、劇場或特展",
+    "eligibility": [
+      "適用全票者；本筆不套用優待票、團體票或免票資格"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "週六、日、國定假日及寒暑假09:00–18:00（售票至17:00）；非寒暑假週二至週五09:00–17:00（售票至16:00）；每週一休館，但國定假日、特定假日及寒暑假不休館",
+    "valid_until": null,
+    "address": "臺北市士林區士商路189號",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "士林科教館／天文館廊帶延伸；不屬原圓山步行範圍，未查核或填入交通時間",
+    "tags": null,
+    "source_url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "◼ 常設展門票（3-6樓）\n全票：120元",
+        "url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+        "checked_at": "2026-09-05T16:47:28+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "◼ 常設展門票（3-6樓）",
+        "url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+        "checked_at": "2026-09-05T16:47:28+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "全票：120元",
+        "url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+        "checked_at": "2026-09-05T16:47:28+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "每週一\n休館\n國定假日、特定假日及寒暑假不休館\n週六、日、國定假日及寒暑假\n9:00-18:00\n售票時間：9:00-17:00\n非寒暑假之週二至週五\n9:00-17:00\n售票時間：9:00-16:00",
+        "url": "https://www.ntsec.gov.tw/article/detail.aspx?a=80",
+        "checked_at": "2026-09-05T16:47:29+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "111081臺北市士林區士商路189號",
+        "url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+        "checked_at": "2026-09-05T16:47:28+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:47:28+08:00",
+    "verified_at": "2026-09-05T16:47:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+    "action_label": "查看常設展票價",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "鄰近士林科教館／天文館廊帶的實體場館；圓山居民可前往，但已超出原圓山站、大龍峒及花博周邊範圍。",
+      "review_notes": [
+        "官方票價頁2026-08-07更新，明列常設展3–6樓全票120元；本筆只比較該票種。",
+        "mandatory_fees_twd為0，表示官方票價表未在120元常設展全票之外列出必付附加費；空中腳踏車、小黑盒、大劇院、課程、聯票及特展均非本筆內容。",
+        "開放時間頁2026-06-04更新；每週一原則休館，但國定假日、特定假日及寒暑假不休館，其餘必要停止開放仍以現場公告為主。",
+        "這是士林科教館／天文館廊帶的範圍擴充，不冒充圓山站、大龍峒或花博園區內場館。",
+        "未查核圓山至場館的步行、車程或距離，不填入任何推測交通時間；lat／lng維持null。"
+      ],
+      "address_source": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+      "scope_type": "nearby_science_physical",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+        "page_title": "票價總覽 - 國立臺灣科學教育館",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:47:28+08:00",
+        "method": "curl GET -sS -L --max-time 35; TLS verification enabled; status and effective URL captured separately"
+      },
+      "supporting_source_http_checks": [
+        {
+          "http_status": 200,
+          "effective_url": "https://www.ntsec.gov.tw/article/detail.aspx?a=80",
+          "page_title": "開放時間 - 國立臺灣科學教育館",
+          "curl_exit": 0,
+          "error": "",
+          "checked_at": "2026-09-05T16:47:29+08:00",
+          "method": "curl GET -sS -L --max-time 35; TLS verification enabled; status and effective URL captured separately"
+        }
+      ],
+      "quantity_basis": "每人1張常設展全票為比較單位；不保證特展、體驗、劇場、課程或其他另售服務可用。"
+    }
+  },
+  {
+    "id": "a_tam0",
+    "category": "活動",
+    "agent": "paid",
+    "title": "臺北市立天文科學教育館展示場普通票",
+    "provider": "臺北市立天文科學教育館",
+    "price_total_twd": 40,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每張",
+    "quantity_or_servings": "每人1張展示場普通票；不含宇宙劇場、立體劇場或宇宙探險",
+    "eligibility": [
+      "一般民眾；本筆不套用臺北市民票、優待票或免票資格"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "週日及週二至週五09:00–17:00（展示場16:30停止售票及入場）；週六09:00–20:00（展示場19:00停止售票及入場）；每週一休館，國定假日照常開放",
+    "valid_until": null,
+    "address": "臺北市士林區基河路363號",
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "士林科教館／天文館廊帶延伸；不屬原圓山步行範圍，未查核或填入交通時間",
+    "tags": null,
+    "source_url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "展示場\n普通票\n40\n一般民眾。",
+        "url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+        "checked_at": "2026-09-05T16:47:43+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "展示場\n普通票",
+        "url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+        "checked_at": "2026-09-05T16:47:43+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "每週一休館（如遇國定假日則維持開放）\n週日及週二至週五：09：00-17：00\n展示場：16：30 停止售票及入場。",
+        "url": "https://tam.gov.taipei/cp.aspx?n=D7A6936DE433333F",
+        "checked_at": "2026-09-05T16:47:29+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "一般民眾。",
+        "url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+        "checked_at": "2026-09-05T16:47:43+08:00"
+      },
+      {
+        "field": "地點",
+        "quote": "地址:111013 臺北市士林區基河路363號",
+        "url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+        "checked_at": "2026-09-05T16:47:43+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:47:29+08:00",
+    "verified_at": "2026-09-05T16:47:43+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+    "action_label": "查看展示場票價",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "鄰近士林科教館／天文館廊帶的實體場館；圓山居民可前往，但已超出原圓山站、大龍峒及花博周邊範圍。",
+      "review_notes": [
+        "官方收費基準表把展示場普通票列為40元、適用一般民眾；本筆只比較展示場普通票。",
+        "mandatory_fees_twd為0，表示官方收費基準表未在40元展示場普通票之外列出必付附加費；宇宙劇場、立體劇場及宇宙探險各有獨立票價，均不包含。",
+        "開放時間頁資料更新為115-01-17；平日／週日及週六的展示場停止售票與入場時間不同。",
+        "這是士林科教館／天文館廊帶的範圍擴充，不冒充圓山站、大龍峒或花博園區內場館。",
+        "未查核圓山至場館的步行、車程或距離，不填入任何推測交通時間；lat／lng維持null。"
+      ],
+      "address_source": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+      "scope_type": "nearby_science_physical",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+        "page_title": "臺北市立天文科學教育館-購票資訊-館區購票資訊",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:47:43+08:00",
+        "method": "curl GET -sS -L --max-time 35; TLS verification enabled; status and effective URL captured separately"
+      },
+      "supporting_source_http_checks": [
+        {
+          "http_status": 200,
+          "effective_url": "https://tam.gov.taipei/cp.aspx?n=D7A6936DE433333F",
+          "page_title": "臺北市立天文科學教育館-開放時間-館區開放參觀時間",
+          "curl_exit": 0,
+          "error": "",
+          "checked_at": "2026-09-05T16:47:29+08:00",
+          "method": "curl GET -sS -L --max-time 35; TLS verification enabled; status and effective URL captured separately"
+        }
+      ],
+      "quantity_basis": "每人1張展示場普通票為比較單位；不保證劇場、宇宙探險、特展或其他另售服務可用。"
+    }
+  }
+]

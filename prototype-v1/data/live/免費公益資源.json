@@ -1,0 +1,557 @@
+[
+  {
+    "id": "r_lw01",
+    "category": "免費／公益資源",
+    "agent": "free",
+    "title": "法律諮詢（遠距：視訊、電話）",
+    "provider": "臺北市政府法務局",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每人每次",
+    "quantity_or_servings": "每人每天限1次法律諮詢，每次最多20分鐘",
+    "eligibility": [
+      "須網路預約一週內諮詢時段；每人每天限一次"
+    ],
+    "registration_required": true,
+    "availability_or_event_time": "上班日週一至週五09:00–12:00、14:00–17:00；視訊提前10分鐘登入",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "市級遠距服務，以視訊為比較範圍；不設實體地址或距離",
+    "tags": null,
+    "source_url": "https://legalaffairs.gov.taipei/cp.aspx?n=7AA92EECFD2E8668",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "免費提供諮詢服務",
+        "url": "https://legalaffairs.gov.taipei/cp.aspx?n=7AA92EECFD2E8668",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "每人每天限申請法律諮詢服務１次，每次諮詢時間以20分鐘為限。",
+        "url": "https://legalaffairs.gov.taipei/cp.aspx?n=7AA92EECFD2E8668",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "上班日週一至週五，上午9時至12時、下午2時至5時。",
+        "url": "https://legalaffairs.gov.taipei/cp.aspx?n=7AA92EECFD2E8668",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "全面採行網路預約制度",
+        "url": "https://legalaffairs.gov.taipei/cp.aspx?n=7AA92EECFD2E8668",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://legalaffairs.gov.taipei/cp.aspx?n=7AA92EECFD2E8668",
+    "action_label": "前往法律諮詢預約",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "臺北市遠距服務：圓山居民可透過電話或網路使用，非圓山實體據點。",
+      "review_notes": [
+        "僅收錄臺北市政府遠距法律諮詢，不把市府實體櫃檯說成圓山服務。",
+        "全面網路預約一週內時段；每人每天限一次、最多20分鐘，名額不保證。",
+        "免費僅指諮詢，不代寫訴狀。本筆以視訊使用為比較範圍，須自備網路；若選電話，需自行撥02-2725-6168，未宣稱通話免付費。"
+      ],
+      "scope_type": "taipei_remote",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://legalaffairs.gov.taipei/cp.aspx?n=7AA92EECFD2E8668",
+        "page_title": "臺北市政府法務局-本局日間法律諮詢-日間法律諮詢服務說明(113年1月1日起)",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:18+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  },
+  {
+    "id": "r_wf57",
+    "category": "免費／公益資源",
+    "agent": "free",
+    "title": "1957福利諮詢專線",
+    "provider": "衛生福利部",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每通",
+    "quantity_or_servings": "每通福利諮詢或通報轉介；單通分鐘數未明示",
+    "eligibility": [
+      "想了解或有社會福利需求者；本筆限市話、月租型手機或公共電話撥打"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "每日08:00–22:00，全年無休",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "全國電話服務；不做距離篩選",
+    "tags": null,
+    "source_url": "https://1957.mohw.gov.tw/about1957.jsp",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "使用市話、月租型手機、公共電話皆免付費。",
+        "url": "https://1957.mohw.gov.tw/about1957.jsp",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "各項社會福利諮詢與通報轉介服務。",
+        "url": "https://1957.mohw.gov.tw/about1957.jsp",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "每日上午8點至晚上10點，全年無休",
+        "url": "https://1957.mohw.gov.tw/about1957.jsp",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "想了解相關社會福利訊息或有各項社會福利需求之民眾。",
+        "url": "https://1957.mohw.gov.tw/about1957.jsp",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://1957.mohw.gov.tw/about1957.jsp",
+    "action_label": "查看1957服務說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "全國電話服務：圓山居民可使用，非圓山實體據點。",
+      "review_notes": [
+        "本筆為全國1957電話諮詢，不是圓山現場服務。",
+        "限官方明示的市話、月租型手機、公共電話免付費；其他方式未核實。",
+        "改用全年服務專頁；不再單靠春節新聞推定全年時段。",
+        "諮詢與通報轉介不代表已取得福利資格。"
+      ],
+      "scope_type": "national_remote",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://1957.mohw.gov.tw/about1957.jsp",
+        "page_title": "衛生福利部1957福利諮詢專線-關於1957",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:18+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  },
+  {
+    "id": "r_mh25",
+    "category": "免費／公益資源",
+    "agent": "free",
+    "title": "1925安心專線",
+    "provider": "衛生福利部心理健康司",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每通",
+    "quantity_or_servings": "每通心理諮詢；單通分鐘數未明示",
+    "eligibility": [
+      "有心理壓力或情緒困擾者"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "24小時",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "全國電話服務；不做距離篩選",
+    "tags": null,
+    "source_url": "https://dep.mohw.gov.tw/DOMHAOH/cp-4906-54077-107.html",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "提供24小時免付費心理諮詢服務。",
+        "url": "https://dep.mohw.gov.tw/DOMHAOH/cp-4906-54077-107.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "可撥打本部1925安心專線（依舊愛我）",
+        "url": "https://dep.mohw.gov.tw/DOMHAOH/cp-4906-54077-107.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "24小時",
+        "url": "https://dep.mohw.gov.tw/DOMHAOH/cp-4906-54077-107.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "您倘有心理壓力或情緒困擾",
+        "url": "https://dep.mohw.gov.tw/DOMHAOH/cp-4906-54077-107.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://dep.mohw.gov.tw/DOMHAOH/cp-4906-54077-107.html",
+    "action_label": "查看1925服務說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "全國電話服務：圓山居民可使用，非圓山實體據點。",
+      "review_notes": [
+        "舊來源HTTP404，改用心理健康司1925專頁（更新2025-08-28）。",
+        "全國電話服務；官方未承諾單通時長或即時接通。"
+      ],
+      "scope_type": "national_remote",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://dep.mohw.gov.tw/DOMHAOH/cp-4906-54077-107.html",
+        "page_title": "1925安心專線（依舊愛我）- 心理健康司",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:19+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  },
+  {
+    "id": "r_pr13",
+    "category": "免費／公益資源",
+    "agent": "free",
+    "title": "113保護專線",
+    "provider": "衛生福利部保護服務司",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每通",
+    "quantity_or_servings": "每通保護事件通報或求助諮詢；單通時長未明示",
+    "eligibility": [
+      "全國民眾可就家庭暴力、老人／身障／兒少保護、性侵害及性騷擾事件求助或通報"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "24小時全年無休",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "全國電話服務；不做距離篩選",
+    "tags": null,
+    "source_url": "https://dep.mohw.gov.tw/DOPS/cp-1183-6499-105.html",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "市話、公共電話或手機皆可撥打之24小時免付費專線",
+        "url": "https://dep.mohw.gov.tw/DOPS/cp-1183-6499-105.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "事件通報或求助諮詢",
+        "url": "https://dep.mohw.gov.tw/DOPS/cp-1183-6499-105.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "【服務時間】24小時全年無休",
+        "url": "https://dep.mohw.gov.tw/DOPS/cp-1183-6499-105.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "【服務對象】全國民眾",
+        "url": "https://dep.mohw.gov.tw/DOPS/cp-1183-6499-105.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://dep.mohw.gov.tw/DOPS/cp-1183-6499-105.html",
+    "action_label": "查看113服務說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "全國電話服務：圓山居民可使用，非圓山實體據點。",
+      "review_notes": [
+        "舊來源HTTP404，改用保護服務司113保護專線專頁（更新2024-05-24）。",
+        "受理家庭暴力、老人／身障／兒少保護、性侵害及性騷擾通報或求助；若有立即人身危險，官方提醒先撥110。",
+        "每通為比較單位，不承諾單通時長或後續處理結果。"
+      ],
+      "scope_type": "national_remote",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://dep.mohw.gov.tw/DOPS/cp-1183-6499-105.html",
+        "page_title": "113保護專線介紹- 保護服務司",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:18+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  },
+  {
+    "id": "r_mn99",
+    "category": "免費／公益資源",
+    "agent": "free",
+    "title": "男性關懷專線0800-013-999",
+    "provider": "衛生福利部心理健康司",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每通",
+    "quantity_or_servings": "每通傾聽及關係議題諮詢；單通時長未明示",
+    "eligibility": [
+      "有伴侶、婚姻、親子、家庭或職場困擾，需情緒抒發或關係諮詢的男性"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "每日07:00–23:00，全年無休",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "全國電話服務；不做距離篩選",
+    "tags": null,
+    "source_url": "https://dep.mohw.gov.tw/DOMHAOH/cp-465-83683-107.html",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "免費提供線上諮詢服務",
+        "url": "https://dep.mohw.gov.tw/DOMHAOH/cp-465-83683-107.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "只要一通電話，男性關懷專線將傾聽您的心情、與您討論關係議題",
+        "url": "https://dep.mohw.gov.tw/DOMHAOH/cp-465-83683-107.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "每日上午7點至晚上11點全年無休",
+        "url": "https://dep.mohw.gov.tw/DOMHAOH/cp-465-83683-107.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "您是否遇到在家伴侶、婚姻、親子、家庭或是職場中無處可說的「男言之隱」？",
+        "url": "https://dep.mohw.gov.tw/DOMHAOH/cp-465-83683-107.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://dep.mohw.gov.tw/DOMHAOH/cp-465-83683-107.html",
+    "action_label": "查看男性關懷專線",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "全國電話服務：圓山居民可使用，非圓山實體據點。",
+      "review_notes": [
+        "舊來源HTTP404；改用心理健康司男性關懷專線說明（更新2025-09-17），並更正提供機關。",
+        "官方文字的「線上諮詢」在本文指一通電話的傾聽服務；本筆不宣稱有未經核實的文字客服。",
+        "對象及議題按官方說明，未擅加戶籍或收入門檻。"
+      ],
+      "scope_type": "national_remote",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://dep.mohw.gov.tw/DOMHAOH/cp-465-83683-107.html",
+        "page_title": "【宣傳/單張】男性關懷專線宣導海報- 心理健康司",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:18+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  },
+  {
+    "id": "r_dr85",
+    "category": "免費／公益資源",
+    "agent": "free",
+    "title": "毒品危害防制諮詢專線",
+    "provider": "衛生福利部（法務部反毒大本營公告）",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每通",
+    "quantity_or_servings": "每通毒品危害防制電話諮詢；單通時長未明示",
+    "eligibility": [
+      "藥癮者、家屬親友或需要毒品防制資訊的一般民眾"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "24小時",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "全國電話服務；不做距離篩選",
+    "tags": null,
+    "source_url": "https://antidrug.moj.gov.tw/cp-1196-9016-1.html",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "24小時免付費毒品危害防制諮詢專線0800-770-885",
+        "url": "https://antidrug.moj.gov.tw/cp-1196-9016-1.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "電話求助管道",
+        "url": "https://antidrug.moj.gov.tw/cp-1196-9016-1.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "負責全時段接聽及諮詢服務",
+        "url": "https://antidrug.moj.gov.tw/cp-1196-9016-1.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "有需求之藥癮者及其親友、一般民眾",
+        "url": "https://antidrug.moj.gov.tw/cp-1196-9016-1.html",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://antidrug.moj.gov.tw/cp-1196-9016-1.html",
+    "action_label": "查看戒毒資源",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "全國電話服務：圓山居民可使用，非圓山實體據點。",
+      "review_notes": [
+        "舊來源HTTP404；改用法務部反毒大本營專線介紹（公告2024-09-19）。",
+        "服務由衛生福利部設置；2024-07-15起集中話務中心接聽，地方實質服務另轉介。",
+        "諮詢免費不代表後續治療、交通或其他服務免費。"
+      ],
+      "scope_type": "national_remote",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://antidrug.moj.gov.tw/cp-1196-9016-1.html",
+        "page_title": "簡介 - 反毒大本營-民眾版",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:18+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  },
+  {
+    "id": "r_c199",
+    "category": "免費／公益資源",
+    "agent": "free",
+    "title": "臺北市民當家熱線1999",
+    "provider": "臺北市政府",
+    "price_total_twd": 0,
+    "mandatory_fees_twd": 0,
+    "discount_twd": 0,
+    "price_unit": "每通",
+    "quantity_or_servings": "每通反映市政陳情需求；單通時長與處理結果未明示",
+    "eligibility": [
+      "直撥臺北市1999；公共電話、放心講及第二類電信不在免付費範圍",
+      "實名陳情案件須依官方身分查驗規定"
+    ],
+    "registration_required": false,
+    "availability_or_event_time": "24小時",
+    "valid_until": null,
+    "address": null,
+    "lat": null,
+    "lng": null,
+    "distance_or_time_text": "臺北市電話及網路服務；不做距離篩選",
+    "tags": null,
+    "source_url": "https://1999.gov.taipei/Front/main",
+    "source_type": "web-searched",
+    "source_authority": "official",
+    "evidence": [
+      {
+        "field": "價格",
+        "quote": "24小時免付費電話服務，公共電話，放心講及第二類電信除外",
+        "url": "https://1999.gov.taipei/Front/main",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "份量",
+        "quote": "如您以傳統市話或手機撥打1999反映",
+        "url": "https://1999.gov.taipei/Front/main",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "時間",
+        "quote": "24小時免付費電話服務",
+        "url": "https://1999.gov.taipei/Front/main",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      },
+      {
+        "field": "資格",
+        "quote": "公共電話，放心講及第二類電信除外",
+        "url": "https://1999.gov.taipei/Front/main",
+        "checked_at": "2026-09-05T16:36:29+08:00"
+      }
+    ],
+    "collected_at": "2026-09-05T16:25:43+08:00",
+    "verified_at": "2026-09-05T16:36:29+08:00",
+    "data_status": "已驗證",
+    "action_url": "https://1999.gov.taipei/Front/main",
+    "action_label": "查看1999使用說明",
+    "baseline": null,
+    "group_offer": null,
+    "extra": {
+      "research_batch": "yuanshan-2026-09-05",
+      "scope": "臺北市遠距服務：圓山居民可透過電話或網路使用，非圓山實體據點。",
+      "review_notes": [
+        "舊網址轉向現行臺北市陳情系統，已改存實際到達的官方網址。",
+        "本頁排除公共電話、放心講及第二類電信；撤回此前未經本頁支持的預付卡／漫遊列舉。",
+        "僅收錄本市1999直撥服務；外縣市轉碼、漫遊、網路電話及傳輸費未核實，不宣稱一律免費。",
+        "實名陳情案件須按規定經台北通驗證，或提供真實姓名及身分證字號，不是所有案件免身分條件。"
+      ],
+      "scope_type": "taipei_remote",
+      "source_http_check": {
+        "http_status": 200,
+        "effective_url": "https://1999.gov.taipei/Front/main",
+        "page_title": "臺北市陳情系統1999",
+        "curl_exit": 0,
+        "error": "",
+        "checked_at": "2026-09-05T16:38:18+08:00",
+        "method": "curl GET -sS -L --max-time 35; terminal write-out marker separated from HTML"
+      },
+      "quantity_basis": "每通／每人1次為比較單位，不是官方保證的接通、名額、處理件數或服務時長；明示限制另列。"
+    }
+  }
+]

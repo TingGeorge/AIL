@@ -35,7 +35,19 @@ jobs:
         with:
           bun-version: 1.4.0
       - run: bun install --frozen-lockfile
-      - run: ALLOW_DEMO_DATA=1 bun run db:import
+      - run: DATA_DIR=./data ALLOW_DEMO_DATA=1 bun run db:import
+      - run: bun run data:validate
       - run: bun run typecheck
       - run: bun test
       - run: bun run build
+      - run: bun run db:import && bun run data:check
+      - name: Five-category real-catalog HTTP smoke test
+        run: |
+          PORT=3100 bun run start > /tmp/ail-ci-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:3100/api/health >/dev/null; then break; fi
+            sleep 1
+          done
+          API_URL=http://127.0.0.1:3100 bun run data:smoke

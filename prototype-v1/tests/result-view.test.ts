@@ -270,3 +270,39 @@ test("DetailView：非樣本仍保留真實狀態與安全地圖、行動連結"
   expect(html).not.toContain("示範測試資料");
   expect(html).not.toContain("不可據此購買/前往");
 });
+
+
+test("ResultsView：目標類別優先顯示但五類全部保留", () => {
+  const html = renderToStaticMarkup(createElement(ResultsView, {
+    records:[rec({id:"food"}),rec({id:"home",category:"日用品",title:"優先生活用品"})],
+    pending:[],excluded:[],favs:[],survival:false,preferredCategories:["日用品","活動"],
+    onOpen:()=>{},onFavorite:()=>{},onAdjust:()=>{},
+  }));
+  const tabs = html.match(/<nav class="category-tabs"[\s\S]*?<\/nav>/)?.[0] ?? "";
+  expect(tabs.indexOf("日用品")).toBeLessThan(tabs.indexOf("活動"));
+  expect(tabs.indexOf("活動")).toBeLessThan(tabs.indexOf("食品"));
+  expect(tabs).toContain('aria-current="page"><span>日用品</span>');
+  expect((tabs.match(/<button class="category-tab /g)??[]).length).toBe(5);
+  expect(html).toContain("優先生活用品");
+  expect(html).toContain("仍搜尋全部五類");
+});
+
+test("ResultsView：優先類別零筆也不偷偷改選其他類別", () => {
+  const html = renderToStaticMarkup(createElement(ResultsView, {
+    records:[rec()],pending:[],excluded:[],favs:[],survival:false,preferredCategories:["活動"],
+    onOpen:()=>{},onFavorite:()=>{},onAdjust:()=>{},
+  }));
+  expect(html).toContain('aria-current="page"><span>活動</span><b>0</b>');
+  expect(html).toContain("這個類別沒有主要候選");
+});
+
+
+test("DetailView：零折扣不是免費，未知價格不能出現 FREE 標籤", () => {
+  const html = renderToStaticMarkup(createElement(DetailView, {
+    item:rec({price_total_twd:null,mandatory_fees_twd:null,data_status:"無法納入比較"}),
+    favorite:false,listed:false,onFavorite:()=>{},onList:()=>{},onReport:()=>{},
+  }));
+  expect(html).toContain("未知，總成本不可比較");
+  expect(html).toContain("<small>明確折扣</small><b>NT$0</b>");
+  expect(html).not.toContain("FREE");
+});

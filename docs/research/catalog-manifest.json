@@ -1,0 +1,354 @@
+{
+  "manifest_version": 1,
+  "description": "Curated first-party web evidence snapshot. Hashes confirm file identity, not factual accuracy or current stock. reviewed_at is the latest non-null candidate verified_at metadata; assessed_at is the current clock used for expiration and readiness assessment. Re-run source research to refresh facts.",
+  "batches": [
+    "yuanshan-2026-09-05"
+  ],
+  "reviewed_at": "2026-09-05T16:47:43+08:00",
+  "assessed_at": "2026-09-05T08:57:03.337Z",
+  "assessment": {
+    "total": 39,
+    "ignored": 1,
+    "categories": [
+      {
+        "category": "食品",
+        "total": 8,
+        "rankable": 8,
+        "pending": 0,
+        "target": 7,
+        "gap": 0
+      },
+      {
+        "category": "日用品",
+        "total": 7,
+        "rankable": 7,
+        "pending": 0,
+        "target": 7,
+        "gap": 0
+      },
+      {
+        "category": "免費／公益資源",
+        "total": 7,
+        "rankable": 7,
+        "pending": 0,
+        "target": 7,
+        "gap": 0
+      },
+      {
+        "category": "活動",
+        "total": 9,
+        "rankable": 7,
+        "pending": 2,
+        "target": 7,
+        "gap": 0
+      },
+      {
+        "category": "交通",
+        "total": 8,
+        "rankable": 8,
+        "pending": 0,
+        "target": 7,
+        "gap": 0
+      }
+    ],
+    "issues": [],
+    "ready": true
+  },
+  "coordinate_count": 11,
+  "baseline_count": 0,
+  "files": [
+    {
+      "file": "prototype-v1/data/live/交通.json",
+      "sha256": "4872ae6fbc7fdd81a4d06c3b182a21b70214a5ff8343c5f0faf44f95db378c90"
+    },
+    {
+      "file": "prototype-v1/data/live/免費公益資源.json",
+      "sha256": "3ce6888ab5177262c3132ec0c28ba2a163a57c548a31efcc8e0a35b3a7bc703d"
+    },
+    {
+      "file": "prototype-v1/data/live/日用品.json",
+      "sha256": "aa3024c50c92771e0f57967c3e6d2320bbcbe4b8e971b70410d95cde6364eb44"
+    },
+    {
+      "file": "prototype-v1/data/live/活動.json",
+      "sha256": "3cf7d01ce5228d0678182b3221b69529a22a1b3e2cf80f8b2900cea77a8cd207"
+    },
+    {
+      "file": "prototype-v1/data/live/食品.json",
+      "sha256": "07d32cf742451cb064bbc93da4dba07a05912a8bd9d7fed082b64c546001e1a8"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://1957.mohw.gov.tw/about1957.jsp",
+      "candidate_ids": [
+        "r_wf57"
+      ]
+    },
+    {
+      "url": "https://1999.gov.taipei/Front/main",
+      "candidate_ids": [
+        "r_c199"
+      ]
+    },
+    {
+      "url": "https://antidrug.moj.gov.tw/cp-1196-9016-1.html",
+      "candidate_ids": [
+        "r_dr85"
+      ]
+    },
+    {
+      "url": "https://dep.mohw.gov.tw/DOMHAOH/cp-465-83683-107.html",
+      "candidate_ids": [
+        "r_mn99"
+      ]
+    },
+    {
+      "url": "https://dep.mohw.gov.tw/DOMHAOH/cp-4906-54077-107.html",
+      "candidate_ids": [
+        "r_mh25"
+      ]
+    },
+    {
+      "url": "https://dep.mohw.gov.tw/DOPS/cp-1183-6499-105.html",
+      "candidate_ids": [
+        "r_pr13"
+      ]
+    },
+    {
+      "url": "https://legalaffairs.gov.taipei/cp.aspx?n=7AA92EECFD2E8668",
+      "candidate_ids": [
+        "r_lw01"
+      ]
+    },
+    {
+      "url": "https://linantai.taipei/cp.aspx?n=4BDF0CDB6F73C496",
+      "candidate_ids": [
+        "a_lant"
+      ]
+    },
+    {
+      "url": "https://tam.gov.taipei/cp.aspx?n=4193F69A8290441E",
+      "candidate_ids": [
+        "a_tam0"
+      ]
+    },
+    {
+      "url": "https://tam.gov.taipei/cp.aspx?n=D7A6936DE433333F",
+      "candidate_ids": [
+        "a_tam0"
+      ]
+    },
+    {
+      "url": "https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json",
+      "candidate_ids": [
+        "t_y2eg",
+        "t_y2es",
+        "t_y2fr"
+      ]
+    },
+    {
+      "url": "https://web.metro.taipei/pages2026/WebStation/056/1",
+      "candidate_ids": [
+        "t_h24r",
+        "t_h48v",
+        "t_h72x",
+        "t_m1dy",
+        "t_r14b"
+      ]
+    },
+    {
+      "url": "https://web.metro.taipei/pages2026/WebStation/056/8",
+      "candidate_ids": [
+        "t_r14b"
+      ]
+    },
+    {
+      "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4451",
+      "candidate_ids": [
+        "a_fm37"
+      ]
+    },
+    {
+      "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4515",
+      "candidate_ids": [
+        "a_cori"
+      ]
+    },
+    {
+      "url": "https://www.expopark.taipei/News_Photo_Content.aspx?n=247&s=4534",
+      "candidate_ids": [
+        "a_ctrl"
+      ]
+    },
+    {
+      "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/bastis-art-70147758",
+      "candidate_ids": [
+        "d_ik03"
+      ]
+    },
+    {
+      "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/bastis-art-70425627",
+      "candidate_ids": [
+        "d_ik01"
+      ]
+    },
+    {
+      "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/lillnaggen-art-40435406",
+      "candidate_ids": [
+        "d_ik04"
+      ]
+    },
+    {
+      "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-20567638",
+      "candidate_ids": [
+        "d_ik02"
+      ]
+    },
+    {
+      "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-30567614",
+      "candidate_ids": [
+        "d_ik07"
+      ]
+    },
+    {
+      "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-60527080",
+      "candidate_ids": [
+        "d_ik05"
+      ]
+    },
+    {
+      "url": "https://www.ikea.com.tw/zh/products/care-and-repair/cleaning-and-cleaning-accessories/pepprig-art-60533552",
+      "candidate_ids": [
+        "d_ik06"
+      ]
+    },
+    {
+      "url": "https://www.metro.taipei/cp.aspx?n=CEF54168B23F73B4&s=9D540D31C5F81237",
+      "candidate_ids": [
+        "t_h24r",
+        "t_h48v",
+        "t_h72x",
+        "t_m1dy"
+      ]
+    },
+    {
+      "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000037",
+      "candidate_ids": [
+        "f_m037"
+      ]
+    },
+    {
+      "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000038",
+      "candidate_ids": [
+        "f_m038"
+      ]
+    },
+    {
+      "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000858",
+      "candidate_ids": [
+        "f_m858"
+      ]
+    },
+    {
+      "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000859",
+      "candidate_ids": [
+        "f_m859"
+      ]
+    },
+    {
+      "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000977",
+      "candidate_ids": [
+        "f_m977"
+      ]
+    },
+    {
+      "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M000978",
+      "candidate_ids": [
+        "f_m978"
+      ]
+    },
+    {
+      "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001000",
+      "candidate_ids": [
+        "f_1000"
+      ]
+    },
+    {
+      "url": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001002",
+      "candidate_ids": [
+        "f_1002"
+      ]
+    },
+    {
+      "url": "https://www.mos.com.tw/menu/breakfast.aspx",
+      "candidate_ids": [
+        "f_1002",
+        "f_m037",
+        "f_m038",
+        "f_m858",
+        "f_m859",
+        "f_m977",
+        "f_m978"
+      ]
+    },
+    {
+      "url": "https://www.mos.com.tw/shop/search_detail.aspx?id=B088",
+      "candidate_ids": [
+        "f_1000",
+        "f_1002",
+        "f_m037",
+        "f_m038",
+        "f_m858",
+        "f_m859",
+        "f_m977",
+        "f_m978"
+      ]
+    },
+    {
+      "url": "https://www.ntsec.gov.tw/article/detail.aspx?a=23",
+      "candidate_ids": [
+        "a_ntsc"
+      ]
+    },
+    {
+      "url": "https://www.ntsec.gov.tw/article/detail.aspx?a=80",
+      "candidate_ids": [
+        "a_ntsc"
+      ]
+    },
+    {
+      "url": "https://www.tctcc.taipei/zh-tw/C/service/visiting/1/1.htm?1",
+      "candidate_ids": [
+        "a_conf"
+      ]
+    },
+    {
+      "url": "https://www.tfam.museum/Common/editor.aspx?ddlLang=zh-tw&id=230",
+      "candidate_ids": [
+        "a_tf30",
+        "a_tffr"
+      ]
+    },
+    {
+      "url": "https://www.travel.taipei/zh-tw/attraction/details/1612",
+      "candidate_ids": [
+        "a_botn"
+      ]
+    },
+    {
+      "url": "https://www.youbike.com.tw/region/taipei/news/service/65dc48e2b507cedede07c6e2/",
+      "candidate_ids": [
+        "t_y2eg",
+        "t_y2fr"
+      ]
+    },
+    {
+      "url": "https://www.youbike.com.tw/region/taipei/rate/",
+      "candidate_ids": [
+        "t_y2eg",
+        "t_y2es"
+      ]
+    }
+  ]
+}

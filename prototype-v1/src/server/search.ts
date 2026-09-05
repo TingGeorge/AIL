@@ -6,6 +6,7 @@ import { needSchema } from "../shared/need.ts";
 import { filterStage, haversineKm, rowToRec, type Rec } from "../shared/records.ts";
 import type { SearchEvent } from "../shared/search.ts";
 import { dbConfigured, sql } from "./db.ts";
+import { publicRecords } from "./catalog.ts";
 import { constraintWarnings, rankGroup, type RankingResult } from "./rank.ts";
 
 // 台灣範圍以外的座標當成沒有座標（SPEC-backend §7）。
@@ -45,7 +46,7 @@ search.post("/api/search", async (c) => {
   let recs: Rec[];
   try {
     // ponytail: 整表讀出、在 TypeScript 篩選。上限約 1 萬列，升級路徑是把條件推進 SQL WHERE。
-    recs = (await sql`select * from candidates`).map(rowToRec);
+    recs = publicRecords((await sql`select * from candidates`).map(rowToRec));
   } catch (error) {
     console.error("search_failed", error instanceof Error ? error.name : "unknown_error"); // 上游錯誤只寫 log，不回傳連線細節
     return c.json({ error: "search_failed", message: "搜尋失敗" }, 502);

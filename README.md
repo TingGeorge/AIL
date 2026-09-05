@@ -2,7 +2,7 @@
 
 保留 **All in Life MVP 的深色／螢光綠 UI**，接到 **main 的 Bun + Hono + PostgreSQL 後端**。找生活選項、核對來源與成本，登入後儲存收藏、清單及設定。
 
-> **目前附帶的是 10 筆虛構示範紀錄，不是真實店家清單。** 介面會標示「示範測試資料」，禁止以示範資料進行購買導向、地圖導航或兌換。正式展示前，請匯入有真實來源與證據的資料。
+> **預設使用 `data/live` 的五類第一手來源資料：39 筆公開、37 筆可比較、2 筆待確認。** 這是有限範圍的研究快照，不是全網資料或即時庫存。舊 10 筆虛構 fixture 只用於測試、預設不公開。詳見 [來源研究、涵蓋與限制](docs/research/README.md)。
 
 ## 這個分支結合了什麼？
 
@@ -41,12 +41,16 @@ cp -n .env.example .env
 2. 選擇資料來源：
 
 ```bash
-# 只用於本機開發／Demo；明確允許匯入附帶的虛構 fixture。
-ALLOW_DEMO_DATA=1 bun run db:import
+# 預設匯入 data/live 的五類真實來源資料；先驗證、再原子寫入。
+bun run data:validate
+bun run db:import
+bun run data:check
 
-# 或匯入真正來源的 JSON（請改成你自己的絕對路徑）。
+# 自訂經驗證的來源資料夾：
 DATA_DIR=/absolute/path/to/candidate-json bun run db:import
 ```
+
+舊示範資料不會刪除，但 API 預設不顯示。只有測試資料庫才使用 `DATA_DIR=./data ALLOW_DEMO_DATA=1 bun run db:import`；啟動時也需明確允許 demo 才會公開顯示。
 
 3. 啟動：
 
@@ -77,14 +81,14 @@ Bun 會同時提供 `dist/` 和 `/api/*`。正式部署需 HTTPS、資料庫備�
 | `STT_BASE_URL` / `STT_API_KEY` / `STT_MODEL` | OpenAI-format `/audio/transcriptions` |
 | `SUPPORT_EMAIL` | 可選；忘記密碼時顯示支援聯絡方式，未設定就不假造支援信箱 |
 | `PORT` | Bun 監聽埠，預設 3000 |
-| `DATA_DIR` / `ALLOW_DEMO_DATA` | 自訂匯入資料夹／明確允許示範資料 |
-| `GOOGLE_MAPS_API_KEY` | 留給既有離線資料處理；搜尋／瀏覽器不使用它、不曝光它 |
+| `DATA_DIR` / `ALLOW_DEMO_DATA` | 預設 `data/live`；自訂匯入資料夾／明確允許匯入與公開示範資料 |
+| `GOOGLE_MAPS_API_KEY` | 可留空；本批次只提升附官方證據的來源座標，無座標不猜測；未實作需 key 的批次 geocoding |
 
 Session 固定 **1,800 秒**，不是 sliding expiration；舊範本的 `AUTH_SESSION_TTL_SECONDS` 不再列出，避免看似可調但實際未生效。
 
 ## 驗證
 
-2026-09-05 本機隔離資料庫驗證：**101 通過、6 跳過、0 失敗**；型別檢查與正式版建置通過。
+2026-09-05 本機隔離資料庫驗證：**128 通過、6 跳過、0 失敗**（745 assertions）；型別檢查與正式版建置通過。
 
 ```bash
 # 必須使用獨立測試資料庫；匯入測試會 upsert fixture，不能指向正式資料庫。
@@ -96,13 +100,15 @@ bun run build
 
 - 沒有 `DATABASE_URL` 時 DB 測試會 skip；設了錯誤連線字串會失敗，不會偽裝測試通過。
 - 實際 provider 的 6 個需求解析測試，只有明確設定 provider 才執行。
-- CI 使用隔離 PostgreSQL，安裝鎖定依賴、匯入 fixture、檢查型別、測試、建置；不使用真實 provider key。
+- CI 使用隔離 PostgreSQL，安裝鎖定依賴、匯入 fixture、檢查型別、測試、建置，再匯入真實資料做五類 HTTP／SSE 驗收；不使用真實 provider key。
 - 瀏覽器人工驗證與限制詳見整合文件。尚未宣稱已部署到公開網址，亦未宣稱真實 STT／LLM 已驗收。
 
 ## 仍需明確知道的限制
 
+- 所選類別只決定優先顯示，依規格仍搜尋全部五類；不是類別硬篩選。
 - 人數／份量、日期、時段與資格部分仍是文字欄位，無法保證結構化硬篩選。未標示成分不等於無過敏原；距離未知不等於符合限制。
-- 現成 fixture 只有食品類；其餘類別介面與契約已接通，但空資料不會由 UI 假造。
+- 資料主要為圓山／大龍峒／花博，另含明示的士林場館、線上配送與全臺服務；與原 PRD 固定圓山範圍的差異記錄於整合文件，不保證全部是步行內選項。
+- 真實資料與測試 fixture 分開；首頁 `/api/catalog` 顯示實際資料庫五類涵蓋。網頁來源是查核快照，不代表即時價格、庫存、名額或完整覆蓋所有圓山商家。
 - 团購是商家優惠資訊與試算，不是成員管理、付款或下單。
 - 目前帳號 PUT 是完整文件、單分頁序列化；不同裝置同時儲存是最後寫入者優先，未實作多裝置衝突合併。
 - 登入限流是有上限的單程序防護；正式公開部署仍需 edge／反向代理針對註冊、搜尋、語音與回報設置流量／成本限制，多實例需共享限流。
