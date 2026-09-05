@@ -420,6 +420,7 @@
 
 /* Beat the later MVP badge's left offset and oversized hero icon. */
 .results-view-detail .image-badge-icon {
+  background: color-mix(in srgb, var(--lime) 80%, transparent);
   left: auto;
   width: 32px;
   height: 32px;
