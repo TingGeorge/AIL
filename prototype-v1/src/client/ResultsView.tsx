@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
 import {
   Bookmark,
   BusFront,
@@ -188,13 +188,12 @@ function StatusLine({ item }: { item: Rec }) {
 
 function RecordTerms({ item }: { item: Rec }) {
   const context = recordContext(item);
-  if (item.eligibility.length === 0 && !context.scope && !context.pricingContext && context.reviewNotes.length === 0) return null;
+  if (item.eligibility.length === 0 && !context.scope && context.reviewNotes.length === 0) return null;
 
   return (
     <div className="record-terms">
       {item.eligibility.length > 0 && <p>資格：{item.eligibility.join("、")}</p>}
       {context.scope && <p>適用範圍：{context.scope}</p>}
-      {context.pricingContext && <p>價格脈絡：{context.pricingContext}</p>}
       {context.reviewNotes.length > 0 && (
         <div className="review-notes">
           <b>審閱提醒</b>
@@ -294,11 +293,11 @@ function SecondaryBucket({
       <summary>
         <span>
           <b>{title}</b>
-          <small>{description}</small>
         </span>
         <strong>{items.length}</strong>
         <ChevronDown aria-hidden="true" />
       </summary>
+      <p className="bucket-description">{description}</p>
       {items.length === 0 ? (
         <p className="bucket-empty">此類別目前沒有項目。</p>
       ) : (
@@ -361,13 +360,11 @@ export function ResultsView({
   return (
     <section className="screen results-screen results-view" data-survival={survival}>
       <div className="results-intro">
-        <span className="kicker">CHECKED RESULTS · 主要候選</span>
         <h1>{categoryRecords.length ? `${categoryRecords.length} 個主要候選` : "這個類別目前沒有主要候選"}</h1>
         <p>
-          {category} · 通過資料閘門與可檢查條件
+          {category}
           {survival ? " · 生存模式" : ""}
         </p>
-        <p className="candidate-caveat">所選類別優先顯示，仍搜尋全部五類。人數、日期、時段與文字資格仍需依來源逐項確認；線上配送要核對運費與配送範圍，不同計價單位／份量（例如單人票）不可直接視為多人總價。</p>
       </div>
 
       <nav className="category-tabs" aria-label="結果類別">
@@ -422,6 +419,9 @@ export function ResultsView({
         </div>
       )}
 
+      <DetailDisclosure title="搜尋與比較說明">
+        <p className="candidate-caveat">主要候選通過資料閘門與可檢查條件。所選類別優先顯示，仍搜尋全部五類。人數、日期、時段與文字資格仍需依來源逐項確認；線上配送要核對運費與配送範圍，不同計價單位／份量（例如單人票）不可直接視為多人總價。</p>
+      </DetailDisclosure>
       <div className="secondary-results">
         <SecondaryBucket
           title="待確認"
@@ -443,6 +443,15 @@ export function ResultsView({
         />
       </div>
     </section>
+  );
+}
+
+function DetailDisclosure({ title, hint, children }: { title: string; hint?: string; children: ReactNode }) {
+  return (
+    <details className="detail-disclosure">
+      <summary><span>{title}</span>{hint && <small>{hint}</small>}<ChevronDown aria-hidden="true" /></summary>
+      <div className="disclosure-body">{children}</div>
+    </details>
   );
 }
 
@@ -578,12 +587,11 @@ export function DetailView({
   const demo = isDemoRecord(item);
   const verified = !demo && item.data_status === "已驗證";
   const total = comparableTotal(item);
+  const context = recordContext(item);
   const sourceUrl = safeHttpUrl(item.source_url);
   const actionUrl = demo ? null : safeHttpUrl(item.action_url);
   const hasCoordinates = item.lat !== null && item.lng !== null;
-  const mapQuery = hasCoordinates
-    ? `${item.lat},${item.lng}`
-    : item.address?.trim() || null;
+  const mapQuery = hasCoordinates ? `${item.lat},${item.lng}` : item.address?.trim() || null;
   const mapUrl = !demo && mapQuery
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
     : null;
@@ -593,7 +601,9 @@ export function DetailView({
     : distance === null || distance === undefined
       ? "無座標距離估算"
       : `直線 ${distance.toFixed(1)} km（估算）`;
+  const locationLabel = demo ? "測試地點，不可據此前往" : item.address?.trim() || detailDistance;
   const expired = isExpired(item);
+  const fees = item.mandatory_fees_twd;
 
   return (
     <section className={`screen detail-screen results-view-detail tone-${item.category}`}>
@@ -613,74 +623,73 @@ export function DetailView({
       {demo && (
         <aside className="demo-record-notice" role="note">
           <ShieldCheck aria-hidden="true" />
-          <span>
-            <strong>示範測試資料</strong>
-            <b>不可據此購買/前往；價格、地址、優惠皆測試資料。</b>
-            <small>來源連結僅展示資料與介面流程，不代表真實店家或現行方案。</small>
-          </span>
+          <span><strong>示範測試資料</strong><b>不可據此購買/前往；價格、地址、優惠皆測試資料。</b></span>
         </aside>
       )}
 
       <div className="detail-content">
         <span className="kicker">{item.provider} · {item.category}</span>
         <h1>{item.title}</h1>
-        <p className="detail-meta">
-          <MapPin aria-hidden="true" />
-          {detailDistance} · {exactText(item.distance_or_time_text, "交通時間未提供")}
-        </p>
+        <p className="detail-meta"><MapPin aria-hidden="true" /><span>{locationLabel}</span></p>
 
-        <div className="detail-score">
-          <div>
-            <span>總可比成本</span>
-            <strong>{total === null ? "未提供" : money(total)}</strong>
-            <small>價格＋必要費用－明確折扣</small>
-          </div>
-          <div>
-            <span>計價與份量</span>
-            <strong>計價：{exactText(item.price_unit, "單位未提供")}</strong>
-            <small>份量：{exactText(item.quantity_or_servings)}</small>
-          </div>
+        <div className="detail-price-summary">
+          <div><span>總可比成本</span><strong>{total === null ? "未提供" : money(total)}</strong></div>
+          <p>計價：{exactText(item.price_unit, "單位未提供")}</p>
         </div>
-
-        <div className="cost-breakdown">
-          <span><small>標示價格</small><b>{item.price_total_twd === null ? "未提供" : money(item.price_total_twd)}</b></span>
-          <span><small>必要費用</small><b>{item.mandatory_fees_twd === null ? "未知，總成本不可比較" : `NT$${item.mandatory_fees_twd.toLocaleString("zh-TW")}`}</b></span>
-          <span><small>明確折扣</small><b>{`NT$${item.discount_twd.toLocaleString("zh-TW")}`}</b></span>
-        </div>
-
-        <RecordTerms item={item} />
-
-        <div className="condition-box">
-          <Sparkles aria-hidden="true" />
-          <div>
-            <b>推薦理由</b>
-            <p>{exactText(item.reason, "未提供推薦理由")}</p>
+        {(fees !== 0 || item.eligibility.length > 0 || item.registration_required || expired || !verified) && (
+          <div className="detail-key-flags" aria-label="重要條件">
+            {fees !== 0 && <span>{fees === null ? "必要費用未知，總成本不可比較" : `含必要費用 ${money(fees)}`}</span>}
+            {item.eligibility.length > 0 && <span>需符合資格</span>}
+            {item.registration_required && <span>需報名</span>}
+            {expired && <span>已到期 · {dateLabel(item.valid_until)}</span>}
+            {!verified && <span>{demo ? "僅供測試" : item.data_status}</span>}
           </div>
+        )}
+        {context.scope && <p className="detail-scope">{context.scope}</p>}
+
+        <div className="detail-link-row">
+          <ExternalLinkButton href={mapUrl}><MapPin aria-hidden="true" />位置／地圖</ExternalLinkButton>
+          <ExternalLinkButton href={sourceUrl}><ReceiptText aria-hidden="true" />{demo ? "示範來源頁" : "原始來源"}</ExternalLinkButton>
+          {actionUrl && actionUrl !== sourceUrl && (
+            <ExternalLinkButton href={actionUrl}><CircleDollarSign aria-hidden="true" />{exactText(item.action_label, "前往行動頁")}</ExternalLinkButton>
+          )}
         </div>
+        <p className="detail-snapshot-note">{demo ? "示範資料不可用於購買、前往或兌換。" : "公開資料快照，價格與名額以來源為準。"}</p>
 
-        <div className="facts-grid">
-          <Fact label="資料狀態" value={demo ? "示範測試資料" : item.data_status} icon={CheckCircle2} />
-          <Fact label="可用／活動時間" value={exactText(item.availability_or_event_time)} icon={Clock3} />
-          <Fact label="資格限制" value={item.eligibility.length ? item.eligibility.join("、") : "未列資格條件"} icon={TicketCheck} />
-          <Fact label="是否需登記" value={item.registration_required ? "需要" : "不需要"} icon={Tag} />
-          <Fact label="有效期限" value={item.valid_until ? `${expired ? "已於" : "至"} ${dateLabel(item.valid_until)}${expired ? " 到期" : ""}` : "來源未明示"} icon={CalendarDays} />
-          <Fact label={demo ? "測試資料日期" : "資料確認"} value={dateLabel(item.verified_at)} icon={ShieldCheck} />
-          <Fact label="地址" value={demo && item.address ? `${item.address}（測試資料）` : exactText(item.address)} icon={MapPin} />
-          <Fact label="座標" value={hasCoordinates ? `${item.lat}, ${item.lng}${demo ? "（測試資料）" : ""}` : "未提供"} icon={MapPin} />
-        </div>
-
-        <GroupOfferPanel item={item} />
-
-        <section className="evidence-section">
-          <div className="section-heading">
-            <span>
-              <ReceiptText aria-hidden="true" />
-              <b>{demo ? "測試欄位與示範來源" : "成本與來源依據"}</b>
-              <small>{demo ? "非真實刊登 · 僅供流程測試" : `${SOURCE_TYPE_LABELS[item.source_type]} · ${AUTHORITY_LABELS[item.source_authority]}`}</small>
-            </span>
-            <strong>{item.evidence.length}</strong>
+        <DetailDisclosure title="價格與份量">
+          <p className="detail-explanation">價格＋必要費用－明確折扣</p>
+          <div className="cost-breakdown">
+            <span><small>標示價格</small><b>{item.price_total_twd === null ? "未提供" : money(item.price_total_twd)}</b></span>
+            <span><small>必要費用</small><b>{fees === null ? "未知，總成本不可比較" : `NT$${fees.toLocaleString("zh-TW")}`}</b></span>
+            <span><small>明確折扣</small><b>{`NT$${item.discount_twd.toLocaleString("zh-TW")}`}</b></span>
           </div>
+          <p className="detail-explanation">份量：{exactText(item.quantity_or_servings)}</p>
+          {context.pricingContext && <p className="detail-explanation">價格脈絡：{context.pricingContext}</p>}
+        </DetailDisclosure>
 
+        <DetailDisclosure title="適用條件與時間" hint={context.reviewNotes.length ? `${context.reviewNotes.length} 則提醒` : undefined}>
+          <RecordTerms item={item} />
+          <div className="facts-grid">
+            <Fact label="可用／活動時間" value={exactText(item.availability_or_event_time)} icon={Clock3} />
+            <Fact label="是否需登記" value={item.registration_required ? "需要" : "不需要"} icon={Tag} />
+            <Fact label="有效期限" value={item.valid_until ? `${expired ? "已於" : "至"} ${dateLabel(item.valid_until)}${expired ? " 到期" : ""}` : "來源未明示"} icon={CalendarDays} />
+            <Fact label="距離／交通" value={`${detailDistance} · ${exactText(item.distance_or_time_text, "交通時間未提供")}`} icon={MapPin} />
+            <Fact label="地址" value={demo && item.address ? `${item.address}（測試資料）` : exactText(item.address)} icon={MapPin} />
+          </div>
+          {item.reason?.trim() && <div className="condition-box"><Sparkles aria-hidden="true" /><div><b>推薦理由</b><p>{item.reason}</p></div></div>}
+        </DetailDisclosure>
+
+        {item.group_offer && <DetailDisclosure title="團購優惠" hint={`滿 ${item.group_offer.min_people} 人`}><GroupOfferPanel item={item} /></DetailDisclosure>}
+
+        <DetailDisclosure title={demo ? "測試欄位與示範來源" : "來源與查核"} hint={demo ? "測試資料" : dateLabel(item.verified_at)}>
+          <div className="facts-grid">
+            <Fact label="資料狀態" value={demo ? "示範測試資料" : item.data_status} icon={CheckCircle2} />
+            <Fact label={demo ? "測試資料日期" : "資料確認"} value={dateLabel(item.verified_at)} icon={ShieldCheck} />
+            <Fact label="座標" value={hasCoordinates ? `${item.lat}, ${item.lng}${demo ? "（測試資料）" : ""}` : "未提供"} icon={MapPin} />
+          </div>
+          <section className="evidence-section">
+            <h2>{demo ? "示範來源" : "成本與來源依據"}</h2>
+            <p className="detail-explanation">{demo ? "非真實刊登 · 僅供流程測試" : `${SOURCE_TYPE_LABELS[item.source_type]} · ${AUTHORITY_LABELS[item.source_authority]}`} · {item.evidence.length} 筆摘錄</p>
           {item.evidence.length === 0 ? (
             <p className="evidence-empty">來源未提供逐欄證據摘錄。</p>
           ) : (
@@ -709,27 +718,16 @@ export function DetailView({
           </div>
           {demo && <p className="demo-source-note">example.com 示範頁僅用來測試來源連結，不是可交易或可前往的真實刊登。</p>}
           {!sourceUrl && <p className="unsafe-link-note">來源網址缺少或不是可開啟的 http/https 連結。</p>}
-        </section>
-
-        <div className="detail-link-row">
-          <ExternalLinkButton href={mapUrl}><MapPin aria-hidden="true" />位置／地圖</ExternalLinkButton>
-          <ExternalLinkButton href={sourceUrl}><ReceiptText aria-hidden="true" />{demo ? "示範來源頁" : "原始來源"}</ExternalLinkButton>
-          {actionUrl && actionUrl !== sourceUrl && (
-            <ExternalLinkButton href={actionUrl}><CircleDollarSign aria-hidden="true" />{exactText(item.action_label, "前往行動頁")}</ExternalLinkButton>
-          )}
-        </div>
-        <p className={`fine-print ${demo ? "demo-fine-print" : ""}`}>{demo ? "示範資料不可用於購買、前往或兌換；所有欄位只用於測試。" : "請以原始來源為準；本畫面不推測即時庫存、名額、照片或成功結果。線上配送需核對運費與配送範圍；不同計價單位／份量（例如單人票）不可直接視為多人總價。"}</p>
+          </section>
+          <p className={`fine-print ${demo ? "demo-fine-print" : ""}`}>{demo ? "示範資料不可用於購買、前往或兌換；所有欄位只用於測試。" : "請以原始來源為準；本畫面不推測即時庫存、名額、照片或成功結果。線上配送需核對運費與配送範圍；不同計價單位／份量（例如單人票）不可直接視為多人總價。"}</p>
+        </DetailDisclosure>
       </div>
 
       <div className="detail-actions glass">
         <button type="button" onClick={onFavorite} className={favorite ? "saved" : ""} aria-pressed={favorite}>
-          <Bookmark aria-hidden="true" />
-          {favorite ? "已收藏" : "收藏"}
+          <Bookmark aria-hidden="true" />{favorite ? "已收藏" : "收藏"}
         </button>
-        <button type="button" onClick={onReport}>
-          <Flag aria-hidden="true" />
-          回報
-        </button>
+        <button type="button" onClick={onReport}><Flag aria-hidden="true" />回報</button>
         <button className="detail-primary" type="button" onClick={onList} aria-pressed={listed}>
           {demo ? (listed ? "從測試清單移除" : "加入測試清單") : (listed ? "從這次清單移除" : "加入這次清單")}
         </button>

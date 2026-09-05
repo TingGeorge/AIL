@@ -649,3 +649,79 @@
   .result-card,
   .result-bucket summary > svg { transition: none; }
 }
+
+/* Progressive disclosure: essentials first, source detail on demand. */
+.detail-disclosure {
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.detail-disclosure > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px 0;
+  list-style: none;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 650;
+}
+.detail-disclosure > summary::-webkit-details-marker { display: none; }
+.detail-disclosure > summary > span:first-child { flex: 1; min-width: 0; }
+.detail-disclosure > summary > small { color: var(--muted); font-size: 11px; font-weight: 500; }
+.detail-disclosure > summary > svg { flex: 0 0 16px; width: 16px; height: 16px; color: var(--muted); }
+.detail-disclosure[open] > summary > svg { transform: rotate(180deg); }
+.detail-disclosure > summary:hover { color: var(--lime); }
+.detail-disclosure > summary:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; border-radius: 6px; }
+.disclosure-body { padding: 0 0 16px; overflow-wrap: anywhere; }
+.results-view-detail .detail-hero { height: 112px; }
+.results-view-detail .detail-hero > .result-art { width: 64px; min-height: 64px; border-radius: 20px; box-shadow: none; }
+.results-view-detail .detail-hero > .result-art > svg { width: 28px; height: 28px; }
+.results-view-detail .detail-hero > .result-art > span { font-size: 10px; }
+.results-view-detail .detail-hero > .image-badge { left: auto; right: 14px; }
+.results-view-detail .detail-content { padding: 18px; }
+.results-view-detail .detail-content > .kicker { font-size: 11px; letter-spacing: 0; color: var(--muted); }
+.results-view-detail .detail-content > h1 { margin: 6px 0 10px; font-size: 25px; line-height: 1.35; }
+.results-view-detail .detail-meta { display: flex; align-items: flex-start; margin: 0; font-size: 12px; line-height: 1.6; color: var(--muted); }
+.results-view-detail .detail-meta > svg { flex: 0 0 14px; width: 14px; height: 14px; margin-top: 3px; }
+.detail-price-summary { display: flex; align-items: flex-end; gap: 20px; margin: 20px 0 12px; }
+.detail-price-summary > div { flex: 0 0 auto; }
+.detail-price-summary > div > span { color: var(--muted); font-size: 11px; }
+.detail-price-summary strong { display: block; margin-top: 4px; color: var(--lime); font-size: 32px; line-height: 1.15; }
+.detail-price-summary > p { min-width: 0; margin: 0 0 3px; color: #bec7bf; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.detail-key-flags { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 10px; color: var(--amber); font-size: 11px; line-height: 1.6; }
+.detail-scope { margin: 12px 0; color: #b6c0b7; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.results-view-detail .detail-link-row { margin-top: 14px; }
+.results-view-detail .source-link { min-height: 44px; font-size: 12px; }
+.detail-snapshot-note { margin: 10px 0 16px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.detail-explanation { margin: 10px 0; color: #bec7bf; font-size: 12px; line-height: 1.7; }
+.results-view-detail .disclosure-body .record-terms { margin: 0; border: 0; border-radius: 0; padding: 0; background: none; }
+.results-view-detail .disclosure-body .record-terms p,
+.results-view-detail .disclosure-body .review-notes { font-size: 12px; line-height: 1.75; }
+.results-view-detail .disclosure-body .facts-grid { grid-template-columns: 1fr; gap: 0; margin-top: 10px; }
+.results-view-detail .disclosure-body .facts-grid > div { padding: 10px 0; border: 0; border-bottom: 1px solid var(--border); border-radius: 0; background: none; }
+.results-view-detail .disclosure-body .facts-grid span { font-size: 11px; }
+.results-view-detail .disclosure-body .facts-grid strong { font-size: 12px; line-height: 1.65; }
+.results-view-detail .disclosure-body .cost-breakdown small { font-size: 10px; }
+.results-view-detail .disclosure-body .cost-breakdown b { font-size: 12px; overflow-wrap: anywhere; }
+.results-view-detail .disclosure-body .evidence-section { border: 0; padding: 0; background: none; }
+.results-view-detail .disclosure-body .evidence-section > h2 { margin: 14px 0 0; font-size: 14px; }
+.results-view-detail .disclosure-body .evidence-list blockquote { font-size: 12px; line-height: 1.7; }
+.results-view-detail .disclosure-body .evidence-list article > span,
+.results-view-detail .disclosure-body .evidence-list small,
+.results-view-detail .disclosure-body .source-meta,
+.results-view-detail .disclosure-body .fine-print { font-size: 11px; line-height: 1.6; }
+.results-view-detail .disclosure-body .evidence-list a { min-height: 44px; align-items: center; font-size: 12px; }
+.results-view .results-intro > h1 { font-size: 26px; margin-top: 0; }
+.results-view .results-intro > p { font-size: 12px; }
+.results-view .candidate-caveat,
+.bucket-description { margin: 0 0 12px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.result-bucket .bucket-description { padding: 0 12px; }
+.results-view .result-bucket > summary { min-height: 48px; }
+.results-view .result-bucket > summary b { font-size: 12px; }
+.results-view-detail .detail-actions button { font-size: 11px; }
+.results-view-detail .detail-actions .detail-primary { font-size: 12px; }
+.detail-page > .reports-panel.detail-disclosure { margin: 0 18px 18px; padding: 0; border: 0; border-top: 1px solid var(--border); border-radius: 0; background: none; }
+.reports-panel.detail-disclosure > summary > span { display: flex; align-items: center; gap: 8px; }
+.reports-panel.detail-disclosure > summary > span > svg { width: 16px; height: 16px; }
+.reports-panel.detail-disclosure .fine-print { font-size: 12px; }

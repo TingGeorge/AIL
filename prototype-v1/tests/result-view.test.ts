@@ -403,3 +403,63 @@ test("DetailView：未驗證及示範資料不套用已驗證小圖示", () => {
     expect(badge).toContain(item.data_status === "已驗證" ? "示範測試資料" : item.data_status);
   }
 });
+
+function collapsedMarkup(html: string): string {
+  return html.replace(/<details\b[^>]*>\s*<summary>([\s\S]*?)<\/summary>[\s\S]*?<\/details>/g, "$1");
+}
+
+test("DetailView：預設只顯示重點，完整價格、條件與來源可展開", () => {
+  const html = renderToStaticMarkup(createElement(DetailView, {
+    item: rec({
+      source_url: "https://merchant.test/listing",
+      address: "臺北市中山區測試路 8 號",
+      price_total_twd: 29,
+      mandatory_fees_twd: 59,
+      price_unit: "每支",
+      quantity_or_servings: "完整份量保留於價格區",
+      eligibility: ["會員專用"],
+      registration_required: true,
+      extra: { scope: "限線上取貨", review_notes: ["請先向店家確認現貨"] },
+      evidence: [{ field: "價格", quote: "原始來源完整摘錄", url: "https://merchant.test/evidence", checked_at: "2026-09-05" }],
+    }),
+    favorite: false, listed: false, onFavorite: () => {}, onList: () => {}, onReport: () => {},
+  }));
+  const initial = collapsedMarkup(html);
+  expect((html.match(/<details class="detail-disclosure">/g) ?? []).length).toBe(3);
+  expect(html).not.toMatch(/<details[^>]*\sopen(?:=|\s|>)/);
+  for (const essential of ["NT$88", "計價：每支", "含必要費用 NT$59", "需符合資格", "需報名", "限線上取貨", "1 則提醒", "位置／地圖", "原始來源", "加入這次清單"]) {
+    expect(initial).toContain(essential);
+  }
+  for (const detail of ["完整份量保留於價格區", "原始來源完整摘錄", "會員專用", "請先向店家確認現貨", "價格＋必要費用－明確折扣"]) {
+    expect(html).toContain(detail);
+    expect(initial).not.toContain(detail);
+  }
+  expect(html).not.toContain("未提供推薦理由");
+});
+
+test("DetailView：價格未知及過期待確認不可藏進展開區", () => {
+  const html = renderToStaticMarkup(createElement(DetailView, {
+    item: rec({ mandatory_fees_twd: null, data_status: "過期／待確認", valid_until: "2020-01-01", source_url: "https://merchant.test/listing" }),
+    favorite: false, listed: false, onFavorite: () => {}, onList: () => {}, onReport: () => {},
+  }));
+  const initial = collapsedMarkup(html);
+  expect(initial).toContain("必要費用未知，總成本不可比較");
+  expect(initial).toContain("過期／待確認");
+  expect(initial).toContain("已到期");
+  expect(initial).not.toContain("image-badge-icon");
+  expect(initial).not.toContain("FREE");
+});
+
+test("ResultsView：比較說明預設收合，分類、價格及操作保持可見", () => {
+  const html = renderToStaticMarkup(createElement(ResultsView, {
+    records: [rec()], pending: [], excluded: [], favs: [], survival: false,
+    onOpen: () => {}, onFavorite: () => {}, onAdjust: () => {},
+  }));
+  const initial = collapsedMarkup(html);
+  expect(initial).toContain("NT$300");
+  expect(initial).toContain("調整需求與限制");
+  expect(initial).toContain("搜尋與比較說明");
+  expect(initial).not.toContain("線上配送要核對運費");
+  expect(html).toContain("線上配送要核對運費");
+  expect(html).not.toContain("CHECKED RESULTS");
+});

@@ -27,3 +27,15 @@ html,body,#root{min-height:100%;margin:0}body{font-family:var(--font-geist-sans)
 .settings-screen > .pwa-card > .section-copy {
   margin: 0;
 }
+
+/* Keep primary flows quiet; expand explanations only when needed. */
+.home-greeting h1 { font-size: 30px; }
+.home-greeting .avatar-button { margin-top: 0; }
+.service-note { margin: 10px 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.home-screen .quick-team { min-height: 58px; }
+.filters-screen > h1,
+.saved-screen > h1,
+.team-screen > h1,
+.compact-account > h1,
+.compact-settings > h1 { font-size: 28px; line-height: 1.3; }
+.need-editor .need-extra .field:first-child { margin-top: 8px; }
