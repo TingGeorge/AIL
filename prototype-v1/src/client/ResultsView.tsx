@@ -5,6 +5,7 @@ import {
   CalendarDays,
   CheckCircle2,
   ChevronDown,
+  ChevronRight,
   CircleDollarSign,
   Clock3,
   Copy,
@@ -185,26 +186,9 @@ function StatusLine({ item }: { item: Rec }) {
   );
 }
 
-function RecordTerms({ item, compact = false }: { item: Rec; compact?: boolean }) {
+function RecordTerms({ item }: { item: Rec }) {
   const context = recordContext(item);
   if (item.eligibility.length === 0 && !context.scope && !context.pricingContext && context.reviewNotes.length === 0) return null;
-
-  if (compact) {
-    return (
-      <span className="record-terms record-terms-compact">
-        {item.eligibility.length > 0 && <span>資格：{item.eligibility.join("、")}</span>}
-        {context.scope && <span>適用範圍：{context.scope}</span>}
-        {context.pricingContext && <span>價格脈絡：{context.pricingContext}</span>}
-        {context.reviewNotes.length > 0 && (
-          <span className="review-notes">
-            <b>審閱提醒</b>
-            <span>{context.reviewNotes[0]}</span>
-            {context.reviewNotes.length > 1 && <span>另有 {context.reviewNotes.length - 1} 項提醒，點開詳情查看完整查核內容。</span>}
-          </span>
-        )}
-      </span>
-    );
-  }
 
   return (
     <div className="record-terms">
@@ -236,19 +220,15 @@ function ResultCard({
   onFavorite: () => void;
   compact?: boolean;
 }) {
-  const distance = item.distance_km;
-  const supporting = [
-    item.distance_or_time_text,
-    distance === null || distance === undefined ? null : `直線 ${distance.toFixed(1)} km（估算）`,
-    item.availability_or_event_time,
-  ].filter((value): value is string => Boolean(value));
-
   const demo = isDemoRecord(item);
+  const context = recordContext(item);
+  const hasTerms = item.eligibility.length > 0 || item.registration_required
+    || Boolean(context.pricingContext) || context.reviewNotes.length > 0;
+  const fees = item.mandatory_fees_twd;
 
   return (
-    <article className={`result-card tone-${item.category} ${compact ? "result-card-compact" : ""} ${demo ? "result-card-demo" : ""}`}>
+    <article className={`result-card result-card-summary tone-${item.category} ${compact ? "result-card-compact" : ""} ${demo ? "result-card-demo" : ""}`}>
       <button className="result-open" type="button" onClick={onOpen} aria-label={`查看 ${item.title} 詳情`}>
-        <CategoryArt category={item.category} />
         <span className="result-body">
           <span className="result-meta">
             <span>{String(index + 1).padStart(2, "0")} · {item.category}</span>
@@ -256,22 +236,27 @@ function ResultCard({
           </span>
           <span className="result-title">{item.title}</span>
           <span className="result-copy">{item.provider}</span>
-          <span className="price-row">
-            <strong><small>總可比成本</small>{priceLabel(item)}</strong>
-            <span className="price-basis">
-              <b>計價：{exactText(item.price_unit, "單位未提供")}</b>
-              <small>份量：{exactText(item.quantity_or_servings, "未提供")}</small>
-              {item.mandatory_fees_twd !== 0 && <small>{item.mandatory_fees_twd === null ? "必要費用未知" : `已含必要費用 ${money(item.mandatory_fees_twd)}`}</small>}
+          <span className="result-price">
+            <strong className={comparableTotal(item) === null ? "result-price-unknown" : undefined}>
+              <small>總可比成本</small>{priceLabel(item)}
+            </strong>
+            <span className="result-unit">計價：{exactText(item.price_unit, "單位未提供")}</span>
+          </span>
+          {(fees !== 0 || item.eligibility.length > 0 || item.registration_required) && (
+            <span className="result-flags">
+              {fees !== 0 && <span>{fees === null ? "必要費用未知" : `含必要費用 ${money(fees)}`}</span>}
+              {item.eligibility.length > 0 && <span>需符合資格</span>}
+              {item.registration_required && <span>需報名</span>}
+            </span>
+          )}
+          <span className="result-footer">
+            <span className="result-scope" title={context.scope ?? undefined}>
+              {demo ? "測試資料，不可據此購買／前往" : context.scope}
+            </span>
+            <span className="result-detail-link">
+              {hasTerms ? "條件與詳情" : "查看詳情"}<ChevronRight aria-hidden="true" />
             </span>
           </span>
-          <span className="result-condition">
-            <Sparkles aria-hidden="true" />
-            {exactText(item.reason, "未提供推薦理由")}
-          </span>
-          {supporting.length > 0 && (
-            <span className="result-supporting">{supporting.join(" · ")}</span>
-          )}
-          <RecordTerms item={item} compact />
         </span>
       </button>
       <button

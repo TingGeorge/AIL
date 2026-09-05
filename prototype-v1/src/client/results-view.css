@@ -291,11 +291,6 @@
 .review-notes > b { display: block; color: var(--amber); font-size: 10px; }
 .review-notes ul { margin: 5px 0 0; padding-left: 15px; }
 .review-notes li + li { margin-top: 3px; }
-.record-terms-compact { display: block; margin-top: 8px; padding: 7px 8px; font-size: 10px; line-height: 1.55; }
-.record-terms-compact > span { display: block; overflow-wrap: anywhere; }
-.record-terms-compact > span + span { margin-top: 3px; }
-.record-terms-compact .review-notes { display: block; margin-top: 5px; padding-top: 5px; }
-.record-terms-compact .review-notes > span { display: block; margin-top: 2px; }
 
 .save-fab {
   width: 34px;
@@ -363,8 +358,7 @@
 .result-bucket[open] summary { border-bottom: 1px solid var(--border); }
 .result-list-secondary { padding: 10px; }
 .result-card-compact { min-height: 150px; }
-.result-card-compact .result-open { min-height: 150px; grid-template-columns: 78px minmax(0, 1fr); }
-.result-card-compact .result-art > svg { width: 24px; }
+.result-card-compact .result-open { min-height: 150px; }
 .result-card-compact .result-title { font-size: 14px; }
 .bucket-empty { margin: 0; padding: 14px; color: var(--muted); font-size: 9px; }
 
@@ -579,8 +573,54 @@
   border: 0;
 }
 
+/* The results list is a compact summary; the detail view retains full evidence. */
+.result-card.result-card-summary {
+  min-height: 0;
+  border-radius: 16px;
+  box-shadow: none;
+}
+.result-card-summary .result-open {
+  display: block;
+  min-height: 0;
+  padding: 14px;
+}
+.result-card-summary .result-body { display: block; padding: 0; }
+.result-card-summary .result-meta { min-height: 18px; padding-right: 42px; font-size: 10px; }
+.result-card-summary .result-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin-top: 7px;
+  padding-right: 38px;
+  font-size: 16px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.result-card-summary .result-copy {
+  margin-top: 3px;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.result-price { display: flex; align-items: flex-end; gap: 12px; margin-top: 12px; }
+.result-price > strong { flex: 0 0 auto; color: var(--card-accent); font-size: 25px; line-height: 1.1; letter-spacing: -0.04em; }
+.result-price > strong > small { display: block; margin-bottom: 3px; color: var(--muted); font-size: 9px; font-weight: 500; letter-spacing: 0; }
+.result-price > strong.result-price-unknown { font-size: 16px; letter-spacing: 0; }
+.result-unit { min-width: 0; color: #bac3bb; font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
+.result-flags { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 7px; color: var(--amber); font-size: 10px; line-height: 1.5; }
+.result-footer { display: flex; align-items: center; gap: 12px; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--border); font-size: 10px; line-height: 1.5; }
+.result-scope { flex: 1; min-width: 0; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.result-detail-link { display: inline-flex; align-items: center; gap: 3px; flex: 0 0 auto; color: #d9e0da; }
+.result-detail-link svg { width: 12px; height: 12px; }
+.result-card-summary .save-fab { top: 7px; right: 7px; width: 44px; height: 44px; border: 0; border-radius: 12px; background: transparent; backdrop-filter: none; }
+.result-card-summary .save-fab svg { width: 18px; height: 18px; }
+.result-card-summary .save-fab:hover { background: rgb(255 255 255 / 0.06); }
+.result-card-summary .result-open:focus-visible,
+.result-card-summary .save-fab:focus-visible { outline: 2px solid var(--card-accent); outline-offset: -3px; }
+
 @media (max-width: 350px) {
-  .result-open { grid-template-columns: 82px minmax(0, 1fr); }
   .result-art > span { font-size: 8px; }
   .facts-grid { grid-template-columns: 1fr; }
   .filter-summary { font-size: 9px; }

@@ -121,7 +121,7 @@ test("CatalogNotice：零筆資料仍正常顯示五類零值與未知確認時�
   expect((html.match(/0 筆/g) ?? []).length).toBeGreaterThanOrEqual(5);
 });
 
-test("ResultsView 與 DetailView：安全顯示計價份量、資格、範圍、價格脈絡與審閱提醒", () => {
+test("ResultsView 保留必要摘要，DetailView 安全保留完整份量、資格與查核內容", () => {
   const item = rec({
     extra: {
       scope: "僅配送臺北市指定行政區",
@@ -134,32 +134,40 @@ test("ResultsView 與 DetailView：安全顯示計價份量、資格、範圍、
 
   for (const html of [resultsHtml, detailHtml]) {
     expect(html).toContain("計價：每人一張");
-    expect(html).toContain("份量：1 人");
-    expect(html).toContain("資格：限會員本人使用");
     expect(html).toContain("僅配送臺北市指定行政區");
-    expect(html).toContain("此價格為單人票，不是兩人合計");
-    expect(html).toContain("運費另計，偏遠地區不配送");
-
     expect(html).not.toContain("<script>不可執行</script>");
     expect(html).toContain("不同計價單位／份量");
   }
+  expect(resultsHtml).toContain("需符合資格");
+  expect(resultsHtml).toContain("條件與詳情");
+  expect(resultsHtml).not.toContain("此價格為單人票，不是兩人合計");
+  expect(resultsHtml).not.toContain("運費另計，偏遠地區不配送");
+  expect(detailHtml).toContain("份量：1 人");
+  expect(detailHtml).toContain("資格：限會員本人使用");
+  expect(detailHtml).toContain("此價格為單人票，不是兩人合計");
+  expect(detailHtml).toContain("運費另計，偏遠地區不配送");
 });
 
 test("ResultsView 摘要提醒，DetailView 保留全部並安全轉義", () => {
   const item = rec({ extra: { review_notes: ["必要條件", "<script>不可執行</script>"] } });
   const results = renderToStaticMarkup(createElement(ResultsView, { records: [item], ...viewProps }));
   const detail = renderToStaticMarkup(createElement(DetailView, { item, ...detailProps }));
-  expect(results).toContain("另有 1 項提醒");
+  expect(results).toContain("條件與詳情");
+  expect(results).not.toContain("必要條件");
+  expect(detail).toContain("必要條件");
   expect(detail).toContain("&lt;script&gt;不可執行&lt;/script&gt;");
   expect(detail).not.toContain("<script>不可執行</script>");
 });
 
-test("ResultsView：review_notes 單一字串會原樣安全顯示", () => {
+test("review_notes 單一字串在精簡卡片提示詳情，並在詳情原樣顯示", () => {
   const item = rec({ extra: { review_notes: "運費以結帳頁顯示為準" } });
   const html = renderToStaticMarkup(createElement(ResultsView, { records: [item], ...viewProps }));
 
-  expect(html).toContain("審閱提醒");
-  expect(html).toContain("運費以結帳頁顯示為準");
+  expect(html).toContain("條件與詳情");
+  expect(html).not.toContain("運費以結帳頁顯示為準");
+  const detail = renderToStaticMarkup(createElement(DetailView, { item, ...detailProps }));
+  expect(detail).toContain("審閱提醒");
+  expect(detail).toContain("運費以結帳頁顯示為準");
 });
 
 test("ResultsView 與 DetailView：沒有 extra 文字時不捏造審閱內容，未知必要費用不當成零", () => {

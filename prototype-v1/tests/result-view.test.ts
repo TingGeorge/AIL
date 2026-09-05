@@ -63,7 +63,7 @@ test("ResultsView：五個後端類別都出現，推薦順序保留伺服器陣
   expect(html.indexOf("後端第一")).toBeLessThan(html.indexOf("後端第二"));
   expect(html).toContain("通過資料閘門與可檢查條件");
   expect(html).toContain("文字資格仍需依來源逐項確認");
-  expect(html).toContain("未提供推薦理由");
+  expect(html).not.toContain("未提供推薦理由");
   expect(html).not.toContain("可行選擇");
   expect(html).not.toContain("CP");
 });
@@ -304,5 +304,61 @@ test("DetailView：零折扣不是免費，未知價格不能出現 FREE 標籤"
   }));
   expect(html).toContain("未知，總成本不可比較");
   expect(html).toContain("<small>明確折扣</small><b>NT$0</b>");
+  expect(html).not.toContain("FREE");
+});
+
+
+test("ResultsView：精簡卡片移除分類圖區，保留含費總價、計價與收藏入口", () => {
+  const html = renderToStaticMarkup(createElement(ResultsView, {
+    records: [rec({
+      category: "日用品", title: "BÄSTIS 毛絮黏把", provider: "IKEA 台灣",
+      price_total_twd: 29, mandatory_fees_twd: 59,
+      price_unit: "每支（膠紙總長7.5公尺）", quantity_or_servings: "完整份量說明只在詳情",
+      reason: "完整推薦理由只在詳情", availability_or_event_time: "完整庫存查核只在詳情",
+      extra: { scope: "線上／超商取貨；未確認附近現貨", pricing_context: "完整價格脈絡只在詳情" },
+    })],
+    pending: [], excluded: [], favs: ["r1"], survival: false,
+    onOpen: () => {}, onFavorite: () => {}, onAdjust: () => {},
+    preferredCategories: ["日用品"],
+  }));
+  expect(html).not.toContain('class="result-art"');
+  expect(html).not.toContain('class="record-terms');
+  expect(html).toContain("IKEA 台灣");
+  expect(html).toContain("NT$88");
+  expect(html).toContain("計價：每支（膠紙總長7.5公尺）");
+  expect(html).toContain("含必要費用 NT$59");
+  expect(html).toContain("線上／超商取貨；未確認附近現貨");
+  expect(html).toContain("條件與詳情");
+  expect(html).toContain('aria-label="查看 BÄSTIS 毛絮黏把 詳情"');
+  expect(html).toContain('aria-pressed="true" aria-label="取消收藏 BÄSTIS 毛絮黏把"');
+  expect(html).not.toContain("完整份量說明只在詳情");
+  expect(html).not.toContain("完整推薦理由只在詳情");
+  expect(html).not.toContain("完整庫存查核只在詳情");
+  expect(html).not.toContain("完整價格脈絡只在詳情");
+});
+
+test("ResultsView：精簡卡片仍標示免費項目的資格與報名限制", () => {
+  const html = renderToStaticMarkup(createElement(ResultsView, {
+    records: [rec({ price_total_twd: 0, eligibility: ["限會員本人"], registration_required: true })],
+    pending: [], excluded: [], favs: [], survival: false,
+    onOpen: () => {}, onFavorite: () => {}, onAdjust: () => {},
+  }));
+  expect(html).toContain("FREE");
+  expect(html).toContain("需符合資格");
+  expect(html).toContain("需報名");
+  expect(html).toContain("條件與詳情");
+  expect(html).not.toContain("含必要費用");
+});
+
+test("ResultsView：待確認與排除區同樣精簡，未知費用不能呈現免費", () => {
+  const html = renderToStaticMarkup(createElement(ResultsView, {
+    records: [], pending: [rec({ mandatory_fees_twd: null, price_total_twd: 0, data_status: "無法納入比較" })],
+    excluded: [rec({ id: "excluded", data_status: "無法納入比較" })],
+    favs: [], survival: false, onOpen: () => {}, onFavorite: () => {}, onAdjust: () => {},
+  }));
+  expect((html.match(/result-card-summary/g) ?? []).length).toBe(2);
+  expect(html).not.toContain('class="result-art"');
+  expect(html).toContain("總成本不可比較");
+  expect(html).toContain("必要費用未知");
   expect(html).not.toContain("FREE");
 });
