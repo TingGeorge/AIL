@@ -159,6 +159,11 @@ const homePrompts = [
   '想少走一點，還是多省一點？',
   '揪朋友一起，能省多少？',
 ];
+const modeNeedExamples: Record<Mode, string> = {
+  daily: '今晚兩人吃飯，可以外帶，不吃堅果',
+  team: '今晚想揪 5 人吃火鍋，每人預算 NT$500',
+  zero: '今晚想找圓山附近的免費活動，最好有冷氣',
+};
 const results: Result[] = [
   {
     id: 'jianjia',
@@ -662,7 +667,7 @@ export default function App() {
     signedIn: false,
   });
   const [mode, setMode] = useState<Mode>('daily');
-  const [need, setNeed] = useState('今晚兩人吃飯，可以外帶，不吃堅果');
+  const [need, setNeed] = useState(modeNeedExamples.daily);
   const [filters, setFilters] = useState<Filters>(() => {
     const now = taipeiDateTime();
     return {
@@ -830,6 +835,11 @@ export default function App() {
     if (!('geolocation' in navigator)) {
       queueMicrotask(() => setLocationStatus('此裝置不支援定位'));
       queueMicrotask(() => setLocationPermission('denied'));
+      return;
+    }
+    if (!window.isSecureContext) {
+      queueMicrotask(() => setLocationStatus('定位需要 HTTPS 安全連線'));
+      queueMicrotask(() => setLocationPermission('denied'));
     }
   }, []);
 
@@ -837,6 +847,11 @@ export default function App() {
     if (!('geolocation' in navigator)) {
       setLocationPermission('denied');
       setLocationStatus('此裝置不支援定位');
+      return;
+    }
+    if (!window.isSecureContext) {
+      setLocationPermission('denied');
+      setLocationStatus('定位需要 HTTPS 安全連線');
       return;
     }
     setLocationPermission('requesting');
@@ -850,7 +865,7 @@ export default function App() {
         setLocationPermission('denied');
         setLocationStatus('未取得定位，將使用圓山站估算');
       },
-      { timeout: 8000, maximumAge: 300000 },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 },
     );
   }
 
@@ -865,6 +880,7 @@ export default function App() {
   }
   function chooseMode(next: Mode) {
     setMode(next);
+    setNeed(modeNeedExamples[next]);
     const budget = next === 'zero' ? 0 : next === 'team' ? 800 : 500;
     setFilters((current) => ({
       ...current,
@@ -1841,6 +1857,7 @@ function HomeScreen({
           <Pencil />
           <textarea
             value={need}
+            placeholder={modeNeedExamples[mode]}
             onChange={(e) => onNeed(e.target.value)}
             aria-label="文字輸入需求"
           />
