@@ -377,7 +377,7 @@
         <article class="card">
           <div class="card-head"><span>真正需要 DB</span><span class="db db-required">需要：共享／持久化</span></div>
           <h3>共享狀態與長期資料</h3>
-          <p>Account、auth sessions、真實使用者回報、揪團成員／加入代碼，以及要跨請求保存的候選紀錄、來源、證據與驗證狀態。</p>
+          <p>Account、auth sessions、帳號資料（清單、收藏、設定）、真實使用者回報，以及事先匯入的候選紀錄、來源、證據與驗證狀態。揪團改為純顯示，不需要 DB。</p>
         </article>
         <article class="card">
           <div class="card-head"><span>看產品選擇</span><span class="db db-optional">可選：快取／持久化</span></div>
@@ -406,11 +406,11 @@
         </article>
         <article class="card">
           <div class="card-head"><span>目前只能在 Preview／本地看到</span><span class="status status-preview">預覽／Mock</span></div>
-          <p>兩 Agent 進度、15 筆候選資料、證據卡片、節省比較、揪團成員與部分回報效果。Preview records 是 fabricated data。</p>
+          <p>兩 Agent 進度、15 筆候選資料、證據卡片、節省比較與部分回報效果。Preview records 是 fabricated data；揪團成員 UI 將移除。</p>
         </article>
         <article class="card">
           <div class="card-head"><span>產品有規格，但程式尚未完成</span><span class="status status-designed">只有規格</span></div>
-          <p>真實兩 Agent 搜尋、來源抓取、正規化、server-side 品質閘門、Auth routes、Database schema implementation、partial result 與來源刷新。</p>
+          <p>第一階段篩選、兩 Agent 按類別並行推薦排序、SSE 搜尋 API、Auth routes、Database schema、帳號資料與回報 API、partial result。規格見 docs/SPEC-backend.md；資料匯入另行處理。</p>
         </article>
       </div>
     </section>
@@ -444,12 +444,14 @@
     <section>
       <h2>程式與文件入口</h2>
       <div class="sources">
+        <article class="source-card"><a href="../../docs/SPEC-backend.md">docs/SPEC-backend.md</a><p>Backend 正式規格：本機 PostgreSQL、candidates 表、兩階段搜尋（篩選 → 每類並行 LLM 排序）、SSE 搜尋 API、Auth、回報與純顯示揪團。</p></article>
+        <article class="source-card"><a href="backend-design.md">engineering/backend-design.md</a><p>指標檔，內容已併入 docs/SPEC-backend.md。</p></article>
         <article class="source-card"><a href="../../docs/PRD-all-in-life.md">docs/PRD-all-in-life.md</a><p>完整產品功能、兩 Agent、Auth、資料品質、結果顯示、隱私與 roadmap。</p></article>
         <article class="source-card"><a href="../../docs/SPEC-voice-input.md">docs/SPEC-voice-input.md</a><p>語音／文字輸入、Need schema、Auth API contract 與 fallback 行為。</p></article>
-        <article class="source-card"><a href="../../src/client/App.tsx">src/client/App.tsx</a><p>主要 route、工作階段狀態、輸入流程、設定、清單與 preview switch。</p></article>
-        <article class="source-card"><a href="../../src/client/records.ts">src/client/records.ts</a><p>候選結果型別、資料狀態、成本計算、硬限制與排序。</p></article>
-        <article class="source-card"><a href="../../src/server/index.ts">src/server/index.ts</a><p>目前真正存在的 Hono backend routes 與靜態檔案服務。</p></article>
-        <article class="source-card"><a href="../../src/client/mockResults.ts">src/client/mockResults.ts</a><p>Preview 用 fabricated records、reports 與 team joiners。</p></article>
+        <article class="source-card"><a href="../../old_version/src/client/App.tsx">old_version/src/client/App.tsx</a><p>主要 route、工作階段狀態、輸入流程、設定、清單與 preview switch。</p></article>
+        <article class="source-card"><a href="../../old_version/src/client/records.ts">old_version/src/client/records.ts</a><p>候選結果型別、資料狀態、成本計算、硬限制與排序。</p></article>
+        <article class="source-card"><a href="../../old_version/src/server/index.ts">old_version/src/server/index.ts</a><p>目前真正存在的 Hono backend routes 與靜態檔案服務。</p></article>
+        <article class="source-card"><a href="../../old_version/src/client/mockResults.ts">old_version/src/client/mockResults.ts</a><p>Preview 用 fabricated records、reports 與 team joiners。</p></article>
       </div>
     </section>
 

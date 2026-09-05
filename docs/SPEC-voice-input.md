@@ -1,8 +1,8 @@
 # ALL in life — 語音輸入規格（Voice Input Spec）
 
 - 文件狀態：Hackathon MVP build spec
-- 版本：v0.2
-- 日期：2026-09-04
+- 版本：v0.3
+- 日期：2026-09-05
 - 上游文件：[PRD-all-in-life.md](./PRD-all-in-life.md)（FR-02、FR-03、FR-15、§7.1、§13）
 - 詞彙：以 [CONTEXT.md](../CONTEXT.md) 為準
 
@@ -25,7 +25,7 @@
 - Dashboard 頂部的需求與限制 chip row，點擊回到同一個確認畫面（涵蓋 FR-13 放寬限制）。
 - 文字輸入 fallback，與語音共用同一個解析端點。
 - 可選的 username／password 註冊、登入、登出與修改密碼。
-- 已登入帳號保存清單、收藏與設定；匿名工作階段仍可使用 `sessionStorage`。
+- 已登入帳號保存清單、收藏與設定；匿名工作階段的設定仍可使用 `sessionStorage`，收藏與清單需要登入。
 
 ### 1.2 MVP 不包含
 
@@ -117,6 +117,7 @@ authenticated
 - session token 是隨機 opaque token，存於瀏覽器 `sessionStorage`；不使用 Cookie，也不保存 username／password。
 - session token 固定在建立後 30 分鐘過期，不因請求自動延長。瀏覽器重新整理時，以同一分頁的 token 呼叫 `/api/auth/me` 恢復登入。
 - 忘記密碼按鈕只彈出 `SUPPORT_EMAIL`；不提供自動 reset，也不要求使用者透過 Email 傳送 password。
+- 登入後以帳號資料為準，不合併匿名工作階段的資料；匿名使用者沒有清單與收藏。
 
 ## 3. 需求與限制 schema
 
@@ -166,7 +167,8 @@ STT 與需求解析端點維持無狀態；它們不寫入音檔、逐字稿、�
   {
     "user": { "id": "user_id", "username": "xuan", "nickname": "xuan" },
     "session_token": "opaque_random_token",
-    "expires_at": "2026-09-04T23:00:00+08:00"
+    "expires_at": "2026-09-04T23:00:00+08:00",
+    "data": { "list": [], "favs": [], "settings": {}, "profile": {} }
   }
   ```
 - username 已存在回傳 409；格式或 password 不合規回傳 400。訊息不回傳資料庫或雜湊細節。
@@ -180,7 +182,7 @@ STT 與需求解析端點維持無狀態；它們不寫入音檔、逐字稿、�
 #### `GET /api/auth/me`
 
 - Request：`Authorization: Bearer <session_token>`。
-- Response 200：目前帳號的 `id`、`username`、`nickname`、設定摘要。
+- Response 200：`{ "user": { id, username, nickname }, "data": { list, favs, settings, profile } }`；前端以此一次還原帳號狀態。
 - token 缺少、撤銷或逾時回傳 401；client 清除 `sessionStorage` 並回到匿名狀態。
 
 #### `POST /api/auth/logout`
@@ -198,16 +200,12 @@ STT 與需求解析端點維持無狀態；它們不寫入音檔、逐字稿、�
 
 ### Auth logical data model
 
-Database engine 尚未指定；以下是產品層級的 logical schema：
+Database 為本機 PostgreSQL；完整 schema 與其餘 API（搜尋、帳號資料、回報）見 [SPEC-backend.md](./SPEC-backend.md)。Auth 相關 table：
 
 - `users`：`id`、normalized unique `username`、`password_hash`、`nickname`、`created_at`、`updated_at`。
 - `auth_sessions`：`id`、`user_id`、`token_hash`、`created_at`、`expires_at`、`revoked_at`；只保存 token hash，不保存原始 token。
-- `user_settings`：`user_id`、每月預算、已花費、生存模式、排除項目與偏好。
-- `user_lists`／`user_list_items`：帳號的清單與候選紀錄 ID。
-- `user_favorites`：`user_id` 與候選紀錄 ID。
-- `reports`：共享的資料／體驗回報，可追溯提交者與候選紀錄。
-- `teams`／`team_members`：共享揪團、加入代碼與成員關係。
-- 不保存音檔、逐字稿、需求與限制或搜尋歷史；候選資料是否持久化依既有資料管線另行決定。
+- `account_data`：每個帳號一列，`list`、`favs`、`settings`（每月預算、已花費、已花費所屬月份、生存模式、排除項目、偏好、是否有 Costco 會員）、`profile`。
+- 不保存音檔、逐字稿、需求與限制、搜尋歷史或使用者位置。
 
 ### `POST /api/transcribe`
 
@@ -291,7 +289,7 @@ Database engine 尚未指定；以下是產品層級的 logical schema：
 - 音檔由瀏覽器上傳到本服務伺服器，伺服器直接轉送 STT 供應商，不寫入磁碟、不記錄。
 - 逐字稿視同 PRD NFR-05 的自然語言輸入原文：預設不保存。
 - 需求與限制只存在瀏覽器記憶體與 `sessionStorage`；不保存到帳號資料庫。
-- 已登入帳號的清單、收藏與設定保存到 Database；匿名使用者的相同資料只存在目前 `sessionStorage`。
+- 已登入帳號的清單、收藏與設定保存到 Database；匿名使用者只有設定，且只存在目前 `sessionStorage`。
 - session token 只存在 `sessionStorage`，不使用 Cookie，不保存 username／password；token 逾時或登出時必須清除。
 - `sessionStorage` token 可被同源 JavaScript 讀取，正式環境必須使用 HTTPS、嚴格 CSP、輸出編碼與最少化第三方 script，降低 XSS 竊取 token 的風險。
 - 首頁揭露文字：「語音會傳送到第三方辨識服務進行辨識，不會被保存。」
@@ -380,13 +378,13 @@ PRD §11 的 Case A、Case B 各增加語音版本，並新增以下案例：
   - Given：使用者點擊忘記密碼。
   - Then：只彈出 `SUPPORT_EMAIL`；不提供自動 reset，不要求使用者傳送明文 password。
 
-- **Case A8：匿名資料遷移**
-  - Given：匿名 session 有清單／收藏／設定，使用者註冊或登入帳號。
-  - Then：資料合併到帳號、清單與收藏依 ID 去重、帳號原有設定優先；音檔、逐字稿、需求與限制不遷移。
+- **Case A8：匿名不合併**
+  - Given：匿名 session 改過設定，使用者註冊或登入帳號。
+  - Then：帳號資料取代目前工作階段的設定；匿名沒有清單／收藏可遷移；音檔、逐字稿、需求與限制不遷移。
 
 ## 10. 驗證
 
-自動化檢查包含 `/api/parse` fixtures 與 Auth API 的註冊、登入、session expiry、登出、修改密碼、重複 username、錯誤遮罩與匿名資料遷移。錄音與 STT 由 Demo 排練驗證，不自動化。
+自動化檢查包含 `/api/parse` fixtures 與 Auth API 的註冊、登入、session expiry、登出、修改密碼、重複 username 與錯誤遮罩。錄音與 STT 由 Demo 排練驗證，不自動化。
 
 Fixtures：
 
@@ -396,7 +394,7 @@ Fixtures：
 4. 修正語句「改成三個人」+ current → 只有人數改變。
 5. 「晚餐兩個人靠近捷運站」→ `unresolved` 含「靠近捷運站」。
 6. 「兩個人晚餐預算 NT$300 想去 Costco 附近」→ 預算 300，"Costco" 保留在 `unresolved` 或 `soft_preferences`，不遺失。
-7. Auth fixtures：註冊、登入、30 分鐘 token expiry、登出、修改密碼、重複 username 與匿名資料合併。
+7. Auth fixtures：註冊、登入、30 分鐘 token expiry、登出、修改密碼與重複 username。
 
 ## 11. 實作備註
 
@@ -406,5 +404,5 @@ Fixtures：
 - AI SDK 事實（2026-09-04 查閱）：`@ai-sdk/openai-compatible` 沒有 transcription model；語音辨識要用 `@ai-sdk/openai` 的 `createOpenAI({ baseURL, apiKey })` 搭配 `ai` 的 `transcribe()`。chat 端點用 `createOpenAICompatible({ baseURL, apiKey, supportsStructuredOutputs: true })` 搭配 `generateObject()`。
 - 錄音使用瀏覽器原生 `MediaRecorder`；不引入錄音套件。
 - 逐字稿與需求與限制一起存在 `sessionStorage`，重新整理後確認畫面仍完整。
-- 登入 token 與語音工作階段資料分開保存；token key、匿名資料 migration 與受保護 API 的 `Authorization` header 必須明確定義。
+- 登入 token 與語音工作階段資料分開保存；token key 為 `ail.token`，受保護 API 使用 `Authorization: Bearer`。
 - 30 秒上限在前端用計時器強制停止，後端再以請求逾時保護。
