@@ -1,4 +1,4 @@
-# BUILDMODE 2026 作品繳交檢查表 — ALL in Life
+# BUILDMODE 2026 作品繳交檢查表 — ALL IN LIFE
 
 > 更新日期：2026-09-05。`[x]` 代表可由目前儲存庫確認；`[ ]` 代表仍需團隊、部署平台或送件表單確認。建議全隊在截止前至少 30 分鐘完成最後一輪。
 
@@ -17,7 +17,7 @@
 - [ ] README 的成員分工已由 Ting、Jay 與團隊確認
 - [ ] 已選擇一條主賽道
 - [ ] 僅勾選實際符合條件的 Sponsor Challenge／Bounty
-- [ ] 專案名稱統一使用「ALL in Life」
+- [x] 專案名稱統一使用「ALL IN LIFE」
 - [ ] 100–200 字摘要已校對，且沒有把 Demo fixture 寫成即時資料
 - [ ] 送件表單中的 repo、展示網址、影片網址與 README 完全一致
 
@@ -55,21 +55,28 @@
 ## 程式碼與功能驗證
 
 - [x] 手機 App shell 限制在 430 px 內，桌面以裝置外框呈現
-- [x] Home、Search、Results、Detail、Saved、Team、Settings、Map 有獨立畫面切換感
-- [x] Bottom navigation、收藏、checkbox 清單、篩選、排序、設定與揪團進度可互動
+- [x] 首次設定、Home、Search、Results、Detail、Saved、Team、Settings、Profile、Filters、Notifications、Analytics、History、Report、Map 有獨立畫面切換感
+- [x] Bottom navigation、收藏、標記已買、移除、分享、篩選、排序、提醒、設定與揪團進度可互動
+- [x] 匿名可直接用；登入保存以清楚的待串接狀態呈現
+- [x] 語音與文字輸入共用同一份可編輯需求及結構化限制
+- [x] 日期、時段、類別、需求、預算、人數、距離、排除與偏好可調整
+- [x] 搜尋 loading 以計時器和狀態管理呈現逐步處理進度
+- [x] 暱稱與頭像可修改；通知、歷史及消費分析可進入獨立頁面
+- [x] 結果提供成本、人均、距離、營業時間、內用／外帶、證據與回報入口
+- [x] Team 顯示品項、門檻、單獨／成團成本、分享及門檻前取消
 - [x] 使用者畫面未顯示 `DEMO`、`fixture` 或 `MVP` 字樣
 - [x] README 已加入架構圖、流程圖與 branch comparison 超連結
 - [ ] 在乾淨環境執行 `cd mvp && npm ci`
-- [ ] 執行 `npm run lint` 且無 error
-- [ ] 執行 `npm run build` 且成功產生 `mvp/dist/`
+- [x] 執行 TypeScript 與 oxlint 檢查且無 error
+- [x] 執行 `npm run build` 且成功產生 `mvp/dist/`
 - [ ] 執行 `npm run start`，確認 production build 可啟動
-- [ ] Chrome / Edge 桌面版完成 smoke test
+- [x] Chromium 桌面版完成匿名設定 → 搜尋 loading → 結果 smoke test
 - [ ] 320 px 手機寬度沒有橫向捲動、遮擋或不可點擊區域
 - [ ] Tablet 與 ≥1200 px desktop layout 可讀且不失真
-- [ ] 「省錢晚餐」可完成輸入 → 搜尋 → 排序 → evidence → 地圖流程
+- [x] 「省錢晚餐」可完成輸入 → 搜尋 → 排序 → evidence → 地圖流程
 - [ ] 「Team 團購」正確顯示人數門檻與未成團條件
 - [ ] 「白嫖一天」不把未知交通、時間或資格誤寫為零
-- [ ] 硬限制、軟偏好、預算、人數與月度 runway 操作正常
+- [x] 硬限制、軟偏好、預算、人數與月度 runway 操作正常
 - [ ] CP Value 分數、coverage、reliability 與 evidence gate 顯示合理
 - [ ] 官方來源連結可開啟，且查核日期／適用條件仍有效
 - [ ] Google Maps embed 失敗時仍可用外部連結或清單
@@ -82,7 +89,7 @@
 
 - [x] 已提供 web app manifest 與 SVG app icons
 - [x] 已建立 service worker 檔案
-- [ ] 在 app 中註冊 service worker，或在送件說明中維持「尚未完成」標示
+- [x] 在 app 中註冊 service worker，並提供安裝提示處理
 - [ ] 用瀏覽器 DevTools 驗證 manifest、icons 與 installability
 - [ ] 驗證離線 fallback，不 cache Google map tiles 或受限制的 Places content
 - [ ] 建立正式 Cloudflare / OpenAI Sites deployment
@@ -90,6 +97,7 @@
 - [ ] 若啟用 R2：確認 evidence retention、刪除與存取權限政策
 - [ ] 若啟用 Google API：限制 website / API、設定 quota / budget alert，避免 key 外洩
 - [ ] 若啟用 AI 模型：文件列出模型、用途、資料傳輸與失敗 fallback
+- [x] API、匿名轉登入、D1 資料表及外部資料來源的串接順序已有文件
 - [ ] production 環境未暴露 source map、secret、debug endpoint 或管理介面
 - [ ] 展示站可由無痕視窗直接開啟，不依賴團隊帳號或本機 cookie
 

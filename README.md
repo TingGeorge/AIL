@@ -1,26 +1,28 @@
-# ALL in Life
+# ALL IN LIFE
 
 > 圓山生活圈的 CP 值、零元機會與 Team 協作平台。
 
-ALL in Life 是一個以「限制優先、證據可追溯、成本不造假」為原則的生活決策 Demo。使用者可以輸入預算、人數、飲食限制與偏好，從「省錢晚餐」、「Team 團購」或「白嫖一天」三條路徑出發，比較圓山站周邊的餐食、免費資源、活動與交通方案。
+ALL IN LIFE 是一個以「限制優先、證據可追溯、成本不造假」為原則的圓山生活決策 App。使用者可匿名直接使用，或選擇登入以銜接日後的跨裝置保存；文字與語音都會進入同一份可編輯的結構化需求，再比較餐飲、日用、育樂與交通選項。
 
-目前版本是手機 App 型前端：以單一 route 管理 Home、Search、Results、Detail、Saved、Team、Settings、Map 八個獨立 screen，搭配頁面轉場、底部導覽、收藏、清單勾選、篩選排序與設定互動。搜尋流程、部分團購資料與狀態仍是本地 fixture；D1 schema、多人協作與資料擷取流程已完成技術規格，但尚未接上正式後端。資料真實性邊界會以來源、查核時間與適用條件呈現，避免把模擬結果誤認為即時優惠。
+目前版本是可操作的手機 App 型前端，共 16 個畫面：首次設定、首頁、搜尋、結果、詳情、清單、揪團、設定、個人檔案、篩選、通知、消費分析、歷史、回報與地圖等。它包含頁面轉場、語音／文字輸入、前端搜尋載入演出、收藏與到期提醒、標記已買、預算統計、分享及成團成本比較。正式 API、帳號驗證與雲端持久化尚未接上；畫面中的估算與整理資料會標示來源、查核時間與適用條件。
 
 ## 問題與目標
 
 低預算生活決策不只是找最低標價。交通、份量、資格、時間、最低成團人數與資料可信度，都可能讓看似便宜的方案變得不可用。現有搜尋服務通常把這些條件分散在不同頁面，使用者還需要自行判斷資料是否過期。
 
-ALL in Life 的目標使用者是學生、剛進入職場者、精打細算的在地居民，以及希望一起湊優惠的小型熟人團體。產品先排除不符合硬限制或缺乏必要證據的候選，再用可解釋的 CP Value 分數排序，讓使用者知道一個選項為什麼值得選、資料從哪裡來，以及仍有哪些未知成本。
+ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的在地居民，以及希望一起湊優惠的小型熟人團體。產品先排除不符合硬限制或缺乏必要證據的候選，再用可解釋的 CP Value 分數排序，讓使用者知道一個選項為什麼值得選、資料從哪裡來，以及仍有哪些未知成本。
 
 ## 核心功能
 
-- 三種任務路徑：省錢晚餐、Team 團購、白嫖一天。
-- 預算與限制：設定月預算、保留金、剩餘天數、單次預算、人數、硬性排除與軟偏好。
-- 雙 Agent 搜尋演出：付費選項與零成本情報平行整理，並清楚標示目前為前端模擬流程。
+- 首次設定 SOP：匿名可直接使用，登入後可保存；先設定暱稱、頭像、預算、硬限制與偏好。
+- 統一需求編輯器：語音和文字共用日期、時段、類別、預算、人數、距離、排除與偏好欄位。
+- 四類任務結果：餐飲、日用、育樂、交通，支援成本、距離、營業時間與服務方式比較。
+- 勞動錯覺搜尋介面：以計時器和狀態管理逐步顯示來源、限制、成本與證據檢查。
 - CP Value Engine：綜合價格、食物、品質、便利與折扣五個維度，再以可靠度及資料覆蓋率修正。
 - Evidence Gate：缺少必要證據、違反硬限制或資料覆蓋不足時，不產生可比較分數。
 - 可追溯結果：顯示來源、查核時間、適用條件、可信度與評分原因。
-- Team 團購 Demo：呈現成團門檻、已承諾人數與未達門檻前不可套用優惠價的規則。
+- Team 揪團：呈現餐點內容、成團門檻、單獨／成團人均、承諾人數、分享與門檻前取消。
+- 個人中心：可修改匿名暱稱與頭像，查看通知、收藏到期提醒、歷史與消費分析。
 - 地圖與清單：內嵌 Google Maps 搜尋結果，並提供外部地圖連結；目前不提供導航。
 - 語音輸入：在支援 Web Speech API 的瀏覽器中，可用繁體中文輸入需求。
 - 響應式 PWA 外觀：提供 manifest、SVG app icon、手機底部導覽與桌面版配置。
@@ -29,18 +31,18 @@ ALL in Life 的目標使用者是學生、剛進入職場者、精打細算的�
 
 | 能力 | 狀態 | 說明 |
 | --- | --- | --- |
-| 手機 App 多畫面介面 | 可操作 | 八個 state-driven screens 集中在 `mvp/app/page.tsx`，固定導覽且只捲動內容區 |
+| 手機 App 多畫面介面 | 可操作 | 16 個 state-driven screens 集中在 `mvp/app/page.tsx`，固定導覽且只捲動內容區 |
 | CP Value 計算 | 可操作 | 純 TypeScript 規則引擎，包含 evidence、hard constraint 與 coverage gate |
 | 官方來源連結 | 部分完成 | 北美館等展示資料附原始連結與查核標示 |
 | Google 地圖 | Demo | 使用公開 embed/search URL，尚未串 Places API 或儲存 Place ID |
-| 搜尋 Agent | 模擬 | 以本地 fixture 與計時器展示平行搜尋狀態，未呼叫 AI 模型 |
+| 搜尋流程 | 前端可操作 | 計時器與狀態管理呈現處理步驟；尚未呼叫正式搜尋或 AI API |
 | Team 多人協作 | 設計／Demo | UI 與 D1 schema 已備妥，尚無登入、邀請與交易式後端 |
 | Cloudflare D1 | Schema ready | migration 已建立，尚未綁定資料庫；hosting config 的 `d1` 目前為 `null` |
-| 離線 PWA | 部分完成 | manifest 與 service worker 檔案已建立，尚未註冊與完成離線驗收 |
+| PWA | 技術就緒、待驗收 | manifest、icons、service worker 註冊與安裝提示已完成；仍需 HTTPS 部署後做 installability／離線驗收 |
 
 ## 系統架構
 
-![ALL in Life 系統架構](docs/architecture/all-in-life-architecture.visual-check.1440x900.light.png)
+![ALL IN LIFE 系統架構](docs/architecture/all-in-life-architecture.visual-check.1440x900.light.png)
 
 目前可執行路徑是 Vinext / React 前端、記憶體狀態、固定 fixture、CP Value Engine 與 Google Maps embed。下圖中的 Worker API、D1、R2、正式 Agent 與 Team Intelligence 是下一階段目標架構；詳細資料表、API contract、freshness 與 evidence 規則請參考 [`docs/SPEC-team-cp-zero-cost-v1.md`](docs/SPEC-team-cp-zero-cost-v1.md)。
 
@@ -52,7 +54,7 @@ ALL in Life 的目標使用者是學生、剛進入職場者、精打細算的�
 4. 先套用 Evidence Gate 與硬限制，再計算 CP Value。
 5. 以可靠度與覆蓋率修正分數，回傳可解釋的排序與來源。
 
-![ALL in Life 產品流程](docs/architecture/all-in-life-product-flow.visual-check.1440x900.dark.png)
+![ALL IN LIFE 產品流程](docs/architecture/all-in-life-product-flow.visual-check.1440x900.dark.png)
 
 文件導覽：
 
@@ -60,6 +62,7 @@ ALL in Life 的目標使用者是學生、剛進入職場者、精打細算的�
 - [互動式系統架構圖](docs/architecture/all-in-life-architecture.html)
 - [目前分支與 main 的架構、語言與衝突比較](docs/branch-main-comparison.md)
 - [Team / CP / Zero-Cost 技術規格](docs/SPEC-team-cp-zero-cost-v1.md)
+- [API、登入與資料持久化串接規劃](docs/API-integration-plan.md)
 - [BUILDMODE 送件 checklist](submission-checklist.md)
 
 ## 使用技術
@@ -72,9 +75,9 @@ ALL in Life 的目標使用者是學生、剛進入職場者、精打細算的�
 | 語音 | Web Speech API | 瀏覽器端 `zh-TW` 語音辨識；不支援時回退文字輸入 |
 | 地圖 | Google Maps embed / search URL | Demo 地圖與外部查詢；尚未使用付費 Places API |
 | 後端目標 | Cloudflare Workers | Route handlers / server actions；目前尚未實作 |
-| 資料庫目標 | Cloudflare D1 / SQLite schema | 已提供 `mvp/drizzle/0001_p0_core.sql`，尚未綁定或 seed |
+| 資料庫目標 | Cloudflare D1 / SQLite schema | 已提供 `0001_p0_core.sql` 與 `0002_product_flow.sql`，尚未綁定或 seed |
 | 物件儲存目標 | Cloudflare R2 | 規劃存放證據照片與收據；目前未啟用 |
-| 部署 | OpenAI Sites + Cloudflare toolchain | 專案已有 hosting 設定，公開展示網址待補 |
+| 部署 | OpenAI Sites + Cloudflare toolchain | 已有公開站，但目前仍是舊版；本次版本尚未發布 |
 | AI 模型 | 尚未串接 | 目前 Agent 是可辨識的 UX 模擬，不會宣稱模型產生即時結果 |
 
 ## 專案結構
@@ -92,7 +95,7 @@ ALL in Life 的目標使用者是學生、剛進入職場者、精打細算的�
    ├─ app/                           # Vinext App Router 頁面、layout、manifest
    ├─ components/ui/                 # UI 元件
    ├─ db/schema.ts                   # Domain type 與資料表名稱
-   ├─ drizzle/0001_p0_core.sql       # D1 / SQLite P0 migration
+   ├─ drizzle/                       # D1 / SQLite 核心與產品流程 migrations
    ├─ lib/cp-engine.ts               # CP Value 規則引擎
    └─ public/                        # PWA icon、service worker、架構頁
 ```
@@ -138,13 +141,13 @@ npm run start
 
 目前 Demo 不需要 `.env` 或 API key。未來若接 Google Places、AI 模型或 Cloudflare 資源，請使用平台 secret / environment binding，絕對不要提交金鑰。
 
-### D1 schema（尚未接上 runtime）
+### API 與 D1 schema（尚未接上 runtime）
 
-`mvp/drizzle/0001_p0_core.sql` 定義 P0 資料模型。它目前是設計與 migration artifact，不會在啟動前端時自動建立資料庫。正式啟用前需先在 Cloudflare 建立 D1 binding、確認 migration 指令與備份策略，再更新 `mvp/.openai/hosting.json`。
+`mvp/drizzle/0001_p0_core.sql` 定義核心資料模型，`0002_product_flow.sql` 補上搜尋需求、清單、通知、購買紀錄與揪團品項。它們目前是 migration artifact，不會在啟動前端時自動建立資料庫。完整 API 順序、資料契約、匿名轉登入與外部服務策略請見 [`docs/API-integration-plan.md`](docs/API-integration-plan.md)。
 
 ## 作品展示
 
-- 公開展示網址：待部署後補上
+- 公開展示網址：[https://all-in-life-ail.chiehlun.chatgpt.site](https://all-in-life-ail.chiehlun.chatgpt.site)（目前為舊版，本分支需另行發布後才會更新）
 - 評選影片：待上傳後補上（需不超過 2:00，且設為知道連結即可觀看）
 - 本機展示：依上方「安裝與執行」使用 `npm run dev`
 
@@ -157,7 +160,7 @@ npm run start
 - 沒有正式 crawler、AI 模型、後端 API、D1 binding 或 R2 evidence upload。
 - Google 地圖採 embed/search URL，沒有 2 km geofence、Places attribution pipeline 或路線導航。
 - 語音辨識依賴瀏覽器能力，結果不會上傳至本專案後端，但瀏覽器供應商可能依其政策處理語音。
-- Service worker 尚未在 app 中註冊，因此目前不能宣稱完整離線或可安裝驗收已通過。
+- Service worker 已在 app 中註冊，但仍需在 HTTPS 公開站以 DevTools 驗證安裝資格與離線 fallback，暫不宣稱完整離線。
 - CP 分數使用 Demo 維度值；正式上線需加入 cohort normalization、policy version、freshness 與 score audit。
 - Community report、食安事件與商家合作需先完成 moderation、隱私、濫用防護及法務規則。
 

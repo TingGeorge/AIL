@@ -1,4 +1,4 @@
-# ALL in life 下一階段 RFC：Budget OS、團戰與社群情報
+# ALL IN LIFE 下一階段 RFC：Budget OS、團戰與社群情報
 
 - 狀態：產品規劃草案
 - 版本：v0.2

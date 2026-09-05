@@ -1,109 +1,98 @@
-# `codex/all-in-life-mvp` 與 `main` 差異與整合建議
+# `codex/all-in-life-mvp` 與 `main` 差異、取捨與整合建議
 
-> 比對基準：2026-09-05，開始調整前的功能分支 `d761a9f` 對 `origin/main` `3def882`，當時為 4 個提交在前、12 個提交在後；本文件與新版手機 App 介面是基於這次比較追加的變更。
+> 最新比對：2026-09-05。`origin/main` = `3def882`，本輪更新前的功能分支基準 = `990cbea`；當時相對主支為 5 個提交在前、12 個提交在後。以下比較已納入本輪 UI、PWA、資料表與文件更新。
 
 ## 結論
 
-兩邊不是同一套前端逐步演進，而是兩個平行實作：`main` 把主要作品放在 `old_version/`，採 Bun + Vite + React + Hono；目前分支把作品放在 `mvp/`，採 npm + Vinext + React + Tailwind/shadcn，並規劃 Cloudflare Sites、D1 與 PWA。最安全的整合方式是保留 `mvp/` 為展示主體，吸收 `main` 的多畫面流程與互動語言，不直接把兩套 App 原始碼混在同一個 runtime。
+兩邊是平行實作，不宜直接混合 runtime。`main` 的作品位於 `old_version/`，採 Bun + Vite + React + Hono，強項是可回上一頁的 hash routing、共享 Zod schema、API timeout／錯誤邊界、台北日期解析與 Bun 測試。功能分支的作品位於 `mvp/`，採 npm + Vinext + React + Tailwind，自成一套較完整的手機 App 體驗、CP／evidence 規則、PWA、D1 schema 與 Sites 部署設定。
+
+建議以 `mvp/` 作為展示入口，保留兩套程式碼目錄但不交叉覆蓋 lockfile 或 build config；將 `main` 較成熟的路由、schema、API client、server validation 與測試觀念移植到 `mvp/`。本輪已先吸收產品流程和互動設計，後端部分則以 API contract 與 migration 預留，不假裝已上線。
 
 ## 快速比較
 
-| 面向 | `main` | `codex/all-in-life-mvp` | 建議 |
+| 面向 | `main` | 目前分支 | 決策 |
 | --- | --- | --- | --- |
-| App 位置 | `old_version/` | `mvp/` | 保留兩個目錄，明確指定 `mvp/` 為目前展示入口 |
-| Package manager | Bun | npm | 不共用 lockfile；各目錄維持自己的工具鏈 |
-| 前端 | React 19 + Vite | React 19 + Vinext | 不直接搬 bootstrap；只移植 screen flow 與 domain logic |
-| 後端 | Hono + Bun server | 尚未接後端，目標 Cloudflare Workers | 後端 contract 先統一，再選一個 runtime |
-| 樣式 | 大量自訂 CSS | Tailwind 4 + 自訂 CSS + shadcn | 新版以 design tokens 與 App shell 統一 |
-| 路由 | 自製 pathname router、多個 screen component | React state screen navigation | 展示階段 state navigation 較穩；上線前再補 browser history 或正式 routes |
-| AI | AI SDK / OpenAI-compatible 依賴 | 尚未呼叫模型 | UI 不宣稱即時 AI，等 API contract 穩定再接 |
-| 資料 | mock records + server parse | 本地資料 + CP engine + D1 schema | 共用資料 shape、evidence gate 與 score policy |
-| 測試 | Bun tests、TypeScript | TypeScript、oxlint、Vinext build | 將 CP engine 補單元測試，UI 補核心 journey smoke test |
-| PWA | manifest + icon | manifest + icons + service worker 草稿 | 最終只保留一份 manifest / service worker 策略 |
+| App 位置 | `old_version/` | `mvp/` | `mvp/` 為目前展示入口；`old_version/` 保留作參考 |
+| 工具鏈 | Bun、Vite 8 | npm、Vinext、Cloudflare Vite plugin | 不共用 lockfile；部署前只選一套入口 |
+| 導覽 | hash route，可使用瀏覽器返回 | 16 個 state-driven screens | 短期保留 state flow；下一階段移植 hash/history 行為 |
+| 需求模型 | `Need` + Zod，client/server 共用 | `Filters` + TypeScript types | 採用 `main` 的 runtime validation，對齊 `SearchConstraints` |
+| API | Hono `/api/parse`、`/api/transcribe`，30 秒 timeout | 正式 API 尚未接 | 沿用 timeout、payload 限制、錯誤不洩漏 upstream 細節 |
+| 日期 | server 以 `Asia/Taipei` 解析 | 前端日期欄位 | 正式 API 採 `main` 的 server-resolved date |
+| UI | 黑底酸綠、清楚多畫面流程 | 黑底酸綠加紫／藍／珊瑚狀態色 | 保留主支高對比與節奏，分支補資訊層級和多類別辨識 |
+| PWA | manifest、icons、safe area | manifest、icons、SW 註冊、安裝提示 | 以分支版本為準，HTTPS 部署後驗收 installability |
+| 資料 | mock records、server parser | 圓山資料、CP engine、D1 migrations | 以 evidence、freshness、total cost 與 hard filter 統一 |
+| 測試 | Bun parser／routes tests | TypeScript、oxlint、build | 移植 parser contract test，再補核心 journey smoke test |
 
-## 架構差異
+## 已從 `main` 採用的好設計
 
-### `main`
+- **產品 SOP**：匿名可直接用，登入後才保存；先確認需求與限制，再搜尋、比較、收藏／分享。
+- **語音主流程**：首頁把語音操作放在主要 CTA 前，同時保留可直接編輯的文字輸入；兩者共用同一份結構化需求。
+- **手機 App 節奏**：Welcome、Confirm、Search、Results、Detail、List、Settings、Team 分畫面，避免一頁式無限下滑。
+- **高對比視覺**：保留黑底、酸綠 CTA、粗體 CJK 標題、手機安全區與明確按壓狀態。
+- **限制語意**：硬限制會排除，軟偏好只加權；免費、優惠與成團價都必須揭露條件。
+- **後端防線**：API client timeout、Zod 驗證、音檔大小限制、upstream error 不回傳給使用者、台北時區由 server 決定。
+
+## 本分支擴充且應保留的部分
+
+- 16 個獨立畫面，新增 Profile、Filters、Notifications、Analytics、History、Report 與 Map。
+- 日期、時段、類別、需求、預算、人數、距離、排除與偏好均可編輯。
+- 勞動錯覺搜尋 loading 以 5.2 秒前端計時器呈現逐步處理；不冒充後端真實百分比。
+- 餐飲、日用、育樂、交通統一結果模型，顯示距離、營業時間、服務方式、總成本、人均、節省、CP 值與 evidence。
+- 收藏、到期提醒、標記已買、移除、分享、歷史與消費分析已有前端互動。
+- 揪團顯示實際品項／店家、門檻、單獨與成團成本、分享及門檻前取消。
+- `0002_product_flow.sql` 補上搜尋、清單、通知、購買紀錄與團體訂單資料表；API 串接順序見 [API integration plan](API-integration-plan.md)。
+
+## 尚未移植、但值得排入下一階段
+
+1. 將 state navigation 換成 `main` 的 hash routing 或正式 App Router routes，讓瀏覽器／PWA 返回鍵、重新整理和深層連結可靠。
+2. 把 `SearchConstraints` 建成 Zod schema，由前後端共用；避免只有 TypeScript 型別、runtime 卻接受錯誤資料。
+3. 建立共用 API client：30 秒 timeout、錯誤分類、retry policy、request id 與取消搜尋。
+4. Worker 端採台北時區解析「今天／今晚」，並限制 body、音檔大小與欄位長度。
+5. 移植 parser／routes 的 contract test，再新增 onboarding → search → result → saved 的瀏覽器 smoke test。
+
+## 目標架構
 
 ```text
-Mobile SPA (Vite + React)
-  ├─ pathname router
-  ├─ Search / Results / Detail / List / Settings / Team screens
-  └─ client fetch
-       ↓
-Hono API on Bun
-  ├─ natural-language parse
-  ├─ voice transcription adapter
-  └─ provider records
+Mobile App shell (Vinext + React + routes/history)
+  ├─ onboarding / editable constraints / results / personal center
+  ├─ CP Value + evidence gate
+  └─ PWA manifest + service worker
+       ↓ typed API client + timeout
+Cloudflare Worker API
+  ├─ Zod runtime validation
+  ├─ parse / search / list / team / report services
+  ├─ Taipei server time + trust boundaries
+  └─ D1 persistence + optional R2 evidence
 ```
 
-優點是畫面切換清楚、流程接近真正手機 App，而且 server、parser 與測試已分層。限制是部署 runtime 與目前分支的 Cloudflare Sites/Vinext 方向不同。
+目標不是把 Bun server 原封搬入 Vinext，而是保留其邊界：UI 只送結構化 request；Worker 驗證、正規化、查資料、算成本與保存；外部 API key 永遠留在 server secret。
 
-### 目前分支
+## Merge 衝突與風險
 
-```text
-Responsive App shell (Vinext + React + Tailwind)
-  ├─ Home / Search / Results / Detail / Saved / Team / Settings / Map
-  ├─ CP Value Engine
-  ├─ in-memory interaction state
-  └─ PWA assets
-       ↓ future
-Cloudflare Workers + D1 + R2
-```
+目前可預測的文字衝突集中於：
 
-目前分支的優點是視覺系統、CP 計算、D1 schema、架構圖與 Sites 部署方向較完整。限制是正式 API、登入與資料持久化尚未接上。
+- `.gitignore`：雙方新增規則不同；合併時取聯集，不覆蓋任一套 build cache／secret 規則。
+- `docs/PRD-all-in-life.md`：雙方都修改端到端流程。本分支已整合為「匿名直接用、登入後保存；文字與語音共用同一份可編輯結構化需求」。
 
-## 程式語言與主要依賴
+不一定產生文字衝突、但會造成架構衝突的項目：
 
-- 共同語言：TypeScript、TSX、CSS、HTML、SQL。
-- `main` 額外重心：Bun runtime、Hono、Zod、AI SDK、Vite。
-- 目前分支額外重心：Vinext、Tailwind CSS、shadcn/Base UI、Lucide、Cloudflare Vite plugin、Wrangler、D1 SQL。
-- 兩邊 React major 相同，但 TypeScript、React patch version 與 build pipeline 不同；不要把 lockfile 或 build config 互相覆蓋。
+- `old_version/` 與 `mvp/` 有兩套 package manager、啟動命令、manifest 與 PWA 策略；README 必須指定正式入口。
+- `main` 的 `Need.target_categories` 是五類，本分支 UI 是餐飲／日用／育樂／交通四類；API 層需用穩定 enum mapping，不可直接靠顯示文字。
+- `main` 說搜尋輸入與歷史不保存；本分支新增歷史／分析。正式產品應預設只保存使用者明確標記的清單與消費事件，原始音檔不保存，逐字稿與搜尋紀錄提供獨立同意和刪除機制。
+- 直接 merge `origin/main` 會帶入大量 `old_version/` 與工具設定；應先開 PR 檢視，再以選擇性移植取代盲目覆蓋。
 
-## Merge 衝突預測
+## UI / UX 檢查結論
 
-已用 merge base 做三方預演，會產生文字衝突的檔案有：
+- 首頁只保留一個主要任務入口；語音是顯眼捷徑，文字框仍可直接操作。
+- 篩選集中在 Filters，個人資料／分析／歷史集中在 Settings，通知由鈴鐺進入，避免同一功能出現在多處。
+- Results 負責比較、Detail 負責證據與行動、Saved 負責預算及完成狀態、Team 負責共同門檻，頁面責任已分離。
+- 實際價格或即時營業狀態尚未有 API 保證，因此以「估算、來源、查核日期、適用條件」表達；回報頁只收使用者經驗，不直接覆蓋官方資料。
 
-- `.gitignore`：分支加入 `prototype/`、`.mvp-sites-git/`、`mvp-site.tar.gz`；主支加入 `node_modules`、`dist`、`.env`、`.DS_Store`。解法是保留雙方規則並補上 `mvp/.vite/`。
-- `docs/PRD-all-in-life.md`：雙方都改了端到端流程。分支強調快速填寫／直接說、硬限制與 evidence；主支加入匿名／登入、帳號保存與語音主流程。應以「匿名可直接用、登入後可保存；文字與語音共用同一份可編輯結構化需求」合併，而不是選一邊覆蓋。
-
-低風險或不會直接衝突的部分：
-
-- `main` 的 `old_version/`、`.claude/`、`.cursor/`、`CONTEXT.md` 與語音規格多為新增檔案。
-- 分支的 `mvp/`、`docs/architecture/`、CP engine、D1 migration 與根目錄 README 多為新增檔案。
-- 兩套 package manifest 位於不同目錄，不會產生 Git 文字衝突，但會造成維護與部署入口的認知衝突，README 必須指定哪一套是正式入口。
-
-## UI / UX 吸收策略
-
-新版分支採用 `main` 與 Figma 的優點：
-
-- 手機尺寸 App shell；桌面只作為裝置展示背景。
-- Home、Search、Results、Detail、Saved、Team、Settings、Map 分成獨立 screen。
-- 固定 header 與 bottom navigation；每個 screen 只在內容區內部捲動。
-- 高對比黑底、螢光綠主行動，加入紫、藍、珊瑚紅作模式和狀態辨識。
-- 搜尋進度、skeleton、screen transition、按壓縮放、hover 浮起、toast 與 evidence bottom sheet。
-- 結果卡加入少量餐食照片，但避免變成外送平台式大圖瀑布。
-- 不在使用者畫面顯示 `DEMO`、`fixture` 或 `MVP` 字樣；資訊可信度改用「可信來源、資料依據、適用條件」表達。
-
-## 流程與架構連結
+## 流程、架構與 Figma
 
 - [互動式產品流程圖](architecture/all-in-life-product-flow.html)
 - [互動式系統架構圖](architecture/all-in-life-architecture.html)
-- [產品流程 PNG（淺色）](architecture/all-in-life-product-flow.visual-check.1440x900.light.png)
 - [產品流程 PNG（深色）](architecture/all-in-life-product-flow.visual-check.1440x900.dark.png)
 - [系統架構 PNG（淺色）](architecture/all-in-life-architecture.visual-check.1440x900.light.png)
-- [系統架構 PNG（深色）](architecture/all-in-life-architecture.visual-check.1440x900.dark.png)
 
-## Figma 交付方式
-
-程式碼無法直接、完整且可靠地轉成可編輯 Figma components。建議交付流程：
-
-1. 以 390 × 844 viewport 開啟網站，逐一截取 Home、Search、Results、Detail、Saved、Team、Settings、Map。
-2. 在既有 Figma 的 `Screens` section 建立同名 frames，依流程由左至右排列。
-3. 將顏色、字級、間距、圓角與陰影整理成 variables / styles；先建立 Button、Chip、Header、Bottom Nav、Result Card 五個 components。
-4. 把截圖放在 frame 最底層並降低透明度，於上方重建可編輯元件；完成後隱藏截圖。
-5. 在 Prototype 分頁連接主要互動：開始探索 → Search → Results → Detail；底部導覽連到 Home / Results / Saved / Team。
-6. 開啟 Dev Mode 檢查 spacing、font、color token 與 asset export，確保程式與 Figma 使用同一組命名。
-7. 若要快速把現有頁面帶進 Figma，可評估 URL-to-Figma 類第三方 plugin，但匯入後仍需整理 auto layout、components 與 accessibility；不要把自動匯入結果當成最終 design system。
-
-建議 frame 名稱：`01 Home`、`02 Search`、`03 Results`、`04 Detail`、`05 Saved`、`06 Team`、`07 Settings`、`08 Map`。
+Figma 建議以 390 × 844 frames 建立 Welcome、Onboarding、Home、Search、Results、Detail、Saved、Team、Settings、Notifications、Analytics；先整理 Color／Type／Spacing variables，再建立 Button、Chip、Header、Bottom Nav、Result Card、Cost Summary components。截圖只作底層參考，需以 Auto Layout 重建；Prototype 串接主要流程與通知、設定、揪團支線。

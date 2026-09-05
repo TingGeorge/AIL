@@ -1,5 +1,5 @@
-const CACHE_NAME = 'all-in-life-shell-v1';
-const APP_SHELL = ['/', '/manifest.webmanifest', '/app-icon.svg'];
+const CACHE_NAME = 'all-in-life-shell-v2';
+const APP_SHELL = ['/', '/manifest.webmanifest', '/app-icon.svg', '/app-icon-maskable.svg', '/bento-neon.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));

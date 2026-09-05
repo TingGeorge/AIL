@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'ALL in Life｜圓山 CP 值生活平台',
+  title: 'ALL IN LIFE｜圓山 CP 值生活平台',
   description:
     '透過可信資料、CP Value、Team 協作與 Zero-Cost 情報，找到圓山 2 公里內更好的生活選擇。',
 };

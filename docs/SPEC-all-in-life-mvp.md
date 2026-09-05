@@ -1,4 +1,4 @@
-# ALL in life — Game UI / UX 與 MVP 實作規格
+# ALL IN LIFE — Game UI / UX 與 MVP 實作規格
 
 - 文件版本：v1.0
 - 對應 PRD：`PRD-all-in-life.md` v0.1

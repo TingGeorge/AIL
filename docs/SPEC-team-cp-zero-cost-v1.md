@@ -1,4 +1,4 @@
-# ALL in Life — Team Mode、CP Value Engine、Zero-Cost Mode 技術與產品規格
+# ALL IN LIFE — Team Mode、CP Value Engine、Zero-Cost Mode 技術與產品規格
 
 - 文件狀態：Implementation proposal / 下一輪實作依據
 - 版本：v1.0
@@ -751,7 +751,7 @@ PWA 是 P1，但 P0 先把 HTML metadata 與 responsive viewport 做對。
 
 ### P1 installability
 
-- `/app.webmanifest`：`id=/`、`name=ALL in Life`、短名 `ALL in Life`、`start_url=/`、`display=standalone`、theme/background colors。
+- `/app.webmanifest`：`id=/`、`name=ALL IN LIFE`、短名 `ALL IN LIFE`、`start_url=/`、`display=standalone`、theme/background colors。
 - 192x192、512x512、maskable icon；iOS apple-touch-icon。
 - Root service worker；cache version 與 release version 綁定。
 - 安裝提示只在使用者完成一次核心任務後出現，不阻擋 Demo。
