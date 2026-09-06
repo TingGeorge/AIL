@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -78,7 +79,23 @@ import {
   type CatalogDataSource,
   type CatalogItem,
   type CatalogSearchResponse,
+  type CatalogSummaryResponse,
 } from '@/lib/catalog-contract';
+import {
+  AccountClientError,
+  authenticateAccount,
+  clearAccountToken,
+  endAccountSession,
+  readAccountToken,
+  restoreAccountSession,
+  saveAccountData,
+} from '@/lib/account-client';
+import {
+  ACCOUNT_PASSWORD_MIN_LENGTH,
+  ACCOUNT_USERNAME_PATTERN,
+  type AccountDataEnvelope,
+  type AccountUser,
+} from '@/lib/account-contract';
 import { type CpDimension } from '@/lib/cp-engine';
 import {
   calculatePersonalCpScore,
@@ -92,6 +109,7 @@ import { useBackgroundMusic } from '@/lib/use-background-music';
 
 type View =
   | 'welcome'
+  | 'account'
   | 'onboarding'
   | 'home'
   | 'ready'
@@ -273,6 +291,18 @@ type Result = {
   verificationLabel?: string;
   provenance?: ResultProvenance;
   verifiedFields?: string[];
+};
+type StoredAccountState = {
+  version: 1;
+  saved: string[];
+  savedSnapshots: Record<string, Result>;
+  completed: string[];
+  transactions: Transaction[];
+  monthlyBudget: number;
+  joinedTeam: boolean;
+  teamCount: number;
+  reminders: boolean;
+  profile: { name: string; avatar: string };
 };
 
 const modes: Record<
@@ -1142,6 +1172,14 @@ export default function App() {
     avatar: '#c9ff36',
     signedIn: false,
   });
+  const [accountUser, setAccountUser] = useState<AccountUser | null>(null);
+  const [accountToken, setAccountToken] = useState<string | null>(null);
+  const [accountDataReady, setAccountDataReady] = useState(false);
+  const [accountSyncStatus, setAccountSyncStatus] = useState<
+    'idle' | 'saving' | 'saved' | 'error'
+  >('idle');
+  const [allowGuestDemoActions, setAllowGuestDemoActions] = useState(false);
+  const [authReturnView, setAuthReturnView] = useState<View>('home');
   const [mode, setMode] = useState<Mode>('daily');
   const [need, setNeed] = useState(modeNeedExamples.daily);
   const [filters, setFilters] = useState<Filters>(() => createInitialFilters());
@@ -1176,6 +1214,11 @@ export default function App() {
   const [catalogFacets, setCatalogFacets] = useState<
     CatalogCategorySummary[] | null
   >(null);
+  const [catalogSummary, setCatalogSummary] =
+    useState<CatalogSummaryResponse | null>(null);
+  const [catalogSummaryStatus, setCatalogSummaryStatus] = useState<
+    'loading' | 'ready' | 'error'
+  >('loading');
   const [liveResults, setLiveResults] = useState<Result[] | null>(null);
   const [sort, setSort] = useState<Sort>('cp');
   const [cpParams, setCpParams] = useState<CpParams>({
@@ -1202,6 +1245,60 @@ export default function App() {
   const [reportsLoaded, setReportsLoaded] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<Event | null>(null);
   const [pwaStatus, setPwaStatus] = useState('檢查中');
+  const applyAccountData = useCallback(
+    (user: AccountUser, envelope: AccountDataEnvelope) => {
+      const state = envelope.state as Partial<StoredAccountState>;
+      const storedProfile: Record<string, unknown> = isRecord(state.profile)
+        ? state.profile
+        : {};
+      const storedName =
+        typeof storedProfile.name === 'string' && storedProfile.name.trim()
+          ? storedProfile.name.trim().slice(0, 12)
+          : user.nickname;
+      const storedAvatar =
+        typeof storedProfile.avatar === 'string' && storedProfile.avatar
+          ? storedProfile.avatar
+          : user.avatar;
+      setSaved(
+        Array.isArray(state.saved)
+          ? state.saved.filter((id): id is string => typeof id === 'string')
+          : [],
+      );
+      setSavedSnapshots(
+        isRecord(state.savedSnapshots)
+          ? (state.savedSnapshots as Record<string, Result>)
+          : {},
+      );
+      setCompleted(
+        Array.isArray(state.completed)
+          ? state.completed.filter((id): id is string => typeof id === 'string')
+          : [],
+      );
+      setTransactions(
+        Array.isArray(state.transactions)
+          ? (state.transactions.filter(isRecord) as Transaction[])
+          : [],
+      );
+      setMonthlyBudget(
+        typeof state.monthlyBudget === 'number' &&
+          Number.isFinite(state.monthlyBudget) &&
+          state.monthlyBudget >= 0
+          ? state.monthlyBudget
+          : 0,
+      );
+      setJoinedTeam(state.joinedTeam === true);
+      setTeamCount(
+        typeof state.teamCount === 'number' && Number.isFinite(state.teamCount)
+          ? Math.max(0, Math.min(5, Math.round(state.teamCount)))
+          : 3,
+      );
+      setReminders(state.reminders !== false);
+      setProfile({ name: storedName, avatar: storedAvatar, signedIn: true });
+      setAccountDataReady(true);
+      setAccountSyncStatus('saved');
+    },
+    [],
+  );
   const budgetSummary = useMemo<BudgetSummary>(() => {
     const spent = transactions.reduce((sum, item) => sum + item.amount, 0);
     const saved = transactions.reduce((sum, item) => sum + item.saved, 0);
@@ -1255,6 +1352,95 @@ export default function App() {
     const frame = window.requestAnimationFrame(() => setInteractiveReady(true));
     return () => window.cancelAnimationFrame(frame);
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/api/catalog/categories', {
+      cache: 'no-store',
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Catalog summary unavailable');
+        return response.json() as Promise<CatalogSummaryResponse>;
+      })
+      .then((summary) => {
+        if (!Array.isArray(summary.categories)) {
+          throw new Error('Catalog summary is malformed');
+        }
+        setCatalogSummary(summary);
+        setCatalogSummaryStatus('ready');
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
+        setCatalogSummaryStatus('error');
+      });
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    const token = readAccountToken();
+    if (!token) return;
+    restoreAccountSession(token)
+      .then((session) => {
+        setAccountToken(token);
+        setAccountUser(session.user);
+        applyAccountData(session.user, session.data);
+      })
+      .catch(() => {
+        clearAccountToken();
+        setAccountToken(null);
+        setAccountUser(null);
+        setAccountDataReady(false);
+      });
+  }, [applyAccountData]);
+
+  useEffect(() => {
+    if (!profile.signedIn || !accountToken || !accountDataReady) return;
+    const timer = window.setTimeout(() => {
+      setAccountSyncStatus('saving');
+      const state: StoredAccountState = {
+        version: 1,
+        saved,
+        savedSnapshots,
+        completed,
+        transactions,
+        monthlyBudget,
+        joinedTeam,
+        teamCount,
+        reminders,
+        profile: { name: profile.name, avatar: profile.avatar },
+      };
+      saveAccountData(accountToken, state)
+        .then(() => setAccountSyncStatus('saved'))
+        .catch((error: unknown) => {
+          if (error instanceof AccountClientError && error.status === 401) {
+            clearAccountToken();
+            setAccountToken(null);
+            setAccountUser(null);
+            setAccountDataReady(false);
+            setProfile((current) => ({ ...current, signedIn: false }));
+            showToast('登入已逾時，請重新登入後再儲存');
+          }
+          setAccountSyncStatus('error');
+        });
+    }, 450);
+    return () => window.clearTimeout(timer);
+  }, [
+    accountDataReady,
+    accountToken,
+    completed,
+    joinedTeam,
+    monthlyBudget,
+    profile.avatar,
+    profile.name,
+    profile.signedIn,
+    reminders,
+    saved,
+    savedSnapshots,
+    teamCount,
+    transactions,
+  ]);
 
   useLayoutEffect(() => {
     if (view !== 'welcome') return;
@@ -1724,25 +1910,86 @@ export default function App() {
     );
   }
 
-  function beginExperience(next: ExperienceMode) {
+  async function handleAuthenticate(
+    authMode: 'login' | 'register',
+    credentials: { username: string; password: string; nickname?: string },
+  ) {
+    try {
+      const session = await authenticateAccount(authMode, credentials);
+      setAccountToken(session.sessionToken);
+      setAccountUser(session.user);
+      if (experienceMode !== 'demo' || authReturnView === 'home') {
+        setExperienceMode('account');
+      }
+      setAllowGuestDemoActions(false);
+      applyAccountData(session.user, session.data);
+      setHistory([]);
+      setView(authReturnView === 'welcome' ? 'home' : authReturnView);
+      showToast(
+        authMode === 'register'
+          ? '帳號建立完成，已開始同步'
+          : '登入成功，清單已還原',
+      );
+      return null;
+    } catch (error) {
+      return error instanceof AccountClientError
+        ? error.message
+        : '帳號服務暫時無法使用。';
+    }
+  }
+
+  function openAccount(returnView: View = view) {
+    setAuthReturnView(returnView === 'account' ? 'home' : returnView);
+    navigate('account');
+  }
+
+  function requireAccount(message: string, returnView: View = view) {
+    showToast(message);
+    openAccount(returnView);
+  }
+
+  async function handleSignOut() {
+    const token = accountToken;
+    setAccountToken(null);
+    setAccountUser(null);
+    setAccountDataReady(false);
+    setAccountSyncStatus('idle');
+    setAllowGuestDemoActions(false);
+    setProfile({ name: '旅人', avatar: '#c9ff36', signedIn: false });
+    setSaved([]);
+    setSavedSnapshots({});
+    setCompleted([]);
+    setTransactions([]);
+    setMonthlyBudget(0);
+    setJoinedTeam(false);
+    setTeamCount(3);
+    await endAccountSession(token);
+    showToast('已登出；搜尋仍可使用，個人資料已從本分頁移除');
+    setHistory([]);
+    setView('home');
+  }
+
+  function beginExperience(next: ExperienceMode, allowGuestActions = false) {
+    const signedIn = Boolean(accountUser && accountToken && profile.signedIn);
     setExperienceMode(next);
-    setProfile({
-      name: '小美',
-      avatar: '#c9ff36',
-      signedIn: next === 'account',
-    });
+    setAllowGuestDemoActions(next === 'demo' && allowGuestActions);
+    if (!signedIn) {
+      setProfile({ name: '小美', avatar: '#c9ff36', signedIn: false });
+    }
     setMode('daily');
     setNeed(modeNeedExamples.daily);
     setFilters(createInitialFilters());
     setLastPaidBudget(500);
-    setTransactions([...demoTransactions]);
-    setMonthlyBudget(10_000);
-    setTeamCount(3);
+    if (!signedIn) {
+      setTransactions(next === 'demo' ? [...demoTransactions] : []);
+      setMonthlyBudget(next === 'demo' ? 10_000 : 0);
+      setTeamCount(3);
+      setSaved([]);
+      setSavedSnapshots({});
+      setCompleted([]);
+      setJoinedTeam(false);
+    }
     setUnread(3);
-    setSaved([]);
-    setSavedSnapshots({});
-    setCompleted([]);
-    setJoinedTeam(false);
     setHistory([]);
     setSearchStatus('idle');
     setCatalogRequestKey(0);
@@ -1907,6 +2154,10 @@ export default function App() {
     navigate('detail');
   }
   function toggleSaved(id: string) {
+    if (!profile.signedIn && !allowGuestDemoActions) {
+      requireAccount('登入後才能儲存清單與收藏');
+      return;
+    }
     const wasSaved = saved.includes(id);
     const wasCompleted = completed.includes(id);
     const snapshot =
@@ -1944,6 +2195,10 @@ export default function App() {
     showToast('已復原上一個動作');
   }
   function updateCheckout(ids: string[], action: 'settle' | 'cancel') {
+    if (!profile.signedIn && !allowGuestDemoActions) {
+      requireAccount('登入後才能更新清單與消費紀錄', 'saved');
+      return;
+    }
     const uniqueIds = [...new Set(ids)];
     const requestedItems = uniqueIds
       .map(
@@ -2169,6 +2424,7 @@ export default function App() {
           <BackgroundMusicToggle
             enabled={musicEnabled}
             onToggle={() => setMusicEnabled(!musicEnabled)}
+            disabled={!interactiveReady}
             className="welcome-music-toggle"
           />
         )}
@@ -2191,8 +2447,28 @@ export default function App() {
             {view === 'welcome' && (
               <WelcomeScreen
                 ready={interactiveReady}
-                onDemo={() => beginExperience('demo')}
-                onAccount={() => beginExperience('account')}
+                onDemo={() =>
+                  beginExperience(
+                    'demo',
+                    new URLSearchParams(window.location.search).get('mode') ===
+                      'demo',
+                  )
+                }
+                onAccount={() => openAccount('home')}
+              />
+            )}
+            {view === 'account' && (
+              <AccountScreen
+                user={accountUser}
+                syncStatus={accountSyncStatus}
+                onAuthenticate={handleAuthenticate}
+                onLogout={handleSignOut}
+                onContinue={() => {
+                  setHistory([]);
+                  setView(
+                    authReturnView === 'welcome' ? 'home' : authReturnView,
+                  );
+                }}
               />
             )}
             {view === 'onboarding' && (
@@ -2225,6 +2501,9 @@ export default function App() {
                 locationPermission={locationPermission}
                 savedCount={saved.length}
                 budgetSummary={budgetSummary}
+                catalogSummary={catalogSummary}
+                catalogSummaryStatus={catalogSummaryStatus}
+                signedIn={profile.signedIn}
                 onMode={chooseMode}
                 onNeed={updateNeed}
                 onVoice={startVoice}
@@ -2246,6 +2525,7 @@ export default function App() {
                   setLocationPermission('declined');
                   setLocationStatus('已選擇使用圓山站估算');
                 }}
+                onAccount={() => openAccount('home')}
               />
             )}
             {view === 'ready' && (
@@ -2360,6 +2640,10 @@ export default function App() {
                 count={teamCount}
                 joined={joinedTeam}
                 onJoin={() => {
+                  if (!profile.signedIn && !allowGuestDemoActions) {
+                    requireAccount('登入後才能登記團購', 'team');
+                    return;
+                  }
                   if (!joinedTeam) {
                     setJoinedTeam(true);
                     setTeamCount((n) => Math.min(5, n + 1));
@@ -2367,6 +2651,10 @@ export default function App() {
                   }
                 }}
                 onCancel={() => {
+                  if (!profile.signedIn && !allowGuestDemoActions) {
+                    requireAccount('登入後才能變更團購登記', 'team');
+                    return;
+                  }
                   if (joinedTeam) {
                     setJoinedTeam(false);
                     setTeamCount((n) => Math.max(0, n - 1));
@@ -2402,6 +2690,8 @@ export default function App() {
               <ProfileScreen
                 profile={profile}
                 onChange={setProfile}
+                onAccount={() => openAccount('profile')}
+                onLogout={handleSignOut}
                 onDone={goBack}
               />
             )}
@@ -2458,6 +2748,10 @@ export default function App() {
                 item={selected}
                 reports={selectedReports}
                 onSubmit={({ type, note }) => {
+                  if (!profile.signedIn && !allowGuestDemoActions) {
+                    requireAccount('登入後才能提交資料回報', 'report');
+                    return;
+                  }
                   const report: CommunityReport = {
                     id: `report-${selected.id}-${Date.now()}`,
                     subjectId: selected.id.replace('SUPPLEMENT:', ''),
@@ -2492,6 +2786,7 @@ export default function App() {
           ![
             'search',
             'ready',
+            'account',
             'settings',
             'profile',
             'filters',
@@ -2504,7 +2799,11 @@ export default function App() {
             <BottomNav
               view={view}
               savedCount={saved.length}
+              signedIn={profile.signedIn || allowGuestDemoActions}
               onNavigate={navigate}
+              onRequireAccount={() =>
+                requireAccount('登入後才能查看與儲存清單', 'saved')
+              }
             />
           )}
         {toast && (
@@ -3065,11 +3364,11 @@ function CompassManifesto() {
       <span aria-hidden="true">OUR NORTH STAR</span>
       <strong aria-hidden="true">
         {visibleHeadline}
-        {!typingDetail && !reduceMotion && <i />}
+        {!typingDetail && !reduceMotion && <span className="type-cursor" />}
       </strong>
       <small aria-hidden="true">
         {visibleDetail}
-        {typingDetail && !reduceMotion && <i />}
+        {typingDetail && !reduceMotion && <span className="type-cursor" />}
       </small>
     </figcaption>
   );
@@ -3167,10 +3466,198 @@ function WelcomeScreen({
           disabled={!ready}
         >
           <LogIn />
-          使用自己的資料
+          登入後儲存清單
         </button>
       </div>
-      <small>直接開始探索，或登入後使用自己的生活條件。</small>
+      <small>不登入也能搜尋；登入後才能儲存清單與收藏。</small>
+    </section>
+  );
+}
+
+function AccountScreen({
+  user,
+  syncStatus,
+  onAuthenticate,
+  onLogout,
+  onContinue,
+}: {
+  user: AccountUser | null;
+  syncStatus: 'idle' | 'saving' | 'saved' | 'error';
+  onAuthenticate: (
+    mode: 'login' | 'register',
+    credentials: { username: string; password: string; nickname?: string },
+  ) => Promise<string | null>;
+  onLogout: () => Promise<void>;
+  onContinue: () => void;
+}) {
+  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+
+  async function submit() {
+    const normalizedUsername = username.trim().toLowerCase();
+    if (!ACCOUNT_USERNAME_PATTERN.test(normalizedUsername)) {
+      setError('帳號需為 3–30 個小寫英數字、底線或連字號。');
+      return;
+    }
+    if (password.length < ACCOUNT_PASSWORD_MIN_LENGTH) {
+      setError(`密碼至少需要 ${ACCOUNT_PASSWORD_MIN_LENGTH} 個字元。`);
+      return;
+    }
+    setBusy(true);
+    setError('');
+    const nextError = await onAuthenticate(mode, {
+      username: normalizedUsername,
+      password,
+      ...(mode === 'register' ? { nickname } : {}),
+    });
+    setBusy(false);
+    if (nextError) setError(nextError);
+  }
+
+  if (user) {
+    return (
+      <section className="screen account-screen account-signed-in">
+        <span className="kicker">ACCOUNT</span>
+        <h1>已登入生活帳號</h1>
+        <p>清單、收藏與消費紀錄會儲存到這個帳號。</p>
+        <div className="account-identity-card">
+          <span className="account-identity-avatar">
+            {(user.nickname || user.username).slice(0, 1)}
+          </span>
+          <span>
+            <b>{user.nickname}</b>
+            <small>@{user.username}</small>
+          </span>
+          <ShieldCheck />
+        </div>
+        <div className={`account-sync-card ${syncStatus}`}>
+          <Database />
+          <span>
+            <b>
+              {syncStatus === 'saving'
+                ? '正在儲存帳號資料'
+                : syncStatus === 'error'
+                  ? '暫時無法同步'
+                  : '帳號資料已連線'}
+            </b>
+            <small>收藏與清單變更會自動寫入；登入工作階段為 30 分鐘。</small>
+          </span>
+        </div>
+        <button className="primary-action" onClick={onContinue}>
+          繼續探索
+          <ArrowRight />
+        </button>
+        <button className="secondary-action" onClick={() => void onLogout()}>
+          登出帳號
+        </button>
+      </section>
+    );
+  }
+
+  return (
+    <section className="screen account-screen">
+      <span className="kicker">ACCOUNT</span>
+      <h1>登入生活帳號</h1>
+      <p>不登入也能搜尋；登入後才能儲存清單與收藏。</p>
+      <div className="account-tabs" role="tablist" aria-label="帳號方式">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'login'}
+          className={mode === 'login' ? 'active' : ''}
+          onClick={() => {
+            setMode('login');
+            setError('');
+          }}
+        >
+          登入
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'register'}
+          className={mode === 'register' ? 'active' : ''}
+          onClick={() => {
+            setMode('register');
+            setError('');
+          }}
+        >
+          註冊
+        </button>
+      </div>
+      <form
+        className="account-form"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void submit();
+        }}
+      >
+        {mode === 'register' && (
+          <label>
+            暱稱
+            <input
+              value={nickname}
+              onChange={(event) => setNickname(event.target.value)}
+              maxLength={30}
+              placeholder="顯示名稱（選填）"
+            />
+          </label>
+        )}
+        <label>
+          帳號
+          <input
+            value={username}
+            onChange={(event) => setUsername(event.target.value.toLowerCase())}
+            minLength={3}
+            maxLength={30}
+            pattern="[a-z0-9_-]{3,30}"
+            autoCapitalize="none"
+            autoCorrect="off"
+            autoComplete="username"
+            placeholder="3–30 個英數字、_ 或 -"
+            required
+          />
+        </label>
+        <label>
+          密碼
+          <input
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            minLength={ACCOUNT_PASSWORD_MIN_LENGTH}
+            maxLength={128}
+            autoComplete={
+              mode === 'login' ? 'current-password' : 'new-password'
+            }
+            placeholder={`至少 ${ACCOUNT_PASSWORD_MIN_LENGTH} 個字元`}
+            required
+          />
+        </label>
+        {error && (
+          <p className="form-error" role="alert">
+            {error}
+          </p>
+        )}
+        <button className="primary-action account-submit" disabled={busy}>
+          <LogIn />
+          {busy ? '處理中…' : mode === 'login' ? '登入帳號' : '建立帳號並登入'}
+          <ArrowRight />
+        </button>
+      </form>
+      <div className="account-privacy-card">
+        <ShieldCheck />
+        <span>
+          <b>登入與隱私</b>
+          <small>
+            密碼只保存雜湊；權杖只留在本分頁，30
+            分鐘後自動失效。語音與搜尋原文不會寫入帳號。
+          </small>
+        </span>
+      </div>
     </section>
   );
 }
@@ -3460,6 +3947,7 @@ function AppHeader({
 }) {
   const root = ['home', 'results', 'saved', 'team', 'analytics'].includes(view);
   const titles: Partial<Record<View, string>> = {
+    account: '帳號',
     detail: '選項詳情',
     ready: '準備探索',
     search: '獵人出發',
@@ -3631,6 +4119,176 @@ function ReadyScreen({
   );
 }
 
+function CatalogCoverageCard({
+  summary,
+  status,
+  signedIn,
+  onAccount,
+}: {
+  summary: CatalogSummaryResponse | null;
+  status: 'loading' | 'ready' | 'error';
+  signedIn: boolean;
+  onAccount: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const total =
+    summary?.categories.reduce((sum, category) => sum + category.count, 0) ?? 0;
+  const verifiedTotal =
+    summary?.categories.reduce(
+      (sum, category) => sum + category.verifiedCount,
+      0,
+    ) ?? 0;
+  const pendingTotal = Math.max(0, total - verifiedTotal);
+  const sourceTotal = new Set(
+    summary?.categories.flatMap((category) =>
+      category.sources.map(
+        (source) => `${source.publisher}\u0000${source.title}`,
+      ),
+    ) ?? [],
+  ).size;
+  const syncedAt = summary?.syncedAt ? new Date(summary.syncedAt) : null;
+  const syncedLabel =
+    syncedAt && !Number.isNaN(syncedAt.getTime())
+      ? new Intl.DateTimeFormat('zh-TW', {
+          timeZone: 'Asia/Taipei',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        }).format(syncedAt)
+      : '等待首次同步';
+  return (
+    <section className="catalog-coverage-card" aria-label="資料來源與查核">
+      <div className="catalog-coverage-summary">
+        <span className="catalog-coverage-icon">
+          <ShieldCheck />
+        </span>
+        <span>
+          <small>來源與查核</small>
+          <strong>
+            {status === 'loading'
+              ? '正在讀取資料狀態…'
+              : status === 'error'
+                ? '資料統計暫時無法連線'
+                : `${money(total)} 筆已串接 · ${money(verifiedTotal)} 筆核心已驗證`}
+          </strong>
+          <em>
+            {status === 'ready'
+              ? `${sourceTotal} 個可查詢來源 · ${money(pendingTotal)} 筆待確認`
+              : '圓山站 2 km · 食品、日用品、公益、活動與交通'}
+          </em>
+        </span>
+      </div>
+      {summary && (
+        <button
+          className="catalog-coverage-toggle"
+          type="button"
+          aria-expanded={open}
+          aria-controls="catalog-coverage-details"
+          onClick={() => setOpen((current) => !current)}
+        >
+          <span>查看各類別</span>
+          <span>
+            {summary.categories.length} 類 · 資料同步{' '}
+            {syncedLabel.split(' ')[0]}
+          </span>
+          <ChevronDown />
+        </button>
+      )}
+      {open && summary && (
+        <div className="catalog-coverage-details" id="catalog-coverage-details">
+          <div className="catalog-coverage-source">
+            <Database />
+            <span>
+              <b>
+                {summary.source === 'd1'
+                  ? '資料庫已連線'
+                  : '最近資料快照已載入'}
+              </b>
+              <small>最近同步 {syncedLabel}</small>
+            </span>
+          </div>
+          <div className="catalog-category-counts">
+            {summary.categories.map((category) => {
+              const verifiedRate = category.count
+                ? Math.round((category.verifiedCount / category.count) * 100)
+                : 0;
+              return (
+                <article key={category.key}>
+                  <header>
+                    <b>{category.label}</b>
+                    <small>{category.sources.length} 個來源</small>
+                  </header>
+                  <div className="catalog-category-metrics">
+                    <span>
+                      <small>已串接</small>
+                      <strong>{money(category.count)}</strong>
+                    </span>
+                    <span>
+                      <small>
+                        <ShieldCheck aria-hidden="true" />
+                        核心已驗證
+                      </small>
+                      <strong>{money(category.verifiedCount)}</strong>
+                    </span>
+                    <span>
+                      <small>待確認</small>
+                      <strong>
+                        {money(category.count - category.verifiedCount)}
+                      </strong>
+                    </span>
+                  </div>
+                  <progress
+                    className="catalog-verification-track"
+                    aria-label={`${category.label}驗證比例`}
+                    max={100}
+                    value={verifiedRate}
+                  />
+                  <span className="catalog-category-sources">
+                    {category.sources.length
+                      ? category.sources.map((source) =>
+                          source.url ? (
+                            <a
+                              href={source.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              key={`${source.publisher}-${source.title}`}
+                            >
+                              {source.title}
+                            </a>
+                          ) : (
+                            <span key={`${source.publisher}-${source.title}`}>
+                              {source.title}
+                            </span>
+                          ),
+                        )
+                      : '目前條件內尚無可顯示資料'}
+                  </span>
+                </article>
+              );
+            })}
+          </div>
+          <p>
+            「已串接」代表資料已進入目前可查詢的資料層；「核心已驗證」代表來源連結、查核時間與身分、地點等核心欄位齊全，不代表價格、名額、庫存或開放狀態皆為即時。
+          </p>
+        </div>
+      )}
+      {!signedIn && (
+        <button
+          className="catalog-account-cta"
+          type="button"
+          onClick={onAccount}
+        >
+          <LogIn />
+          登入後可儲存清單與收藏
+          <ChevronRight />
+        </button>
+      )}
+    </section>
+  );
+}
+
 function HomeScreen({
   profile,
   mode,
@@ -3642,6 +4300,9 @@ function HomeScreen({
   locationPermission,
   savedCount,
   budgetSummary,
+  catalogSummary,
+  catalogSummaryStatus,
+  signedIn,
   onMode,
   onNeed,
   onVoice,
@@ -3653,6 +4314,7 @@ function HomeScreen({
   onGuide,
   onRequestLocation,
   onDeclineLocation,
+  onAccount,
 }: {
   profile: Profile;
   mode: Mode;
@@ -3664,6 +4326,9 @@ function HomeScreen({
   locationPermission: LocationPermission;
   savedCount: number;
   budgetSummary: BudgetSummary;
+  catalogSummary: CatalogSummaryResponse | null;
+  catalogSummaryStatus: 'loading' | 'ready' | 'error';
+  signedIn: boolean;
   onMode: (m: Mode) => void;
   onNeed: (s: string) => void;
   onVoice: () => void;
@@ -3675,6 +4340,7 @@ function HomeScreen({
   onGuide: () => void;
   onRequestLocation: () => void;
   onDeclineLocation: () => void;
+  onAccount: () => void;
 }) {
   const reduceMotion = usePrefersReducedMotion();
   const [promptIndex, setPromptIndex] = useState(0);
@@ -3869,6 +4535,12 @@ function HomeScreen({
           <ArrowRight />
         </button>
       </div>
+      <CatalogCoverageCard
+        summary={catalogSummary}
+        status={catalogSummaryStatus}
+        signedIn={signedIn}
+        onAccount={onAccount}
+      />
       <button className="sop-launcher" onClick={onGuide}>
         <span className="sop-launcher-icon">
           <Sparkles />
@@ -3910,7 +4582,11 @@ function HomeScreen({
         {locationPermission === 'requesting' && <em>等待授權…</em>}
         {locationPermission === 'granted' && <Check />}
       </div>
-      <p className="home-footnote">{savedCount} 個收藏會顯示到期提醒</p>
+      <p className="home-footnote">
+        {signedIn
+          ? `${savedCount} 個收藏會顯示到期提醒`
+          : '訪客模式不會儲存清單；搜尋功能仍可完整使用'}
+      </p>
     </section>
   );
 }
@@ -4191,6 +4867,34 @@ function TagLine({ item, filters }: { item: Result; filters: Filters }) {
   );
 }
 
+function VerificationMark({
+  item,
+  className = '',
+}: {
+  item: Result;
+  className?: string;
+}) {
+  if (
+    item.provenance !== 'verified-real' &&
+    item.provenance !== 'verified-demo'
+  ) {
+    return null;
+  }
+  const label = item.verifiedFields?.length
+    ? `已驗證：${item.verifiedFields.join('、')}`
+    : '核心資料已驗證';
+  return (
+    <span
+      className={`verification-mark ${className}`.trim()}
+      role="img"
+      aria-label={label}
+      title={label}
+    >
+      <ShieldCheck />
+    </span>
+  );
+}
+
 function ResultCard({
   item,
   index,
@@ -4303,6 +5007,7 @@ function ResultCard({
           <TagLine item={item} filters={filters} />
         </span>
       </button>
+      <VerificationMark item={item} className="result-verification-mark" />
       <button
         className={`save-fab ${isSaved ? 'saved' : ''}`}
         onClick={() => onSave(item.id)}
@@ -4709,6 +5414,7 @@ function DetailScreen({
             height={230}
             priority
           />
+          <VerificationMark item={item} className="detail-verification-mark" />
         </div>
       ) : (
         <div
@@ -4726,6 +5432,7 @@ function DetailScreen({
             <b>{item.category}</b>
             <em>{item.provider}</em>
           </span>
+          <VerificationMark item={item} className="detail-verification-mark" />
         </div>
       )}
       <div className="detail-content">
@@ -5599,10 +6306,14 @@ function FiltersScreen({
 function ProfileScreen({
   profile,
   onChange,
+  onAccount,
+  onLogout,
   onDone,
 }: {
   profile: Profile;
   onChange: (p: Profile) => void;
+  onAccount: () => void;
+  onLogout: () => Promise<void>;
   onDone: () => void;
 }) {
   const colors = ['#c9ff36', '#36a8ff', '#ff5d5d', '#8b5cff', '#ffca42'];
@@ -5646,13 +6357,11 @@ function ProfileScreen({
           <b>{profile.signedIn ? '已登入' : '匿名使用中'}</b>
           <small>
             {profile.signedIn
-              ? '偏好與紀錄會跨裝置同步'
-              : '偏好與紀錄儲存在此裝置'}
+              ? '清單與紀錄會儲存到帳號'
+              : '訪客可搜尋，但清單不會寫入'}
           </small>
         </span>
-        <button
-          onClick={() => onChange({ ...profile, signedIn: !profile.signedIn })}
-        >
+        <button onClick={profile.signedIn ? () => void onLogout() : onAccount}>
           {profile.signedIn ? '登出' : '登入'}
         </button>
       </div>
@@ -6312,11 +7021,15 @@ function MapScreen({ item, onOpen }: { item: Result; onOpen: () => void }) {
 function BottomNav({
   view,
   savedCount,
+  signedIn,
   onNavigate,
+  onRequireAccount,
 }: {
   view: View;
   savedCount: number;
+  signedIn: boolean;
   onNavigate: (v: View) => void;
+  onRequireAccount: () => void;
 }) {
   const items: Array<{ view: View; label: string; icon: ReactNode }> = [
     { view: 'home', label: '首頁', icon: <Home /> },
@@ -6331,7 +7044,13 @@ function BottomNav({
         <button
           key={item.view}
           className={view === item.view ? 'active' : ''}
-          onClick={() => onNavigate(item.view)}
+          onClick={() => {
+            if (item.view === 'saved' && !signedIn) {
+              onRequireAccount();
+              return;
+            }
+            onNavigate(item.view);
+          }}
         >
           {item.icon}
           <span>{item.label}</span>

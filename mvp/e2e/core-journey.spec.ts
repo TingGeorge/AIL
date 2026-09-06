@@ -7,7 +7,7 @@ async function expectNoDemoLabels(page: Page) {
 }
 
 async function enterDemo(page: Page) {
-  await page.goto('/');
+  await page.goto('/?mode=demo');
   await expectNoDemoLabels(page);
   await page.getByRole('button', { name: '立即開始探索' }).click();
 
@@ -31,7 +31,9 @@ async function enterDemo(page: Page) {
 
   await page.locator('.screen-enter').evaluate(async (screen) => {
     await Promise.all(
-      screen.getAnimations().map((animation) => animation.finished.catch(() => undefined)),
+      screen
+        .getAnimations()
+        .map((animation) => animation.finished.catch(() => undefined)),
     );
   });
 
@@ -55,31 +57,32 @@ async function enterDemo(page: Page) {
 
 async function reachResults(page: Page) {
   await enterDemo(page);
-  await page
-    .getByRole('button', { name: '下一步：確認需求與限制' })
-    .click();
-  await page
-    .getByRole('button', { name: '確認完成，前往開始探索' })
-    .click();
+  await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
+  await page.getByRole('button', { name: '確認完成，前往開始探索' }).click();
   await page.getByRole('button', { name: '開始探索' }).click();
   await expect(
     page.getByRole('heading', { name: /找到 \d+ 個合適選擇/ }),
   ).toBeVisible({ timeout: 5_000 });
 }
 
+test('歡迎頁打字游標只留在宣言文字，不會飄進指南針', async ({ page }) => {
+  await page.goto('/');
+
+  const cursor = page.locator('.compass-manifesto-typewriter .type-cursor');
+  await expect(cursor).toHaveCount(1);
+  await expect(cursor).toHaveCSS('position', 'static');
+  await expect(page.locator('.compass-manifesto-typewriter i')).toHaveCount(0);
+});
+
 test('完整情境核心旅程、底部選單與收藏復原', async ({ page }) => {
   await enterDemo(page);
 
-  await page
-    .getByRole('button', { name: '下一步：確認需求與限制' })
-    .click();
+  await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
   await expect(
     page.getByRole('heading', { name: '把條件調到剛剛好' }),
   ).toBeVisible();
 
-  await page
-    .getByRole('button', { name: '確認完成，前往開始探索' })
-    .click();
+  await page.getByRole('button', { name: '確認完成，前往開始探索' }).click();
   await page.getByRole('button', { name: '開始探索' }).click();
 
   await expect(
@@ -100,7 +103,9 @@ test('完整情境核心旅程、底部選單與收藏復原', async ({ page }) 
   const sortSheet = page.getByRole('dialog', { name: '選擇排序方式' });
   await expect(sortSheet).toBeVisible();
   await sortSheet.getByRole('button', { name: /距離優先/ }).click();
-  await expect(page.getByRole('button', { name: /排序方式 距離優先/ })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: /排序方式 距離優先/ }),
+  ).toBeVisible();
 
   await page.getByRole('button', { name: /快速篩選/ }).click();
   const filterSheet = page.getByRole('dialog', { name: '快速調整結果' });
@@ -130,9 +135,7 @@ test('揪團卡片可開啟詳情並登記', async ({ page }) => {
 
   await page.getByRole('button', { name: '揪團', exact: true }).click();
   await expectNoDemoLabels(page);
-  await page
-    .getByRole('button', { name: /夜間計程車順風團/ })
-    .click();
+  await page.getByRole('button', { name: /夜間計程車順風團/ }).click();
 
   const teamSheet = page.getByRole('dialog', {
     name: '夜間計程車順風團',
@@ -152,9 +155,7 @@ test('需求太短時留在 STEP 1 並顯示即時錯誤', async ({ page }) => {
 
   const need = page.getByRole('textbox', { name: '文字輸入需求' });
   await need.fill('吃');
-  await page
-    .getByRole('button', { name: '下一步：確認需求與限制' })
-    .click();
+  await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
 
   await expect(page.getByRole('alert')).toContainText('至少用 3 個字');
   await expect(
@@ -162,9 +163,7 @@ test('需求太短時留在 STEP 1 並顯示即時錯誤', async ({ page }) => {
   ).toBeVisible();
 });
 
-test('首頁與分析頁共用同一份預算摘要，圖表可切換與點選', async ({
-  page,
-}) => {
+test('首頁與分析頁共用同一份預算摘要，圖表可切換與點選', async ({ page }) => {
   await enterDemo(page);
 
   const wallet = page.getByRole('button', { name: '查看本月消費分析' });
@@ -176,9 +175,7 @@ test('首頁與分析頁共用同一份預算摘要，圖表可切換與點選',
   await expect(page.getByRole('heading', { name: '消費分析' })).toBeVisible();
   await expect(page.locator('.analytics-hero')).toContainText('NT$ 9,792');
   await page.getByRole('button', { name: '省下', exact: true }).click();
-  await page
-    .getByRole('button', { name: /交通 省下 NT\$68/ })
-    .click();
+  await page.getByRole('button', { name: /交通 省下 NT\$68/ }).click();
   await expect(page.locator('.category-insight')).toContainText('交通');
   await expect(page.locator('.category-insight')).toContainText('61%');
 
@@ -193,9 +190,7 @@ test('首頁與分析頁共用同一份預算摘要，圖表可切換與點選',
 test('預算為 0 時仍可直接清空並輸入新金額', async ({ page }) => {
   await enterDemo(page);
   await page.getByRole('button', { name: /零元.*零元探索/ }).click();
-  await page
-    .getByRole('button', { name: '下一步：確認需求與限制' })
-    .click();
+  await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
 
   const budget = page.getByRole('spinbutton', { name: '預算', exact: true });
   await expect(budget).toHaveValue('0');
@@ -205,31 +200,10 @@ test('預算為 0 時仍可直接清空並輸入新金額', async ({ page }) => 
   await expect(budget).toHaveValue('750');
 });
 
-test('自己的資料流程也直接帶入完整預設內容', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: '使用自己的資料' }).click();
-  const tutorial = page.getByRole('dialog', { name: '使用教學' });
-  if (await tutorial.isVisible()) {
-    await tutorial.getByRole('button', { name: '略過教學' }).click();
-  }
-  const onboardingSkip = page.getByRole('button', { name: '略過', exact: true });
-  if (await onboardingSkip.isVisible()) await onboardingSkip.click();
-
-  await expect(page.getByRole('button', { name: '查看本月消費分析' })).toContainText(
-    'NT$ 9,792',
-  );
-  await expect(page.locator('.quick-team')).toContainText('五人晚餐團還差 2 位');
-  await expectNoDemoLabels(page);
-});
-
 test('回報送出後立即更新統計並保留明細', async ({ page }) => {
   await enterDemo(page);
-  await page
-    .getByRole('button', { name: '下一步：確認需求與限制' })
-    .click();
-  await page
-    .getByRole('button', { name: '確認完成，前往開始探索' })
-    .click();
+  await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
+  await page.getByRole('button', { name: '確認完成，前往開始探索' }).click();
   await page.getByRole('button', { name: '開始探索' }).click();
   await expect(
     page.getByRole('heading', { name: /找到 \d+ 個合適選擇/ }),
@@ -241,24 +215,24 @@ test('回報送出後立即更新統計並保留明細', async ({ page }) => {
   await page.getByRole('button', { name: '回報資訊' }).click();
   await expect(page.locator('.report-summary')).toContainText('2 則');
   await page.getByRole('button', { name: '價格不同' }).click();
-  await page.getByRole('textbox', { name: '補充說明' }).fill('今天看到的新價格是 NT$190');
+  await page
+    .getByRole('textbox', { name: '補充說明' })
+    .fill('今天看到的新價格是 NT$190');
   await page.getByRole('button', { name: '送出回報' }).click();
 
   await expect(page.getByText('回報已記錄')).toBeVisible();
   await expect(page.locator('.report-summary')).toContainText('3 則');
-  await expect(page.locator('.recent-reports')).toContainText('今天看到的新價格是 NT$190');
+  await expect(page.locator('.recent-reports')).toContainText(
+    '今天看到的新價格是 NT$190',
+  );
   await page.getByRole('button', { name: '返回' }).click();
   await expect(page.locator('.facts-grid')).toContainText('3 則');
 });
 
 test('CP 權重固定合計 100 並會真正更換第一名', async ({ page }) => {
   await enterDemo(page);
-  await page
-    .getByRole('button', { name: '下一步：確認需求與限制' })
-    .click();
-  await page
-    .getByRole('button', { name: '確認完成，前往開始探索' })
-    .click();
+  await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
+  await page.getByRole('button', { name: '確認完成，前往開始探索' }).click();
   await page.getByRole('button', { name: '開始探索' }).click();
   await expect(
     page.getByRole('heading', { name: /找到 \d+ 個合適選擇/ }),
@@ -272,11 +246,15 @@ test('CP 權重固定合計 100 並會真正更換第一名', async ({ page }) =
   await expect(page.locator('.result-title').first()).toHaveText(
     '雙人義大利麵提案',
   );
-  await expect(page.getByRole('button', { name: /排序方式 CP 值優先/ })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: /排序方式 CP 值優先/ }),
+  ).toBeVisible();
 
-  const weights = await page.getByRole('slider').evaluateAll((sliders) =>
-    sliders.map((slider) => Number(slider.getAttribute('aria-valuenow'))),
-  );
+  const weights = await page
+    .getByRole('slider')
+    .evaluateAll((sliders) =>
+      sliders.map((slider) => Number(slider.getAttribute('aria-valuenow'))),
+    );
   expect(weights.reduce((sum, value) => sum + value, 0)).toBe(100);
   await expect(page.locator('.cp-ranking-live')).toContainText(
     '目前第 1 名：雙人義大利麵提案',
@@ -294,22 +272,25 @@ test('結果條件、工具列與分類按鈕維持可讀尺寸，示意圖不�
 
   const controlMetrics = await page.evaluate(() => ({
     contextFont: Number.parseFloat(
-      getComputedStyle(document.querySelector('.results-context > span')!).fontSize,
+      getComputedStyle(document.querySelector('.results-context > span')!)
+        .fontSize,
     ),
-    toolbarHeights: [...document.querySelectorAll<HTMLElement>(
-      '.filter-row > button, .filter-row .sort-button',
-    )].map((element) => element.getBoundingClientRect().height),
+    toolbarHeights: [
+      ...document.querySelectorAll<HTMLElement>(
+        '.filter-row > button, .filter-row .sort-button',
+      ),
+    ].map((element) => element.getBoundingClientRect().height),
     categoryHeight: document
       .querySelector<HTMLElement>('.category-filter button')!
       .getBoundingClientRect().height,
   }));
   expect(controlMetrics.contextFont).toBeGreaterThanOrEqual(10);
-  expect(controlMetrics.toolbarHeights.every((height) => height >= 44)).toBe(true);
+  expect(controlMetrics.toolbarHeights.every((height) => height >= 44)).toBe(
+    true,
+  );
   expect(controlMetrics.categoryHeight).toBeGreaterThanOrEqual(39);
 
-  await page
-    .getByRole('button', { name: /臺北孔子廟夜間散步/ })
-    .click();
+  await page.getByRole('button', { name: /臺北孔子廟夜間散步/ }).click();
   await expect(page.locator('.detail-hero')).toBeVisible();
   await expect(page.locator('.detail-hero')).toContainText('為你精選');
   await expect(page.locator('.detail-image')).toHaveCount(0);
@@ -347,9 +328,7 @@ test('清單批次結算會建立交易、更新分析，且可刪除交易與�
   await expect(batchCheckout).toContainText('已選 2 / 2 筆');
   await expect(batchCheckout).toContainText('NT$380');
 
-  await batchCheckout
-    .getByRole('button', { name: '批次結算 2 筆' })
-    .click();
+  await batchCheckout.getByRole('button', { name: '批次結算 2 筆' }).click();
   await expect(checklistItem).toContainText('已結算');
   await expect(museumItem).toContainText('已結算');
   const recentTransactions = page.locator('.recent-transactions');
@@ -377,12 +356,8 @@ test('清單批次結算會建立交易、更新分析，且可刪除交易與�
   await expect(museumItem).toContainText('已結算');
   await expect(recentTransactions).not.toContainText('雙人義大利麵提案');
 
-  await museumItem
-    .getByRole('button', { name: '選取 北美館傍晚看展' })
-    .click();
-  await batchCheckout
-    .getByRole('button', { name: '取消 1 筆結算' })
-    .click();
+  await museumItem.getByRole('button', { name: '選取 北美館傍晚看展' }).click();
+  await batchCheckout.getByRole('button', { name: '取消 1 筆結算' }).click();
   await expect(museumItem).toContainText('待結算');
   await expect(recentTransactions).not.toContainText('北美館傍晚看展');
 
@@ -421,5 +396,7 @@ test('通知角標位於按鈕內，全部已讀後同步清除清單狀態', as
 
   await notificationButton.click();
   await page.getByRole('button', { name: '全部已讀' }).click();
-  await expect(page.locator('.notification-list > button.unread')).toHaveCount(0);
+  await expect(page.locator('.notification-list > button.unread')).toHaveCount(
+    0,
+  );
 });

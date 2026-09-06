@@ -489,11 +489,38 @@ function finishResponse(
   const withinMode = options.freeOnly
     ? candidates.filter((item) => item.cost.state === 'FREE')
     : candidates;
-  const facets = catalogCategories.map((category) => ({
-    key: category.key,
-    label: category.label,
-    count: withinMode.filter((item) => item.categoryKey === category.key).length,
-  }));
+  const facets = catalogCategories.map((category) => {
+    const categoryItems = withinMode.filter(
+      (item) => item.categoryKey === category.key,
+    );
+    const sources = new Map<
+      string,
+      { title: string; publisher: string; url: string | null }
+    >();
+    for (const item of categoryItems) {
+      const sourceKey =
+        item.source.url?.trim() ||
+        `${item.source.publisher.trim()}\u0000${item.source.title.trim()}`;
+      if (!sources.has(sourceKey)) {
+        sources.set(sourceKey, {
+          title: item.source.title,
+          publisher: item.source.publisher,
+          url: item.source.url,
+        });
+      }
+    }
+    return {
+      key: category.key,
+      label: category.label,
+      count: categoryItems.length,
+      verifiedCount: categoryItems.filter(
+        (item) => item.verification.status === 'VERIFIED',
+      ).length,
+      sources: [...sources.values()].sort((left, right) =>
+        left.title.localeCompare(right.title, 'zh-TW'),
+      ),
+    };
+  });
   const selected =
     options.category === 'ALL'
       ? withinMode

@@ -8,6 +8,8 @@
 >
 > 方法：官方規則比對、原始碼／Git 歷史稽核、建置與資料庫驗證、公開部署實機操作、影片與文件檢查
 
+> **歷史快照提醒（2026-09-06）：** 本報告保留 2026-09-05 當下的嚴格評審結果，不代表目前分支狀態。其後已完成公開 repository、MIT License、catalog／AI／帳號 API、D1、本機持久化、unit／E2E／build gates，以及最新版架構／流程圖；目前仍待隊伍確認的是影片、表單欄位與本分支 production migration／重新部署。請以根目錄 [`README.md`](../README.md) 與 [`submission-checklist.md`](../submission-checklist.md) 為最新狀態來源。
+
 ## 一句話判決
 
 **以目前狀態送件，我會先判定不具總排名評選資格；即使暫時忽略資格問題強制評分，也只有約 43/100，進不了前 10。**

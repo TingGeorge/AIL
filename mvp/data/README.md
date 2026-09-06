@@ -11,11 +11,11 @@ npm run data:bootstrap:local
 
 會產生：
 
-- `yuanshan-open-data.seed.sql`：依序套用三份 migration 後，用來初始化全新 D1/SQLite 的資料；不含顯式 transaction，直接交給 SQLite 執行時應由呼叫端包 transaction。
+- `yuanshan-open-data.seed.sql`：在核心 schema migrations 後，用來初始化全新 D1/SQLite 的 catalog 資料；不含顯式 transaction，直接交給 SQLite 執行時應由呼叫端包 transaction。
 - `yuanshan-open-data.snapshot.json`：方便檢視與前端整合的精簡快照。
 - `yuanshan-open-data.sqlite`：本機已套用 migration 並通過完整性檢查的資料庫；此檔較適合本機使用，因此不進 Git。
 
-前兩個指令負責重新擷取與驗證三份產物；`data:bootstrap:local` 會把三份 migration 與最新 seed 同步至 `mvp/.wrangler/state` 的本機 D1。`npm run dev`、`npm run dev:lan` 與 `npm run start` 分別透過 `predev`、`predev:lan`、`prestart` 自動執行同一個 bootstrap。腳本會確認 seed 含有 snapshot 的 `runId`，並核對 D1 中該筆完成匯入的地點、餐館與活動筆數；狀態完整才略過同步，避免只憑「曾看過 runId」接受部分資料。
+前兩個指令負責重新擷取與驗證三份產物；`data:bootstrap:local` 會把核心 migrations、最新 seed，以及 `0006_ai_usage_limits.sql`、`0007_auth_accounts.sql` 同步至 `mvp/.wrangler/state` 的本機 D1。`npm run dev`、`npm run dev:lan` 與 `npm run start` 分別透過 `predev`、`predev:lan`、`prestart` 自動執行同一個 bootstrap。腳本會確認 seed 含有 snapshot 的 `runId`，並核對 D1 中該筆完成匯入的地點、餐館與活動筆數；狀態完整才略過同步，避免只憑「曾看過 runId」接受部分資料。
 
 ## 資料範圍與來源
 
@@ -45,4 +45,4 @@ D1 查詢只選最新一筆 `COMPLETED` import run 中標為 `IMPORTED` 的項�
 - 捷運票價資料沒有座標；只把起點或終點為圓山站的票價表保存為來源證據，不冒充 2 公里內地點。
 - 不同來源可能描述同一個實體場館，目前未做跨來源 entity resolution，因此地點筆數是來源紀錄數，不保證等於唯一實體數。
 
-hosting config 的 `d1` 現為 `DB`，主搜尋 UI 也已接上 catalog POST；但本機 bootstrap 只管理 `.wrangler/state`，production seed 與部署尚未完成。登入、Team、交易等寫入後端也仍未完成。seed 是新資料庫或新快照的 bootstrap；正式環境的增量撤站、下架與過期 reconciliation 尚未實作，不能直接把每日 seed 重套當成 production sync。
+hosting config 的 `d1` 現為 `DB`，主搜尋 UI 已接上 catalog POST；公開網址目前可開啟既有部署基線，本分支也已在本機完成帳號、session 與個人狀態 API。正式環境仍需重新部署並套用 `0007_auth_accounts.sql`，才會包含這次帳號能力。Team、交易、增量撤站／下架／過期 reconciliation 仍未實作；seed 只適合新資料庫或新快照 bootstrap，不能直接把每日 seed 重套當成 production sync。

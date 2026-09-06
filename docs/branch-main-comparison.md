@@ -1,98 +1,94 @@
-# `codex/all-in-life-mvp` 與 `main` 差異、取捨與整合建議
+# `codex/all-in-life-backend-plan` 與 `origin/main` 現況比較
 
-> 最新比對：2026-09-05。`origin/main` = `45f57ed`，目前功能分支 `codex/all-in-life-mvp` = `07c34b0`。本文件已納入 PWA HTTPS 上線整理、送件文件、官方 checklist 保留、更新後團隊名單，以及最新 merge-tree 衝突檢查。
+> 比對時間：2026-09-06（Asia/Taipei）
+>
+> `origin/main`：`d86f918d9b06`
+>
+> 本分支實作 checkpoint：`534fcf9618ea`（本次文件／帳號統整 commit 尚未計入）
+>
+> 共同祖先：`d8e2f3835e41bc0b51f8f2c17690853cbb0f6bf8`
 
 ## 結論
 
-兩邊是平行實作，不宜直接混合 runtime。`main` 的可執行作品位於 `old_version/` 與 `prototype-v1/`，採 Bun + Vite + React + Hono，強項是 hash routing、共享 Zod schema、API timeout／錯誤邊界、台北日期解析、事先匯入資料、兩階段搜尋與 Bun 測試。功能分支的作品位於 `mvp/`，採 npm + Vinext + React + Tailwind，自成一套較完整的手機 App 體驗、CP／evidence 規則、PWA、D1 schema、Sites 部署設定與公開 HTTPS 展示。
+兩個分支已成為兩套完整但不同的 runtime。`origin/main` 是 Bun、Hono、React、PostgreSQL、Zod 與 Gemini 的正式主線；目前分支是 npm、Vinext、Cloudflare D1 與 OpenAI Responses API 的手機 PWA／Sites 展示線。兩邊都已有搜尋、帳號與真實資料能力，但資料模型、AI provider、密碼演算法、部署平台與 UI 架構都不同，現在不適合直接 merge 後同時保留兩套入口。
 
-建議以 `mvp/` 作為本次送件與展示入口，保留 `main` 的 `prototype-v1/` 作為後端/API 參考，不交叉覆蓋 lockfile 或 build config；將 `main` 較成熟的路由、schema、API client、server validation、資料匯入與測試觀念選擇性移植到 `mvp/`。本輪已完成公開站與 PWA 驗收，後端部分則以 API contract 與 migration 預留，不假裝已正式上線。
+本次應先把目前分支完整 push 作為可回復 checkpoint，不直接合併 `main`。後續由團隊明確選定單一正式 runtime，再以 PR 選擇性移植視覺、PWA、資料證據與測試；不要把兩套 lockfile、資料庫與 auth 實作硬疊在一起。
+
+## 分支狀態
+
+在本次文件 commit 前，`git rev-list --left-right --count origin/main...HEAD` 為：
+
+| Main-only commits | Branch-only commits | 判讀 |
+| ---: | ---: | --- |
+| 34 | 20 | 兩邊都已長期分歧；不是單純「分支忘了 push」 |
+
+目前分支在開始本輪整理時只比自己的遠端 tracking branch 多 1 個已提交 checkpoint，但另有帳號持久化、UI、E2E 與文件更新尚未提交，因此現在 push 是必要的。push 後仍只更新 `codex/all-in-life-backend-plan`，不會改動 `main`。
 
 ## 快速比較
 
-| 面向 | `main` | 目前分支 | 決策 |
+| 面向 | `origin/main` | `codex/all-in-life-backend-plan` | 建議 |
 | --- | --- | --- | --- |
-| App 位置 | `old_version/`、`prototype-v1/` | `mvp/` | `mvp/` 為目前展示入口；`prototype-v1/` 作後端/API 移植來源 |
-| 工具鏈 | Bun、Vite 8、Hono | npm、Vinext、Cloudflare Vite plugin | 不共用 lockfile；部署前只選一套入口 |
-| 導覽 | hash route，可使用瀏覽器返回 | 16 個 state-driven screens | 短期保留 state flow；下一階段移植 hash/history 行為 |
-| 需求模型 | `Need` + Zod，client/server 共用 | `Filters` + TypeScript types | 採用 `main` 的 runtime validation，對齊 `SearchConstraints` |
-| API | Hono `/api/parse`、`/api/transcribe`，並規格化 `/api/search` SSE、auth、account data | 正式 API 尚未接 | 沿用 timeout、payload 限制、錯誤不洩漏 upstream 細節 |
-| 日期 | server 以 `Asia/Taipei` 解析 | 前端日期欄位 | 正式 API 採 `main` 的 server-resolved date |
-| UI | 黑底酸綠、清楚多畫面流程 | 黑底酸綠加紫／藍／珊瑚狀態色 | 保留主支高對比與節奏，分支補資訊層級和多類別辨識 |
-| PWA | manifest、icons、safe area | manifest、icons、SW 註冊、安裝提示 | 以分支版本為準，HTTPS 部署後驗收 installability |
-| 資料 | 事先匯入候選資料、PostgreSQL schema 規格、geocoding/ingestion spec | 圓山展示資料、CP engine、D1 migrations | 以 evidence、freshness、total cost 與 hard filter 統一 |
-| 測試 | Bun parser／routes tests | TypeScript、oxlint、build | 移植 parser contract test，再補核心 journey smoke test |
+| 唯一 App 入口 | `prototype-v1/` | `mvp/` | 送件表單只能指向一個；不要讓評審自行猜測 |
+| Runtime | Bun 1.4、Hono、Vite、React | Node 22、npm、Vinext、Cloudflare Vite plugin、React | 不共用 package manager 或 build 指令 |
+| 資料庫 | PostgreSQL | Cloudflare D1／SQLite | 先選正式部署平台，再決定 migration 主線 |
+| AI | Google Gemini native Interactions API | OpenAI Responses API | 保留共同 contract 與 deterministic guard；provider 只放 server adapter |
+| 結構化輸入 | Zod client/server schema | 自製 strict runtime contract | 可移植 main 的 Zod schema 思路，但不可直接混用 provider payload |
+| 搜尋 | PostgreSQL、hard filter、AI ranking、SSE | D1／snapshot、hard filter、Evidence Gate、CP engine、AI reason codes | 以「AI 不改寫事實」為共同底線 |
+| 真實資料 | 139 筆研究快照；136 可比較、3 待確認 | 14-source importer；2,984 地點與 9,317 evidence assertions | main 較精簡，分支較重稽核；統一 canonical ID 與 freshness 後再移植 |
+| 帳號 | Argon2id、opaque session、PostgreSQL | PBKDF2-SHA256 210k、hashed bearer session、D1 | 不可混用 credential table；若遷移需強制重新登入／逐步 rehash |
+| 個人功能 | 收藏、清單、預算、支出、團體 membership、回報 | 清單、收藏、預算、歷史以 account state envelope 保存 | main 的領域資料表較細；分支適合快速展示 |
+| Team | 已保存必要 membership record；不付款、不代訂 | UI／schema／成本比較，尚無交易式後端 | 正式產品優先沿用 main 的明確 membership 邊界 |
+| PWA／視覺 | manifest、service worker、精簡正式 UI | 16 畫面、3D 首頁、分類 rail、PWA、離線音樂、深淺主題 | 可從分支移植品牌與 interaction，不搬整個 runtime |
+| 測試 | README 記錄 269 pass、30 skip、4 fail | 58 unit／contract + 21 Playwright E2E，全綠 | main 需先修 4 個契約差異；分支保留 E2E coverage |
+| 部署 | 主線目前以本機／ngrok 說明為主 | Sites 公開基準版；本分支帳號 migration 待再部署 | 公開 URL 必須標示實際對應 commit／runtime |
+| License／notices | MIT + `THIRD_PARTY_NOTICES.md`（Gemini／`prototype-v1`） | 同一份 MIT；第三方服務、資料與素材逐項揭露於 README | 合併時依最終 runtime 整理同一份 notice，不可把 Gemini 說明直接套到 OpenAI 實作 |
 
-## 已從 `main` 採用的好設計
+## 已完成的共同產品底線
 
-- **產品 SOP**：匿名可直接用，登入後才保存；先確認需求與限制，再搜尋、比較、收藏／分享。
-- **語音主流程**：首頁把語音操作放在主要 CTA 前，同時保留可直接編輯的文字輸入；兩者共用同一份結構化需求。
-- **手機 App 節奏**：Welcome、Confirm、Search、Results、Detail、List、Settings、Team 分畫面，避免一頁式無限下滑。
-- **高對比視覺**：保留黑底、酸綠 CTA、粗體 CJK 標題、手機安全區與明確按壓狀態。
-- **限制語意**：硬限制會排除，軟偏好只加權；免費、優惠與成團價都必須揭露條件。
-- **後端防線**：API client timeout、Zod 驗證、音檔大小限制、upstream error 不回傳給使用者、台北時區由 server 決定。
+- 匿名可以直接探索，登入才保存個人資料。
+- 自然語言只負責整理需求；價格、距離、資格、時間與 CP 判斷必須回到可信資料與確定性規則。
+- 真實資料與 Demo fixture 分離，未知值不推定為零。
+- 團體優惠只表示加入意願或 membership，不代表付款、代訂或商家承諾。
+- PWA 不快取 API、帳號內容或跨來源地圖資料。
+- API key 只存在 server-side secret，不進前端 bundle 或 Git。
 
-## 本分支擴充且應保留的部分
+## 值得從目前分支移植到主線
 
-- 16 個獨立畫面，新增 Profile、Filters、Notifications、Analytics、History、Report 與 Map。
-- 日期、時段、類別、需求、預算、人數、距離、排除與偏好均可編輯。
-- 勞動錯覺搜尋 loading 以 5.2 秒前端計時器呈現逐步處理；不冒充後端真實百分比。
-- 餐飲、日用、育樂、交通統一結果模型，顯示距離、營業時間、服務方式、總成本、人均、節省、CP 值與 evidence。
-- 收藏、到期提醒、標記已買、移除、分享、歷史與消費分析已有前端互動。
-- 揪團顯示實際品項／店家、門檻、單獨與成團成本、分享及門檻前取消。
-- `0002_product_flow.sql` 補上搜尋、清單、通知、購買紀錄與團體訂單資料表；API 串接順序見 [API integration plan](API-integration-plan.md)。
+1. 首頁品牌敘事、3D 指南針、粒子、打字機與使用者可關閉的背景音樂。
+2. 五類橫向拖曳分類、手機安全區、固定底部導覽與一致的 icon／文字對齊規則。
+3. Evidence Gate、verification field copy、未知價格與過期即時值的 UI 語意。
+4. Archify 可互動架構／流程圖與多 viewport 視覺驗證方式。
+5. Playwright 的匿名流程、帳號持久化、登出 401、窄螢幕與背景音樂測試。
 
-## 尚未移植、但值得排入下一階段
+## 值得從主線移植到目前分支
 
-1. 將 state navigation 換成 `main` 的 hash routing 或正式 App Router routes，讓瀏覽器／PWA 返回鍵、重新整理和深層連結可靠。
-2. 把 `SearchConstraints` 建成 Zod schema，由前後端共用；避免只有 TypeScript 型別、runtime 卻接受錯誤資料。
-3. 建立共用 API client：30 秒 timeout、錯誤分類、retry policy、request id 與取消搜尋。
-4. Worker 端採台北時區解析「今天／今晚」，並限制 body、音檔大小與欄位長度。
-5. 移植 parser／routes 的 contract test，再新增 onboarding → search → result → saved 的瀏覽器 smoke test。
+1. 將大型 `page.tsx` 拆成 client feature components，建立可深連結、可返回的 URL navigation。
+2. 使用共用 Zod schema 驗證 client/server input，而不是只依賴 TypeScript 型別。
+3. 把 account state envelope 拆成收藏、清單、支出與 group membership 領域資料表，加入併發版本與細粒度 owner check。
+4. 引入 CI 並把 lint、typecheck、unit、E2E、build 與 secret scan 設成 blocking gates。
+5. 將公開部署與 commit SHA、migration version、資料 snapshot version 綁定，避免「公開站」與本機分支版本混淆。
 
-## 目標架構
+## 合併模擬結果
 
-```text
-Mobile App shell (Vinext + React + routes/history)
-  ├─ onboarding / editable constraints / results / personal center
-  ├─ CP Value + evidence gate
-  └─ PWA manifest + service worker
-       ↓ typed API client + timeout
-Cloudflare Worker API
-  ├─ Zod runtime validation
-  ├─ parse / search / list / team / report services
-  ├─ Taipei server time + trust boundaries
-  └─ D1 persistence + optional R2 evidence
-```
+2026-09-06 對本分支實作 checkpoint `534fcf9618ea` 與最新 `origin/main` 執行不改動工作樹的 `git merge-tree --write-tree --messages`，確認有以下文字衝突：
 
-目標不是把 Bun server 原封搬入 Vinext，而是保留其邊界：UI 只送結構化 request；Worker 驗證、正規化、查資料、算成本與保存；外部 API key 永遠留在 server secret。
+- `.gitignore`：兩套 runtime、secret 與 build cache 規則不同。
+- `README.md`：兩邊皆新增且各自把不同 runtime 宣告為正式入口，形成 add/add conflict。
+- `docs/PRD-all-in-life.md`：產品流程與技術邊界皆已分歧。
+- `submission-checklist.md`：兩邊皆新增，驗證狀態不同，形成 add/add conflict。
 
-## Merge 衝突與風險
+此外，即使 Git 不標示衝突，`prototype-v1/` 與 `mvp/` 同時存在仍會造成架構與送件入口衝突。安全整合方式是：
 
-`git merge-tree --write-tree --messages HEAD origin/main` 已確認直接合併會產生文字衝突：
+1. 從最新 `main` 開整合 PR。
+2. 先決定唯一 runtime、資料庫與 AI provider。
+3. 以功能為單位移植，不 merge 整個 App 目錄。
+4. 每次移植後重跑該 runtime 的完整 gates。
+5. 最後再更新根 README、公開 URL 與送件表單。
 
-- `.gitignore`：雙方新增規則不同；合併時取聯集，不覆蓋任一套 build cache／secret 規則。
-- `docs/PRD-all-in-life.md`：雙方都修改端到端流程。本分支已整合為「匿名直接用、登入後保存；文字與語音共用同一份可編輯結構化需求」。
+## 圖與文件
 
-不一定產生文字衝突、但會造成架構衝突的項目：
-
-- `old_version/` 與 `mvp/` 有兩套 package manager、啟動命令、manifest 與 PWA 策略；README 必須指定正式入口。
-- `main` 的 `Need.target_categories` 是五類，本分支 UI 是餐飲／日用／育樂／交通四類；API 層需用穩定 enum mapping，不可直接靠顯示文字。
-- `main` 說搜尋輸入與歷史不保存；本分支新增歷史／分析。正式產品應預設只保存使用者明確標記的清單與消費事件，原始音檔不保存，逐字稿與搜尋紀錄提供獨立同意和刪除機制。
-- 直接 merge `origin/main` 會帶入大量 `old_version/` 與工具設定；應先開 PR 檢視，再以選擇性移植取代盲目覆蓋。
-
-## UI / UX 檢查結論
-
-- 首頁只保留一個主要任務入口；語音是顯眼捷徑，文字框仍可直接操作。
-- 篩選集中在 Filters，個人資料／分析／歷史集中在 Settings，通知由鈴鐺進入，避免同一功能出現在多處。
-- Results 負責比較、Detail 負責證據與行動、Saved 負責預算及完成狀態、Team 負責共同門檻，頁面責任已分離。
-- 實際價格或即時營業狀態尚未有 API 保證，因此以「估算、來源、查核日期、適用條件」表達；回報頁只收使用者經驗，不直接覆蓋官方資料。
-
-## 流程、架構與 Figma
-
-- [互動式產品流程圖](architecture/all-in-life-product-flow.html)
-- [互動式系統架構圖](architecture/all-in-life-architecture.html)
-- [產品流程 PNG（深色）](architecture/all-in-life-product-flow.visual-check.1440x900.dark.png)
-- [系統架構 PNG（淺色）](architecture/all-in-life-architecture.visual-check.1440x900.light.png)
-
-Figma 建議以 390 × 844 frames 建立 Welcome、Onboarding、Home、Search、Results、Detail、Saved、Team、Settings、Notifications、Analytics；先整理 Color／Type／Spacing variables，再建立 Button、Chip、Header、Bottom Nav、Result Card、Cost Summary components。截圖只作底層參考，需以 Auto Layout 重建；Prototype 串接主要流程與通知、設定、揪團支線。
+- [目前分支互動式系統架構](architecture/all-in-life-architecture.html)
+- [目前分支互動式產品流程](architecture/all-in-life-product-flow.html)
+- [目前分支送件規格](../SPEC.md)
+- [目前分支 API／D1 計畫](API-integration-plan.md)
+- [`origin/main` README（GitHub）](https://github.com/TingGeorge/AIL/blob/main/README.md)

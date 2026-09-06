@@ -1,0 +1,98 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ALL IN LIFE — 從需求到可行動建議",
+    "output": "docs/architecture/all-in-life-product-flow.html",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "judge-path",
+        "label": "評審主流程",
+        "focus": ["welcome", "choose", "intent", "parse", "catalog", "evidence", "score", "results"],
+        "note": "從三種入口走到有成本、距離、證據與理由的可行動建議。"
+      },
+      {
+        "id": "safe-fallback",
+        "label": "AI 安全備援",
+        "focus": ["intent", "parse", "fallback", "catalog", "evidence"],
+        "note": "AI 僅負責結構化；模型不可用時仍可用手動條件與確定性規則完成流程。"
+      },
+      {
+        "id": "account-data",
+        "label": "帳號與資料",
+        "focus": ["choose", "account", "results", "persist"],
+        "note": "登入後才把清單、預算、收藏與歷史存入 D1；匿名與 Demo 不會混入正式帳號資料。"
+      }
+    ],
+    "legend": { "mode": "auto" }
+  },
+  "lanes": [
+    { "id": "experience", "label": "使用者 / Responsive PWA" },
+    { "id": "worker", "label": "Vinext / Worker API" },
+    { "id": "data", "label": "D1 與決策核心" }
+  ],
+  "phases": [
+    { "id": "enter", "label": "選擇入口", "fromCol": 0, "toCol": 0 },
+    { "id": "understand", "label": "理解與驗證", "fromCol": 1, "toCol": 3, "variant": "emphasis" },
+    { "id": "decide", "label": "排序與行動", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "groups": [
+    { "id": "decision-core", "label": "確定性決策核心", "lane": "data", "fromCol": 2, "toCol": 4, "variant": "emphasis" },
+    { "id": "fallback-path", "label": "模型失敗不阻斷", "lane": "worker", "fromCol": 2, "toCol": 3, "variant": "security" }
+  ],
+  "mainPath": ["welcome", "choose", "intent", "parse", "catalog", "evidence", "score", "results"],
+  "semanticChecks": {
+    "allowedRoots": ["welcome"],
+    "allowedTerminals": ["persist"],
+    "requiredPaths": [
+      { "from": "welcome", "to": "results" },
+      { "from": "parse", "to": "fallback" },
+      { "from": "results", "to": "persist" }
+    ]
+  },
+  "nodes": [
+    { "id": "welcome", "lane": "experience", "col": 0, "type": "external", "label": "開啟 App", "sublabel": "ALL IN LIFE PWA" },
+    { "id": "choose", "lane": "experience", "col": 1, "type": "frontend", "label": "選擇入口", "sublabel": "匿名 · 登入 · Demo", "tag": "資料隔離" },
+    { "id": "account", "lane": "worker", "col": 1, "type": "security", "label": "登入／註冊", "sublabel": "PBKDF2 · 30 min" },
+    { "id": "intent", "lane": "experience", "col": 2, "type": "frontend", "label": "輸入今天的需求", "sublabel": "預算 · 人數 · 範圍" },
+    { "id": "parse", "lane": "worker", "col": 2, "type": "backend", "label": "解析成嚴格條件", "sublabel": "AI 可選 · schema 驗證", "tag": "server-side" },
+    { "id": "fallback", "lane": "worker", "col": 3, "type": "security", "label": "安全降級", "sublabel": "保留手動條件" },
+    { "id": "catalog", "lane": "data", "col": 3, "type": "database", "label": "查詢五類候選", "sublabel": "D1 優先 · 快照備援" },
+    { "id": "evidence", "lane": "data", "col": 4, "type": "security", "label": "證據閘門", "sublabel": "來源 · 時效 · 預算" },
+    { "id": "score", "lane": "data", "col": 5, "type": "backend", "label": "CP Score 排序", "sublabel": "固定規則 · 可解釋拆分" },
+    { "id": "results", "lane": "experience", "col": 5, "type": "frontend", "label": "比較並採取行動", "sublabel": "成本 · 距離 · 證據" },
+    { "id": "persist", "lane": "worker", "col": 5, "type": "database", "label": "保存個人狀態", "sublabel": "清單 · 收藏 · 歷史", "tag": "登入限定" }
+  ],
+  "edges": [
+    { "from": "welcome", "to": "choose", "variant": "emphasis", "role": "main" },
+    { "from": "choose", "to": "intent", "label": "匿名 / Demo", "variant": "emphasis", "role": "main" },
+    { "from": "choose", "to": "account", "label": "登入", "variant": "security", "role": "branch" },
+    { "from": "account", "to": "intent", "label": "session", "role": "return" },
+    { "from": "intent", "to": "parse", "variant": "emphasis", "role": "main" },
+    { "from": "parse", "to": "catalog", "label": "validated", "role": "main" },
+    { "from": "parse", "to": "fallback", "label": "AI unavailable", "variant": "security", "role": "error" },
+    { "from": "fallback", "to": "catalog", "label": "manual", "variant": "dashed", "role": "return" },
+    { "from": "catalog", "to": "evidence", "role": "main" },
+    { "from": "evidence", "to": "score", "label": "eligible", "variant": "emphasis", "role": "main" },
+    { "from": "score", "to": "results", "label": "ranked", "variant": "emphasis", "role": "main" },
+    { "from": "results", "to": "persist", "label": "signed in", "variant": "dashed", "role": "branch" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "三種入口、資料不混用",
+      "items": ["匿名模式不要求帳號", "登入模式從空白個人資料開始", "Demo 只提供評審可操作的固定情境"]
+    },
+    {
+      "dot": "emerald",
+      "title": "AI 是加速器，不是單點故障",
+      "items": ["AI 輸出必須通過 strict schema", "搜尋、硬條件與 CP 排序由確定性規則處理", "沒有模型或金鑰仍可完成主要流程"]
+    },
+    {
+      "dot": "rose",
+      "title": "帳號資料最小化",
+      "items": ["密碼使用 PBKDF2-SHA256 與隨機 salt", "session token 只保存雜湊且 30 分鐘過期", "D1 僅保存本產品必要的個人狀態"]
+    }
+  ]
+}

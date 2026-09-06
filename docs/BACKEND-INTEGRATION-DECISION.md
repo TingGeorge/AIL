@@ -1,5 +1,7 @@
 # ALL IN LIFE 後端整合決策
 
+> **歷史決策提醒（2026-09-06）：** 本文件記錄 2026-09-05、`origin/main=45f57ed` 時的選型。`origin/main` 現已重整為單一 `prototype-v1/` Bun／Hono／PostgreSQL／Gemini runtime，本分支則已完成 D1 catalog、OpenAI Responses API 與帳號持久化。最新差異、衝突模擬與整合建議請以 [`branch-main-comparison.md`](branch-main-comparison.md) 為準。
+
 - 日期：2026-09-05
 - 分支：`codex/all-in-life-backend-plan`
 - 前端基準：`codex/all-in-life-mvp` / `mvp/`

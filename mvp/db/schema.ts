@@ -1,4 +1,4 @@
-export const schemaVersion = 4;
+export const schemaVersion = 5;
 
 export const tableNames = [
   'users',
@@ -29,6 +29,9 @@ export const tableNames = [
   'purchase_history',
   'notifications',
   'group_order_items',
+  'auth_credentials',
+  'auth_sessions',
+  'account_state',
   'source_resources',
   'import_runs',
   'import_items',

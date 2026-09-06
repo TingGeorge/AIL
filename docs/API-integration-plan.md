@@ -2,7 +2,9 @@
 
 ## 目前狀態
 
-手機 App 的 catalog 資料層與主搜尋 UI 已接上 runtime。`mvp/.openai/hosting.json` 已宣告 D1 binding `DB`，本機 `dev`、`dev:lan` 與 `start` 會由 npm 的 `predev`、`predev:lan`、`prestart` 自動執行 `data:bootstrap:local`，將四份 migration 與最新官方 seed 同步至 `.wrangler/state`。主搜尋以 `POST /api/catalog/search` 傳送分類、位置、距離、所選時刻與模式；分類、距離、時刻、模式或有效位置改變時會重新查詢。使用 POST 是為了避免把精確位置參數放在 URL，GET 版本仍保留供手動檢查。
+手機 App 的 catalog、AI 與帳號資料層都已接上 runtime。`mvp/.openai/hosting.json` 宣告 D1 binding `DB`；本機 `dev`、`dev:lan` 與 `start` 會由 npm pre-script 自動執行 `data:bootstrap:local`，依序套用核心 migration、最新官方 seed、AI 限流與帳號 migration 到 `.wrangler/state`。正式 build 會把來源 migration 整理成 6 份部署 migration，並檢查 catalog seed 與帳號 migration 的順序。
+
+主搜尋以 `POST /api/catalog/search` 傳送分類、位置、距離、所選時刻與模式；分類、距離、時刻、模式或有效位置改變時會重新查詢。使用 POST 是為了避免把精確位置參數放在 URL，GET 版本仍保留供手動檢查。帳號 API 已提供註冊、登入、登出、目前使用者與個人狀態讀寫；本機端到端測試已確認重新整理後資料可還原、登出後 token 立即得到 401。公開基準版可直接開啟，但本分支的 production 帳號 migration 尚待重新部署與 smoke test。
 
 API 優先讀 D1；binding 未配置或 D1 查詢失敗時回退版本庫內的官方 snapshot，並以 `source`、`fallback` 與 `warnings` 明確揭露。DEMO 固定情境與正式模式完全分流；正式模式若整個 API request 失敗，會顯示錯誤而不自動混入 fixture。真實候選少於 3 筆時，前端可在獨立的 DEMO 補充區顯示固定情境，且不計入真實筆數。D1 catalog 只選最新一筆 `COMPLETED` import run 中狀態為 `IMPORTED` 的項目，避免較舊批次殘留資料重新出現。
 
@@ -12,14 +14,17 @@ API 優先讀 D1；binding 未配置或 D1 查詢失敗時回退版本庫內的�
 
 ```text
 手機 PWA
-  ↓ POST /api/v1/search
+  ├─ POST /api/catalog/search
+  ├─ POST /api/v1/search/parse
+  ├─ POST /api/v1/results/explain
+  └─ /api/auth/* + /api/me/data
 Cloudflare Worker API
   ├─ 需求解析：文字／語音 → 同一份 SearchConstraints
   ├─ Hard Filter：日期、時段、預算、人數、距離、排除
   ├─ Evidence Gate：來源、確認日、衝突、過期
   ├─ Cost Engine：直接費用＋必要費用＋交通＋人均
   ├─ CP Engine：可行候選才進排序
-  └─ D1：個人檔案、偏好、清單、歷史、通知、團購、回報
+  └─ D1：catalog、evidence、AI rate limit、帳號 session 與個人狀態
        ↓
 官方／合作資料 API 與受控更新工作
 ```
@@ -45,20 +50,20 @@ OPENAI_MODEL=gpt-5.6-luna
 
 `mvp/.dev.vars` 已列入 `.gitignore`，不可提交。前端 React 元件不得讀取或輸出此金鑰；只能呼叫同源的 `/api/v1/search/parse` 與 `/api/v1/results/explain`，再由 Worker 讀取 `env.OPENAI_API_KEY`。Responses API 的 strict structured output 用於條件解析與理由代碼選擇：[OpenAI Responses API 官方文件](https://developers.openai.com/api/reference/cli/resources/responses/methods/create)。
 
-## AI 已落地與其餘規劃 API
+## 目前 API 與後續拆分
 
-| Method         | Path                                  | 用途                                                                |
-| -------------- | ------------------------------------- | ------------------------------------------------------------------- |
-| `POST`         | `/api/v1/search/parse`                | 將文字或語音逐字稿轉成可編輯的限制欄位                              |
-| `POST`         | `/api/v1/results/explain`             | 對前 1–3 筆合格候選產生有事實依據的推薦說明；失敗時回退固定規則文案 |
-| `POST`         | `/api/v1/search`                      | 套用硬限制、總成本、Evidence Gate 與 CP 排序                        |
-| `GET/PATCH`    | `/api/v1/profile`                     | 讀取／更新暱稱、頭像、預算與偏好                                    |
-| `GET/POST`     | `/api/v1/lists`                       | 建立、讀取及分享清單                                                |
-| `PATCH/DELETE` | `/api/v1/lists/:listId/items/:itemId` | 標記已買、移除與設定提醒                                            |
-| `GET`          | `/api/v1/analytics`                   | 依月份與類別彙總花費、節省、人均與使用頻率                          |
-| `GET/POST`     | `/api/v1/teams/:teamId/campaigns`     | 建團、加入、取消與計算門檻                                          |
-| `POST`         | `/api/v1/reports`                     | 提交價格、營業時間、停業或優惠失效回報                              |
-| `GET/PATCH`    | `/api/v1/notifications`               | 取得、已讀及刪除到期／成團通知                                      |
+| 狀態 | Method | Path | 用途 |
+| --- | --- | --- | --- |
+| 已落地 | `POST` | `/api/v1/search/parse` | 將文字或語音逐字稿轉成可編輯限制；失敗時保留手動欄位 |
+| 已落地 | `POST` | `/api/v1/results/explain` | 只依候選 ID 由伺服器重查事實，產生推薦理由代碼 |
+| 已落地 | `POST` | `/api/auth/register`、`/api/auth/login` | 建立／驗證生活帳號並回傳 30 分鐘 bearer session |
+| 已落地 | `GET`／`POST` | `/api/auth/me`、`/api/auth/logout` | 取得目前帳號或撤銷 session |
+| 已落地 | `GET`／`PUT` | `/api/me/data` | 讀取／保存登入者最多 750 KB 的個人狀態 envelope |
+| 下一階段 | `GET/PATCH` | `/api/v1/profile` | 把 envelope 拆成暱稱、頭像、預算與偏好領域欄位 |
+| 下一階段 | `GET/POST` | `/api/v1/lists` | 建立、讀取及分享清單，加入併發版本 |
+| 下一階段 | `GET` | `/api/v1/analytics` | 依月份與類別彙總花費、節省、人均與使用頻率 |
+| 下一階段 | `GET/POST` | `/api/v1/teams/:teamId/campaigns` | 建團、加入、取消與門檻；不付款、不代訂 |
+| 下一階段 | `POST` | `/api/v1/reports` | 提交價格、營業、停業或優惠失效回報，先進 moderation |
 
 ## 已落地的 catalog API
 
@@ -135,27 +140,29 @@ bootstrap 會先核對 seed 與 snapshot 是否屬於同一個 `runId`，再確�
 輸出位於 `mvp/data/`：
 
 - `yuanshan-open-data.sqlite`：本機驗證資料庫，不進 Git。
-- `yuanshan-open-data.seed.sql`：可在三份核心 migration 後初始化全新 D1/SQLite；不含顯式 transaction。AI 另由 `0006_ai_rate_limits.sql` 建立限流表。
+- `yuanshan-open-data.seed.sql`：可在三份核心 migration 後初始化全新 D1/SQLite；不含顯式 transaction。`0006_ai_rate_limits.sql` 建立 AI 限流表，`0007_auth_accounts.sql` 建立帳密、session 與帳號狀態。
 - `yuanshan-open-data.snapshot.json`：供審查與前端整合的精簡快照。
 
 餐館清冊只證明登記，不證明營業；在沒有店家即時菜單／價格證據前，餐廳狀態、菜單、優惠與 CP 分數都保持未知或不建立。官方藥局名錄只證明名稱、地址與位置，不推測商品、庫存、價格或當下營業。友善店家清冊則因缺少零售分類，只保留拒絕稽核，不再當成日用品零售來源。臺北文化快遞雖由官方平臺分發，活動內容可能由第三方投稿，因此預設 `UNVERIFIED`；2040 sentinel、過期列、可疑凌晨時段、只有行政區地址與海外場館／臺北座標衝突都會隔離。當前圓山命中列沒有足夠精確地址，故只進稽核、不進候選；後續需以場館官方頁或可信地點資料交叉驗證。YouBike 可借還數與站點狀態只存在五分鐘有效的 assertion。捷運票價來源沒有站點座標，所以只保存起點或終點為圓山站的票價證據，不拿來證明站點座標、地址或營運狀態。
 
 ## 匿名與登入
 
-- 公開首頁允許匿名使用，裝置端只保存暫時設定與 `session_key`。
-- 登入後由 Sites／ChatGPT 身分標頭取得穩定 user id，伺服器端把清單、歷史與偏好綁到 D1 `users.id`。
-- 匿名資料要轉移到帳號時，使用一次性 merge endpoint，並要求使用者確認。
-- 所有寫入 API 都在伺服器檢查 owner；不要相信前端傳入的 `user_id`。
+- 公開首頁允許匿名使用；匿名設定留在裝置端，不會自動建立 server account。
+- 註冊帳號使用 3–30 字元小寫英數字／底線／連字號與至少 12 字元密碼。密碼以 PBKDF2-SHA256、隨機 salt、210,000 次迭代儲存。
+- 登入成功後建立 32-byte 隨機 bearer token，D1 只保存 token 的 SHA-256 雜湊；session 30 分鐘後到期，登出立即設為 revoked。
+- 瀏覽器只在 `sessionStorage` 保存 token；`/api/me/data` 從 token 推導 owner，不接收前端傳入的 `user_id`。
+- 新帳號的個人狀態從空物件開始；Demo 固定情境不合併進正式帳號。未來若要匯入匿名資料，必須做一次性確認與衝突處理，不能靜默覆蓋。
 
 ## 上線順序
 
-1. **已完成本機資料層**：hosting config 宣告 D1 binding `DB`；啟動前由 `data:bootstrap:local` 依序套用 `0001_p0_core.sql`、`0002_product_flow.sql`、`0003_open_data_ingestion.sql`、最新 seed 與 `0006_ai_rate_limits.sql`，catalog endpoints 已具備 latest-run 篩選與 snapshot fallback。
-2. 先接 profile、lists、history、notifications，讓目前 UI 狀態可跨工作階段保存。
-3. **已完成主搜尋接線**：UI 以 POST 呼叫 `/api/catalog/search`，分類等條件改變會重查，並明確區分 D1、snapshot、DEMO 與逐筆驗證狀態；unit、lint、資料庫完整性、production build 與三條核心 E2E 已通過。
-4. 接 Google Places／官方開放資料更新工作，加入 cache、quota、timeout 與 freshness。
-5. 最後接 AI 需求解析與解釋；錯誤時回退到表單與規則引擎。
+1. **已完成 catalog 與本機 D1**：latest-run 篩選、官方 snapshot fallback、活動時間窗與逐欄 evidence 狀態已接上 UI。
+2. **已完成 AI 安全層**：需求解析、理由 endpoint、strict schema、D1 限流、`store: false` 與錯誤 fallback 已有 contract tests。
+3. **已完成本機帳號流程**：註冊、登入、個人狀態讀寫、重新整理還原、登出撤銷與 401 已通過 API／瀏覽器測試。
+4. **下一個 production gate**：備份 D1、套用 build 產生的 6 份 migration、驗證 account tables，再部署目前 commit 並重跑匿名／登入 smoke test。
+5. **後續領域化**：把 account state envelope 拆成 profile、lists、history、notifications 與 Team transaction，加入 optimistic concurrency、稽核與 moderation。
+6. **資料維運**：實作「本次未見」資料的撤站、下架、過期與歷史保留 reconciliation；不可反覆重套 seed 取代增量工作。
 
-Sites 候選 Version 5（`appgprj_6a9a81d00660819185d201a8d683db7e~appgver_8815a5b24c1481918844759348c0e5f9`）已於 2026-09-05 儲存且未部署；四份 migration 已在全新 SQLite 驗證通過，但 production D1 會等正式部署該候選版時才套用。正式排程同步前，仍需實作「本次未見」資料的撤站、下架、過期與歷史保留 reconciliation，不能反覆重套 seed 取代增量工作。登入、Team、交易與其他寫入後端也仍未完成。
+公開 HTTPS 網址目前以未登入 HTTP 請求確認可開啟，但對應的是已部署基準版；不能把本分支尚未套用的帳號 migration 描述成已在 production 驗證。
 
 ## 成本與安全守門
 

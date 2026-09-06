@@ -29,9 +29,13 @@ function sitesDeploymentMigrations() {
         for (const [source, destination] of [
           ['drizzle/0001_p0_core.sql', '0001_p0_core.sql'],
           ['drizzle/0002_product_flow.sql', '0002_product_flow.sql'],
-          ['drizzle/0003_open_data_ingestion.sql', '0003_open_data_ingestion.sql'],
+          [
+            'drizzle/0003_open_data_ingestion.sql',
+            '0003_open_data_ingestion.sql',
+          ],
           ['sites-drizzle/0004_catalog_seed.sql', '0004_catalog_seed.sql'],
           ['drizzle/0006_ai_rate_limits.sql', '0005_ai_rate_limits.sql'],
+          ['drizzle/0007_auth_accounts.sql', '0006_auth_accounts.sql'],
         ] as const) {
           await cp(resolve(source), resolve(target, destination));
         }

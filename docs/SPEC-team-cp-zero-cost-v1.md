@@ -7,9 +7,11 @@
 - Pilot area：圓山生活圈
 - 原則：先 Audit → Proposal → Data Model → Implementation；本文件不直接授權重寫現有 MVP
 
+> 歷史定位（2026-09-06）：本文件保留 2026-09-04 的下一階段設計細節；其中對「目前產品」的描述是當時的盤點快照。現行 `mvp/` 已具備官方資料 catalog、D1、本機／正式模式分流、AI 解說、帳號與個人資料持久化，以及 PWA。Team 多人協作、交易、R2 證據照片與 Places enrichment 仍屬後續範圍；最新交付狀態以根目錄 `README.md` 與 `submission-checklist.md` 為準。
+
 ## 1. 結論先行
 
-目前產品是一個可操作的單頁前端 Demo，不是已經有後端的多人平台。它已證明遊戲化 UI、月／次預算、兩個 Agent 的平行演出、五類結果、證據 Dialog、語音入口與基本響應式；但所有狀態都在 React 記憶體，搜尋是 `setTimeout` 演出，結果是程式碼內固定資料，尚無資料庫、API、登入、Profile、Team、Crawler、Google 地圖或 PWA。
+最初盤點時，產品是一個可操作的單頁前端 Demo；截至 2026-09-06，catalog、D1、AI、帳號、個人狀態保存與 PWA 已完成可驗證實作。下列提案因此應視為 Team／CP Value Engine／Zero-Cost Mode 的延伸設計，而不是現況缺口的完整清單。
 
 下一輪不應先做 Marketplace、支付或完整社交網路。建議把 P0 收斂為一條可在評審現場完成的閉環：
 

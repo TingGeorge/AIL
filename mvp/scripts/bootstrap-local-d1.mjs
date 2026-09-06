@@ -31,6 +31,11 @@ const aiRateLimitMigrationPath = path.join(
   'drizzle',
   '0006_ai_rate_limits.sql',
 );
+const accountMigrationPath = path.join(
+  mvpDirectory,
+  'drizzle',
+  '0007_auth_accounts.sql',
+);
 
 for (const requiredPath of [
   wranglerEntry,
@@ -39,6 +44,7 @@ for (const requiredPath of [
   seedPath,
   ...migrationPaths,
   aiRateLimitMigrationPath,
+  accountMigrationPath,
 ]) {
   if (!existsSync(requiredPath)) {
     throw new Error(`Missing required local D1 input: ${requiredPath}`);
@@ -169,6 +175,21 @@ for (const column of [
       `Local D1 ai_rate_limit_windows is missing required column ${column}.`,
     );
   }
+}
+
+const accountTables = ['auth_credentials', 'auth_sessions', 'account_state'];
+const existingAccountTables = new Set(
+  query(
+    `SELECT name FROM sqlite_master WHERE type = 'table' AND name IN (${accountTables
+      .map((name) => `'${name}'`)
+      .join(',')})`,
+  ).map((row) => row.name),
+);
+if (existingAccountTables.size === 0) {
+  process.stdout.write(`Applying ${path.basename(accountMigrationPath)}...\n`);
+  runWrangler(['--file', accountMigrationPath], { silent: true });
+} else if (existingAccountTables.size !== accountTables.length) {
+  throw new Error('Local D1 has a partial account schema.');
 }
 
 const expectedCounts = snapshot?.meta?.counts;

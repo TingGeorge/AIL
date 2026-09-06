@@ -45,6 +45,12 @@ export type CatalogCategorySummary = {
   key: CatalogCategoryKey;
   label: CatalogCategoryLabel;
   count: number;
+  verifiedCount: number;
+  sources: Array<{
+    title: string;
+    publisher: string;
+    url: string | null;
+  }>;
 };
 
 export type CatalogDataSource =

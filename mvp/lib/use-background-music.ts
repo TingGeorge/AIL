@@ -6,80 +6,130 @@ export const BACKGROUND_MUSIC_FILE = '/audio/all-in-life-light-theme.wav';
 const preferenceKey = 'all-in-life:background-music-enabled';
 
 export function useBackgroundMusic() {
-  const [musicEnabled, setMusicEnabledState] = useState(true);
-  const enabledRef = useRef(true);
-  const unlockedRef = useRef(false);
+  const [musicEnabled, setMusicEnabledState] = useState(false);
+  const preferredEnabledRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playRequestRef = useRef(0);
 
-  const playMusic = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio || !enabledRef.current || document.hidden) return;
-    void audio.play().catch(() => {});
+  const rememberPreference = useCallback((next: boolean) => {
+    try {
+      window.localStorage.setItem(preferenceKey, String(next));
+    } catch {}
   }, []);
 
-  const setMusicEnabled = useCallback(
-    (next: boolean) => {
-      enabledRef.current = next;
-      setMusicEnabledState(next);
-      try {
-        window.localStorage.setItem(preferenceKey, String(next));
-      } catch {}
-      if (!next) {
-        audioRef.current?.pause();
-        return;
-      }
-      unlockedRef.current = true;
-      playMusic();
-    },
-    [playMusic],
-  );
-
-  useEffect(() => {
-    let disposed = false;
-    let initialEnabled = true;
-    try {
-      const stored = window.localStorage.getItem(preferenceKey);
-      if (stored !== null) initialEnabled = stored === 'true';
-    } catch {}
-    enabledRef.current = initialEnabled;
-    window.queueMicrotask(() => {
-      if (!disposed) setMusicEnabledState(initialEnabled);
-    });
-
+  const ensureAudio = useCallback(() => {
+    if (audioRef.current) return audioRef.current;
     const audio = new Audio(BACKGROUND_MUSIC_FILE);
     audio.loop = true;
     audio.preload = 'auto';
     audio.volume = 0.14;
     audioRef.current = audio;
+    return audio;
+  }, []);
 
-    const unlock = (event: Event) => {
-      const target = event.target;
-      if (target instanceof Element && target.closest('[data-music-toggle]'))
+  const playMusic = useCallback(
+    (clearPreferenceOnFailure: boolean) => {
+      if (!preferredEnabledRef.current) return;
+
+      const audio = ensureAudio();
+      const request = ++playRequestRef.current;
+      const fail = () => {
+        if (request !== playRequestRef.current || audioRef.current !== audio)
+          return;
+        setMusicEnabledState(false);
+        if (clearPreferenceOnFailure) {
+          preferredEnabledRef.current = false;
+          rememberPreference(false);
+        }
+      };
+
+      try {
+        // Keep play() inside the originating click gesture. Its promise only
+        // confirms the state after the browser has accepted playback.
+        const playback = audio.play();
+        void Promise.resolve(playback).then(() => {
+          if (
+            request !== playRequestRef.current ||
+            audioRef.current !== audio ||
+            !preferredEnabledRef.current
+          ) {
+            fail();
+            return;
+          }
+          setMusicEnabledState(true);
+          rememberPreference(true);
+        }, fail);
+      } catch {
+        fail();
+      }
+    },
+    [ensureAudio, rememberPreference],
+  );
+
+  const setMusicEnabled = useCallback(
+    (next: boolean) => {
+      if (!next) {
+        preferredEnabledRef.current = false;
+        playRequestRef.current += 1;
+        rememberPreference(false);
+        audioRef.current?.pause();
+        setMusicEnabledState(false);
         return;
-      unlockedRef.current = true;
-      playMusic();
-      document.removeEventListener('pointerdown', unlock);
-      document.removeEventListener('keydown', unlock);
+      }
+
+      preferredEnabledRef.current = true;
+      playMusic(true);
+    },
+    [playMusic, rememberPreference],
+  );
+
+  useEffect(() => {
+    const audio = ensureAudio();
+    try {
+      preferredEnabledRef.current =
+        window.localStorage.getItem(preferenceKey) === 'true';
+    } catch {
+      preferredEnabledRef.current = false;
+    }
+
+    const onPlaying = () => {
+      if (audioRef.current === audio && preferredEnabledRef.current) {
+        setMusicEnabledState(true);
+        rememberPreference(true);
+      }
+    };
+    const onStopped = () => {
+      if (audioRef.current === audio) setMusicEnabledState(false);
     };
     const onVisibilityChange = () => {
-      if (document.hidden) audio.pause();
-      else if (unlockedRef.current) playMusic();
+      if (document.hidden) {
+        playRequestRef.current += 1;
+        audio.pause();
+        setMusicEnabledState(false);
+      } else if (preferredEnabledRef.current) {
+        playMusic(false);
+      }
     };
-    document.addEventListener('pointerdown', unlock);
-    document.addEventListener('keydown', unlock);
+
+    audio.addEventListener('playing', onPlaying);
+    audio.addEventListener('pause', onStopped);
+    audio.addEventListener('ended', onStopped);
+    audio.addEventListener('error', onStopped);
     document.addEventListener('visibilitychange', onVisibilityChange);
-    playMusic();
+    if (!document.hidden) playMusic(false);
 
     return () => {
-      disposed = true;
-      document.removeEventListener('pointerdown', unlock);
-      document.removeEventListener('keydown', unlock);
+      playRequestRef.current += 1;
+      audio.removeEventListener('playing', onPlaying);
+      audio.removeEventListener('pause', onStopped);
+      audio.removeEventListener('ended', onStopped);
+      audio.removeEventListener('error', onStopped);
       document.removeEventListener('visibilitychange', onVisibilityChange);
       audio.pause();
       audio.src = '';
       if (audioRef.current === audio) audioRef.current = null;
     };
-  }, [playMusic]);
+  }, [ensureAudio, playMusic, rememberPreference]);
 
   return { musicEnabled, setMusicEnabled };
 }

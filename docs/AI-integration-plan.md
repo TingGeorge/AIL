@@ -1,5 +1,13 @@
 # ALL IN LIFE AI 串接執行計畫
 
+## 目前實作狀態（2026-09-06）
+
+- `POST /api/v1/search/parse` 與 `POST /api/v1/results/explain` 已實作並接入主流程。
+- Responses API client、strict JSON Schema、timeout／單次 retry、request id、`store: false`、D1 原子限流與固定規則 fallback 均已有單元／契約測試。
+- 模型由 server-side `OPENAI_MODEL` 決定，預設 `gpt-5.6-luna`；官方模型頁確認該模型支援 Responses API 與 Structured Outputs：[GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna)。
+- Demo 不呼叫模型；缺少 API key、D1 限流不可用、逾時、429／5xx 或 schema 不合法時，使用者仍可用手動條件與確定性 CP 規則完成流程。
+- 尚未完成的是 30–50 組真實繁中需求的正式 eval、production 帳號 migration 後的重新部署，以及實際流量成本／延遲監控。
+
 ## 目標與邊界
 
 AI 第一階段只做兩件事：
@@ -128,16 +136,16 @@ Response：
 
 模型不得新增輸入中沒有的事實。排序、CP 分數與是否合格由既有 deterministic code 決定；模型只能選擇說明角度。過敏原等安全條件不能由「沒有命中標籤」推論成「不含過敏原」，仍須向現場確認。前端只顯示整理後的結論與依據，不要求或顯示模型內部思考鏈。
 
-## 後端實作切分
+## 後端實作狀態
 
-| 順序 | 檔案                                      | 工作                                                                       |
+| 狀態 | 檔案                                      | 工作                                                                       |
 | ---- | ----------------------------------------- | -------------------------------------------------------------------------- |
-| 1    | `mvp/lib/ai-contract.ts`                  | 定義 request、response、JSON Schema 與伺服器驗證                           |
-| 2    | `mvp/lib/openai-server.ts`                | 封裝 Responses API、timeout、retry、錯誤正規化與 request id                |
-| 3    | `mvp/app/api/v1/search/parse/route.ts`    | 實作需求解析 endpoint；只在伺服器讀 key                                    |
-| 4    | `mvp/app/page.tsx`                        | STEP 1 顯示「AI 正在整理」並把回傳欄位帶到 STEP 2；使用者仍須確認          |
-| 5    | `mvp/app/api/v1/results/explain/route.ts` | 第二階段加入推薦理由，不改動分數與事實                                     |
-| 6    | tests                                     | contract、prompt injection、timeout、429、壞 JSON、無 key 與 fallback 測試 |
+| 完成 | `mvp/lib/ai-contract.ts`                  | 定義 request、response、JSON Schema 與伺服器驗證                           |
+| 完成 | `mvp/lib/openai-server.ts`、`openai-core.ts` | 封裝 Responses API、timeout、retry、錯誤正規化、request id 與 `store: false` |
+| 完成 | `mvp/app/api/v1/search/parse/route.ts`    | 需求解析 endpoint；只在伺服器讀 key                                        |
+| 完成 | `mvp/app/page.tsx`                        | 顯示 AI 整理狀態並把回傳欄位帶到可編輯確認；使用者仍須確認                  |
+| 完成 | `mvp/app/api/v1/results/explain/route.ts` | 只依伺服器重查事實產生推薦理由，不改動分數與資格                           |
+| 完成 | `mvp/tests/ai-*.test.mjs`                 | contract、prompt injection、timeout、429、壞 JSON、無 key 與 fallback 測試 |
 
 第一版可直接用伺服器端 `fetch` 呼叫 `https://api.openai.com/v1/responses`，避免先增加 runtime dependency；若後續採官方 SDK，再固定版本並重跑 Cloudflare build smoke test。
 
@@ -185,6 +193,9 @@ Response：
 - 無 key、timeout、429、壞 schema 時，STEP 1 仍能手動前往 STEP 2。
 - 所有推薦理由都能逐項對回傳入的候選事實；刪除該事實後，理由不得仍然出現。
 
-## 建議開工順序
+## 後續優化順序
 
-先完成需求解析 contract、mock endpoint 與 fallback 測試，再接真實 key。需求解析穩定後才做推薦理由；不要先讓模型直接搜尋或排序，否則很難證明硬條件與資料來源真的生效。
+1. 用 30–50 組繁體中文真實需求建立可重跑 eval，分別量測日期、人數、硬排除、距離、missing field 與 prompt injection。
+2. 在 production D1 套用目前 migration 後，重新驗證 rate limit、匿名與登入兩條 AI 路徑。
+3. 只記錄狀態、延遲、token usage 與 request id，建立成本／錯誤率告警；不記錄原始需求、GPS、姓名或 API key。
+4. 模型或 provider 要更換時先跑同一份 eval；搜尋、硬限制、Evidence Gate 與 CP engine 不隨模型一起改寫。

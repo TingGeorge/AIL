@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "ALL IN LIFE｜目前實作與安全回退架構",
+    "output": "all-in-life-architecture.html",
+    "quality_profile": "showcase"
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [38, 116],
+    "cols": 4,
+    "gapX": 58,
+    "gapY": 58,
+    "cellW": 205,
+    "cellH": 68
+  },
+  "components": [
+    { "id": "people", "type": "external", "label": "使用者／評審", "sublabel": "Guest · Account · Demo", "row": 0, "col": 0, "size": [180, 64] },
+    {
+      "id": "pwa", "type": "frontend", "label": "ALL IN LIFE PWA", "sublabel": "Vinext · React 19 · TypeScript", "tag": "responsive + offline shell", "row": 0, "col": 1, "size": [180, 64]
+    },
+    {
+      "id": "api", "type": "backend", "label": "Worker API", "sublabel": "9 route handlers", "tag": "no-store", "row": 0, "col": 2, "size": [180, 64]
+    },
+    {
+      "id": "decision", "type": "security", "label": "Evidence + CP", "sublabel": "硬限制先行 · 未知不為 0", "row": 2, "col": 3, "size": [180, 64]
+    },
+    { "id": "maps", "type": "external", "label": "Google Maps", "sublabel": "公開 embed / search URL", "tag": "無 Places key／無導航", "row": 1, "col": 0, "size": [180, 64] },
+    {
+      "id": "auth", "type": "security", "label": "Account Service", "sublabel": "PBKDF2 · session hash", "tag": "30 分鐘", "row": 0, "col": 3, "size": [180, 64]
+    },
+    {
+      "id": "d1", "type": "database", "label": "Cloudflare D1", "sublabel": "Catalog · Auth · State", "tag": "DB binding", "row": 1, "col": 3, "size": [180, 64]
+    },
+    {
+      "id": "official", "type": "external", "label": "官方與公開來源", "sublabel": "臺北開放資料 · 場館頁面", "tag": "14 sources", "row": 2, "col": 0, "size": [180, 64]
+    },
+    {
+      "id": "snapshot", "type": "database", "label": "Seed + Snapshot", "sublabel": "runId 一致 · 可重建", "tag": "fallback", "row": 2, "col": 1, "size": [180, 64]
+    },
+    {
+      "id": "catalog", "type": "backend", "label": "Catalog Service", "sublabel": "Search · Categories", "row": 2, "col": 2, "size": [180, 64]
+    },
+    {
+      "id": "ai", "type": "backend", "label": "AI Safety Layer", "sublabel": "Strict schema · reason codes", "tag": "server-side", "row": 3, "col": 2, "size": [180, 64]
+    },
+    {
+      "id": "openai", "type": "external", "label": "OpenAI Responses", "sublabel": "需求解析 · 推薦理由", "tag": "optional secret", "row": 3, "col": 3, "size": [180, 64]
+    }
+  ],
+  "connections": [
+    { "id": "people-pwa", "from": "people", "to": "pwa", "label": "HTTPS / localhost", "labelAt": [360, 194], "variant": "emphasis" },
+    { "id": "pwa-api", "from": "pwa", "to": "api", "label": "API", "variant": "emphasis" },
+    { "id": "api-catalog", "from": "api", "to": "catalog" },
+    { "id": "catalog-decision", "from": "catalog", "to": "decision", "variant": "emphasis" },
+    { "id": "api-auth", "from": "api", "to": "auth", "label": "auth", "variant": "security" },
+    { "id": "auth-d1", "from": "auth", "to": "d1", "variant": "security" },
+    { "id": "catalog-d1", "from": "catalog", "to": "d1", "label": "SQL" },
+    { "id": "official-snapshot", "from": "official", "to": "snapshot", "label": "import" },
+    { "id": "snapshot-catalog", "from": "snapshot", "to": "catalog", "label": "fallback", "variant": "dashed" },
+    { "id": "catalog-ai", "from": "catalog", "to": "ai", "label": "optional", "labelAt": [654, 446], "variant": "dashed" },
+    { "id": "ai-openai", "from": "ai", "to": "openai", "label": "Responses", "variant": "dashed" },
+    { "id": "maps-pwa", "from": "maps", "to": "pwa", "label": "map links" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "目前已驗證", "items": ["PWA、Catalog、AI fallback、帳號與 D1 可在本機完整運作", "正式 build 產出 9 個 route 與 6 份部署 migration", "登入資料可同步，登出後 session 立即失效"] },
+    { "dot": "amber", "title": "安全回退", "items": ["OpenAI 未設定或失敗時回到手動條件與確定性規則", "D1 查詢失敗時明確標示並使用官方 snapshot", "DEMO fixture 與真實模式分流，不作隱性 fallback"] },
+    { "dot": "violet", "title": "仍屬下一階段", "items": ["Team 目前是可操作 Demo，尚非交易式協作後端", "R2 evidence upload、Google Places 與付款未啟用", "production D1 migration／seed 仍需部署驗證"] }
+  ]
+}

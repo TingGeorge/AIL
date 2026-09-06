@@ -13,6 +13,7 @@ const expectedMigrations = [
   '0003_open_data_ingestion.sql',
   '0004_catalog_seed.sql',
   '0005_ai_rate_limits.sql',
+  '0006_auth_accounts.sql',
 ];
 
 if (!existsSync(hostingPath)) throw new Error('Sites hosting.json is missing.');
@@ -28,7 +29,9 @@ if (JSON.stringify(migrations) !== JSON.stringify(expectedMigrations)) {
 for (const migration of migrations) {
   const size = statSync(path.join(migrationsDirectory, migration)).size;
   if (size > 2_000_000) {
-    throw new Error(`Sites migration ${migration} is too large: ${size} bytes.`);
+    throw new Error(
+      `Sites migration ${migration} is too large: ${size} bytes.`,
+    );
   }
 }
 

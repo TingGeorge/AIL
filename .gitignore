@@ -4,3 +4,10 @@ prototype/
 /old_version/
 /mvp/*.zip
 /mvp/wrangler.local.jsonc
+
+# Local competition submission materials; keep personal data out of the public repo.
+/basic_info.md
+/submission-assets/
+
+# Local SVG render used for visual QA; source asset lives under mvp/public/images.
+/leisure-grid-preview.png

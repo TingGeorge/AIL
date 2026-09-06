@@ -13,6 +13,7 @@ const migrationPaths = [
   'drizzle/0003_open_data_ingestion.sql',
   'sites-drizzle/0004_catalog_seed.sql',
   'drizzle/0006_ai_rate_limits.sql',
+  'drizzle/0007_auth_accounts.sql',
 ].map((relativePath) => path.join(mvpDirectory, relativePath));
 
 test('Sites migrations bootstrap a compact, referentially valid five-category catalog', () => {
@@ -27,7 +28,9 @@ test('Sites migrations bootstrap a compact, referentially valid five-category ca
 
     const counts = {
       food: database
-        .prepare("SELECT COUNT(*) AS count FROM places WHERE kind = 'RESTAURANT'")
+        .prepare(
+          "SELECT COUNT(*) AS count FROM places WHERE kind = 'RESTAURANT'",
+        )
         .get().count,
       dailyGoods: database
         .prepare(
@@ -43,14 +46,16 @@ test('Sites migrations bootstrap a compact, referentially valid five-category ca
         .prepare("SELECT COUNT(*) AS count FROM places WHERE kind = 'TRANSIT'")
         .get().count,
       events: database
-        .prepare("SELECT COUNT(*) AS count FROM opportunities WHERE category = 'EVENT'")
+        .prepare(
+          "SELECT COUNT(*) AS count FROM opportunities WHERE category = 'EVENT'",
+        )
         .get().count,
     };
     for (const count of Object.values(counts)) assert.ok(count > 0);
 
     const importRun = database
       .prepare(
-        "SELECT status, summary_json FROM import_runs ORDER BY completed_at DESC LIMIT 1",
+        'SELECT status, summary_json FROM import_runs ORDER BY completed_at DESC LIMIT 1',
       )
       .get();
     assert.equal(importRun.status, 'COMPLETED');
