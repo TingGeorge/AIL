@@ -83,6 +83,10 @@
     "build/**",
     "dist/**",
     "coverage/**",
+    ".release/**",
+    ".wrangler/**",
+    "playwright-report/**",
+    "test-results*/**",
     "next-env.d.ts"
   ],
   "rules": {

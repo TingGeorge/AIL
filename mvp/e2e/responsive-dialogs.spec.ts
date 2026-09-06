@@ -40,7 +40,7 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await reachResults(page);
 
-    await page.getByRole('button', { name: /快速篩選/ }).click();
+    await page.getByRole('button', { name: /篩選條件/ }).click();
     const filterDialog = page.getByRole('dialog', { name: '快速調整結果' });
     await expect(filterDialog).toBeVisible();
     const filterBox = await expectInsideViewport(filterDialog, viewport);

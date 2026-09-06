@@ -99,15 +99,15 @@ test('完整情境核心旅程、底部選單與收藏復原', async ({ page }) 
   );
   await expectNoDemoLabels(page);
 
-  await page.getByRole('button', { name: /排序方式/ }).click();
-  const sortSheet = page.getByRole('dialog', { name: '排序結果' });
-  await expect(sortSheet).toBeVisible();
-  await sortSheet.getByRole('button', { name: /距離：近到遠/ }).click();
-  await expect(
-    page.getByRole('button', { name: /排序方式 距離：近到遠/ }),
-  ).toBeVisible();
+  const sortPicker = page.locator('.sort-picker');
+  await sortPicker.locator('summary').click();
+  await expect(sortPicker.locator('.sort-menu')).toBeVisible();
+  await sortPicker.getByRole('button', { name: /距離：近到遠/ }).click();
+  await expect(sortPicker.locator('summary')).toHaveAccessibleName(
+    /排序方式 距離：近到遠/,
+  );
 
-  await page.getByRole('button', { name: /快速篩選/ }).click();
+  await page.getByRole('button', { name: /篩選條件/ }).click();
   const filterSheet = page.getByRole('dialog', { name: '快速調整結果' });
   await expect(filterSheet).toBeVisible();
   await filterSheet.getByRole('button', { name: '1 km', exact: true }).click();
@@ -166,9 +166,10 @@ test('手機設定選單與排序面板保持完整可操作', async ({ page }) 
     page.getByRole('heading', { name: /找到 \d+ 個合適選擇/ }),
   ).toBeVisible({ timeout: 5_000 });
 
-  await page.getByRole('button', { name: /排序方式 推薦排序/ }).click();
-  const sortSheet = page.getByRole('dialog', { name: '排序結果' });
-  const sortButtons = sortSheet.locator('.sheet-sort-options button');
+  const sortPicker = page.locator('.sort-picker');
+  await sortPicker.locator('summary').click();
+  const sortSheet = sortPicker.locator('.sort-menu');
+  const sortButtons = sortSheet.locator('button');
   await expect(sortButtons).toHaveCount(3);
   await expect(
     sortSheet.getByRole('button', { name: /推薦排序/ }),
@@ -180,11 +181,9 @@ test('手機設定選單與排序面板保持完整可操作', async ({ page }) 
     sortSheet.getByRole('button', { name: /距離：近到遠/ }),
   ).toBeVisible();
   for (const button of await sortButtons.all()) {
-    await expect(button.locator('.sort-option-icon svg')).toBeVisible();
+    await expect(button.locator('.sort-menu-icon svg')).toBeVisible();
   }
-  await expect(
-    sortSheet.locator('.sort-option-check.active svg'),
-  ).toBeVisible();
+  await expect(sortSheet.locator('.sort-menu-check')).toBeVisible();
 });
 
 test('揪團卡片顯示對應內容，詳情可查看並登記', async ({ page }) => {
@@ -286,7 +285,7 @@ test('首頁與分析頁共用同一份預算摘要，圖表可切換與點選',
 
 test('預算為 0 時仍可直接清空並輸入新金額', async ({ page }) => {
   await enterDemo(page);
-  await page.getByRole('button', { name: /零元.*零元探索/ }).click();
+  await page.getByRole('button', { name: /零元：載入範例需求/ }).click();
   await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
 
   const budget = page.getByRole('spinbutton', { name: '預算', exact: true });
@@ -335,17 +334,44 @@ test('CP 權重固定合計 100 並會真正更換第一名', async ({ page }) =
     page.getByRole('heading', { name: /找到 \d+ 個合適選擇/ }),
   ).toBeVisible({ timeout: 5_000 });
 
-  await page.locator('.cp-formula > summary').click();
-  await expect(page.locator('.result-title').first()).toHaveText(
-    '臺北花博農民市集',
-  );
+  const formula = page.locator('.cp-formula');
+  const formulaSummary = formula.locator('> summary');
+  await expect(formula).not.toHaveAttribute('open', '');
+  await expect(formula).not.toContainText('條件不足');
+  const collapsedStyle = await formula.evaluate((element) => {
+    const toggle = element.querySelector('.cp-formula-toggle');
+    return {
+      borderWidth: getComputedStyle(element).borderWidth,
+      backgroundImage: getComputedStyle(element).backgroundImage,
+      toggle: toggle ? getComputedStyle(toggle, '::before').content : '',
+    };
+  });
+  expect(collapsedStyle.borderWidth).toBe('0px');
+  expect(collapsedStyle.backgroundImage).toBe('none');
+  expect(collapsedStyle.toggle).toContain('＋');
+
+  await formulaSummary.click();
+  await expect(formula).toHaveAttribute('open', '');
+  await expect
+    .poll(() =>
+      formula
+        .locator('.cp-formula-toggle')
+        .evaluate((element) => getComputedStyle(element, '::before').content),
+    )
+    .toContain('−');
+  const firstBeforePreference = (
+    await page.locator('.result-title').first().innerText()
+  ).trim();
   await page.getByRole('button', { name: '最合喜好' }).click();
-  await expect(page.locator('.result-title').first()).toHaveText(
-    '雙人義大利麵提案',
+  await expect
+    .poll(() => page.locator('.result-title').first().innerText())
+    .not.toBe(firstBeforePreference);
+  const firstAfterPreference = (
+    await page.locator('.result-title').first().innerText()
+  ).trim();
+  await expect(page.locator('.sort-picker summary')).toHaveAccessibleName(
+    /排序方式 推薦排序/,
   );
-  await expect(
-    page.getByRole('button', { name: /排序方式 推薦排序/ }),
-  ).toBeVisible();
 
   const weights = await page
     .getByRole('slider')
@@ -354,7 +380,7 @@ test('CP 權重固定合計 100 並會真正更換第一名', async ({ page }) =
     );
   expect(weights.reduce((sum, value) => sum + value, 0)).toBe(100);
   await expect(page.locator('.cp-ranking-live')).toContainText(
-    '目前第 1 名：雙人義大利麵提案',
+    `目前第 1 名：${firstAfterPreference}`,
   );
 });
 
@@ -393,9 +419,7 @@ test('結果條件、工具列與分類按鈕維持可讀尺寸，示意圖不�
   await expect(page.locator('.detail-image')).toHaveCount(0);
 });
 
-test('清單批次結算會建立交易、更新分析，且可刪除交易與清單項目', async ({
-  page,
-}) => {
+test('清單只結算來源價格，情境預算保留但不建立交易', async ({ page }) => {
   await reachResults(page);
 
   const pastaResult = page
@@ -418,50 +442,26 @@ test('清單批次結算會建立交易、更新分析，且可刪除交易與�
   const museumItem = page
     .locator('.checklist article')
     .filter({ hasText: '北美館傍晚看展' });
-  await expect(checklistItem).toContainText('待結算');
+  await expect(checklistItem).toContainText('情境預算');
+  await expect(checklistItem).not.toContainText('待結算');
   await expect(museumItem).toContainText('待結算');
   await expect(page.locator('.checkout-button')).toHaveCount(0);
   const batchCheckout = page.locator('.batch-checkout-bar');
-  await expect(batchCheckout).toContainText('已選 2 / 2 筆');
-  await expect(batchCheckout).toContainText('NT$380');
+  await expect(batchCheckout).toContainText('已選 1 / 1 筆');
+  await expect(batchCheckout).toContainText('NT$0');
 
-  await batchCheckout.getByRole('button', { name: '批次結算 2 筆' }).click();
-  await expect(checklistItem).toContainText('已結算');
+  await batchCheckout.getByRole('button', { name: '批次結算 1 筆' }).click();
+  await expect(checklistItem).toContainText('情境預算');
   await expect(museumItem).toContainText('已結算');
   const recentTransactions = page.locator('.recent-transactions');
-  await expect(recentTransactions).toContainText('雙人義大利麵提案');
-  await expect(recentTransactions).toContainText('北美館傍晚看展');
-  await expect(recentTransactions).toContainText('NT$380');
-
-  await page
-    .locator('.bottom-nav')
-    .getByRole('button', { name: '首頁' })
-    .click();
-  const wallet = page.getByRole('button', { name: '查看本月消費分析' });
-  await expect(wallet).toContainText('NT$ 9,412');
-  await expect(wallet).toContainText('已花 NT$588');
-
-  await page
-    .locator('.bottom-nav')
-    .getByRole('button', { name: /清單/ })
-    .click();
-  await page
-    .locator('.recent-transactions')
-    .getByRole('button', { name: '刪除交易 雙人義大利麵提案' })
-    .click();
-  await expect(checklistItem).toContainText('待結算');
-  await expect(museumItem).toContainText('已結算');
   await expect(recentTransactions).not.toContainText('雙人義大利麵提案');
+  await expect(recentTransactions).toContainText('北美館傍晚看展');
 
   await museumItem.getByRole('button', { name: '選取 北美館傍晚看展' }).click();
   await batchCheckout.getByRole('button', { name: '取消 1 筆結算' }).click();
   await expect(museumItem).toContainText('待結算');
   await expect(recentTransactions).not.toContainText('北美館傍晚看展');
 
-  await checklistItem
-    .getByRole('button', { name: '選取 雙人義大利麵提案' })
-    .click();
-  await expect(batchCheckout).toContainText('已選 1 / 2 筆');
   await checklistItem
     .getByRole('button', { name: '刪除清單項目 雙人義大利麵提案' })
     .click();

@@ -1,0 +1,84 @@
+name: MVP quality gates
+
+on:
+  pull_request:
+  push:
+    branches-ignore:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mvp-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: npm, build, and browser checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Scan tracked files for high-confidence secrets
+        shell: bash
+        run: |
+          set +e
+          LC_ALL=C git grep -IlE '(-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----|A(KIA|SIA)[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{35}|gh[pousr]_[0-9A-Za-z]{36,}|github_pat_[0-9A-Za-z_]{60,}|sk-(proj-)?[0-9A-Za-z_-]{20,}|[rs]k_live_[0-9A-Za-z]{20,}|xox[baprs]-[0-9A-Za-z-]{20,}|[[:alnum:]._%+-]+@[[:alnum:].-]+\.[[:alpha:]]{2,})' -- . > "$RUNNER_TEMP/mvp-secret-files.txt"
+          scan_status=$?
+          set -e
+
+          if [ "$scan_status" -eq 0 ]; then
+            echo "::error::Potential secret or public email found in tracked files (filenames only):"
+            sed 's/^/- /' "$RUNNER_TEMP/mvp-secret-files.txt"
+            exit 1
+          fi
+
+          if [ "$scan_status" -ne 1 ]; then
+            echo "::error::Tracked-file secret scan could not complete."
+            exit "$scan_status"
+          fi
+
+          echo "No high-confidence secrets or public emails found in tracked files."
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+          cache: npm
+          cache-dependency-path: mvp/package-lock.json
+
+      - name: Install dependencies
+        working-directory: mvp
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        working-directory: mvp
+        run: npx playwright install --with-deps chromium
+
+      - name: Typecheck without generated files
+        working-directory: mvp
+        run: npm run typecheck
+
+      - name: Lint
+        working-directory: mvp
+        run: npm run lint
+
+      - name: Run unit tests
+        working-directory: mvp
+        run: npm run test:unit
+
+      - name: Verify database snapshot
+        working-directory: mvp
+        run: npm run db:verify
+
+      - name: Build Vinext application
+        working-directory: mvp
+        run: npm run build
+
+      - name: Run Playwright end-to-end tests
+        working-directory: mvp
+        run: npm run test:e2e

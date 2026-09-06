@@ -16,8 +16,10 @@ test('帳號 API 可註冊、還原、同步資料並撤銷工作階段', async 
   const session = (await register.json()) as {
     sessionToken: string;
     user: { username: string };
+    data: { revision: number };
   };
   expect(session.user.username).toBe(username);
+  expect(session.data.revision).toBe(0);
 
   const headers = { Authorization: `Bearer ${session.sessionToken}` };
   const me = await request.get('/api/auth/me', { headers });
@@ -26,6 +28,7 @@ test('帳號 API 可註冊、還原、同步資料並撤銷工作階段', async 
   const save = await request.put('/api/me/data', {
     headers,
     data: {
+      revision: session.data.revision,
       state: {
         version: 1,
         saved: ['e2e-saved-item'],
@@ -34,10 +37,24 @@ test('帳號 API 可註冊、還原、同步資料並撤銷工作階段', async 
     },
   });
   expect(save.status()).toBe(200);
+  await expect(save.json()).resolves.toMatchObject({ revision: 1 });
+
+  const staleSave = await request.put('/api/me/data', {
+    headers,
+    data: {
+      revision: session.data.revision,
+      state: { version: 1, saved: ['stale-overwrite'] },
+    },
+  });
+  expect(staleSave.status()).toBe(409);
+  await expect(staleSave.json()).resolves.toMatchObject({
+    error: 'account_data_conflict',
+  });
 
   const read = await request.get('/api/me/data', { headers });
   expect(read.status()).toBe(200);
   await expect(read.json()).resolves.toMatchObject({
+    revision: 1,
     state: { saved: ['e2e-saved-item'], monthlyBudget: 9000 },
   });
 

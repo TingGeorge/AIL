@@ -15,6 +15,7 @@ const migrationPaths = [
   'drizzle/0006_ai_rate_limits.sql',
   'drizzle/0007_auth_accounts.sql',
   'drizzle/0008_auth_username_binary_check.sql',
+  'drizzle/0009_account_state_revision.sql',
 ].map((relativePath) => path.join(mvpDirectory, relativePath));
 
 test('Sites migrations bootstrap a compact, referentially valid five-category catalog', () => {
@@ -207,6 +208,50 @@ test('username check migration normalizes existing rows and rejects uppercase', 
         .run('UPGRADE_USER', 'user-upgrade'),
     );
     assert.deepEqual(database.prepare('PRAGMA foreign_key_check').all(), []);
+  } finally {
+    database.close();
+  }
+});
+
+test('account state revision prevents stale updates from overwriting newer data', () => {
+  const database = new DatabaseSync(':memory:');
+  try {
+    database.exec(readFileSync(migrationPaths[0], 'utf8'));
+    for (const migrationPath of migrationPaths.slice(5)) {
+      database.exec(readFileSync(migrationPath, 'utf8'));
+    }
+    const now = '2026-09-06T00:00:00.000Z';
+    database
+      .prepare(
+        "INSERT INTO users (id, auth_subject, status, created_at, updated_at) VALUES (?, ?, 'ACTIVE', ?, ?)",
+      )
+      .run('user-revision', 'username:revision_user', now, now);
+    database
+      .prepare(
+        'INSERT INTO account_state (user_id, state_json, updated_at) VALUES (?, ?, ?)',
+      )
+      .run('user-revision', '{}', now);
+
+    const first = database
+      .prepare(
+        'UPDATE account_state SET state_json = ?, revision = revision + 1 WHERE user_id = ? AND revision = ?',
+      )
+      .run('{"saved":["new"]}', 'user-revision', 0);
+    const stale = database
+      .prepare(
+        'UPDATE account_state SET state_json = ?, revision = revision + 1 WHERE user_id = ? AND revision = ?',
+      )
+      .run('{"saved":["stale"]}', 'user-revision', 0);
+
+    assert.equal(first.changes, 1);
+    assert.equal(stale.changes, 0);
+    const stored = database
+      .prepare(
+        'SELECT state_json, revision FROM account_state WHERE user_id = ?',
+      )
+      .get('user-revision');
+    assert.equal(stored.state_json, '{"saved":["new"]}');
+    assert.equal(stored.revision, 1);
   } finally {
     database.close();
   }

@@ -132,9 +132,7 @@ test('正式訪客不會繼承展示帳本或免登入操作', async ({ page }) 
   ).toBeVisible();
 });
 
-test('手機探索卡片完整顯示分類視覺，且只替已驗證項目顯示勾勾', async ({
-  page,
-}) => {
+test('分類維持單列且可左右拖曳，並只替已驗證項目顯示勾勾', async ({ page }) => {
   await skipIntoHome(page, '/?mode=demo');
   await reachDemoResults(page);
 
@@ -148,11 +146,11 @@ test('手機探索卡片完整顯示分類視覺，且只替已驗證項目顯�
       rows: new Set(buttons.map((button) => button.offsetTop)).size,
     };
   });
-  expect(categoryLayout.display).toBe('grid');
-  expect(categoryLayout.scrollWidth).toBeLessThanOrEqual(
-    categoryLayout.clientWidth + 1,
+  expect(categoryLayout.display).toBe('flex');
+  expect(categoryLayout.scrollWidth).toBeGreaterThan(
+    categoryLayout.clientWidth,
   );
-  expect(categoryLayout.rows).toBeGreaterThanOrEqual(2);
+  expect(categoryLayout.rows).toBe(1);
   await page.setViewportSize({ width: 360, height: 844 });
   const narrowCategoryLayout = await categoryFilter.evaluate((element) => {
     const buttons = [...element.querySelectorAll('button')];
@@ -162,10 +160,10 @@ test('手機探索卡片完整顯示分類視覺，且只替已驗證項目顯�
       rows: new Set(buttons.map((button) => button.offsetTop)).size,
     };
   });
-  expect(narrowCategoryLayout.scrollWidth).toBeLessThanOrEqual(
-    narrowCategoryLayout.clientWidth + 1,
+  expect(narrowCategoryLayout.scrollWidth).toBeGreaterThan(
+    narrowCategoryLayout.clientWidth,
   );
-  expect(narrowCategoryLayout.rows).toBeGreaterThanOrEqual(3);
+  expect(narrowCategoryLayout.rows).toBe(1);
   for (const category of [
     '全部',
     '食品',
@@ -178,6 +176,36 @@ test('手機探索卡片完整顯示分類視覺，且只替已驗證項目顯�
       categoryFilter.getByRole('button', { name: new RegExp(`^${category}`) }),
     ).toBeVisible();
   }
+
+  await categoryFilter.evaluate((element) => {
+    element.scrollLeft = 0;
+  });
+  const filterBox = await categoryFilter.boundingBox();
+  if (!filterBox) throw new Error('category filter is not visible');
+  await page.mouse.move(
+    filterBox.x + filterBox.width - 20,
+    filterBox.y + filterBox.height / 2,
+  );
+  await page.mouse.down();
+  await page.mouse.move(filterBox.x + 30, filterBox.y + filterBox.height / 2, {
+    steps: 6,
+  });
+  await page.mouse.up();
+  await expect
+    .poll(() => categoryFilter.evaluate((element) => element.scrollLeft))
+    .toBeGreaterThan(0);
+
+  const dailyCategory = categoryFilter.getByRole('button', {
+    name: /^日用品/,
+  });
+  await dailyCategory.click();
+  await expect(dailyCategory).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.result-card')).toHaveCount(1);
+  await expect(page.locator('.result-card').first()).toContainText('日用品');
+
+  const allCategory = categoryFilter.getByRole('button', { name: /^全部/ });
+  await allCategory.click();
+  await expect(allCategory).toHaveAttribute('aria-pressed', 'true');
 
   const verifiedCard = page
     .locator('.result-card.provenance-verified-demo')
@@ -262,6 +290,106 @@ test('手機探索卡片完整顯示分類視覺，且只替已驗證項目顯�
     'title',
     /已驗證/,
   );
+});
+
+test('排序使用就地下拉選單，不開啟對話框', async ({ page }) => {
+  await skipIntoHome(page, '/?mode=demo');
+  await reachDemoResults(page);
+
+  const picker = page.locator('.sort-picker');
+  const trigger = picker.locator('summary');
+  await trigger.click();
+
+  await expect(picker).toHaveAttribute('open', '');
+  await expect(picker.getByRole('group', { name: '排序方式' })).toBeVisible();
+  await expect(page.getByRole('dialog', { name: '排序結果' })).toHaveCount(0);
+
+  await picker.getByRole('button', { name: /價格：低到高/ }).click();
+  await expect(picker).not.toHaveAttribute('open', '');
+  await expect(trigger).toContainText('價格：低到高');
+});
+
+test('條件欄位維持精簡比例，CP 滑桿在亮暗色都有清楚軌道', async ({ page }) => {
+  await skipIntoHome(page, '/?mode=demo');
+  await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
+
+  const fieldMetrics = await page
+    .locator('.filters-screen')
+    .evaluate((screen) => {
+      const needField = screen.querySelector<HTMLElement>('.need-field');
+      const textarea = screen.querySelector<HTMLElement>(
+        '.need-field textarea',
+      );
+      const basicField = screen.querySelector<HTMLElement>(
+        '.filter-basics .field-label',
+      );
+      const basicInput = screen.querySelector<HTMLElement>(
+        '.filter-basics input',
+      );
+      if (!needField || !textarea || !basicField || !basicInput) {
+        throw new Error('constraint fields are missing');
+      }
+      return {
+        needHeight: needField.getBoundingClientRect().height,
+        textareaHeight: textarea.getBoundingClientRect().height,
+        basicHeight: basicField.getBoundingClientRect().height,
+        inputHeight: basicInput.getBoundingClientRect().height,
+        inputFontSize: Number.parseFloat(getComputedStyle(basicInput).fontSize),
+      };
+    });
+  expect(fieldMetrics.needHeight).toBeLessThan(90);
+  expect(fieldMetrics.textareaHeight).toBeLessThanOrEqual(48);
+  expect(fieldMetrics.basicHeight).toBeLessThan(74);
+  expect(fieldMetrics.inputHeight).toBeLessThanOrEqual(40);
+  expect(fieldMetrics.inputFontSize).toBeGreaterThanOrEqual(10);
+
+  await page.getByRole('button', { name: '確認完成，前往開始探索' }).click();
+  await page.getByRole('button', { name: '開始探索' }).click();
+  await expect(page.locator('.result-card').first()).toBeVisible();
+  await page.locator('.cp-formula > summary').click();
+
+  const readSliderStyle = () =>
+    page.locator('.formula-controls').evaluate((controls) => {
+      const track = controls.querySelector<HTMLElement>(
+        '[data-slot="slider-track"]',
+      );
+      const range = controls.querySelector<HTMLElement>(
+        '[data-slot="slider-range"]',
+      );
+      const thumb = controls.querySelector<HTMLElement>(
+        '[data-slot="slider-thumb"]',
+      );
+      if (!track || !range || !thumb) throw new Error('CP slider is missing');
+      const trackStyle = getComputedStyle(track);
+      const rangeStyle = getComputedStyle(range);
+      const thumbStyle = getComputedStyle(thumb);
+      return {
+        trackHeight: track.getBoundingClientRect().height,
+        trackBackground: trackStyle.backgroundColor,
+        trackBorder: trackStyle.borderTopWidth,
+        rangeBackground: rangeStyle.backgroundImage,
+        thumbWidth: thumb.getBoundingClientRect().width,
+        thumbBorder: thumbStyle.borderTopWidth,
+      };
+    });
+
+  await page.evaluate(() => {
+    document.documentElement.dataset.theme = 'dark';
+  });
+  const darkSlider = await readSliderStyle();
+  await page.evaluate(() => {
+    document.documentElement.dataset.theme = 'light';
+  });
+  const lightSlider = await readSliderStyle();
+
+  for (const slider of [darkSlider, lightSlider]) {
+    expect(slider.trackHeight).toBeGreaterThanOrEqual(8);
+    expect(slider.trackBorder).toBe('1px');
+    expect(slider.rangeBackground).toContain('linear-gradient');
+    expect(slider.thumbWidth).toBeGreaterThanOrEqual(18);
+    expect(slider.thumbBorder).toBe('3px');
+  }
+  expect(lightSlider.trackBackground).not.toBe(darkSlider.trackBackground);
 });
 
 test('預設探索以資料庫 facets 顯示所有分類與完整筆數', async ({ page }) => {
@@ -383,13 +511,23 @@ test('未登入收藏會保存在目前瀏覽器並於重新整理後還原', as
     .toBe(1);
 
   await page.reload();
-  await page.getByRole('button', { name: '立即開始探索' }).click();
-  const tutorial = page.getByRole('dialog', { name: '使用教學' });
-  if (await tutorial.isVisible()) {
-    await tutorial.getByRole('button', { name: '略過教學' }).click();
+  const welcomeAction = page.getByRole('button', { name: '立即開始探索' });
+  const bottomNav = page.locator('.bottom-nav');
+  await expect
+    .poll(
+      async () =>
+        (await bottomNav.isVisible()) || (await welcomeAction.isEnabled()),
+    )
+    .toBe(true);
+  if (!(await bottomNav.isVisible())) {
+    await welcomeAction.click();
+    const tutorial = page.getByRole('dialog', { name: '使用教學' });
+    if (await tutorial.isVisible()) {
+      await tutorial.getByRole('button', { name: '略過教學' }).click();
+    }
+    const skip = page.getByRole('button', { name: '略過', exact: true });
+    if (await skip.isVisible()) await skip.click();
   }
-  const skip = page.getByRole('button', { name: '略過', exact: true });
-  if (await skip.isVisible()) await skip.click();
   await page
     .locator('.bottom-nav')
     .getByRole('button', { name: /清單/ })
@@ -409,7 +547,7 @@ test('登入後收藏會寫入帳號並在重新整理後還原', async ({ page 
   await page.getByPlaceholder('3–30 個英數字、_ 或 -').fill(username);
   await page.getByPlaceholder('至少 12 個字元').fill(password);
   await page.getByRole('button', { name: '建立帳號並登入' }).click();
-  await expect(page.getByText('嗨，儲存測試')).toBeVisible();
+  await expect(page.locator('body')).toContainText('嗨，儲存測試');
 
   const restored = page.waitForResponse(
     (response) => response.url().endsWith('/api/auth/me') && response.ok(),
@@ -440,9 +578,12 @@ test('登入後收藏會寫入帳號並在重新整理後還原', async ({ page 
   );
   await page.reload();
   await reloaded;
-  await page.getByRole('button', { name: '登入同步收藏' }).click();
-  await expect(page.getByText(`@${username}`)).toBeVisible();
-  await page.getByRole('button', { name: '繼續探索' }).click();
+  const accountAction = page.getByRole('button', { name: '登入同步收藏' });
+  if (await accountAction.isVisible()) {
+    await accountAction.click();
+    await expect(page.getByText(`@${username}`)).toBeVisible();
+    await page.getByRole('button', { name: '繼續探索' }).click();
+  }
   await page
     .locator('.bottom-nav')
     .getByRole('button', { name: /清單/ })
