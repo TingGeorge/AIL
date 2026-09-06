@@ -5,7 +5,8 @@
 - `POST /api/v1/search/parse` 與 `POST /api/v1/results/explain` 已實作並接入主流程。
 - Responses API client、strict JSON Schema、timeout／單次 retry、request id、`store: false`、D1 原子限流與固定規則 fallback 均已有單元／契約測試。
 - 模型由 server-side `OPENAI_MODEL` 決定，預設 `gpt-5.6-luna`；官方模型頁確認該模型支援 Responses API 與 Structured Outputs：[GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna)。
-- Demo 不呼叫模型；缺少 API key、D1 限流不可用、逾時、429／5xx 或 schema 不合法時，使用者仍可用手動條件與確定性 CP 規則完成流程。
+- 一般訪客或登入者從「立即開始探索」進入、輸入需求並走引導式流程時都會呼叫 AI；只有明確使用 `?mode=demo` 的固定展示資料，以及直接瀏覽資料庫的快捷路徑不呼叫模型。缺少 API key、D1 限流不可用、逾時、429／5xx 或 schema 不合法時，介面會標示「規則備援」，使用者仍可用手動條件與確定性 CP 規則完成流程。
+- STEP 2 會顯示需求解析來源，開始探索前會呈現四段 SOP，結果頁則標示推薦理由來自 OpenAI 或規則備援；分類筆數仍取自 catalog facets／coverage summary，不由模型產生。
 - 尚未完成的是 30–50 組真實繁中需求的正式 eval、production 帳號 migration 後的重新部署，以及實際流量成本／延遲監控。
 
 ## 目標與邊界
@@ -21,10 +22,11 @@ AI 不產生店名、價格、距離、營業時間、庫存、免費資格或 C
 PWA
   → POST /api/v1/search/parse
   → 後端呼叫 OpenAI Responses API
-  → 回傳結構化條件與待確認欄位
-  → 使用者確認
-  → catalog / hard filter / CP engine
-  → POST /api/v1/results/explain（第二階段）
+  → 回傳結構化條件與待確認欄位（失敗則規則備援）
+  → 使用者逐項確認硬條件
+  → catalog 真實資料 / hard filter / CP engine
+  → POST /api/v1/results/explain（只處理前三筆理由）
+  → 顯示 AI／規則來源，收藏留在瀏覽器或登入後同步
 ```
 
 ## API Key 與環境設定
@@ -143,7 +145,7 @@ Response：
 | 完成 | `mvp/lib/ai-contract.ts`                  | 定義 request、response、JSON Schema 與伺服器驗證                           |
 | 完成 | `mvp/lib/openai-server.ts`、`openai-core.ts` | 封裝 Responses API、timeout、retry、錯誤正規化、request id 與 `store: false` |
 | 完成 | `mvp/app/api/v1/search/parse/route.ts`    | 需求解析 endpoint；只在伺服器讀 key                                        |
-| 完成 | `mvp/app/page.tsx`                        | 顯示 AI 整理狀態並把回傳欄位帶到可編輯確認；使用者仍須確認                  |
+| 完成 | `mvp/app/page.tsx`                        | 訪客與登入流程皆接上 AI；顯示解析／理由來源、四段 SOP，並把欄位帶到可編輯確認 |
 | 完成 | `mvp/app/api/v1/results/explain/route.ts` | 只依伺服器重查事實產生推薦理由，不改動分數與資格                           |
 | 完成 | `mvp/tests/ai-*.test.mjs`                 | contract、prompt injection、timeout、429、壞 JSON、無 key 與 fallback 測試 |
 
@@ -191,6 +193,7 @@ Response：
 - 模糊預算不得自行補數字，必須列入 `missingFields`。
 - 模型不可把硬排除改成偏好，也不可把未知價格解讀成免費。
 - 無 key、timeout、429、壞 schema 時，STEP 1 仍能手動前往 STEP 2。
+- 未登入使用者走需求引導式探索時也會進入相同 AI SOP；`?mode=demo` 固定情境與直接瀏覽快捷路徑跳過模型。
 - 所有推薦理由都能逐項對回傳入的候選事實；刪除該事實後，理由不得仍然出現。
 
 ## 後續優化順序

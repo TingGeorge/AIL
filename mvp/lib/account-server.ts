@@ -1,10 +1,17 @@
 import { env } from 'cloudflare:workers';
 import {
+  ACCOUNT_LOGIN_RATE_LIMIT,
   ACCOUNT_PASSWORD_MIN_LENGTH,
+  ACCOUNT_RATE_LIMIT_WINDOW_MS,
+  ACCOUNT_REGISTER_RATE_LIMIT,
+  ACCOUNT_STATE_MAX_BYTES,
   ACCOUNT_USERNAME_PATTERN,
+  isAccountJsonContentType,
+  parseAccountContentLength,
   type AccountDataEnvelope,
   type AccountUser,
 } from '@/lib/account-contract';
+import { consumeAiRateLimit } from '@/lib/ai-rate-limit';
 
 type D1Statement = {
   bind: (...values: unknown[]) => D1Statement;
@@ -42,7 +49,6 @@ const encoder = new TextEncoder();
 const passwordIterations = 210_000;
 const sessionTtlMs = 30 * 60 * 1_000;
 const defaultAvatar = '#c9ff36';
-const maximumStateBytes = 750_000;
 const fakeSalt = 'dGhpcy1pcy1hLXRpbWluZy1zYWx0';
 
 export class AccountServerError extends Error {
@@ -50,6 +56,7 @@ export class AccountServerError extends Error {
     readonly status: number,
     readonly code: string,
     message: string,
+    readonly responseHeaders: Record<string, string> = {},
   ) {
     super(message);
   }
@@ -68,6 +75,164 @@ export function accountDatabase() {
     return candidate as AccountDatabase;
   }
   return null;
+}
+
+async function rejectAccountRequestBody(
+  request: Request,
+  maximumBytes: number,
+  error: AccountServerError,
+): Promise<never> {
+  const declaredLength = parseAccountContentLength(
+    request.headers.get('Content-Length'),
+  );
+  try {
+    if (
+      declaredLength.ok &&
+      declaredLength.bytes !== null &&
+      declaredLength.bytes > maximumBytes
+    ) {
+      await request.body?.cancel();
+    } else if (request.body) {
+      const reader = request.body.getReader();
+      let totalBytes = 0;
+      try {
+        while (true) {
+          const chunk = await reader.read();
+          if (chunk.done) break;
+          totalBytes += chunk.value.byteLength;
+          if (totalBytes > maximumBytes) {
+            await reader.cancel();
+            break;
+          }
+        }
+      } finally {
+        reader.releaseLock();
+      }
+    }
+  } catch {
+    // The response error remains authoritative when the runtime already
+    // closed or locked the incoming stream.
+  }
+  throw error;
+}
+
+export async function assertAccountJsonRequestHeaders(
+  request: Request,
+  maximumBytes: number,
+) {
+  if (!isAccountJsonContentType(request.headers.get('Content-Type'))) {
+    return rejectAccountRequestBody(
+      request,
+      maximumBytes,
+      new AccountServerError(
+        415,
+        'unsupported_media_type',
+        '請使用 application/json 傳送資料。',
+      ),
+    );
+  }
+  const contentLength = parseAccountContentLength(
+    request.headers.get('Content-Length'),
+  );
+  if (!contentLength.ok) {
+    return rejectAccountRequestBody(
+      request,
+      maximumBytes,
+      new AccountServerError(
+        400,
+        'invalid_content_length',
+        '請求長度格式不正確。',
+      ),
+    );
+  }
+  if (contentLength.bytes !== null && contentLength.bytes > maximumBytes) {
+    return rejectAccountRequestBody(
+      request,
+      maximumBytes,
+      new AccountServerError(
+        413,
+        'request_body_too_large',
+        '請求資料超過可接受的大小。',
+      ),
+    );
+  }
+}
+
+export async function readAccountJsonBody(
+  request: Request,
+  maximumBytes: number,
+) {
+  if (!request.body) {
+    throw new AccountServerError(400, 'invalid_json', '請求內容必須是 JSON。');
+  }
+
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let totalBytes = 0;
+  try {
+    while (true) {
+      const chunk = await reader.read();
+      if (chunk.done) break;
+      totalBytes += chunk.value.byteLength;
+      if (totalBytes > maximumBytes) {
+        await reader.cancel().catch(() => undefined);
+        throw new AccountServerError(
+          413,
+          'request_body_too_large',
+          '請求資料超過可接受的大小。',
+        );
+      }
+      chunks.push(chunk.value);
+    }
+  } catch (error) {
+    if (error instanceof AccountServerError) throw error;
+    throw new AccountServerError(400, 'invalid_body', '無法讀取請求內容。');
+  } finally {
+    reader.releaseLock();
+  }
+
+  const bytes = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  try {
+    const text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    return JSON.parse(text) as unknown;
+  } catch {
+    throw new AccountServerError(400, 'invalid_json', '請求內容必須是 JSON。');
+  }
+}
+
+export async function enforceAccountAuthRateLimit(
+  db: AccountDatabase,
+  request: Request,
+  scope: 'login' | 'register',
+) {
+  const limit =
+    scope === 'login' ? ACCOUNT_LOGIN_RATE_LIMIT : ACCOUNT_REGISTER_RATE_LIMIT;
+  const decision = await consumeAiRateLimit(
+    db,
+    `auth:${scope}`,
+    request.headers,
+    { limit, windowMs: ACCOUNT_RATE_LIMIT_WINDOW_MS },
+  );
+  if (decision.reason === 'limit_exceeded') {
+    throw new AccountServerError(
+      429,
+      'rate_limit_exceeded',
+      '嘗試次數過多，請稍後再試。',
+      { 'Retry-After': String(decision.retryAfterSeconds) },
+    );
+  }
+  if (!decision.allowed) {
+    throw new AccountServerError(
+      503,
+      'account_rate_limit_unavailable',
+      '帳號服務暫時無法使用。',
+    );
+  }
 }
 
 export function normalizeUsername(value: unknown) {
@@ -373,6 +538,14 @@ export async function writeAccountData(
   state: unknown,
 ) {
   const session = await authorizeAccount(db, request);
+  return writeAccountDataForUser(db, session.user.id, state);
+}
+
+export async function writeAccountDataForUser(
+  db: AccountDatabase,
+  userId: string,
+  state: unknown,
+) {
   if (!state || typeof state !== 'object' || Array.isArray(state)) {
     throw new AccountServerError(
       400,
@@ -381,7 +554,7 @@ export async function writeAccountData(
     );
   }
   const stateJson = JSON.stringify(state);
-  if (encoder.encode(stateJson).byteLength > maximumStateBytes) {
+  if (encoder.encode(stateJson).byteLength > ACCOUNT_STATE_MAX_BYTES) {
     throw new AccountServerError(
       413,
       'account_data_too_large',
@@ -396,7 +569,7 @@ export async function writeAccountData(
        ON CONFLICT(user_id) DO UPDATE SET state_json = excluded.state_json,
          updated_at = excluded.updated_at`,
     )
-    .bind(session.user.id, stateJson, now)
+    .bind(userId, stateJson, now)
     .run();
   return { state: state as Record<string, unknown>, updatedAt: now };
 }
@@ -405,7 +578,10 @@ export function accountErrorResponse(error: unknown) {
   if (error instanceof AccountServerError) {
     return Response.json(
       { error: error.code, message: error.message },
-      { status: error.status, headers: { 'Cache-Control': 'no-store' } },
+      {
+        status: error.status,
+        headers: { 'Cache-Control': 'no-store', ...error.responseHeaders },
+      },
     );
   }
   return Response.json(

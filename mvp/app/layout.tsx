@@ -11,13 +11,9 @@ const themeInitializationScript = `
       const savedTheme = window.localStorage.getItem(storageKey);
       theme = savedTheme === 'light' || savedTheme === 'dark'
         ? savedTheme
-        : window.matchMedia('(prefers-color-scheme: light)').matches
-          ? 'light'
-          : 'dark';
-    } catch {
-      theme = window.matchMedia('(prefers-color-scheme: light)').matches
-        ? 'light'
         : 'dark';
+    } catch {
+      theme = 'dark';
     }
 
     document.documentElement.dataset.theme = theme;
@@ -48,7 +44,9 @@ export const metadata: Metadata = {
       { url: '/favicon.svg', type: 'image/svg+xml' },
       { url: '/app-icon-192.png', sizes: '192x192', type: 'image/png' },
     ],
-    apple: [{ url: '/app-icon-192.png', sizes: '192x192' }],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
   appleWebApp: {
     capable: true,
@@ -66,7 +64,9 @@ export default function RootLayout({
     <html lang="zh-Hant" suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#090c0a" />
-        <script dangerouslySetInnerHTML={{ __html: themeInitializationScript }} />
+        <script
+          dangerouslySetInnerHTML={{ __html: themeInitializationScript }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

@@ -1,9 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="15" fill="#0a0e0b"/>
-  <path d="m17 23 2-11 10 8m18 3-2-11-10 8" fill="#c9ff36"/>
-  <rect x="14" y="19" width="36" height="31" rx="12" fill="#c9ff36"/>
-  <rect x="19" y="24" width="26" height="19" rx="8" fill="#0a0e0b"/>
-  <circle cx="27" cy="32" r="3" fill="#8b5cff"/>
-  <circle cx="37" cy="32" r="3" fill="#36a8ff"/>
-  <path d="M28 39q4 3 8 0" fill="none" stroke="#c9ff36" stroke-width="2" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">ALL IN LIFE</title>
+  <defs>
+    <radialGradient id="background" cx="28%" cy="18%" r="100%">
+      <stop stop-color="#17251e"/>
+      <stop offset="1" stop-color="#050706"/>
+    </radialGradient>
+    <linearGradient id="mark" x1="14" y1="52" x2="49" y2="13" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d9ff43"/>
+      <stop offset=".55" stop-color="#efffb7"/>
+      <stop offset="1" stop-color="#36a8ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#background)"/>
+  <path d="M32 10 53 54H42l-4-9H26l-4 9H11l17-40c1-3 2-4 4-4Zm0 18-4 10h8Z" fill="url(#mark)" fill-rule="evenodd"/>
+  <path d="M47 18a24 24 0 0 1 5 12" fill="none" stroke="#6978ff" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="52" cy="34" r="2" fill="#6978ff"/>
 </svg>

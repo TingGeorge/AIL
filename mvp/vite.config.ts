@@ -36,6 +36,10 @@ function sitesDeploymentMigrations() {
           ['sites-drizzle/0004_catalog_seed.sql', '0004_catalog_seed.sql'],
           ['drizzle/0006_ai_rate_limits.sql', '0005_ai_rate_limits.sql'],
           ['drizzle/0007_auth_accounts.sql', '0006_auth_accounts.sql'],
+          [
+            'drizzle/0008_auth_username_binary_check.sql',
+            '0007_auth_username_binary_check.sql',
+          ],
         ] as const) {
           await cp(resolve(source), resolve(target, destination));
         }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'all-in-life-shell-v12';
+const CACHE_NAME = 'all-in-life-shell-v13';
 const APP_SHELL = [
   '/',
   '/manifest.webmanifest',
@@ -7,6 +7,8 @@ const APP_SHELL = [
   '/app-icon-maskable-512.png',
   '/app-icon.svg',
   '/app-icon-maskable.svg',
+  '/apple-touch-icon.png',
+  '/favicon.svg',
   '/bento-neon.png',
   '/images/food-grid.svg',
   '/images/leisure-grid.svg',

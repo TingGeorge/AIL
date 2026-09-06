@@ -1,17 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#c9ff36"/>
-  <circle cx="256" cy="256" r="196" fill="#0a0e0b"/>
-  <circle cx="256" cy="250" r="154" fill="none" stroke="#c9ff36" stroke-opacity=".2" stroke-width="4"/>
-  <path d="M352 341c57 2 63-47 28-65" fill="none" stroke="#8b5cff" stroke-width="18" stroke-linecap="round"/>
-  <path d="m169 190 11-61 52 44m111 17-11-61-52 44" fill="#c9ff36" stroke="#c9ff36" stroke-width="9" stroke-linejoin="round"/>
-  <rect x="148" y="166" width="216" height="176" rx="68" fill="#c9ff36"/>
-  <rect x="173" y="192" width="166" height="120" rx="48" fill="#0c120d"/>
-  <circle cx="225" cy="247" r="16" fill="#8b5cff"/>
-  <circle cx="289" cy="247" r="16" fill="#36a8ff"/>
-  <circle cx="230" cy="242" r="5" fill="#fff"/>
-  <circle cx="294" cy="242" r="5" fill="#fff"/>
-  <path d="M233 283q23 19 46 0" fill="none" stroke="#c9ff36" stroke-width="10" stroke-linecap="round"/>
-  <rect x="219" y="322" width="74" height="59" rx="21" fill="#151d16" stroke="#c9ff36" stroke-width="7"/>
-  <path d="m239 364 13-27h19l-13 27z" fill="#c9ff36"/>
-  <circle cx="256" cy="123" r="11" fill="#ff5d5d"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">ALL IN LIFE futuristic A maskable app icon</title>
+  <defs>
+    <radialGradient id="background" cx="30%" cy="18%" r="105%">
+      <stop offset="0" stop-color="#17251e"/>
+      <stop offset=".5" stop-color="#0a100d"/>
+      <stop offset="1" stop-color="#030504"/>
+    </radialGradient>
+    <radialGradient id="aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#d9ff43" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#36a8ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="orbit" x1="93" y1="106" x2="420" y2="409" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d9ff43"/>
+      <stop offset=".5" stop-color="#36a8ff"/>
+      <stop offset="1" stop-color="#6978ff"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="142" y1="386" x2="364" y2="132" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d9ff43"/>
+      <stop offset=".5" stop-color="#efffb7"/>
+      <stop offset="1" stop-color="#52ddff"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="258" y1="117" x2="371" y2="386" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f5ffd0"/>
+      <stop offset=".5" stop-color="#36a8ff"/>
+      <stop offset="1" stop-color="#6978ff"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0v32" fill="none" stroke="#d9ff43" stroke-opacity=".045" stroke-width="1"/>
+    </pattern>
+    <filter id="markGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="9" result="blur"/>
+      <feFlood flood-color="#d9ff43" flood-opacity=".2"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="nodeGlow" x="-180%" y="-180%" width="460%" height="460%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#background)"/>
+  <rect width="512" height="512" fill="url(#grid)"/>
+  <circle cx="256" cy="256" r="224" fill="url(#aura)"/>
+  <circle cx="256" cy="256" r="196" fill="none" stroke="url(#orbit)" stroke-width="4" stroke-dasharray="178 28 86 34" stroke-linecap="round" opacity=".56"/>
+  <circle cx="256" cy="256" r="176" fill="none" stroke="#d9ff43" stroke-width="2" stroke-opacity=".12"/>
+  <path d="M106 209H90v35" fill="none" stroke="#d9ff43" stroke-width="4" stroke-linecap="round" opacity=".66"/>
+  <path d="M406 303h16v-35" fill="none" stroke="#6978ff" stroke-width="4" stroke-linecap="round" opacity=".75"/>
+  <circle cx="92" cy="260" r="6" fill="#d9ff43" filter="url(#nodeGlow)"/>
+  <circle cx="420" cy="252" r="6" fill="#6978ff" filter="url(#nodeGlow)"/>
+
+  <path d="M256 115 385 394h-66l-23-52h-80l-23 52h-66l106-257c5-13 13-22 23-22Zm0 110-24 65h48Z" fill="url(#mark)" fill-rule="evenodd" filter="url(#markGlow)"/>
+  <path d="M273 128 380 383h-24l-91-222Z" fill="url(#edge)" opacity=".85"/>
+  <path d="M167 363h36l-13 31h-36Z" fill="#08100c"/>
+  <path d="M191 342h25l-9 21h-25Z" fill="#6978ff"/>
+  <path d="M243 321h28l-9 21h-28Z" fill="#07100b"/>
+  <path d="m256 249 14 14-14 14-14-14Z" fill="#0a100d" stroke="#36a8ff" stroke-width="4" filter="url(#nodeGlow)"/>
+  <circle cx="256" cy="263" r="3.5" fill="#f4ffd3"/>
 </svg>

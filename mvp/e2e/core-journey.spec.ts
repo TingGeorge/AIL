@@ -100,11 +100,11 @@ test('完整情境核心旅程、底部選單與收藏復原', async ({ page }) 
   await expectNoDemoLabels(page);
 
   await page.getByRole('button', { name: /排序方式/ }).click();
-  const sortSheet = page.getByRole('dialog', { name: '選擇排序方式' });
+  const sortSheet = page.getByRole('dialog', { name: '排序結果' });
   await expect(sortSheet).toBeVisible();
-  await sortSheet.getByRole('button', { name: /距離優先/ }).click();
+  await sortSheet.getByRole('button', { name: /距離：近到遠/ }).click();
   await expect(
-    page.getByRole('button', { name: /排序方式 距離優先/ }),
+    page.getByRole('button', { name: /排序方式 距離：近到遠/ }),
   ).toBeVisible();
 
   await page.getByRole('button', { name: /快速篩選/ }).click();
@@ -130,18 +130,115 @@ test('完整情境核心旅程、底部選單與收藏復原', async ({ page }) 
   await expect(firstSaveButton).toBeVisible();
 });
 
-test('揪團卡片可開啟詳情並登記', async ({ page }) => {
+test('手機設定選單與排序面板保持完整可操作', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 844 });
+  await enterDemo(page);
+
+  await page.getByRole('button', { name: '開啟設定' }).click();
+  await expect(
+    page.getByRole('heading', { name: '設定', exact: true }),
+  ).toBeVisible();
+  await expect(page.locator('.settings-menu-group')).toHaveCount(2);
+  await page.waitForTimeout(300);
+
+  const modeButtons = page.locator('.setting-modes button');
+  await expect(modeButtons).toHaveCount(3);
+  await expect
+    .poll(() =>
+      modeButtons.evaluateAll((buttons) =>
+        buttons.every((button) => button.getBoundingClientRect().height >= 44),
+      ),
+    )
+    .toBe(true);
+  const settingsOverflow = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+  expect(settingsOverflow.scrollWidth).toBeLessThanOrEqual(
+    settingsOverflow.clientWidth + 1,
+  );
+
+  await page.getByRole('button', { name: '完成', exact: true }).click();
+  await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
+  await page.getByRole('button', { name: '確認完成，前往開始探索' }).click();
+  await page.getByRole('button', { name: '開始探索' }).click();
+  await expect(
+    page.getByRole('heading', { name: /找到 \d+ 個合適選擇/ }),
+  ).toBeVisible({ timeout: 5_000 });
+
+  await page.getByRole('button', { name: /排序方式 推薦排序/ }).click();
+  const sortSheet = page.getByRole('dialog', { name: '排序結果' });
+  const sortButtons = sortSheet.locator('.sheet-sort-options button');
+  await expect(sortButtons).toHaveCount(3);
+  await expect(
+    sortSheet.getByRole('button', { name: /推薦排序/ }),
+  ).toHaveAttribute('aria-pressed', 'true');
+  await expect(
+    sortSheet.getByRole('button', { name: /價格：低到高/ }),
+  ).toBeVisible();
+  await expect(
+    sortSheet.getByRole('button', { name: /距離：近到遠/ }),
+  ).toBeVisible();
+  for (const button of await sortButtons.all()) {
+    await expect(button.locator('.sort-option-icon svg')).toBeVisible();
+  }
+  await expect(
+    sortSheet.locator('.sort-option-check.active svg'),
+  ).toBeVisible();
+});
+
+test('揪團卡片顯示對應內容，詳情可查看並登記', async ({ page }) => {
   await enterDemo(page);
 
   await page.getByRole('button', { name: '揪團', exact: true }).click();
   await expectNoDemoLabels(page);
+  await expect(
+    page.getByRole('button', { name: /夜間計程車順風團/ }),
+  ).toContainText('圓山站 2 號出口 → 劍潭站 → 士林夜市');
+  await expect(
+    page.getByRole('button', { name: /週末早午餐併桌/ }),
+  ).toContainText('不萊梅圓山店 · 義大利麵＋沙拉飲品');
+  await expect(
+    page.getByRole('button', { name: /日用品箱購分攤/ }),
+  ).toContainText('衛生紙＋洗衣精補充包＋垃圾袋');
+
   await page.getByRole('button', { name: /夜間計程車順風團/ }).click();
 
-  const teamSheet = page.getByRole('dialog', {
+  let teamSheet = page.getByRole('dialog', {
     name: '夜間計程車順風團',
   });
   await expect(teamSheet).toBeVisible();
-  await expect(teamSheet.getByText('圓山站 2 號出口')).toBeVisible();
+  await expect(
+    teamSheet.getByRole('heading', { name: '共乘路線與費用' }),
+  ).toBeVisible();
+  await expect(
+    teamSheet.getByText('預估共 NT$160｜4 人均分約 NT$40'),
+  ).toBeVisible();
+  await teamSheet.getByRole('button', { name: '先看看' }).click();
+
+  await page.getByRole('button', { name: /週末早午餐併桌/ }).click();
+  teamSheet = page.getByRole('dialog', { name: '週末早午餐併桌' });
+  await expect(
+    teamSheet.getByRole('heading', { name: '這團吃什麼' }),
+  ).toBeVisible();
+  await expect(teamSheet.getByText('番茄雞肉／奶油蕈菇義大利麵')).toBeVisible();
+  await expect(
+    teamSheet.getByText('主餐 1 份＋沙拉＋紅茶或美式'),
+  ).toBeVisible();
+  await expect(teamSheet.getByText(/含麩質與乳製品/)).toBeVisible();
+  await teamSheet.getByRole('button', { name: '先看看' }).click();
+
+  await page.getByRole('button', { name: /日用品箱購分攤/ }).click();
+  teamSheet = page.getByRole('dialog', { name: '日用品箱購分攤' });
+  await expect(
+    teamSheet.getByRole('heading', { name: '每一份包含' }),
+  ).toBeVisible();
+  await expect(teamSheet.getByText('抽取式 100 抽 × 6 包')).toBeVisible();
+  await expect(teamSheet.getByText('補充包 1.5 L × 1 包')).toBeVisible();
+  await teamSheet.getByRole('button', { name: '先看看' }).click();
+
+  await page.getByRole('button', { name: /夜間計程車順風團/ }).click();
+  teamSheet = page.getByRole('dialog', { name: '夜間計程車順風團' });
   await teamSheet.getByRole('button', { name: '登記這一團' }).click();
 
   await expect(page.getByText(/已登記「夜間計程車順風團」/)).toBeVisible();
@@ -247,7 +344,7 @@ test('CP 權重固定合計 100 並會真正更換第一名', async ({ page }) =
     '雙人義大利麵提案',
   );
   await expect(
-    page.getByRole('button', { name: /排序方式 CP 值優先/ }),
+    page.getByRole('button', { name: /排序方式 推薦排序/ }),
   ).toBeVisible();
 
   const weights = await page

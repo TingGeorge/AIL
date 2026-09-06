@@ -52,7 +52,6 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
   useEffect(() => {
     const current = document.documentElement.dataset.theme;
     if (current === 'light' || current === 'dark') {
-      applyTheme(current, false);
       return;
     }
 
@@ -63,15 +62,9 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
         initialTheme = savedTheme;
       }
     } catch {
-      // Fall back to the operating-system preference below.
+      // Fall back to the product default below.
     }
-    applyTheme(
-      initialTheme ??
-        (window.matchMedia('(prefers-color-scheme: light)').matches
-          ? 'light'
-          : 'dark'),
-      false,
-    );
+    applyTheme(initialTheme ?? 'dark', false);
   }, []);
 
   const toggleTheme = () => {

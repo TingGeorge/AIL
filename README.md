@@ -58,7 +58,7 @@ ALL IN LIFE 是為預算有限者打造的日常決策助手。使用者以自�
 
 > 工程項目驗證時間：2026-09-06（Asia/Taipei）。`[ ]` 表示仍需隊伍或平台端確認，不能用程式碼推定完成。敏感資訊掃描不含送件必要的成員姓名；公開 Email 已從文件移除。完整工程證據見 [`submission-checklist.md`](submission-checklist.md)。
 
-目前展示以可操作前端與 PWA 為主；catalog 資料層已具備 D1 `DB` binding、本機自動 bootstrap，以及會回退官方 snapshot 的 API。主搜尋 UI 已用 `POST /api/catalog/search` 取得資料，切換分類、距離或所選時刻會重新查詢；D1 無法查詢時明確回退官方 snapshot。DEMO 固定情境與真實模式完全分流，正式模式 API 失敗時不會偷偷混入 fixture。新版候選已加入伺服器端 AI 需求解析與推薦理由；帳號註冊／登入與個人清單狀態已寫入 D1，Team 交易式資料仍是下一階段。
+目前展示以可操作前端與 PWA 為主；catalog 資料層已具備 D1 `DB` binding、本機自動 bootstrap，以及會回退官方 snapshot 的 API。主搜尋 UI 已用 `POST /api/catalog/search` 取得資料，切換分類、距離或所選時刻會重新查詢；D1 無法查詢時明確回退官方 snapshot。DEMO 固定情境與真實模式完全分流，正式模式 API 失敗時不會偷偷混入 fixture。一般訪客與登入者的需求引導式流程都已串上伺服器端 AI 需求解析與推薦理由，介面會標示 OpenAI／規則備援來源；直接瀏覽資料庫則不耗用模型。帳號註冊／登入與個人清單狀態已寫入 D1，Team 交易式資料仍是下一階段。
 
 ALL IN LIFE 是一個以「限制優先、證據可追溯、成本不造假」為原則的圓山生活決策 App。使用者可匿名直接搜尋，收藏與清單先保留在目前瀏覽器；登入生活帳號後會安全合併並同步清單、收藏、預算與個人設定。文字與語音都會進入同一份可編輯的結構化需求，再比較餐飲、日用、育樂與交通選項。
 
@@ -98,7 +98,7 @@ ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的�
 | Team 多人協作       | 設計／Demo                  | 帳號登入已可用；Team UI 與 D1 schema 已備妥，尚無邀請與交易式後端                                         |
 | Cloudflare D1       | binding／本機 runtime ready | hosting config 已使用 `DB`；`predev`／`prestart` 會自動套 migration 並同步最新 seed 至本機 D1              |
 | 帳號與個人資料      | 本機端到端可用              | 匿名收藏本機還原、登入聯集合併、30 分鐘 session、D1 持久化與登出後 401 均已通過                            |
-| AI 安全層           | API 與 fallback 已落地      | strict schema、伺服器端 key、D1 限流與無 key／逾時／錯誤安全回退；AI 不改寫價格、資格或 CP 分數            |
+| AI 安全層           | API、訪客 SOP 與 fallback 已落地 | strict schema、伺服器端 key、D1 限流、來源標示與無 key／逾時／錯誤安全回退；AI 不改寫價格、資格或 CP 分數 |
 | PWA                 | 公開基準版已驗收            | HTTPS、manifest、192/512 icons、service worker、Chrome installability 與離線 app-shell fallback 已驗證     |
 
 ## 系統架構

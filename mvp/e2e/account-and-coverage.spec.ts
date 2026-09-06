@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 
-async function skipIntoHome(page: Page, url = '/') {
+async function skipIntoHome(page: Page, url = '/?mode=demo') {
   await page.goto(url);
   await page.getByRole('button', { name: '立即開始探索' }).click();
   const tutorial = page.getByRole('dialog', { name: '使用教學' });
@@ -42,6 +42,9 @@ test('公開首頁顯示來源、串接與驗證統計，訪客可直接查看�
     5,
   );
   await expect(coverage.getByText('待確認', { exact: true })).toHaveCount(5);
+  await expect(
+    coverage.getByRole('button', { name: '登入同步收藏與清單' }),
+  ).toHaveCount(0);
 
   await page
     .locator('.bottom-nav')
@@ -51,11 +54,130 @@ test('公開首頁顯示來源、串接與驗證統計，訪客可直接查看�
   await expect(page.getByText('還沒有清單項目')).toBeVisible();
 });
 
+test('正式模式不填需求也可直接瀏覽資料庫，並按距離排序', async ({ page }) => {
+  test.setTimeout(60_000);
+  let parseRequestCount = 0;
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/api/v1/search/parse') {
+      parseRequestCount += 1;
+    }
+  });
+
+  await skipIntoHome(page, '/');
+  await expect(page.getByRole('textbox', { name: '文字輸入需求' })).toHaveValue(
+    '',
+  );
+
+  const catalogRequestPromise = page.waitForRequest(
+    (request) =>
+      new URL(request.url()).pathname === '/api/catalog/search' &&
+      request.method() === 'POST',
+    { timeout: 30_000 },
+  );
+  const catalogResponsePromise = page.waitForResponse(
+    (response) =>
+      new URL(response.url()).pathname === '/api/catalog/search' &&
+      response.ok(),
+    { timeout: 30_000 },
+  );
+  await page
+    .locator('.bottom-nav')
+    .getByRole('button', { name: '探索', exact: true })
+    .click();
+
+  const catalogRequest = await catalogRequestPromise;
+  expect(catalogRequest.postDataJSON()).toMatchObject({
+    category: 'ALL',
+    limit: 100,
+  });
+  await catalogResponsePromise;
+  await expect(page.getByText('請至少用 3 個字描述這次需求。')).toHaveCount(0);
+  await expect(page.locator('.result-card').first()).toBeVisible({
+    timeout: 30_000,
+  });
+  expect(parseRequestCount).toBe(0);
+
+  const sortControl = page.locator('.sort-button');
+  await expect(sortControl).toBeVisible();
+  await expect(sortControl).toContainText('距離：近到遠');
+
+  const distances = await page
+    .locator('.result-card .result-copy')
+    .evaluateAll((copies) =>
+      copies
+        .map((copy) =>
+          Number(copy.textContent?.match(/(\d+(?:\.\d+)?)\s*km/i)?.[1]),
+        )
+        .filter(Number.isFinite)
+        .slice(0, 8),
+    );
+  expect(distances.length).toBeGreaterThan(1);
+  for (let index = 1; index < distances.length; index += 1) {
+    expect(distances[index]).toBeGreaterThanOrEqual(distances[index - 1]);
+  }
+});
+
+test('正式訪客不會繼承展示帳本或免登入操作', async ({ page }) => {
+  await skipIntoHome(page, '/');
+
+  await expect(
+    page.getByRole('button', { name: '查看本月消費分析' }),
+  ).toHaveCount(0);
+  await expect(page.getByText('尚未設定月預算')).toBeVisible();
+
+  await page.getByRole('button', { name: '揪團', exact: true }).click();
+  await page.getByRole('button', { name: '加入這一團' }).click();
+  await expect(
+    page.getByRole('heading', { name: '登入生活帳號' }),
+  ).toBeVisible();
+});
+
 test('手機探索卡片完整顯示分類視覺，且只替已驗證項目顯示勾勾', async ({
   page,
 }) => {
   await skipIntoHome(page, '/?mode=demo');
   await reachDemoResults(page);
+
+  const categoryFilter = page.locator('.category-filter');
+  const categoryLayout = await categoryFilter.evaluate((element) => {
+    const buttons = [...element.querySelectorAll('button')];
+    return {
+      display: getComputedStyle(element).display,
+      clientWidth: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+      rows: new Set(buttons.map((button) => button.offsetTop)).size,
+    };
+  });
+  expect(categoryLayout.display).toBe('grid');
+  expect(categoryLayout.scrollWidth).toBeLessThanOrEqual(
+    categoryLayout.clientWidth + 1,
+  );
+  expect(categoryLayout.rows).toBeGreaterThanOrEqual(2);
+  await page.setViewportSize({ width: 360, height: 844 });
+  const narrowCategoryLayout = await categoryFilter.evaluate((element) => {
+    const buttons = [...element.querySelectorAll('button')];
+    return {
+      clientWidth: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+      rows: new Set(buttons.map((button) => button.offsetTop)).size,
+    };
+  });
+  expect(narrowCategoryLayout.scrollWidth).toBeLessThanOrEqual(
+    narrowCategoryLayout.clientWidth + 1,
+  );
+  expect(narrowCategoryLayout.rows).toBeGreaterThanOrEqual(3);
+  for (const category of [
+    '全部',
+    '食品',
+    '日用品',
+    '免費／公益資源',
+    '活動',
+    '交通',
+  ]) {
+    await expect(
+      categoryFilter.getByRole('button', { name: new RegExp(`^${category}`) }),
+    ).toBeVisible();
+  }
 
   const verifiedCard = page
     .locator('.result-card.provenance-verified-demo')
@@ -71,24 +193,143 @@ test('手機探索卡片完整顯示分類視覺，且只替已驗證項目顯�
       .locator('.result-verification-mark'),
   ).toHaveCount(0);
 
-  const layout = await verifiedCard.locator('.result-open').evaluate((open) => {
+  const layout = await verifiedCard.evaluate((card) => {
+    const open = card.querySelector<HTMLElement>('.result-open');
+    if (!open) throw new Error('result-open is missing');
     const art = open.querySelector<HTMLElement>('.result-art');
+    const mark = card.querySelector<HTMLElement>('.result-verification-mark');
+    const icon = mark?.querySelector<SVGElement>('svg');
+    const save = card.querySelector<HTMLElement>('.save-fab');
+    const saveIcon = save?.querySelector<SVGElement>('svg');
+    const cardRect = card.getBoundingClientRect();
     const openRect = open.getBoundingClientRect();
     const artRect = art?.getBoundingClientRect();
+    const markRect = mark?.getBoundingClientRect();
+    const iconRect = icon?.getBoundingClientRect();
+    const saveRect = save?.getBoundingClientRect();
+    const saveIconRect = saveIcon?.getBoundingClientRect();
     return {
       openHeight: openRect.height,
       artHeight: artRect?.height ?? 0,
       artPosition: art ? getComputedStyle(art).position : '',
+      markRight: markRect ? cardRect.right - markRect.right : -1,
+      markBottom: markRect ? cardRect.bottom - markRect.bottom : -1,
+      iconCenterX:
+        markRect && iconRect
+          ? iconRect.left +
+            iconRect.width / 2 -
+            (markRect.left + markRect.width / 2)
+          : -1,
+      iconCenterY:
+        markRect && iconRect
+          ? iconRect.top +
+            iconRect.height / 2 -
+            (markRect.top + markRect.height / 2)
+          : -1,
+      saveRight: saveRect ? cardRect.right - saveRect.right : -1,
+      saveTop: saveRect ? saveRect.top - cardRect.top : -1,
+      saveIconCenterX:
+        saveRect && saveIconRect
+          ? saveIconRect.left +
+            saveIconRect.width / 2 -
+            (saveRect.left + saveRect.width / 2)
+          : -1,
+      saveIconCenterY:
+        saveRect && saveIconRect
+          ? saveIconRect.top +
+            saveIconRect.height / 2 -
+            (saveRect.top + saveRect.height / 2)
+          : -1,
     };
   });
   expect(layout.artPosition).toBe('absolute');
   expect(Math.abs(layout.openHeight - layout.artHeight)).toBeLessThanOrEqual(1);
+  expect(layout.markRight).toBeGreaterThanOrEqual(11);
+  expect(layout.markRight).toBeLessThanOrEqual(14);
+  expect(layout.markBottom).toBeGreaterThanOrEqual(11);
+  expect(layout.markBottom).toBeLessThanOrEqual(14);
+  expect(Math.abs(layout.iconCenterX)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(layout.iconCenterY)).toBeLessThanOrEqual(0.5);
+  expect(layout.saveRight).toBeGreaterThanOrEqual(11);
+  expect(layout.saveRight).toBeLessThanOrEqual(14);
+  expect(layout.saveTop).toBeGreaterThanOrEqual(11);
+  expect(layout.saveTop).toBeLessThanOrEqual(14);
+  expect(Math.abs(layout.saveIconCenterX)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(layout.saveIconCenterY)).toBeLessThanOrEqual(0.5);
 
   await verifiedCard.locator('.result-open').click();
   await expect(page.locator('.detail-verification-mark')).toHaveAttribute(
     'title',
     /已驗證/,
   );
+});
+
+test('預設探索以資料庫 facets 顯示所有分類與完整筆數', async ({ page }) => {
+  test.setTimeout(60_000);
+  await skipIntoHome(page, '/');
+  await page
+    .getByRole('textbox', { name: '文字輸入需求' })
+    .fill('想找兩人晚餐');
+  await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
+  await page.getByRole('button', { name: '確認完成，前往開始探索' }).click();
+  const catalogResponse = page.waitForResponse(
+    (response) =>
+      response.url().endsWith('/api/catalog/search') && response.ok(),
+    { timeout: 30_000 },
+  );
+  await page.getByRole('button', { name: '開始探索' }).click();
+  const payload = (await (await catalogResponse).json()) as {
+    source: string;
+    facets: Array<{ label: string; count: number }>;
+  };
+  await expect(
+    page.getByRole('heading', { name: /找到 \d+ 個合適選擇/ }),
+  ).toBeVisible({ timeout: 30_000 });
+
+  expect(['d1', 'snapshot']).toContain(payload.source);
+  const filter = page.locator('.category-filter');
+  const total = payload.facets.reduce((sum, facet) => sum + facet.count, 0);
+  const formattedTotal = total.toLocaleString('en-US');
+  await expect(
+    filter.getByRole('button', {
+      name: new RegExp(`^全部 ${formattedTotal}$`),
+    }),
+  ).toBeVisible();
+  for (const facet of payload.facets) {
+    await expect(
+      filter.getByRole('button', {
+        name: `${facet.label} ${facet.count} 筆`,
+      }),
+    ).toBeVisible();
+  }
+
+  const foodResponsePromise = page.waitForResponse(
+    (response) => {
+      if (!response.url().endsWith('/api/catalog/search') || !response.ok())
+        return false;
+      return response.request().postDataJSON()?.category === 'FOOD';
+    },
+    { timeout: 30_000 },
+  );
+  await filter.getByRole('button', { name: /^食品 / }).click();
+  const foodResponse = await foodResponsePromise;
+  const foodPayload = (await foodResponse.json()) as {
+    items: Array<{ categoryKey: string }>;
+  };
+  expect(foodPayload.items.length).toBeGreaterThan(0);
+  expect(foodPayload.items.every((item) => item.categoryKey === 'FOOD')).toBe(
+    true,
+  );
+  await expect(page.locator('.result-card').first()).toBeVisible({
+    timeout: 30_000,
+  });
+  expect(
+    await page
+      .locator('.result-art span')
+      .evaluateAll((labels) =>
+        labels.every((label) => label.textContent === '食品'),
+      ),
+  ).toBe(true);
 });
 
 test('立即開始探索會帶入完整展示數據與候選', async ({ page }) => {

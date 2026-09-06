@@ -14,6 +14,7 @@ const expectedMigrations = [
   '0004_catalog_seed.sql',
   '0005_ai_rate_limits.sql',
   '0006_auth_accounts.sql',
+  '0007_auth_username_binary_check.sql',
 ];
 
 if (!existsSync(hostingPath)) throw new Error('Sites hosting.json is missing.');

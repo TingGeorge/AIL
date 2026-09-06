@@ -36,6 +36,11 @@ const accountMigrationPath = path.join(
   'drizzle',
   '0007_auth_accounts.sql',
 );
+const accountUsernameCheckMigrationPath = path.join(
+  mvpDirectory,
+  'drizzle',
+  '0008_auth_username_binary_check.sql',
+);
 
 for (const requiredPath of [
   wranglerEntry,
@@ -45,6 +50,7 @@ for (const requiredPath of [
   ...migrationPaths,
   aiRateLimitMigrationPath,
   accountMigrationPath,
+  accountUsernameCheckMigrationPath,
 ]) {
   if (!existsSync(requiredPath)) {
     throw new Error(`Missing required local D1 input: ${requiredPath}`);
@@ -190,6 +196,27 @@ if (existingAccountTables.size === 0) {
   runWrangler(['--file', accountMigrationPath], { silent: true });
 } else if (existingAccountTables.size !== accountTables.length) {
   throw new Error('Local D1 has a partial account schema.');
+}
+
+const accountCredentialsSql =
+  query(
+    `SELECT sql FROM sqlite_master
+     WHERE type = 'table' AND name = 'auth_credentials'`,
+  )[0]?.sql ?? '';
+if (!accountCredentialsSql.includes('username COLLATE BINARY = lower(username)')) {
+  process.stdout.write(
+    `Applying ${path.basename(accountUsernameCheckMigrationPath)}...\n`,
+  );
+  runWrangler(['--file', accountUsernameCheckMigrationPath], { silent: true });
+}
+
+const upgradedCredentialsSql =
+  query(
+    `SELECT sql FROM sqlite_master
+     WHERE type = 'table' AND name = 'auth_credentials'`,
+  )[0]?.sql ?? '';
+if (!upgradedCredentialsSql.includes('username COLLATE BINARY = lower(username)')) {
+  throw new Error('Local D1 auth_credentials is missing the binary lowercase check.');
 }
 
 const expectedCounts = snapshot?.meta?.counts;
