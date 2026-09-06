@@ -278,7 +278,7 @@ prototype-v1/.scratch/catalog-expansion/   # 目前為空
 
 - tracked 了大量第三方網頁與 bundle；
 - 有重複檔案、空 `.error.txt`、測試日誌和資料庫快照；
-- 抓取頁面中存在第三方站點公開 API key 樣式字符串，雖未證明是本項目 secret，仍可能觸發 secret scanner，並造成不必要的資料留存。
+- 2026-09-06 已遮罩快照中的 Google API key 與其他高信心 secret-like 字串；這些值未證明是本專案 secret，但原本仍會觸發掃描。第三方完整 bundle 的體積與授權邊界風險仍存在。
 
 **處置建議：**先製作不可變 provenance archive，sanitize key-like 內容，再將大體積抓取資料移出 main。保留精簡 manifest、checksum、來源 URL、取得日期與必要證據即可。
 
@@ -436,7 +436,7 @@ prototype-v1/tests/catalog-view.test.tsx:123
 
 1. 為 `.scratch/catalog-expansion` 生成 checksum/manifest；
 2. 保留最小可驗證 provenance；
-3. sanitize key-like 與第三方 bundle 內容；
+3. ~~sanitize key-like 內容；~~ **高信心字串已完成遮罩；第三方 bundle 瘦身仍待處理**
 4. 將完整快照遷至 release artifact、object storage 或 archive branch；
 5. 更新 `data/live` provenance references。
 

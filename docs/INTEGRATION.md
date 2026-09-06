@@ -1,14 +1,23 @@
-# UI × main 後端整合紀錄
+# ALL IN LIFE main 整合紀錄
 
-日期：2026-09-05。整合分支：`codex/integrate-mvp-ui-main-backend`。本次更新活躍 Gemini 架構與 API；歷史驗證紀錄不代表遷移後已驗收。官方契約與限制見 [Gemini 查核](research/gemini-audio-structured.md)。
+更新日期：2026-09-06。整合分支：`codex/main-best-integration`。本文件以 `main` 的 Bun/Hono/Vite/PostgreSQL/Gemini runtime 為準；另一分支只提供可移植的產品與視覺改良，不引入第二套 runtime。官方契約與限制見 [Gemini 查核](research/gemini-audio-structured.md)。
+
+## 2026-09-06 精選整合
+
+- 保留 `main` 的 API、資料庫、證據閘門、SSE、帳號與 Gemini Interactions 架構。
+- 融入 AILI 品牌入口、慢速循環打字、CSS 3D 指南針、金錢雨與 `prefers-reduced-motion` 降級。
+- 提升決策文字可讀性、統一 icon/text 對齊，五類分類列支援觸控左右滑動。
+- 結果與詳情重新呈現食品份量、pending 原因、必要條件與 demo 安全警告。
+- 訪客清單與收藏改存此瀏覽器；登入／註冊後只聯集合併 `list`／`favs`，不覆蓋遠端預算、偏好或個人設定，超過 200 筆會明確阻止而非靜默丟資料。
+- PWA 換成 AILI `any`／`maskable` icons；service worker 仍只快取公開 app shell。
+- 互動文件：[main 系統架構](architecture/all-in-life-main-architecture.html)／[探索與同步流程](architecture/all-in-life-product-flow.html)／[branch 比較](branch-main-comparison.md)。
 
 ## 1. 來源與優先順序
 
 | 來源 | 版本 | 如何使用 |
 |---|---|---|
-| `origin/codex/all-in-life-mvp` | `39148e9` | 視覺、版面、圖示、品牌與主要畫面互動；不是直接執行其 Vinext／Cloudflare runtime |
-| 本機 `main` | `cd1767c` | Bun/Hono/Vite、共用 Need/Rec、SQL、匯入、證據閘門與 SSE 基礎 |
-| `origin/main`（整合開始時） | `45f57ed` | 已包含於上述本機 main，不覆蓋本機較新的 SSE commit |
+| `origin/codex/all-in-life-backend-plan` | `c1c22f4` | 只選取品牌入口、可讀性、AILI PWA icon 與訪客保存概念；不移植 Vinext／D1／OpenAI runtime |
+| `origin/main`（本輪開始時） | `d86f918` | Bun/Hono/Vite、共用 Need/Rec、PostgreSQL、匯入、證據閘門、帳號與 SSE 主幹 |
 | `docs/SPEC-backend.md` | 優先後端契約 | 五類資料、兩個推薦 Agent、帳號私有資料、商家團體優惠 |
 | `docs/SPEC-voice-input.md` / `SPEC-geocoding.md` / `SPEC-ingestion.md` | 專項契約 | 逐字稿確認、不猜未知值、定位同意、資料與證據匯入 |
 
@@ -84,7 +93,7 @@ flowchart LR
 | 前端 fixture 形狀 vs 後端 Rec | 移除有效路徑上的假資料，真實 id 查詢、null/來源/份量直顯 | 未補造圖片或不存在的欄位 |
 | 三個模式 vs 五個資料類別 | 日常／優惠／零元保留為體驗入口；資料類別依後端五類，free_only 獨立。`target_categories` 依語音規格 §3 只調整結果頁順序與初選；仍搜尋五類。手動模式允許只選類別啟動搜尋 | 目標類別不是硬限制；零筆也不偷偷切換其他類別 |
 | 假計時器／CP 分數 vs 真實搜尋 | 真正 SSE 進度、分組 LLM 排序／fallback；不呈現虛構 CP 數字 | 外部模型品質仍需 live provider 驗收 |
-| 匿名收藏 vs 私有帳號資料 | 收藏／清單需登入；匿名只有 sessionStorage 設定，登入不合併匿名資料 | revision CAS；獨立欄位三方合併，同欄位衝突不覆蓋 |
+| 匿名收藏 vs 私有帳號資料 | 訪客 `list`／`favs` 與設定保存在 localStorage；登入後只聯集合併兩個集合，不覆蓋帳號設定 | revision CAS；各集合最多 200 筆，超限時要求使用者先移除項目 |
 | 假支出圖 vs 有證據支出 | 自填月支出；非 demo 且成本已知時可「標記已買」，不是付款 | 無銀行連接、無交易歷史 |
 | 假成員數 vs 共享團購加入 | PostgreSQL 保存真實加入狀態；公開人數、登入加入／退出，團員可看成員名單 | 每筆優惠只有一個目前團；無聊天、代訂、付款或新團輪替 |
 | 無法確定食品份量／日期／資格／過敏原 | 食品需求 N 只接受明示最大份量 1..N，超過 N 排除；其餘缺少符合證據者標示待確認並後置 | 需擴充資料欄位與來源證據才能精準篩選 |
@@ -96,13 +105,17 @@ flowchart LR
 ## 5. 隱私及部署邊界
 
 - 只存帳號、清單／收藏 ids、設定、暱稱／顏色、回報與團購加入關係。不存錄音、逐字稿、Need、搜尋歷史與使用者座標。公開 API 只回人數；nickname／username 只回給同團成員。
-- token 在 sessionStorage；匿名設定也只在該分頁 sessionStorage。沒有 guest → account 自動合併。
+- token 只在 sessionStorage；訪客設定、清單與收藏在 localStorage。登入時只將訪客 `list`／`favs` 聯集合併到帳號，成功後才清除訪客資料；預算、偏好與 profile 以帳號資料為準。
 - 錄音按鈕事前揭露「停止後音訊會傳送給 Gemini 解析」。音訊、使用者主動送出的文字／修正、必要候選內容會送到 Gemini；逐字稿與 Need 的草稿只在前端記憶體。`store:false` 只控制 Interaction 儲存，不代表整體零保留或不作訓練；仍須核對 Google 條款／帳號計費與地區。座標只在 deterministic 距離計算使用。
 - 同源 API 不使用 cookie，不需要開放任意 origin CORS。Bun production 在 `prototype-v1` 工作目錄執行，靜態檔案為 `dist`。
 - 資料庫及 key 放 server env，不提交 `.env`；使用 HTTPS。公開部署請另外設 edge 限流（含註冊、語音及搜尋成本）、DB 備份與監控。
 - `/api/health` 是程序存活檢查，不是資料庫／模型 readiness 檢查。只設了變數不代表 provider 可呼叫。
 
 ## 6. 驗證紀錄與未驗證項目
+
+2026-09-06 本輪精選整合：typecheck、production build、資料檔驗證及新增的品牌／PWA／訪客合併／結果語意測試均通過。離線全套共 312 tests：279 pass、30 個需外部 DB/provider 的 skip，以及 3 個只在目前 Codex 執行環境中因 `Bun.spawnSync(process.execPath)` 回傳 `ENOENT` 而未進入斷言的導覽測試；Bun 1.4.0 亦重現，須由標準 CI runner 做最終判定。實際瀏覽器已走訪入口、首頁、設定與結果錯誤狀態，檢查手機殼層、字級、對比、icon 對齊及水平溢位。
+
+兩張互動圖均通過 Archify showcase 9/9、0 error、0 warning；自動瀏覽器證據涵蓋 1440×900、1600×1000、1920×1080、2048×1320 與明暗主題，containment/readability 均通過。架構圖人工視覺複核通過；流程圖在超寬畫面仍有較多下方留白，但沒有裁切、溢位或縮小關鍵字級。
 
 以下為 **Gemini 遷移前的歷史驗證**：本機隔離 PostgreSQL、停用真實 provider，執行型別檢查、全套測試與 production build。測試涵蓋帳號隔離／撤銷／並行改密碼、欄位白名單、body 大小、匯入、SSE、ranking fallback、UI 渲染、示範隔離、Need 邊界與支出。
 

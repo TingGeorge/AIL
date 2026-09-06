@@ -32,7 +32,7 @@ export function AccountView({ account, onDone, supportEmail }: AccountViewProps)
   return (
     <section className="screen auth-screen compact-support compact-account">
       <h1>{account.user ? "你的帳號" : mode === "login" ? "登入生活帳號" : "建立生活帳號"}</h1>
-      <p className="section-copy compact-lede">不登入也能搜尋；登入後才能儲存清單與收藏。</p>
+      <p className="section-copy compact-lede">不登入也能搜尋並保存在此瀏覽器；登入後可跨裝置同步。</p>
 
 
       {account.restoring ? (
@@ -113,10 +113,10 @@ export function AccountView({ account, onDone, supportEmail }: AccountViewProps)
       <details className="compact-disclosure compact-security-disclosure">
         <summary>
           <span className="compact-summary-label"><ShieldCheck aria-hidden="true" />登入與隱私</span>
-          <small>本分頁 · 30 分鐘</small>
+          <small>本裝置 + 本分頁</small>
         </summary>
         <div className="compact-disclosure-body">
-          <p>登入憑證只保留在本分頁，預設 30 分鐘逾時。語音、逐字稿、搜尋條件和精確位置不會寫入帳號資料。</p>
+          <p>訪客清單與設定保留在此瀏覽器；登入時只聯集合併清單與收藏。登入憑證只保留在本分頁，預設 30 分鐘逾時。語音、逐字稿、搜尋條件和精確位置不會寫入帳號資料。</p>
         </div>
       </details>
 
@@ -145,7 +145,7 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
   return (
     <section className="screen settings-screen compact-support compact-settings">
       <h1>我的生活設定</h1>
-      <p className="section-copy compact-lede">{account.user ? "設定會同步到帳號。" : "匿名設定只留在此分頁。"}</p>
+      <p className="section-copy compact-lede">{account.user ? "設定會同步到帳號。" : "匿名設定與清單會保留在此瀏覽器。"}</p>
 
 
       <form
@@ -157,7 +157,7 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
             await account.update((latest) => mergeAccountChanges(baseline.current, draft, latest));
             dirty.current = false;
             baseline.current = draft;
-            setMessage(account.user ? "設定已儲存到帳號。" : "已套用本次匿名設定。");
+            setMessage(account.user ? "設定已儲存到帳號。" : "已儲存在此瀏覽器。");
           } catch (caught) {
             // Shared account.error owns save failures and clears after a successful retry.
             setMessage("");
@@ -231,7 +231,7 @@ export function SettingsView({ account, onLogin, onInstall, installable }: Setti
       </form>
 
       {message && <p role="status" className="notice">{message}</p>}
-      {!account.user && <button className="secondary-action" onClick={onLogin}>登入後儲存清單與收藏</button>}
+      {!account.user && <button className="secondary-action" onClick={onLogin}>登入並同步清單與收藏</button>}
 
       <div className="pwa-card compact-pwa-card">
         <h2 className="compact-pwa-title">把 ALL IN LIFE 放到主畫面</h2>

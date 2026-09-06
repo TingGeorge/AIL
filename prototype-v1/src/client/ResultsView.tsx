@@ -28,7 +28,7 @@ import {
   Users,
 } from "lucide-react";
 import { CATEGORIES } from "../shared/need.ts";
-import { portionOrder } from "../shared/portions.ts";
+import { portionOrder, portionSummary } from "../shared/portions.ts";
 import {
   comparableTotal,
   costOrder,
@@ -372,6 +372,8 @@ function ResultCard({
     || Boolean(context.pricingContext) || context.reviewNotes.length > 0;
   const fees = item.mandatory_fees_twd;
   const distance = distanceDisplay(demo ? null : estimatedDistanceKm(item, position), locationStatus);
+  const supportingCopy = [portionSummary(item), ...(item.request_match?.reasons ?? [])]
+    .filter((value, index, values): value is string => Boolean(value) && values.indexOf(value) === index);
 
   return (
     <article className={`result-card result-card-summary tone-${item.category} ${compact ? "result-card-compact" : ""} ${demo ? "result-card-demo" : ""}`}>
@@ -397,6 +399,7 @@ function ResultCard({
               {item.registration_required && <span>需報名</span>}
             </span>
           )}
+          {supportingCopy.map((copy) => <span className="result-supporting" key={copy}>{displayGeneratedCopy(copy)}</span>)}
           <span className="result-footer">
             <span className="result-scope" title={context.scope ?? undefined}>
               {demo ? "測試資料，不可據此購買／前往" : context.scope}
@@ -816,6 +819,17 @@ export function DetailView({
         </span>
       </div>
 
+      {demo && (
+        <aside className="demo-record-notice" role="note">
+          <ShieldCheck aria-hidden="true" />
+          <span>
+            <strong>示範測試資料</strong>
+            <b>不可據此購買/前往；價格、地址、優惠皆測試資料。</b>
+            <small>來源連結僅展示資料與介面流程，不代表真實店家或現行方案。</small>
+          </span>
+        </aside>
+      )}
+
       <div className="detail-content">
         <span className="kicker">{item.provider} · {item.category}</span>
         <h1>{item.title}</h1>
@@ -846,12 +860,14 @@ export function DetailView({
 
         <DetailDisclosure title={quantityCopy.title}>
           <p className="detail-explanation">{FEE_EXPLANATION}</p>
+          <p className="detail-explanation">不同的{quantityCopy.comparison}不可直接視為相同方案或多人總價。</p>
           <div className="cost-breakdown">
             <span><small>標示價格</small><b>{item.price_total_twd === null ? "未提供" : displayMoney(item.price_total_twd)}</b></span>
             <span><small>必付費用</small><b>{fees === null ? UNKNOWN_TOTAL : displayAmount(fees)}</b></span>
             <span><small>已確認折扣</small><b>{displayAmount(item.discount_twd)}</b></span>
           </div>
           {quantityText && <p className="detail-explanation">{quantityCopy.label}：{quantityText}</p>}
+          {portionSummary(item) && <p className="detail-explanation">{portionSummary(item)}</p>}
           {context.pricingContext && <p className="detail-explanation">價格脈絡：{context.pricingContext}</p>}
         </DetailDisclosure>
 
@@ -904,7 +920,10 @@ export function DetailView({
             <span>{demo ? "測試建立" : "蒐集"} {dateLabel(item.collected_at)}</span>
             <span>{demo ? "測試日期" : "確認"} {dateLabel(item.verified_at)}</span>
           </div>
+          {demo && <p className="demo-source-note">example.com 示範頁僅用來測試來源連結，不是可交易或可前往的真實刊登。</p>}
+          {!sourceUrl && <p className="unsafe-link-note">來源網址缺少或不是可開啟的 http/https 連結。</p>}
           </section>
+          <p className={`fine-print ${demo ? "demo-fine-print" : ""}`}>{demo ? "示範資料不可用於購買、前往或兌換；所有欄位只用於測試。" : "請以原始來源為準；本畫面不推測即時庫存、名額、照片或成功結果。線上配送需核對運費與配送範圍；不同計價單位與類別的數量標示不可直接視為多人總價。"}</p>
         </DetailDisclosure>
       </div>
 

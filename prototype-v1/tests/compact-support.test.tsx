@@ -64,14 +64,15 @@ test("compact catalog keeps one short summary visible and full truthful metadata
   for (const row of catalog.categories) expect(html.indexOf(row.category)).toBeGreaterThan(disclosureAt);
 });
 
-test("account keeps credentials, privacy, anonymous-session limits and all login inputs without visible prose blocks", () => {
+test("account explains browser guest saves and keeps all login inputs", () => {
   const html = renderToStaticMarkup(<AccountView account={mockAccount()} onDone={() => {}} supportEmail="help@example.test" />);
 
-  expect(html).toContain("不登入也能搜尋；登入後才能儲存清單與收藏。");
+  expect(html).toContain("不登入也能搜尋並保存在此瀏覽器；登入後可跨裝置同步。");
   expect(html).not.toContain("儲存方式");
   expect(html).not.toContain("不會自動合併");
-  expect(html).toContain("登入憑證只保留在本分頁，預設 30 分鐘逾時。語音、逐字稿、搜尋條件和精確位置不會寫入帳號資料。");
-  expect(html).toContain("本分頁 · 30 分鐘");
+  expect(html).toContain("訪客清單與設定保留在此瀏覽器；登入時只聯集合併清單與收藏。");
+  expect(html).toContain("登入憑證只保留在本分頁，預設 30 分鐘逾時。");
+  expect(html).toContain("本裝置 + 本分頁");
   expect(html).toContain("autoComplete=\"username\"");
   expect(html).toContain("autoComplete=\"current-password\"");
   expect(html).toContain("mailto:help@example.test");
@@ -84,17 +85,17 @@ test("settings preserves every control and moves long caveats into closed disclo
   expect((html.match(/<input/g) ?? []).length).toBe(3);
   expect((html.match(/type=\"number\"/g) ?? []).length).toBe(2);
   expect((html.match(/type=\"checkbox\"/g) ?? []).length).toBe(1);
-  expect(html).toContain("匿名設定只留在此分頁。");
+  expect(html).toContain("匿名設定與清單會保留在此瀏覽器。");
   expect(html).not.toContain("設定儲存方式");
   expect(html).not.toContain("登入後會取代");
-  expect(html).not.toContain("跨裝置同步");
+  expect(html).not.toContain("登入後會取代");
   expect(html).toContain("省錢模式：優先顯示免費選項（仍可能有付費）");
   expect(html).not.toContain("Costco");
   expect(html).not.toContain("自行記錄，不是銀行付款紀錄。");
   expect(html).not.toContain("支出資料如何計算");
   expect(html).toContain("預設排除");
   expect(html).toContain("預設偏好");
-  expect(html).toContain("登入後儲存清單與收藏");
+  expect(html).toContain("登入並同步清單與收藏");
   expect(html).toContain("<h2 class=\"compact-pwa-title\">把 ALL IN LIFE 放到主畫面</h2>");
   expect(html).toContain("離線只能開啟介面；搜尋與帳號需要網路，恢復連線後即可繼續。");
   expect(html).not.toMatch(/<details[^>]*\sopen(?:=|\s|>)/);

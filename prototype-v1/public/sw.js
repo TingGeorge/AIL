@@ -1,6 +1,6 @@
 // Cache only the public app shell. Never store API, credentials, search results or requests.
-const VERSION = "ail-integrated-v2";
-const SHELL = ["/", "/index.html", "/manifest.webmanifest", "/app-icon-192.png", "/app-icon-512.png"];
+const VERSION = "ail-main-best-v3";
+const SHELL = ["/", "/index.html", "/manifest.webmanifest", "/app-icon-192.png", "/app-icon-512.png", "/app-icon-maskable-512.png"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(VERSION).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
 });

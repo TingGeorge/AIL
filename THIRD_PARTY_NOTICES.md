@@ -20,7 +20,7 @@ each source remains subject to its own terms.
 ## Direct software dependencies
 
 The versions are declared in `prototype-v1/package.json` and
-`prototype-v1/package-lock.json`. Transitive dependencies remain governed by
+`prototype-v1/bun.lock`. Transitive dependencies remain governed by
 their own package licenses in the lockfile and installed package
 distributions.
 
@@ -48,6 +48,12 @@ The application also requires:
 Their licenses and service terms are not replaced by the application’s MIT
 license.
 
+## Documentation tooling
+
+- **Archify 2.17** — MIT-licensed development tool used to generate the
+  self-contained interactive architecture and product-flow HTML files under
+  `docs/architecture/`. It is not part of the application runtime.
+
 ## Research data and source material
 
 The application uses a dated, curated research snapshot rather than live web
@@ -72,6 +78,7 @@ The ALL IN LIFE source code is released under the
 code; it does not grant rights to Google services, upstream provider data, or
 other third-party material.
 
-No additional video, music, font, model, or third-party image asset has been
-added to the project materials covered by this notice. Any such asset added
-for the final evaluation video must be recorded here before submission.
+The AILI mascot, PWA icons, CSS compass, and interface motion are project-made
+assets implemented or stored in this repository; no third-party image, font,
+video, or music asset is bundled for them. Any external media added for the
+final evaluation video must be recorded here before submission.

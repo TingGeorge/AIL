@@ -1,6 +1,33 @@
 import { expect, test } from "bun:test";
 import { defaultAccountData } from "../src/shared/account.ts";
-import { mergeAccountChanges } from "../src/shared/account-merge.ts";
+import { mergeAccountChanges, mergeGuestCollections } from "../src/shared/account-merge.ts";
+
+test("guest collections union into the account without replacing account settings", () => {
+  const guest = defaultAccountData("訪客");
+  guest.list = ["f_guest", "f_shared"];
+  guest.favs = ["a_guest"];
+  guest.settings.monthly_budget = 500;
+  const remote = defaultAccountData("帳號");
+  remote.list = ["f_remote", "f_shared"];
+  remote.favs = ["a_remote"];
+  remote.settings.monthly_budget = 1200;
+  remote.revision = 7;
+
+  const merged = mergeGuestCollections(guest, remote);
+  expect(merged.list).toEqual(["f_remote", "f_shared", "f_guest"]);
+  expect(merged.favs).toEqual(["a_remote", "a_guest"]);
+  expect(merged.settings.monthly_budget).toBe(1200);
+  expect(merged.revision).toBe(7);
+});
+
+test("guest collection merge reports the 200 item limit instead of dropping saved items", () => {
+  const guest = defaultAccountData("訪客");
+  guest.list = ["guest_item"];
+  const remote = defaultAccountData("帳號");
+  remote.list = Array.from({ length: 200 }, (_, index) => `remote_${index}`);
+
+  expect(() => mergeGuestCollections(guest, remote)).toThrow("清單合併後超過 200 筆");
+});
 
 test("a stale settings draft preserves a remote favorite and unchanged settings", () => {
   const base = defaultAccountData();

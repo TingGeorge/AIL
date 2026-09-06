@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ALL IN LIFE 使用者探索與同步流程",
+    "output": "docs/architecture/all-in-life-product-flow.html",
+    "quality_profile": "showcase",
+    "views": [
+      { "id": "explore_path", "label": "從理念到結果", "focus": ["welcome", "need", "search", "results"], "note": "入口先說清楚理念，再讓使用者確認需求、取得可追溯的比較結果。" },
+      { "id": "browse_path", "label": "直接瀏覽五類", "focus": ["need", "results"], "note": "不輸入需求也能讀取公開 catalog，這條路徑不呼叫 Gemini。" },
+      { "id": "save_path", "label": "訪客保存與同步", "focus": ["results", "guest_save", "account_sync"], "note": "未登入先存瀏覽器；登入後聯集合併清單與收藏，不覆蓋帳號設定。" }
+    ],
+    "viewBox": [930, 500]
+  },
+  "lanes": [
+    { "id": "experience_lane", "label": "使用者與 React PWA" },
+    { "id": "service_lane", "label": "Bun / Hono / Gemini / 儲存" }
+  ],
+  "phases": [
+    { "id": "understand", "label": "理念與需求", "fromCol": 0, "toCol": 1 },
+    { "id": "decide", "label": "篩選與比較", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "keep", "label": "保存與同步", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "groups": [
+    { "id": "human_gate", "label": "使用者確認後才搜尋", "lane": "experience_lane", "fromCol": 1, "toCol": 1, "variant": "security" },
+    { "id": "save_boundary", "label": "登入可以延後", "lane": "service_lane", "fromCol": 4, "toCol": 5, "variant": "emphasis" }
+  ],
+  "mainPath": ["welcome", "need", "search", "results", "guest_save", "account_sync"],
+  "semanticChecks": {
+    "allowedRoots": ["welcome"],
+    "allowedTerminals": ["account_sync"],
+    "requiredPaths": [
+      { "from": "welcome", "to": "results" },
+      { "from": "results", "to": "account_sync" }
+    ]
+  },
+  "nodes": [
+    { "id": "welcome", "lane": "experience_lane", "col": 0, "type": "external", "label": "ALL IN 理念", "sublabel": "AILI／打字／3D 指南針" },
+    { "id": "need", "lane": "experience_lane", "col": 1, "type": "security", "label": "選擇並確認需求", "sublabel": "模式／五類／文字／語音", "tag": "human gate" },
+    { "id": "search", "lane": "service_lane", "col": 2, "type": "backend", "label": "候選篩選與排序", "sublabel": "SQL 硬限制＋Gemini 排序", "tag": "SSE" },
+    { "id": "results", "lane": "experience_lane", "col": 3, "type": "frontend", "label": "比較結果與詳情", "sublabel": "成本、份量、原因、來源" },
+    { "id": "guest_save", "lane": "service_lane", "col": 4, "type": "database", "label": "訪客先保存", "sublabel": "瀏覽器清單／收藏", "tag": "各 200 筆" },
+    { "id": "account_sync", "lane": "service_lane", "col": 5, "type": "database", "label": "登入後聯集合併", "sublabel": "Postgres + CAS", "tag": "不覆蓋設定" }
+  ],
+  "edges": [
+    { "id": "welcome_need", "from": "welcome", "to": "need", "label": "開始探索", "variant": "emphasis", "role": "main" },
+    { "id": "need_search", "from": "need", "to": "search", "label": "確認後送出", "variant": "security", "role": "main" },
+    { "id": "search_results", "from": "search", "to": "results", "label": "分組 SSE", "variant": "emphasis", "role": "main" },
+    { "id": "results_guest", "from": "results", "to": "guest_save", "label": "收藏／加入清單", "variant": "emphasis", "role": "main" },
+    { "id": "guest_account", "from": "guest_save", "to": "account_sync", "label": "稍後登入／註冊", "variant": "security", "role": "main" }
+  ]
+}

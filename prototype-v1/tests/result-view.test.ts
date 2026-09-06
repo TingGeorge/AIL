@@ -237,7 +237,7 @@ test("DetailView：樣本有醒目警告並隱藏地圖、購買行動與優惠�
   expect(html).toContain("測試兌換碼（不可使用）");
   expect(html).toContain("示範碼不可用於購買");
   const actions = renderToStaticMarkup(createElement(DetailActions, {
-    item: rec({ provider: "示範 圓山便當房" }),
+    item: rec({ provider: "示範 圓山便當房", extra: { demo: true } }),
     favorite: false,
     listed: false,
     onFavorite: () => {},

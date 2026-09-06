@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "ALL IN LIFE main 系統架構",
+    "output": "docs/architecture/all-in-life-main-architecture.html",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "request_path",
+        "label": "搜尋與推薦",
+        "focus": ["person", "pwa_client", "hono_api", "postgres", "gemini"],
+        "note": "需求由 React 送入 Hono；資料庫提供候選，Gemini 只排序既有候選。"
+      },
+      {
+        "id": "guest_sync",
+        "label": "訪客收藏同步",
+        "focus": ["browser_store", "pwa_client", "hono_api", "postgres"],
+        "note": "未登入先存瀏覽器，登入後只聯集合併清單與收藏。"
+      },
+      {
+        "id": "evidence_pipeline",
+        "label": "證據資料管線",
+        "focus": ["source_json", "catalog_import", "postgres", "hono_api"],
+        "note": "日期化來源先驗證再以交易匯入，不把未知成本當成零。"
+      }
+    ],
+    "viewBox": [1120, 650]
+  },
+  "components": [
+    { "id": "person", "type": "external", "label": "使用者", "sublabel": "手機／桌面瀏覽器", "pos": [35, 255], "size": [130, 68] },
+    { "id": "browser_store", "type": "database", "label": "Browser storage", "sublabel": "guest data + session token", "tag": "裝置／分頁邊界", "pos": [215, 72], "size": [165, 72] },
+    { "id": "pwa_client", "type": "frontend", "label": "React PWA", "sublabel": "Vite UI + service worker", "tag": "可讀性／離線 app shell", "pos": [215, 255], "size": [165, 72] },
+    { "id": "hono_api", "type": "backend", "label": "Bun + Hono API", "sublabel": "auth / search / SSE / reports", "tag": "API no-store", "pos": [465, 255], "size": [175, 72] },
+    { "id": "gemini", "type": "external", "label": "Google Gemini", "sublabel": "Interactions API", "tag": "parse / voice / rank", "pos": [735, 72], "size": [165, 72] },
+    { "id": "postgres", "type": "database", "label": "PostgreSQL", "sublabel": "catalog + private account data", "tag": "durable state", "pos": [735, 255], "size": [175, 72] },
+    { "id": "source_json", "type": "external", "label": "公開來源快照", "sublabel": "data/live/*.json", "tag": "日期＋來源證據", "pos": [215, 440], "size": [165, 72] },
+    { "id": "catalog_import", "type": "backend", "label": "驗證與匯入", "sublabel": "schema + transaction upsert", "tag": "先驗證整批", "pos": [465, 440], "size": [175, 72] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "ALL IN LIFE application", "wraps": ["pwa_client", "hono_api", "postgres", "catalog_import"] },
+    { "kind": "security-group", "label": "伺服器私有資料邊界", "wraps": ["hono_api", "postgres"] }
+  ],
+  "connections": [
+    { "id": "person_to_pwa", "from": "person", "to": "pwa_client", "label": "互動", "variant": "emphasis" },
+    { "id": "pwa_to_store", "from": "pwa_client", "to": "browser_store", "label": "訪客收藏／token", "variant": "security", "labelAt": [155, 200] },
+    { "id": "pwa_to_api", "from": "pwa_client", "to": "hono_api", "label": "HTTPS JSON + SSE", "variant": "emphasis" },
+    { "id": "api_to_db", "from": "hono_api", "to": "postgres", "label": "SQL + transaction", "variant": "security", "labelAt": [625, 341] },
+    { "id": "api_to_gemini", "from": "hono_api", "to": "gemini", "label": "必要音訊／文字／候選", "variant": "dashed" },
+    { "id": "source_to_import", "from": "source_json", "to": "catalog_import", "label": "離線 schema 驗證" },
+    { "id": "import_to_db", "from": "catalog_import", "to": "postgres", "label": "transaction upsert", "variant": "emphasis" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "main 保留的技術主幹", "items": ["單一 Bun/Hono/Vite runtime", "PostgreSQL 保存帳號、候選、回報與團購", "Gemini 不得新增或假造候選"] },
+    { "dot": "cyan", "title": "本次融入的優點", "items": ["AILI 品牌入口、慢速打字與 3D 指南針", "訪客收藏登入後聯集合併", "maskable PWA icon 與手機可讀性層"] },
+    { "dot": "rose", "title": "隱私與證據邊界", "items": ["API 與帳號內容不進 service-worker cache", "錄音、逐字稿、Need 與精確位置不寫入帳號", "未知成本、資格與份量維持待確認"] }
+  ]
+}

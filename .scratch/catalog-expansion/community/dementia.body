@@ -1,8 +1,8 @@
-﻿
+
 <!DOCTYPE html>
 
 <html id="FormHtml" xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hant-TW">
-<head id="Head1"><script  src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDh8OOuzmun9cnM6H8-FZjx6qlgqAeiPOo&callback=initMap'></script>
+<head id="Head1"><script  src='https://maps.googleapis.com/maps/api/js?key=REDACTED_PUBLIC_SITE_KEY&callback=initMap'></script>
 <script> var CCMS_IS_TGOS= false;</script>
 <script  src='//dementia.gov.taipei/Scripts/jquery.min.js'></script>
 <script  src='//dementia.gov.taipei/Scripts/jquery.powertip.min.js'></script>

@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { accountSettingsSchema, defaultAccountData, type AccountData, type AuthResponse, type User } from "../shared/account.ts";
-import { mergeAccountChanges } from "../shared/account-merge.ts";
+import { accountDataSchema, accountSettingsSchema, defaultAccountData, type AccountData, type AuthResponse, type User } from "../shared/account.ts";
+import { mergeAccountChanges, mergeGuestCollections } from "../shared/account-merge.ts";
 import * as api from "./api.ts";
-const TOKEN_KEY="ail.token", GUEST_KEY="ail.guest-settings";
-const guestData=()=>{const data=defaultAccountData("訪客");try{const raw=sessionStorage.getItem(GUEST_KEY);if(raw){const settings=accountSettingsSchema.safeParse(JSON.parse(raw));if(settings.success)data.settings=settings.data;}}catch{}return data;};
-const storeGuest=(data:AccountData|null)=>{try{if(data)sessionStorage.setItem(GUEST_KEY,JSON.stringify(data.settings));else sessionStorage.removeItem(GUEST_KEY);}catch{}};
+const TOKEN_KEY="ail.token", GUEST_KEY="ail.guest-data-v2", LEGACY_GUEST_KEY="ail.guest-settings";
+const guestStorage=()=>{try{return typeof localStorage!=="undefined"?localStorage:sessionStorage;}catch{return sessionStorage;}};
+const guestData=()=>{const data=defaultAccountData("訪客");try{const storage=guestStorage();const raw=storage.getItem(GUEST_KEY)??storage.getItem(LEGACY_GUEST_KEY);if(raw){const value=JSON.parse(raw);const full=accountDataSchema.safeParse(value);if(full.success)return full.data;const settings=accountSettingsSchema.safeParse(value);if(settings.success)data.settings=settings.data;}}catch{}return data;};
+const storeGuest=(data:AccountData|null)=>{try{const storage=guestStorage();if(data)storage.setItem(GUEST_KEY,JSON.stringify(data));else storage.removeItem(GUEST_KEY);storage.removeItem(LEGACY_GUEST_KEY);}catch{}};
 const storedToken=()=>{try{return sessionStorage.getItem(TOKEN_KEY);}catch{return null;}};
 const storeToken=(token:string|null)=>{try{if(token)sessionStorage.setItem(TOKEN_KEY,token);else sessionStorage.removeItem(TOKEN_KEY);}catch{/* A blocked store leaves an in-memory session only. */}};
 export function useAccount(){
@@ -15,9 +16,9 @@ export function useAccount(){
  const generation=useRef(0),latest=useRef(data),synced=useRef(data),queue=useRef(Promise.resolve());
  function clear(){generation.current++;acceptedToken.current=null;storeGuest(null);storeToken(null);setToken(null);setUser(null);const next=defaultAccountData("訪客");latest.current=next;synced.current=next;setData(next);setSaving(false);setRestoring(false);}
  function reject(e:unknown){const err=e instanceof Error?e.message:"操作失敗";if(e instanceof api.ApiError&&e.status===401)clear();setError(err);}
- useEffect(()=>{if(!token)return;if(acceptedToken.current===token){setRestoring(false);return;}let live=true;setRestoring(true);api.me(token).then(result=>{if(!live)return;setUser(result.user);latest.current=result.data;synced.current=result.data;setData(result.data);}).catch(e=>{if(live)reject(e);}).finally(()=>{if(live)setRestoring(false);});return()=>{live=false;};},[token]);
- function accept(result:AuthResponse){generation.current++;acceptedToken.current=result.session_token;storeGuest(null);setRestoring(false);storeToken(result.session_token);setToken(result.session_token);setUser(result.user);latest.current=result.data;synced.current=result.data;setData(result.data);setError("");}
- async function authenticate(mode:"login"|"register",username:string,password:string,nickname:string){const result=mode==="login"?await api.login(username,password):await api.register(username,password,nickname);accept(result);}
+ useEffect(()=>{if(!token)return;if(acceptedToken.current===token){setRestoring(false);return;}let live=true;setRestoring(true);api.me(token).then(async result=>{const merged=mergeGuestCollections(latest.current,result.data);const changed=merged.list.length!==result.data.list.length||merged.favs.length!==result.data.favs.length;const restored=changed?await api.saveData(token,{...merged,revision:result.data.revision}):result.data;if(!live)return;acceptedToken.current=token;storeGuest(null);setUser(result.user);latest.current=restored;synced.current=restored;setData(restored);}).catch(e=>{if(live)reject(e);}).finally(()=>{if(live)setRestoring(false);});return()=>{live=false;};},[token]);
+ async function accept(result:AuthResponse){const merged=mergeGuestCollections(latest.current,result.data);const changed=merged.list.length!==result.data.list.length||merged.favs.length!==result.data.favs.length;const accepted=changed?await api.saveData(result.session_token,{...merged,revision:result.data.revision}):result.data;generation.current++;acceptedToken.current=result.session_token;storeGuest(null);setRestoring(false);storeToken(result.session_token);setToken(result.session_token);setUser(result.user);latest.current=accepted;synced.current=accepted;setData(accepted);setError("");}
+ async function authenticate(mode:"login"|"register",username:string,password:string,nickname:string){const result=mode==="login"?await api.login(username,password):await api.register(username,password,nickname);await accept(result);}
  // Serialize writes to avoid an older full-document PUT overwriting a newer click.
  async function update(transform:(value:AccountData)=>AccountData){
   setError("");let next:AccountData;

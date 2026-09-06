@@ -83,6 +83,19 @@ test("home exploration choices use compact labels instead of three feature cards
   expect(html).not.toContain("查看參加人數與兌換方式");
 });
 
+test("welcome keeps the ALL IN story, looping typewriter hooks and AILI mascot", () => {
+  testLocation.hash = "#/welcome";
+  const html = renderToStaticMarkup(<App />);
+
+  expect(html).toContain("ALL IN 不是走投無路。");
+  expect(html).toContain("是有夢想，所以選擇全力以赴。");
+  expect(html).toContain("省下日常，投資未來。");
+  expect(html).toContain('class="aili-mascot"');
+  expect(html).toContain('class="welcome-compass"');
+  expect(html).toContain('class="money-rain"');
+  expect(html).toContain("立即探索生活選項");
+});
+
 test("generated recommendation copy is translated while source-originated fields remain unchanged", () => {
   const item = { ...rowToRec({
     id: "f_copy",
