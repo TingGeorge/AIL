@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 
-type ParseSource = 'openai' | 'fallback';
+type ParseSource = 'gemini' | 'fallback';
 
 async function enterGuestHome(page: Page) {
   await page.goto('/');
@@ -44,7 +44,7 @@ async function mockParseSource(
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        ok: source === 'openai',
+        ok: source === 'gemini',
         source,
         constraints: {
           query: request.query,
@@ -58,9 +58,9 @@ async function mockParseSource(
           softPreferences: ['方便外帶'],
           mobility: ['WALK'],
         },
-        assumptions: source === 'openai' ? ['以圓山生活圈為搜尋中心'] : [],
+        assumptions: source === 'gemini' ? ['以圓山生活圈為搜尋中心'] : [],
         missingFields: [],
-        confidence: source === 'openai' ? 0.94 : 0,
+        confidence: source === 'gemini' ? 0.94 : 0,
         error:
           source === 'fallback'
             ? {
@@ -75,7 +75,7 @@ async function mockParseSource(
 
 test('未登入也會串起 AI 需求理解、資料搜尋與推薦理由', async ({ page }) => {
   test.setTimeout(60_000);
-  await mockParseSource(page, 'openai');
+  await mockParseSource(page, 'gemini');
   await page.route('**/api/v1/results/explain', async (route) => {
     const request = route.request().postDataJSON() as {
       candidateIds: string[];
@@ -85,7 +85,7 @@ test('未登入也會串起 AI 需求理解、資料搜尋與推薦理由', asyn
       contentType: 'application/json',
       body: JSON.stringify({
         ok: true,
-        source: 'openai',
+        source: 'gemini',
         items: request.candidateIds.map((id, index) => ({
           id,
           headline: index === 0 ? '最符合目前條件' : '符合目前條件',
@@ -104,13 +104,13 @@ test('未登入也會串起 AI 需求理解、資料搜尋與推薦理由', asyn
   await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
 
   await expect(
-    page.getByText('OpenAI 已整理以下條件，請逐項確認'),
+    page.getByText('Gemini 已整理以下條件，請逐項確認'),
   ).toBeVisible();
   await page.getByRole('button', { name: '確認完成，前往開始探索' }).click();
 
   const bridge = page.locator('.ready-ai-bridge');
-  await expect(bridge).toHaveAttribute('data-ai-source', 'openai');
-  await expect(bridge).toContainText('OpenAI 已轉成可編輯條件');
+  await expect(bridge).toHaveAttribute('data-ai-source', 'gemini');
+  await expect(bridge).toContainText('Gemini 已轉成可編輯條件');
   await expect(bridge).toContainText('需求理解');
   await expect(bridge).toContainText('資料查詢');
   await expect(bridge).toContainText('CP 排序');
@@ -122,10 +122,10 @@ test('未登入也會串起 AI 需求理解、資料搜尋與推薦理由', asyn
   });
   await expect(page.locator('.results-ai-status')).toHaveAttribute(
     'data-ai-source',
-    'openai',
+    'gemini',
   );
   await expect(page.locator('.results-ai-status')).toContainText(
-    'OpenAI 已完成推薦理由',
+    'Gemini 已完成推薦理由',
   );
   await expect(page.locator('.result-card').first()).toContainText('AI 整理');
 });
@@ -169,7 +169,7 @@ test('直接瀏覽資料庫不會假裝正在呼叫 AI', async ({ page }) => {
 
 test('帳號頁可略過登入並以匿名請求使用 AI', async ({ page }) => {
   let authorizationHeader: string | undefined;
-  await mockParseSource(page, 'openai', (headers) => {
+  await mockParseSource(page, 'gemini', (headers) => {
     authorizationHeader = headers.authorization;
   });
 
@@ -190,7 +190,46 @@ test('帳號頁可略過登入並以匿名請求使用 AI', async ({ page }) => 
   await page.getByRole('button', { name: '下一步：確認需求與限制' }).click();
 
   await expect(
-    page.getByText('OpenAI 已整理以下條件，請逐項確認'),
+    page.getByText('Gemini 已整理以下條件，請逐項確認'),
   ).toBeVisible();
   expect(authorizationHeader).toBeUndefined();
+});
+
+test('三個模式按鈕會把對應 EX 範例帶入原輸入框，且仍可編輯', async ({
+  page,
+}) => {
+  await enterGuestHome(page);
+
+  const input = page.getByRole('textbox', { name: '文字輸入需求' });
+  const modeCards = page.locator('.mode-card');
+  await expect(page.locator('.prompt-example-panel')).toHaveCount(0);
+
+  await modeCards.filter({ hasText: '日常' }).click();
+  await expect(input).toHaveValue(
+    '今晚兩個人在圓山吃晚餐，每人 NT$250，不吃堅果，最好可以外帶',
+  );
+  await expect(
+    page.getByText('EX 範例已帶入，可用語音或打字修改'),
+  ).toBeVisible();
+
+  await modeCards.filter({ hasText: '揪團' }).click();
+  await expect(input).toHaveValue(
+    '週末想揪 6 人在圓山吃火鍋，每人預算 NT$500，希望可以訂位',
+  );
+
+  await modeCards.filter({ hasText: '零元' }).click();
+  await expect(input).toHaveValue(
+    '週末想找圓山附近的免費展覽或活動，步行 2 公里內，最好有冷氣',
+  );
+
+  await input.fill('我想改成今晚的免費展覽');
+  await expect(input).toHaveValue('我想改成今晚的免費展覽');
+  await expect(
+    page.getByRole('button', { name: '用語音說需求' }),
+  ).toBeVisible();
+
+  const cardHeight = await modeCards
+    .first()
+    .evaluate((element) => element.getBoundingClientRect().height);
+  expect(cardHeight).toBeLessThan(90);
 });

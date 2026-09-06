@@ -96,7 +96,7 @@ export type AiUnavailableError = {
 
 export type SearchParseResponse = SearchParseModelOutput & {
   ok: boolean;
-  source: 'openai' | 'fallback';
+  source: 'gemini' | 'fallback';
   error: AiUnavailableError | null;
 };
 
@@ -142,7 +142,7 @@ export type ResultsExplainModelOutput = {
 
 export type ResultsExplainResponse = {
   ok: boolean;
-  source: 'openai' | 'fallback';
+  source: 'gemini' | 'fallback';
   items: ExplainedItem[];
   error: AiUnavailableError | null;
 };
@@ -911,7 +911,7 @@ export function createResultsExplainSuccess(
 ): ResultsExplainResponse {
   return {
     ok: true,
-    source: 'openai',
+    source: 'gemini',
     items: request.items.map((item, index) =>
       materializeExplanation(item, modelOutput.items[index]),
     ),

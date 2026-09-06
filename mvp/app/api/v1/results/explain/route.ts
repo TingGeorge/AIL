@@ -21,17 +21,17 @@ import {
   type D1DatabaseLike,
 } from '@/lib/catalog-server';
 import {
-  createOpenAIStructuredResponse,
-  readOpenAIConfiguration,
-} from '@/lib/openai-server';
+  createGeminiStructuredResponse,
+  readGeminiConfiguration,
+} from '@/lib/gemini-server';
 
 export const dynamic = 'force-dynamic';
 
 function aiInvoker(): AiInvoker | null {
-  const configuration = readOpenAIConfiguration(env);
+  const configuration = readGeminiConfiguration(env);
   if (!configuration) return null;
   return async <T>(options: AiInvocationOptions<T>) => {
-    const result = await createOpenAIStructuredResponse<T>({
+    const result = await createGeminiStructuredResponse<T>({
       ...options,
       configuration,
     });

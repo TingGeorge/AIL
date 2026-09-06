@@ -121,7 +121,7 @@ export async function handleSearchParseRequest(
     return Response.json(
       {
         ok: true,
-        source: 'openai',
+        source: 'gemini',
         ...modelOutput,
         error: null,
       },

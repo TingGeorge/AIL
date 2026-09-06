@@ -2,28 +2,26 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
-  createOpenAIStructuredResponse,
-  OpenAIRequestError,
-  readOpenAIConfiguration,
-} from '../lib/openai-core.ts';
+  createGeminiStructuredResponse,
+  GeminiRequestError,
+  readGeminiConfiguration,
+} from '../lib/gemini-core.ts';
 
-const configuration = { apiKey: 'test-secret', model: 'test-model' };
+const configuration = { apiKey: 'test-secret', model: 'gemini-2.5-pro' };
 
 function structuredResponse(value, options = {}) {
   return new Response(
     JSON.stringify({
-      output_text: '{"ignored":true}',
-      output: [
-        {
-          type: 'message',
-          content: [{ type: 'output_text', text: JSON.stringify(value) }],
-        },
-      ],
-      usage: { input_tokens: 10, output_tokens: 5, total_tokens: 15 },
+      candidates: [{ content: { parts: [{ text: JSON.stringify(value) }] } }],
+      usageMetadata: {
+        promptTokenCount: 10,
+        candidatesTokenCount: 5,
+        totalTokenCount: 15,
+      },
     }),
     {
       status: options.status ?? 200,
-      headers: { 'x-request-id': options.requestId ?? 'req_test' },
+      headers: { 'x-goog-request-id': options.requestId ?? 'req_test' },
     },
   );
 }
@@ -49,22 +47,22 @@ function baseOptions(fetchImpl) {
   };
 }
 
-test('reads key and model only from server environment values', () => {
+test('reads Gemini key and model only from server environment values', () => {
   assert.deepEqual(
-    readOpenAIConfiguration({
-      OPENAI_API_KEY: ' secret ',
-      OPENAI_MODEL: ' model ',
+    readGeminiConfiguration({
+      GEMINI_API_KEY: ' secret ',
+      GEMINI_MODEL: ' gemini-2.5-pro ',
     }),
-    { apiKey: 'secret', model: 'model' },
+    { apiKey: 'secret', model: 'gemini-2.5-pro' },
   );
-  assert.equal(readOpenAIConfiguration({ OPENAI_API_KEY: 'secret' }), null);
-  assert.equal(readOpenAIConfiguration(null), null);
+  assert.equal(readGeminiConfiguration({ GEMINI_API_KEY: 'secret' }), null);
+  assert.equal(readGeminiConfiguration(null), null);
 });
 
-test('sends a stateless strict-schema Responses API request with tools disabled', async () => {
+test('sends a Gemini structured-output request without tools', async () => {
   let capturedUrl;
   let capturedInit;
-  const result = await createOpenAIStructuredResponse(
+  const result = await createGeminiStructuredResponse(
     baseOptions(async (url, init) => {
       capturedUrl = url;
       capturedInit = init;
@@ -72,16 +70,18 @@ test('sends a stateless strict-schema Responses API request with tools disabled'
     }),
   );
 
-  assert.equal(capturedUrl, 'https://api.openai.com/v1/responses');
-  assert.equal(capturedInit.headers.Authorization, 'Bearer test-secret');
+  assert.equal(
+    capturedUrl,
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent',
+  );
+  assert.equal(capturedInit.headers['x-goog-api-key'], 'test-secret');
   assert.equal(capturedInit.headers['X-Client-Request-Id'], 'client_test');
   const body = JSON.parse(capturedInit.body);
-  assert.equal(body.store, false);
-  assert.equal(body.text.format.type, 'json_schema');
-  assert.equal(body.text.format.strict, true);
-  assert.deepEqual(body.tools, []);
-  assert.equal(body.tool_choice, 'none');
-  assert.equal(body.reasoning.effort, 'low');
+  assert.equal(body.systemInstruction.parts[0].text, 'Return the schema only.');
+  assert.equal(body.contents[0].role, 'user');
+  assert.equal(body.generationConfig.responseMimeType, 'application/json');
+  assert.deepEqual(body.generationConfig.responseJsonSchema, baseOptions(null).schema);
+  assert.equal(body.tools, undefined);
   assert.equal(result.data.value, 'ok');
   assert.equal(result.requestId, 'req_test');
   assert.deepEqual(result.usage, {
@@ -93,7 +93,7 @@ test('sends a stateless strict-schema Responses API request with tools disabled'
 
 test('retries 429 and 5xx at most once, but never retries other 4xx', async () => {
   let calls = 0;
-  const retryResult = await createOpenAIStructuredResponse({
+  const retryResult = await createGeminiStructuredResponse({
     ...baseOptions(async () => {
       calls += 1;
       return calls === 1
@@ -108,7 +108,7 @@ test('retries 429 and 5xx at most once, but never retries other 4xx', async () =
 
   calls = 0;
   await assert.rejects(
-    createOpenAIStructuredResponse({
+    createGeminiStructuredResponse({
       ...baseOptions(async () => {
         calls += 1;
         return new Response('', { status: 401 });
@@ -116,7 +116,7 @@ test('retries 429 and 5xx at most once, but never retries other 4xx', async () =
       sleep: async () => {},
     }),
     (error) =>
-      error instanceof OpenAIRequestError &&
+      error instanceof GeminiRequestError &&
       error.code === 'AI_REQUEST_REJECTED' &&
       error.status === 401,
   );
@@ -124,7 +124,7 @@ test('retries 429 and 5xx at most once, but never retries other 4xx', async () =
 
   calls = 0;
   await assert.rejects(
-    createOpenAIStructuredResponse({
+    createGeminiStructuredResponse({
       ...baseOptions(async () => {
         calls += 1;
         return new Response('', { status: 503 });
@@ -133,53 +133,47 @@ test('retries 429 and 5xx at most once, but never retries other 4xx', async () =
       random: () => 0,
     }),
     (error) =>
-      error instanceof OpenAIRequestError &&
+      error instanceof GeminiRequestError &&
       error.code === 'AI_UPSTREAM_ERROR' &&
       error.status === 503,
   );
   assert.equal(calls, 2);
 });
 
-test('normalizes timeout, malformed JSON, and schema failure without leaking bodies', async () => {
+test('normalizes timeout and invalid model responses', async () => {
   await assert.rejects(
-    createOpenAIStructuredResponse({
+    createGeminiStructuredResponse({
       ...baseOptions(
         (_url, init) =>
           new Promise((_resolve, reject) => {
-            init.signal.addEventListener('abort', () =>
-              reject(new Error('aborted')),
-            );
+            init.signal.addEventListener('abort', () => reject(new Error('aborted')));
           }),
       ),
       timeoutMs: 10,
     }),
-    (error) =>
-      error instanceof OpenAIRequestError && error.code === 'AI_TIMEOUT',
+    (error) => error instanceof GeminiRequestError && error.code === 'AI_TIMEOUT',
   );
 
   await assert.rejects(
-    createOpenAIStructuredResponse(
-      baseOptions(async () =>
-        structuredResponse({ notTheExpectedSchema: true }),
-      ),
+    createGeminiStructuredResponse(
+      baseOptions(async () => structuredResponse({ notTheExpectedSchema: true })),
     ),
     (error) =>
-      error instanceof OpenAIRequestError &&
-      error.code === 'AI_INVALID_RESPONSE',
+      error instanceof GeminiRequestError && error.code === 'AI_INVALID_RESPONSE',
   );
 
   await assert.rejects(
-    createOpenAIStructuredResponse(
+    createGeminiStructuredResponse(
       baseOptions(
         async () =>
           new Response('{not json', {
             status: 200,
-            headers: { 'x-request-id': 'req_bad_json' },
+            headers: { 'x-goog-request-id': 'req_bad_json' },
           }),
       ),
     ),
     (error) =>
-      error instanceof OpenAIRequestError &&
+      error instanceof GeminiRequestError &&
       error.code === 'AI_INVALID_RESPONSE' &&
       error.requestId === 'req_bad_json',
   );

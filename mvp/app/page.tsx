@@ -4,6 +4,7 @@ import Image from 'next/image';
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -77,6 +78,7 @@ import {
   type CatalogCategorySummary,
   type CatalogDataSource,
   type CatalogItem,
+  type CatalogItemsResponse,
   type CatalogSearchResponse,
   type CatalogSummaryResponse,
 } from '@/lib/catalog-contract';
@@ -95,7 +97,10 @@ import {
   type AccountDataEnvelope,
   type AccountUser,
 } from '@/lib/account-contract';
+import { createAccountSaveQueue } from '@/lib/account-save-queue';
 import { type CpDimension } from '@/lib/cp-engine';
+import { appHashForRoute, parseAppHash } from '@/lib/app-navigation.mjs';
+import { planningBudgetForCatalogItem } from '@/lib/catalog-planning-budget.mjs';
 import {
   calculatePersonalCpScore,
   rebalancePersonalCpWeights,
@@ -163,7 +168,7 @@ type Filters = {
   exclusions: string[];
   preferences: string[];
 };
-type AiFlowStatus = 'idle' | 'loading' | 'openai' | 'fallback' | 'unavailable';
+type AiFlowStatus = 'idle' | 'loading' | 'gemini' | 'fallback' | 'unavailable';
 type AiParseStatus = AiFlowStatus;
 type AiExplainStatus = AiFlowStatus;
 type AiSearchCategory =
@@ -186,7 +191,7 @@ type AiSearchConstraints = {
 };
 type AiParseResponse = {
   ok: boolean;
-  source: 'openai' | 'fallback';
+  source: 'gemini' | 'fallback';
   constraints: AiSearchConstraints;
   assumptions: string[];
   missingFields: string[];
@@ -196,11 +201,11 @@ type AiExplanation = {
   headline: string;
   reasons: string[];
   caution: string | null;
-  source: 'openai' | 'fallback';
+  source: 'gemini' | 'fallback';
 };
 type AiExplainResponse = {
   ok: boolean;
-  source: 'openai' | 'fallback';
+  source: 'gemini' | 'fallback';
   items: Array<Omit<AiExplanation, 'source'> & { id: string }>;
 };
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -210,8 +215,8 @@ const isNullableFiniteNumber = (value: unknown): value is number | null =>
 const isAiParseResponse = (value: unknown): value is AiParseResponse => {
   if (
     !isRecord(value) ||
-    (value.source !== 'openai' && value.source !== 'fallback') ||
-    (value.source === 'openai' ? value.ok !== true : value.ok !== false)
+    (value.source !== 'gemini' && value.source !== 'fallback') ||
+    (value.source === 'gemini' ? value.ok !== true : value.ok !== false)
   )
     return false;
   const constraints = value.constraints;
@@ -281,6 +286,7 @@ type Result = {
   provider: string;
   subcategory: string;
   totalCost: number | null;
+  planningBudget?: PlanningBudget;
   benchmarkCost?: number | null;
   servings: number | null;
   distanceKm: number;
@@ -311,6 +317,16 @@ type Result = {
   verificationLabel?: string;
   provenance?: ResultProvenance;
   verifiedFields?: string[];
+};
+type PlanningBudget = {
+  kind: 'ESTIMATE';
+  amountTwd: number;
+  minTwd: number;
+  maxTwd: number;
+  unit: string;
+  basisLabel: string;
+  disclosure: '情境估算，不是店家報價';
+  policyVersion: 'planning-v1';
 };
 type StoredAccountState = {
   version: 1;
@@ -359,9 +375,9 @@ const homePrompts = [
   '揪朋友一起，能省多少？',
 ];
 const modeNeedExamples: Record<Mode, string> = {
-  daily: '今晚兩人吃飯，可以外帶，不吃堅果',
-  team: '今晚想揪 5 人吃火鍋，每人預算 NT$500',
-  zero: '今晚想找圓山附近的免費活動，最好有冷氣',
+  daily: '今晚兩個人在圓山吃晚餐，每人 NT$250，不吃堅果，最好可以外帶',
+  team: '週末想揪 6 人在圓山吃火鍋，每人預算 NT$500，希望可以訂位',
+  zero: '週末想找圓山附近的免費展覽或活動，步行 2 公里內，最好有冷氣',
 };
 const publicAppUrl = 'https://all-in-life-ail.chiehlun.chatgpt.site/';
 const publicAppHost = new URL(publicAppUrl).host;
@@ -406,12 +422,12 @@ const sortOptions: { value: Sort; label: string; hint: string }[] = [
   {
     value: 'cp',
     label: '推薦排序',
-    hint: '平衡需求、價格與距離',
+    hint: '有來源價格才計 CP，其他依距離',
   },
   {
     value: 'cost',
     label: '價格：低到高',
-    hint: '已知總價由低到高',
+    hint: '來源價格／情境預算由低到高',
   },
   {
     value: 'distance',
@@ -848,12 +864,30 @@ const demoFixtures: Result[] = [
 const verifiedDemoIds = new Set(['tfam', 'confucius', 'market', 'youbike']);
 const demoResults: Result[] = demoFixtures.map((item) => {
   const verifiedExample = verifiedDemoIds.has(item.id);
+  const estimatedAmount = item.totalCost ?? 0;
+  const planningBudget: PlanningBudget | undefined = verifiedExample
+    ? undefined
+    : {
+        kind: 'ESTIMATE',
+        amountTwd: estimatedAmount,
+        minTwd: Math.max(0, Math.floor((estimatedAmount * 0.8) / 10) * 10),
+        maxTwd: Math.ceil((estimatedAmount * 1.2) / 10) * 10,
+        unit: item.category === '交通' ? '每趟' : '每次',
+        basisLabel: `${item.category}方案預算規劃`,
+        disclosure: '情境估算，不是店家報價',
+        policyVersion: 'planning-v1',
+      };
   return {
     ...item,
+    totalCost: verifiedExample ? item.totalCost : null,
+    planningBudget,
+    costState: verifiedExample && item.totalCost === 0 ? 'FREE' : 'UNKNOWN',
     dataSource: 'demo',
     provenance: verifiedExample ? 'verified-demo' : 'simulated',
     verificationLabel: '方案資訊',
-    verifiedFields: ['地點', '時段', '價格', '服務方式'],
+    verifiedFields: verifiedExample
+      ? ['地點', '時段', '價格', '服務方式']
+      : ['地點', '時段', '服務方式'],
   };
 });
 const emptyResults: Result[] = [];
@@ -896,6 +930,34 @@ const distanceBetween = (from: GeoPoint, to: GeoPoint) => {
 
 const money = (value: number) =>
   new Intl.NumberFormat('zh-TW').format(Math.round(value));
+const resultPlanningBudget = (item: Result): PlanningBudget | undefined =>
+  item.totalCost === null
+    ? (item.planningBudget ??
+      (planningBudgetForCatalogItem({
+        id: item.id,
+        categoryLabel: item.category,
+        title: item.title,
+        provider: item.provider,
+      }) as PlanningBudget))
+    : undefined;
+const resultDisplayCost = (item: Result) =>
+  item.totalCost ?? resultPlanningBudget(item)?.amountTwd ?? null;
+const resultPriceText = (item: Result) => {
+  if (item.totalCost !== null) return `NT$${money(item.totalCost)}`;
+  const planningBudget = resultPlanningBudget(item);
+  if (planningBudget) {
+    return `建議預留 NT$${money(planningBudget.amountTwd)}`;
+  }
+  return '尚無可用價格';
+};
+const resultPriceNote = (item: Result) => {
+  const planningBudget = resultPlanningBudget(item);
+  if (!planningBudget) {
+    return item.costState === 'FREE' ? '來源確認免費' : '來源提供價格';
+  }
+  const { minTwd, maxTwd, unit, basisLabel, disclosure } = planningBudget;
+  return `參考 NT$${money(minTwd)}–${money(maxTwd)}（${unit}）｜${basisLabel}｜${disclosure}`;
+};
 const verifiedFieldLabels = {
   identity: '身分',
   location: '地點',
@@ -922,6 +984,15 @@ const catalogItemToResult = (
     provider: item.provider,
     subcategory: item.provider,
     totalCost: item.cost.amountTwd,
+    planningBudget:
+      item.cost.state === 'UNKNOWN'
+        ? (planningBudgetForCatalogItem({
+            id: item.id,
+            categoryLabel: item.categoryLabel,
+            title: item.title,
+            provider: item.provider,
+          }) as PlanningBudget)
+        : undefined,
     benchmarkCost: null,
     servings: null,
     distanceKm: Math.round((item.distanceM / 1_000) * 100) / 100,
@@ -1230,9 +1301,7 @@ const demoTransactions: Transaction[] = [
 ];
 const overlap = (a: string[] = [], b: string[] = []) =>
   a.filter((item) => b.includes(item));
-const isConfirmedFree = (item: Result) =>
-  item.costState === 'FREE' ||
-  (item.costState === undefined && item.totalCost === 0);
+const isConfirmedFree = (item: Result) => item.costState === 'FREE';
 const taipeiDateLabel = (value: string) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
@@ -1257,7 +1326,9 @@ const cpScoreBreakdown = (item: Result, filters: Filters, params: CpParams) =>
     weights: params,
   });
 const cpFormulaScore = (item: Result, filters: Filters, params: CpParams) =>
-  cpScoreBreakdown(item, filters, params).score;
+  item.totalCost === null
+    ? null
+    : cpScoreBreakdown(item, filters, params).score;
 const categoryIcon = (category: Category) =>
   category === '食品' ? (
     <Utensils />
@@ -1348,6 +1419,10 @@ export default function App() {
     'loading' | 'ready' | 'error'
   >('loading');
   const [liveResults, setLiveResults] = useState<Result[] | null>(null);
+  const [routeLookup, setRouteLookup] = useState<{
+    id: string;
+    result: Result | null;
+  } | null>(null);
   const [sort, setSort] = useState<Sort>('cp');
   const [cpParams, setCpParams] = useState<CpParams>({
     price: 55,
@@ -1373,6 +1448,12 @@ export default function App() {
   const [installPrompt, setInstallPrompt] = useState<Event | null>(null);
   const [pwaStatus, setPwaStatus] = useState('檢查中');
   const pendingGuestMergeRef = useRef(false);
+  const accountRevisionRef = useRef(0);
+  const accountSaveQueueRef = useRef(createAccountSaveQueue());
+  const accountSaveGenerationRef = useRef(0);
+  const accountSaveBlockedRef = useRef(false);
+  const routeReadyRef = useRef(false);
+  const routeFromBrowserRef = useRef(false);
   const loadGuestSavedData = useCallback(() => {
     const guest = readGuestSavedState();
     setSaved(guest.saved);
@@ -1381,6 +1462,9 @@ export default function App() {
   }, []);
   const applyAccountData = useCallback(
     (user: AccountUser, envelope: AccountDataEnvelope) => {
+      accountSaveGenerationRef.current += 1;
+      accountSaveBlockedRef.current = false;
+      accountRevisionRef.current = envelope.revision;
       const state = envelope.state as Partial<StoredAccountState>;
       const storedProfile: Record<string, unknown> = isRecord(state.profile)
         ? state.profile
@@ -1454,6 +1538,78 @@ export default function App() {
   );
 
   useEffect(() => {
+    const applyBrowserRoute = () => {
+      const route = parseAppHash(window.location.hash);
+      if (!route) {
+        window.history.replaceState(
+          { allInLifeRoute: true, depth: 0 },
+          '',
+          appHashForRoute('welcome'),
+        );
+        routeFromBrowserRef.current = true;
+        setHistory([]);
+        setView('welcome');
+        return;
+      }
+      routeFromBrowserRef.current = true;
+      if (route.selectedId) setSelectedId(route.selectedId);
+      setHistory((items) => items.slice(0, -1));
+      setView(route.view as View);
+    };
+
+    const parsed = parseAppHash(window.location.hash);
+    const currentState =
+      window.history.state && typeof window.history.state === 'object'
+        ? window.history.state
+        : {};
+    window.history.replaceState(
+      {
+        ...currentState,
+        allInLifeRoute: true,
+        depth:
+          typeof currentState.depth === 'number' && currentState.depth >= 0
+            ? currentState.depth
+            : 0,
+      },
+      '',
+      parsed ? window.location.href : appHashForRoute('welcome'),
+    );
+    if (parsed && (parsed.view !== 'welcome' || parsed.selectedId)) {
+      applyBrowserRoute();
+    }
+    routeReadyRef.current = true;
+    window.addEventListener('popstate', applyBrowserRoute);
+    window.addEventListener('hashchange', applyBrowserRoute);
+    return () => {
+      window.removeEventListener('popstate', applyBrowserRoute);
+      window.removeEventListener('hashchange', applyBrowserRoute);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!routeReadyRef.current) return;
+    if (routeFromBrowserRef.current) {
+      routeFromBrowserRef.current = false;
+      return;
+    }
+    const nextHash = appHashForRoute(view, selectedId);
+    if (window.location.hash === nextHash) return;
+    const currentState =
+      window.history.state && typeof window.history.state === 'object'
+        ? window.history.state
+        : {};
+    const depth =
+      typeof currentState.depth === 'number' && currentState.depth >= 0
+        ? currentState.depth + 1
+        : 1;
+    window.history.pushState(
+      { ...currentState, allInLifeRoute: true, depth },
+      '',
+      nextHash,
+    );
+  }, [selectedId, view]);
+
+  useEffect(() => {
     if (readAccountToken()) return;
     window.queueMicrotask(() => {
       loadGuestSavedData();
@@ -1500,6 +1656,38 @@ export default function App() {
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
+  useLayoutEffect(() => {
+    if (view !== 'welcome') return;
+
+    const root = document.documentElement;
+    const previousTheme = root.dataset.theme === 'light' ? 'light' : 'dark';
+    const previousColorScheme = root.style.colorScheme;
+    const themeMeta = document.querySelector<HTMLMetaElement>(
+      'meta[name="theme-color"]',
+    );
+    const previousThemeColor = themeMeta?.getAttribute('content') ?? null;
+
+    root.dataset.theme = 'dark';
+    root.style.colorScheme = 'dark';
+    themeMeta?.setAttribute('content', '#090c0a');
+    window.dispatchEvent(
+      new CustomEvent('all-in-life-theme-change', { detail: 'dark' }),
+    );
+
+    return () => {
+      root.dataset.theme = previousTheme;
+      root.style.colorScheme = previousColorScheme || previousTheme;
+      if (previousThemeColor) {
+        themeMeta?.setAttribute('content', previousThemeColor);
+      }
+      window.dispatchEvent(
+        new CustomEvent('all-in-life-theme-change', {
+          detail: previousTheme,
+        }),
+      );
+    };
+  }, [view]);
+
   useEffect(() => {
     const controller = new AbortController();
     fetch('/api/catalog/categories', {
@@ -1539,6 +1727,9 @@ export default function App() {
         setGuestSavedReady(true);
       })
       .catch(() => {
+        accountSaveGenerationRef.current += 1;
+        accountSaveBlockedRef.current = true;
+        accountRevisionRef.current = 0;
         clearAccountToken();
         setAccountToken(null);
         setAccountUser(null);
@@ -1549,9 +1740,16 @@ export default function App() {
   }, [applyAccountData, loadGuestSavedData]);
 
   useEffect(() => {
-    if (!profile.signedIn || !accountToken || !accountDataReady) return;
+    if (
+      !profile.signedIn ||
+      !accountToken ||
+      !accountDataReady ||
+      accountSaveBlockedRef.current
+    )
+      return;
     const timer = window.setTimeout(() => {
-      setAccountSyncStatus('saving');
+      const saveGeneration = accountSaveGenerationRef.current;
+      const saveToken = accountToken;
       const state: StoredAccountState = {
         version: 1,
         saved,
@@ -1564,16 +1762,35 @@ export default function App() {
         reminders,
         profile: { name: profile.name, avatar: profile.avatar },
       };
-      saveAccountData(accountToken, state)
-        .then(() => {
+
+      void accountSaveQueueRef.current.enqueue(async () => {
+        if (
+          accountSaveBlockedRef.current ||
+          saveGeneration !== accountSaveGenerationRef.current ||
+          readAccountToken() !== saveToken
+        )
+          return;
+
+        setAccountSyncStatus('saving');
+        try {
+          const savedEnvelope = await saveAccountData(
+            saveToken,
+            state,
+            accountRevisionRef.current,
+          );
+          if (saveGeneration !== accountSaveGenerationRef.current) return;
+          accountRevisionRef.current = savedEnvelope.revision;
           setAccountSyncStatus('saved');
           if (pendingGuestMergeRef.current) {
             clearGuestSavedState();
             pendingGuestMergeRef.current = false;
           }
-        })
-        .catch((error: unknown) => {
+        } catch (error) {
+          if (saveGeneration !== accountSaveGenerationRef.current) return;
           if (error instanceof AccountClientError && error.status === 401) {
+            accountSaveGenerationRef.current += 1;
+            accountSaveBlockedRef.current = true;
+            accountRevisionRef.current = 0;
             clearAccountToken();
             setAccountToken(null);
             setAccountUser(null);
@@ -1582,9 +1799,20 @@ export default function App() {
             pendingGuestMergeRef.current = false;
             loadGuestSavedData();
             showToast('登入已逾時，請重新登入後再儲存');
+          } else if (
+            error instanceof AccountClientError &&
+            error.code === 'account_data_conflict'
+          ) {
+            accountSaveBlockedRef.current = true;
+            accountSaveGenerationRef.current += 1;
+            showToast('其他分頁或裝置已有新版資料；本機修改尚未覆蓋它。', {
+              label: '重新載入',
+              run: () => window.location.reload(),
+            });
           }
           setAccountSyncStatus('error');
-        });
+        }
+      });
     }, 450);
     return () => window.clearTimeout(timer);
   }, [
@@ -1592,6 +1820,7 @@ export default function App() {
     accountToken,
     completed,
     joinedTeam,
+    loadGuestSavedData,
     monthlyBudget,
     profile.avatar,
     profile.name,
@@ -1601,7 +1830,6 @@ export default function App() {
     savedSnapshots,
     teamCount,
     transactions,
-    loadGuestSavedData,
   ]);
 
   const catalogUsesUserLocation = Boolean(
@@ -1651,28 +1879,41 @@ export default function App() {
           mode === 'zero'
             ? isConfirmedFree(item)
             : filters.budget <= 0 ||
-              item.totalCost === null ||
-              item.totalCost <= filters.budget;
+              (resultDisplayCost(item) !== null &&
+                resultDisplayCost(item)! <= filters.budget);
         return (
           categoryMatch && budgetMatch && item.distanceKm <= filters.distance
         );
       })
       .sort((a, b) => {
         if (sort === 'cost') {
-          if (a.totalCost === null) return b.totalCost === null ? 0 : 1;
-          if (b.totalCost === null) return -1;
-          return a.totalCost - b.totalCost || a.distanceKm - b.distanceKm;
+          const aCost = resultDisplayCost(a);
+          const bCost = resultDisplayCost(b);
+          if (aCost === null) return bCost === null ? 0 : 1;
+          if (bCost === null) return -1;
+          return aCost - bCost || a.distanceKm - b.distanceKm;
         }
         if (sort === 'distance') {
           return (
             a.distanceKm - b.distanceKm ||
-            (a.totalCost ?? Number.POSITIVE_INFINITY) -
-              (b.totalCost ?? Number.POSITIVE_INFINITY)
+            (resultDisplayCost(a) ?? Number.POSITIVE_INFINITY) -
+              (resultDisplayCost(b) ?? Number.POSITIVE_INFINITY)
           );
         }
-        const aScore = cpScoreBreakdown(a, filters, cpParams).rawScore;
-        const bScore = cpScoreBreakdown(b, filters, cpParams).rawScore;
-        if (aScore === null) return bScore === null ? 0 : 1;
+        const aScore =
+          a.totalCost === null
+            ? null
+            : cpScoreBreakdown(a, filters, cpParams).rawScore;
+        const bScore =
+          b.totalCost === null
+            ? null
+            : cpScoreBreakdown(b, filters, cpParams).rawScore;
+        if (aScore === null) {
+          return bScore === null
+            ? a.distanceKm - b.distanceKm ||
+                a.title.localeCompare(b.title, 'zh-TW')
+            : 1;
+        }
         if (bScore === null) return -1;
         return (
           bScore - aScore ||
@@ -1690,10 +1931,16 @@ export default function App() {
   // Fixture results belong only to the explicit demo catalog. Never pad a
   // real D1/snapshot response with simulated cards, even when few items match.
   const selectableResults = eligibleLocatedResults;
-  const selected =
+  const routeResult =
+    routeLookup?.id === selectedId ? routeLookup.result : null;
+  const selectedFromCurrentResults =
     selectableResults.find((item) => item.id === selectedId) ??
-    selectableResults[0] ??
+    (routeResult?.id === selectedId ? routeResult : null) ??
+    savedSnapshots[selectedId] ??
     null;
+  const selected =
+    selectedFromCurrentResults ??
+    (view === 'detail' ? null : (selectableResults[0] ?? null));
   const savedResultItems = saved
     .map(
       (id) =>
@@ -1703,6 +1950,46 @@ export default function App() {
   const selectedReports = selected
     ? reportsForSubject(communityReports, selected.id)
     : [];
+  const routeLookupEligible =
+    /^(?:PLACE|OPPORTUNITY):[A-Za-z0-9_.:-]{1,148}$/.test(selectedId);
+  const routeLookupStatus = selectedFromCurrentResults
+    ? 'ready'
+    : !routeLookupEligible || routeLookup?.id === selectedId
+      ? 'error'
+      : 'loading';
+
+  useEffect(() => {
+    if (view !== 'detail' || selectedFromCurrentResults || useFixtureCatalog)
+      return;
+    if (!routeLookupEligible) return;
+
+    const controller = new AbortController();
+    fetch(`/api/catalog/items?ids=${encodeURIComponent(selectedId)}`, {
+      cache: 'no-store',
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Catalog item lookup failed');
+        return response.json() as Promise<CatalogItemsResponse>;
+      })
+      .then((payload) => {
+        const item = payload.items[0];
+        const mapped = item ? catalogItemToResult(item, payload.source) : null;
+        setRouteLookup({ id: selectedId, result: mapped });
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
+        setRouteLookup({ id: selectedId, result: null });
+      });
+    return () => controller.abort();
+  }, [
+    selectedFromCurrentResults,
+    selectedId,
+    routeLookupEligible,
+    useFixtureCatalog,
+    view,
+  ]);
 
   useEffect(() => {
     if ('serviceWorker' in navigator)
@@ -1766,8 +2053,8 @@ export default function App() {
             mode === 'zero'
               ? isConfirmedFree(item)
               : filters.budget <= 0 ||
-                item.totalCost === null ||
-                item.totalCost <= filters.budget;
+                (resultDisplayCost(item) !== null &&
+                  resultDisplayCost(item)! <= filters.budget);
           return (
             categoryMatch &&
             budgetMatch &&
@@ -1894,7 +2181,7 @@ export default function App() {
       })
       .then((payload) => {
         if (
-          (payload.source !== 'openai' && payload.source !== 'fallback') ||
+          (payload.source !== 'gemini' && payload.source !== 'fallback') ||
           !Array.isArray(payload.items)
         )
           throw new Error('Invalid AI explanation response');
@@ -2060,10 +2347,13 @@ export default function App() {
 
   async function handleSignOut() {
     const token = accountToken;
+    accountSaveGenerationRef.current += 1;
+    accountSaveBlockedRef.current = true;
     setAccountToken(null);
     setAccountUser(null);
     setAccountDataReady(false);
     setAccountSyncStatus('idle');
+    accountRevisionRef.current = 0;
     setProfile({ name: '旅人', avatar: '#c9ff36', signedIn: false });
     if (!useFixtureCatalog) setExperienceMode('guest');
     pendingGuestMergeRef.current = false;
@@ -2128,6 +2418,18 @@ export default function App() {
     setView(next);
   }
   function goBack() {
+    const routeState = window.history.state as {
+      allInLifeRoute?: boolean;
+      depth?: number;
+    } | null;
+    if (
+      routeState?.allInLifeRoute === true &&
+      typeof routeState.depth === 'number' &&
+      routeState.depth > 0
+    ) {
+      window.history.back();
+      return;
+    }
     setView(history.at(-1) ?? 'home');
     setHistory((items) => items.slice(0, -1));
   }
@@ -2221,7 +2523,7 @@ export default function App() {
         setFollowCurrentTime(false);
         setAiParseStatus(payload.source);
         showToast(
-          payload.source === 'openai'
+          payload.source === 'gemini'
             ? 'AI 已整理需求，請確認條件'
             : 'AI 尚未連線，已保留條件供你確認',
         );
@@ -2399,7 +2701,7 @@ export default function App() {
     if (payableItems.length === 0) {
       showToast(
         missingCostCount > 0
-          ? '選取項目需先補上金額才能結算'
+          ? '情境預算項目需取得實際金額後才能結算'
           : '請先選取待結算項目',
       );
       return;
@@ -2559,7 +2861,7 @@ export default function App() {
   const shellLess = ['welcome', 'onboarding'].includes(view);
   return (
     <div
-      className="app-stage"
+      className={`app-stage ${view === 'welcome' ? 'welcome-dark-stage' : ''}`}
       data-survival={mode === 'zero' ? 'true' : 'false'}
     >
       <div className="ambient ambient-one" />
@@ -2749,10 +3051,10 @@ export default function App() {
                 onReport={() => navigate('report')}
                 onShare={() =>
                   share(
-                    `${selected.title}｜${selected.provider}｜${
-                      selected.totalCost === null
-                        ? '價格依現場方案'
-                        : `預估 NT$${selected.totalCost}`
+                    `${selected.title}｜${selected.provider}｜${resultPriceText(selected)}${
+                      resultPlanningBudget(selected)
+                        ? '（情境估算，不是店家報價）'
+                        : ''
                     }`,
                   )
                 }
@@ -2762,8 +3064,16 @@ export default function App() {
               <section className="screen detail-screen">
                 <div className="empty-state">
                   <Database />
-                  <h2>這筆資料目前不在查詢結果中</h2>
-                  <p>可能已到期或不符合目前日期、類別與距離。</p>
+                  <h2>
+                    {routeLookupStatus === 'loading'
+                      ? '正在載入這筆選項…'
+                      : '這筆資料目前不在查詢結果中'}
+                  </h2>
+                  <p>
+                    {routeLookupStatus === 'loading'
+                      ? '正在從目前的 D1 或官方資料快照還原。'
+                      : '可能已到期或不符合目前日期、類別與距離。'}
+                  </p>
                   <button onClick={() => navigate('results')}>返回結果</button>
                 </div>
               </section>
@@ -2994,17 +3304,19 @@ export default function App() {
             </DialogHeader>
             <div className="evidence-grid">
               <Metric
-                label="方案價格"
-                value={
-                  selected.totalCost === null
-                    ? '依現場方案'
-                    : `NT$${money(selected.totalCost)}`
-                }
+                label={resultPlanningBudget(selected) ? '預算建議' : '方案價格'}
+                value={resultPriceText(selected)}
               />
               <Metric
                 label="CP 分數"
                 value={
-                  cpFormulaScore(selected, filters, cpParams)?.toString() ?? '—'
+                  resultPlanningBudget(selected)
+                    ? '待實價'
+                    : (cpFormulaScore(
+                        selected,
+                        filters,
+                        cpParams,
+                      )?.toString() ?? '—')
                 }
               />
               <Metric label="距離" value={`${selected.distanceKm} km`} />
@@ -3016,6 +3328,9 @@ export default function App() {
             <blockquote className="evidence-copy">
               {selected.condition}
             </blockquote>
+            {resultPlanningBudget(selected) && (
+              <p className="fine-print">{resultPriceNote(selected)}</p>
+            )}
             {selected.sourceUrl && (
               <a
                 className="source-link"
@@ -3939,6 +4254,8 @@ function SopGuide({
               className={index === step ? 'active' : index < step ? 'done' : ''}
               onClick={() => setStep(index)}
               aria-label={`前往教學第 ${index + 1} 步`}
+              aria-current={index === step ? 'step' : undefined}
+              data-step={index + 1}
             >
               <i />
             </button>
@@ -4260,8 +4577,8 @@ function ReadyScreen({
           <b>
             {aiParseStatus === 'loading'
               ? 'AI 正在理解需求'
-              : aiParseStatus === 'openai'
-                ? 'OpenAI 已轉成可編輯條件'
+              : aiParseStatus === 'gemini'
+                ? 'Gemini 已轉成可編輯條件'
                 : aiParseStatus === 'fallback'
                   ? 'AI 未連線，已切換規則備援'
                   : aiParseStatus === 'unavailable'
@@ -4541,7 +4858,7 @@ function HomeScreen({
   onNeed: (s: string) => void;
   onVoice: () => void;
   recording: boolean;
-  onConfirm: () => void;
+  onConfirm: (query?: string) => void;
   onProfile: () => void;
   onAnalytics: () => void;
   onTeam: () => void;
@@ -4657,7 +4974,11 @@ function HomeScreen({
           <button
             key={item}
             className={`mode-card ${mode === item ? 'active' : ''}`}
-            onClick={() => onMode(item)}
+            onClick={() => {
+              onMode(item);
+              onNeed(modeNeedExamples[item]);
+            }}
+            aria-label={`${modes[item].short}：載入範例需求`}
             style={{ '--mode-color': modes[item].color } as React.CSSProperties}
           >
             <span>
@@ -4695,14 +5016,18 @@ function HomeScreen({
           <Pencil />
           <textarea
             value={need}
-            placeholder={modeNeedExamples[mode]}
+            placeholder={`EX：${modeNeedExamples[mode]}`}
             onChange={(e) => onNeed(e.target.value)}
             disabled={aiParseStatus === 'loading'}
             aria-label="文字輸入需求"
             aria-invalid={Boolean(validationError)}
             aria-describedby={validationError ? 'home-need-error' : undefined}
           />
-          <span>輸入完成後，下一步會強制確認條件</span>
+          <span>
+            {need === modeNeedExamples[mode]
+              ? 'EX 範例已帶入，可用語音或打字修改'
+              : '輸入完成後，下一步會強制確認條件'}
+          </span>
         </label>
         {validationError && (
           <p id="home-need-error" className="form-error" role="alert">
@@ -4715,8 +5040,8 @@ function HomeScreen({
               <span>
                 {aiParseStatus === 'loading'
                   ? 'AI 正在整理…'
-                  : aiParseStatus === 'openai'
-                    ? 'OpenAI 已整理，請確認'
+                  : aiParseStatus === 'gemini'
+                    ? 'Gemini 已整理，請確認'
                     : aiParseStatus === 'fallback'
                       ? '規則備援，請確認'
                       : 'AI 無法連線，可手動確認'}
@@ -5007,7 +5332,7 @@ function CpFormulaPanel({
           <CircleDollarSign />
           <b>我的 CP 值公式</b>
         </span>
-        <strong>{sample ? (sampleScore ?? '條件不足') : '—'}</strong>
+        <i className="cp-formula-toggle" aria-hidden="true" />
       </summary>
       <p>價格、距離與喜好會依下方權重算出排名。</p>
       <small>權重固定合計 100%；調整任一項會立即重排結果。</small>
@@ -5054,7 +5379,10 @@ function CpFormulaPanel({
           key={`${sample.id}-${sampleScore}`}
           aria-live="polite"
         >
-          目前第 1 名：{sample.title} · CP {sampleScore ?? '條件不足'}
+          目前第 1 名：{sample.title} ·{' '}
+          {sampleScore === null
+            ? '價格待確認，暫不顯示 CP 分數'
+            : `CP ${sampleScore}`}
         </small>
       )}
     </details>
@@ -5127,6 +5455,7 @@ function ResultCard({
   onSave: (id: string) => void;
 }) {
   const isSaved = saved.includes(item.id);
+  const planningBudget = resultPlanningBudget(item);
 
   return (
     <article
@@ -5178,13 +5507,18 @@ function ResultCard({
             {item.provider} · {item.distanceKm} km · {item.hours}
           </span>
           <span className="price-row">
-            {item.totalCost === null ? (
-              <strong>依現場價格</strong>
+            {planningBudget ? (
+              <strong>
+                <small>建議預留 NT$</small>
+                {money(planningBudget.amountTwd)}
+              </strong>
+            ) : item.totalCost === null ? (
+              <strong>尚無可用價格</strong>
             ) : (
               <>
                 <strong>
                   <small>NT$</small>
-                  {money(item.totalCost)}
+                  {money(item.totalCost ?? 0)}
                 </strong>
                 {item.servings !== null && (
                   <span>
@@ -5194,9 +5528,23 @@ function ResultCard({
               </>
             )}
             <span>
-              CP <b>{cpFormulaScore(item, filters, cpParams) ?? '—'}</b>
+              {planningBudget ? (
+                <>
+                  <b>情境估算</b> · CP 待實價
+                </>
+              ) : (
+                <>
+                  CP <b>{cpFormulaScore(item, filters, cpParams) ?? '—'}</b>
+                </>
+              )}
             </span>
           </span>
+          {planningBudget && (
+            <span className="result-condition">
+              <CircleDollarSign />
+              {resultPriceNote(item)}
+            </span>
+          )}
           <span className="result-condition">
             <Clock3 />
             {item.condition}
@@ -5206,7 +5554,7 @@ function ResultCard({
               <Sparkles />
               <span>
                 <b>
-                  {aiExplanation.source === 'openai' ? 'AI 整理' : '規則整理'} ·{' '}
+                  {aiExplanation.source === 'gemini' ? 'AI 整理' : '規則整理'} ·{' '}
                   {aiExplanation.headline}
                 </b>
                 {aiExplanation.reasons.length > 0
@@ -5295,12 +5643,41 @@ function ResultsScreen({
   onOpen: (id: string) => void;
   onSave: (id: string) => void;
 }) {
-  const [controlSheet, setControlSheet] = useState<'filters' | 'sort' | null>(
-    null,
-  );
+  const [controlSheet, setControlSheet] = useState<'filters' | null>(null);
   const [filterDraft, setFilterDraft] = useState(filters);
+  const sortPickerRef = useRef<HTMLDetailsElement>(null);
+  const categoryDragRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startScrollLeft: number;
+  } | null>(null);
+  const suppressCategoryClickRef = useRef(false);
   const activeSort =
     sortOptions.find((option) => option.value === sort) ?? sortOptions[0];
+  useEffect(() => {
+    const closeOnOutsidePress = (event: PointerEvent) => {
+      const picker = sortPickerRef.current;
+      if (
+        !picker?.open ||
+        !(event.target instanceof Node) ||
+        picker.contains(event.target)
+      )
+        return;
+      picker.removeAttribute('open');
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      const picker = sortPickerRef.current;
+      if (event.key !== 'Escape' || !picker?.open) return;
+      picker.removeAttribute('open');
+      picker.querySelector('summary')?.focus();
+    };
+    document.addEventListener('pointerdown', closeOnOutsidePress);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePress);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, []);
   const loading =
     searchStatus === 'validating' ||
     searchStatus === 'loading' ||
@@ -5313,8 +5690,8 @@ function ResultsScreen({
         mode === 'zero'
           ? isConfirmedFree(item)
           : filters.budget <= 0 ||
-            item.totalCost === null ||
-            item.totalCost <= filters.budget;
+            (resultDisplayCost(item) !== null &&
+              resultDisplayCost(item)! <= filters.budget);
       return (
         item.category === category &&
         budgetMatch &&
@@ -5365,6 +5742,7 @@ function ResultsScreen({
         <button
           className="filter-summary"
           aria-haspopup="dialog"
+          aria-label={`篩選條件 ${filters.category}，${filters.distance} 公里`}
           onClick={() => {
             setFilterDraft(filters);
             setControlSheet('filters');
@@ -5372,32 +5750,108 @@ function ResultsScreen({
         >
           <SlidersHorizontal />
           <span>
-            <b>快速篩選</b>
-            <small>
+            <small>篩選條件</small>
+            <b>
               {filters.category} · {filters.distance} km
-            </small>
+            </b>
           </span>
+          <ChevronRight />
         </button>
-        <div className="sort-picker">
-          <button
+        <details ref={sortPickerRef} className="sort-picker">
+          <summary
             className="sort-button"
-            aria-haspopup="dialog"
-            aria-expanded={controlSheet === 'sort'}
+            aria-haspopup="menu"
             aria-label={`排序方式 ${activeSort.label}`}
-            onClick={() => setControlSheet('sort')}
           >
             <ArrowUpDown />
             <span>
               <small>排序方式</small>
               <b>{activeSort.label}</b>
             </span>
-            <ChevronDown
-              className={controlSheet === 'sort' ? 'open' : undefined}
-            />
-          </button>
-        </div>
+            <ChevronDown />
+          </summary>
+          <fieldset className="sort-menu">
+            <legend className="sr-only">排序方式</legend>
+            {sortOptions.map((option) => (
+              <button
+                type="button"
+                key={option.value}
+                aria-pressed={sort === option.value}
+                className={sort === option.value ? 'active' : ''}
+                onClick={() => {
+                  onSort(option.value);
+                  sortPickerRef.current?.removeAttribute('open');
+                }}
+              >
+                <span className="sort-menu-icon" aria-hidden="true">
+                  {option.value === 'cp' ? (
+                    <Sparkles />
+                  ) : option.value === 'cost' ? (
+                    <CircleDollarSign />
+                  ) : (
+                    <MapPin />
+                  )}
+                </span>
+                <span>
+                  <b>{option.label}</b>
+                  <small>{option.hint}</small>
+                </span>
+                {sort === option.value && (
+                  <Check className="sort-menu-check" aria-hidden="true" />
+                )}
+              </button>
+            ))}
+          </fieldset>
+        </details>
       </div>
-      <nav className="category-filter" aria-label="推薦結果分類">
+      <nav
+        className="category-filter"
+        aria-label="推薦結果分類"
+        onPointerDown={(event) => {
+          if (event.pointerType !== 'mouse' || event.button !== 0) return;
+          categoryDragRef.current = {
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startScrollLeft: event.currentTarget.scrollLeft,
+          };
+          suppressCategoryClickRef.current = false;
+        }}
+        onPointerMove={(event) => {
+          const drag = categoryDragRef.current;
+          if (!drag || drag.pointerId !== event.pointerId) return;
+          const delta = event.clientX - drag.startX;
+          if (Math.abs(delta) < 4) return;
+          suppressCategoryClickRef.current = true;
+          event.currentTarget.dataset.dragging = 'true';
+          if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
+            event.currentTarget.setPointerCapture(event.pointerId);
+          }
+          event.currentTarget.scrollLeft = drag.startScrollLeft - delta;
+          event.preventDefault();
+        }}
+        onPointerUp={(event) => {
+          if (categoryDragRef.current?.pointerId !== event.pointerId) return;
+          if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+            event.currentTarget.releasePointerCapture(event.pointerId);
+          }
+          delete event.currentTarget.dataset.dragging;
+          categoryDragRef.current = null;
+          window.setTimeout(() => {
+            suppressCategoryClickRef.current = false;
+          }, 0);
+        }}
+        onPointerCancel={(event) => {
+          delete event.currentTarget.dataset.dragging;
+          categoryDragRef.current = null;
+          suppressCategoryClickRef.current = false;
+        }}
+        onClickCapture={(event) => {
+          if (!suppressCategoryClickRef.current) return;
+          event.preventDefault();
+          event.stopPropagation();
+          suppressCategoryClickRef.current = false;
+        }}
+      >
         <button
           className={filters.category === '全部' ? 'active' : ''}
           aria-pressed={filters.category === '全部'}
@@ -5437,14 +5891,20 @@ function ResultsScreen({
               <b>
                 {aiExplainStatus === 'loading'
                   ? 'AI 正在整理前三筆推薦理由'
-                  : aiExplainStatus === 'openai'
-                    ? 'OpenAI 已完成推薦理由'
+                  : aiExplainStatus === 'gemini'
+                    ? 'Gemini 已完成推薦理由'
                     : aiExplainStatus === 'fallback'
-                      ? 'AI 未連線，先顯示規則說明'
+                      ? 'AI 目前未連線，已套用規則備援'
                       : 'AI 說明暫時無法載入'}
               </b>
               <small>排名、價格與資格仍以資料庫和 CP 規則為準。</small>
             </span>
+            {(aiExplainStatus === 'fallback' ||
+              aiExplainStatus === 'unavailable') && (
+              <button type="button" onClick={onRetry}>
+                重新連線 AI
+              </button>
+            )}
           </output>
         )}
       <CpFormulaPanel
@@ -5497,7 +5957,7 @@ function ResultsScreen({
         </div>
       )}
       <Dialog
-        open={controlSheet !== null}
+        open={controlSheet === 'filters'}
         onOpenChange={(open) => {
           if (!open) setControlSheet(null);
         }}
@@ -5508,129 +5968,76 @@ function ResultsScreen({
         >
           <div className="sheet-handle" />
           <DialogHeader className="results-sheet-header">
-            {controlSheet === 'filters' && (
-              <span className="kicker lime-text">QUICK FILTER</span>
-            )}
-            <DialogTitle>
-              {controlSheet === 'filters' ? '快速調整結果' : '排序結果'}
-            </DialogTitle>
-            {controlSheet === 'filters' && (
-              <DialogDescription>
-                先調整分類與距離；其他限制仍可進入完整條件頁修改。
-              </DialogDescription>
-            )}
+            <span className="kicker lime-text">QUICK FILTER</span>
+            <DialogTitle>快速調整結果</DialogTitle>
+            <DialogDescription>
+              先調整分類與距離；其他限制仍可進入完整條件頁修改。
+            </DialogDescription>
           </DialogHeader>
-          {controlSheet === 'filters' ? (
-            <>
-              <div className="quick-filter-group">
-                <b>分類</b>
-                <div className="quick-filter-options category-options">
-                  {(['全部', ...resultCategories] as Filters['category'][]).map(
-                    (category) => (
-                      <button
-                        type="button"
-                        key={category}
-                        aria-pressed={filterDraft.category === category}
-                        style={
-                          category === '全部'
-                            ? undefined
-                            : ({
-                                '--category-color': categoryColors[category],
-                              } as CSSProperties)
-                        }
-                        onClick={() =>
-                          setFilterDraft({ ...filterDraft, category })
-                        }
-                      >
-                        {category !== '全部' && categoryIcon(category)}
-                        {category === '免費／公益資源'
-                          ? '免費／公益'
-                          : category}
-                      </button>
-                    ),
-                  )}
-                </div>
-              </div>
-              <div className="quick-filter-group">
-                <b>最大距離</b>
-                <div className="quick-filter-options distance-options">
-                  {[0.5, 1, 1.5, 2].map((distance) => (
-                    <button
-                      type="button"
-                      key={distance}
-                      aria-pressed={filterDraft.distance === distance}
-                      onClick={() =>
-                        setFilterDraft({ ...filterDraft, distance })
-                      }
-                    >
-                      {distance} km
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="results-sheet-actions">
-                <button
-                  type="button"
-                  className="primary-action"
-                  onClick={() => {
-                    onFiltersChange(filterDraft);
-                    setControlSheet(null);
-                  }}
-                >
-                  <Check />
-                  套用快速篩選
-                </button>
-                <button
-                  type="button"
-                  className="secondary-action"
-                  onClick={() => {
-                    setControlSheet(null);
-                    onFilters();
-                  }}
-                >
-                  <SlidersHorizontal />
-                  完整條件設定
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="sheet-sort-options">
-              {sortOptions.map((option) => (
-                <button
-                  type="button"
-                  key={option.value}
-                  aria-pressed={sort === option.value}
-                  className={sort === option.value ? 'active' : ''}
-                  onClick={() => {
-                    onSort(option.value);
-                    setControlSheet(null);
-                  }}
-                >
-                  <span className="sort-option-icon" aria-hidden="true">
-                    {option.value === 'cp' ? (
-                      <Sparkles />
-                    ) : option.value === 'cost' ? (
-                      <CircleDollarSign />
-                    ) : (
-                      <MapPin />
-                    )}
-                  </span>
-                  <span>
-                    <b>{option.label}</b>
-                    <small>{option.hint}</small>
-                  </span>
-                  <span
-                    className={`sort-option-check ${
-                      sort === option.value ? 'active' : ''
-                    }`}
-                    aria-hidden="true"
+          <div className="quick-filter-group">
+            <b>分類</b>
+            <div className="quick-filter-options category-options">
+              {(['全部', ...resultCategories] as Filters['category'][]).map(
+                (category) => (
+                  <button
+                    type="button"
+                    key={category}
+                    aria-pressed={filterDraft.category === category}
+                    style={
+                      category === '全部'
+                        ? undefined
+                        : ({
+                            '--category-color': categoryColors[category],
+                          } as CSSProperties)
+                    }
+                    onClick={() => setFilterDraft({ ...filterDraft, category })}
                   >
-                    {sort === option.value && <Check />}
-                  </span>
+                    {category !== '全部' && categoryIcon(category)}
+                    {category === '免費／公益資源' ? '免費／公益' : category}
+                  </button>
+                ),
+              )}
+            </div>
+          </div>
+          <div className="quick-filter-group">
+            <b>最大距離</b>
+            <div className="quick-filter-options distance-options">
+              {[0.5, 1, 1.5, 2].map((distance) => (
+                <button
+                  type="button"
+                  key={distance}
+                  aria-pressed={filterDraft.distance === distance}
+                  onClick={() => setFilterDraft({ ...filterDraft, distance })}
+                >
+                  {distance} km
                 </button>
               ))}
             </div>
-          )}
+          </div>
+          <div className="results-sheet-actions">
+            <button
+              type="button"
+              className="primary-action"
+              onClick={() => {
+                onFiltersChange(filterDraft);
+                setControlSheet(null);
+              }}
+            >
+              <Check />
+              套用快速篩選
+            </button>
+            <button
+              type="button"
+              className="secondary-action"
+              onClick={() => {
+                setControlSheet(null);
+                onFilters();
+              }}
+            >
+              <SlidersHorizontal />
+              完整條件設定
+            </button>
+          </div>
         </DialogContent>
       </Dialog>
     </section>
@@ -5662,6 +6069,7 @@ function DetailScreen({
   onReport: () => void;
   onShare: () => void;
 }) {
+  const planningBudget = resultPlanningBudget(item);
   const saving =
     item.totalCost !== null && item.benchmarkCost != null
       ? Math.max(0, item.benchmarkCost - item.totalCost)
@@ -5710,25 +6118,25 @@ function DetailScreen({
         </p>
         <div className="detail-score">
           <div>
-            <span>總成本估算</span>
-            <strong>
-              {item.totalCost === null
-                ? '依現場價格'
-                : `NT$${money(item.totalCost)}`}
-            </strong>
+            <span>{planningBudget ? '預算建議' : '總成本'}</span>
+            <strong>{resultPriceText(item)}</strong>
             <small>
-              {item.totalCost === null
-                ? (item.costReason ?? '現場提供多種方案')
-                : item.servings === null
+              {planningBudget
+                ? resultPriceNote(item)
+                : item.servings === null || item.totalCost === null
                   ? '單次方案'
                   : `人均 NT$${money(item.totalCost / item.servings)}`}
             </small>
           </div>
           <div>
             <span>個人 CP</span>
-            <strong>{itemScore ?? '—'}</strong>
+            <strong>{planningBudget ? '待實價' : (itemScore ?? '—')}</strong>
             <small>
-              {itemScore === null ? '依目前條件排序' : '符合目前偏好'}
+              {planningBudget
+                ? '估算不冒充價格驗證分數'
+                : itemScore === null
+                  ? '依目前條件排序'
+                  : '符合目前偏好'}
             </small>
           </div>
         </div>
@@ -5909,7 +6317,7 @@ function SavedScreen({
               <small>
                 {pendingItems.length} 筆
                 {unknownPendingCount > 0
-                  ? ` · ${unknownPendingCount} 筆待補金額`
+                  ? ` · ${unknownPendingCount} 筆採情境預算（不計入結算）`
                   : ''}
               </small>
             </div>
@@ -5937,6 +6345,7 @@ function SavedScreen({
               const settled = completed.includes(item.id);
               const selected = selectedIds.includes(item.id);
               const missingCost = item.totalCost === null;
+              const planningBudget = resultPlanningBudget(item);
               return (
                 <article
                   key={item.id}
@@ -5950,7 +6359,7 @@ function SavedScreen({
                     aria-pressed={selected}
                     aria-label={
                       missingCost
-                        ? `待補金額 ${item.title}`
+                        ? `情境預算 ${item.title}`
                         : `${selected ? '取消選取' : '選取'} ${item.title}`
                     }
                   >
@@ -5963,19 +6372,24 @@ function SavedScreen({
                     <span
                       className={`checkout-state ${settled ? 'settled' : ''}`}
                     >
-                      {settled ? '已結算' : missingCost ? '待補金額' : '待結算'}
+                      {settled
+                        ? '已結算'
+                        : planningBudget
+                          ? '情境預算'
+                          : '待結算'}
                     </span>
                     <b>{item.title}</b>
                     <small>
-                      {item.expiresAt
+                      {(item.expiresAt
                         ? `提醒：${taipeiDateLabel(item.expiresAt)}`
-                        : item.provider}
+                        : item.provider) +
+                        (planningBudget ? ' · 情境估算，不是店家報價' : '')}
                     </small>
                   </button>
                   <strong>
-                    {item.totalCost === null
-                      ? '依現場價格'
-                      : `NT$${money(item.totalCost)}`}
+                    {planningBudget
+                      ? `建議預留 NT$${money(planningBudget.amountTwd)}`
+                      : resultPriceText(item)}
                   </strong>
                   <button
                     className="remove-button"
@@ -6446,8 +6860,8 @@ function FiltersScreen({
           }
           aria-live="polite"
         >
-          {aiParseStatus === 'openai'
-            ? 'OpenAI 已整理以下條件，請逐項確認'
+          {aiParseStatus === 'gemini'
+            ? 'Gemini 已整理以下條件，請逐項確認'
             : aiParseStatus === 'fallback'
               ? '目前使用規則備援，已保留原條件供你確認'
               : aiParseStatus === 'loading'
@@ -7368,6 +7782,10 @@ function MapScreen({ item, onOpen }: { item: Result; onOpen: () => void }) {
           <h2>{item.title}</h2>
           <p>
             {item.distanceKm} km · 步行約 {item.walkMin} 分鐘
+          </p>
+          <p>
+            {resultPriceText(item)}
+            {resultPlanningBudget(item) ? ` · ${resultPriceNote(item)}` : ''}
           </p>
         </div>
         <button onClick={onOpen}>

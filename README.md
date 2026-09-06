@@ -12,7 +12,7 @@ ALL IN LIFE 是為預算有限者打造的日常決策助手。使用者以自�
 
 | 項目               | 連結／狀態                                                                                               |
 | ------------------ | -------------------------------------------------------------------------------------------------------- |
-| HTTPS 展示站       | [all-in-life-ail.chiehlun.chatgpt.site](https://all-in-life-ail.chiehlun.chatgpt.site)（公開基準版於 2026-09-06 以未登入 HTTP 請求驗證為 200；本分支帳號更新待再部署） |
+| HTTPS 展示站       | [all-in-life-ail.chiehlun.chatgpt.site](https://all-in-life-ail.chiehlun.chatgpt.site)（公開基準版於 2026-09-06 以未登入 HTTP 請求驗證為 200；本分支帳號與 Team 更新待再部署） |
 | PWA 驗收           | 公開基準版已驗證 manifest、icons、service worker、安裝資格與離線 fallback；本分支另通過本機 build／E2E   |
 | 本次交付規格       | [`SPEC.md`](SPEC.md)                                                                                     |
 | 官方作品繳交檢查表 | [`submission-checklist.md`](submission-checklist.md)                                                     |
@@ -58,11 +58,11 @@ ALL IN LIFE 是為預算有限者打造的日常決策助手。使用者以自�
 
 > 工程項目驗證時間：2026-09-06（Asia/Taipei）。`[ ]` 表示仍需隊伍或平台端確認，不能用程式碼推定完成。敏感資訊掃描不含送件必要的成員姓名；公開 Email 已從文件移除。完整工程證據見 [`submission-checklist.md`](submission-checklist.md)。
 
-目前展示以可操作前端與 PWA 為主；catalog 資料層已具備 D1 `DB` binding、本機自動 bootstrap，以及會回退官方 snapshot 的 API。主搜尋 UI 已用 `POST /api/catalog/search` 取得資料，切換分類、距離或所選時刻會重新查詢；D1 無法查詢時明確回退官方 snapshot。DEMO 固定情境與真實模式完全分流，正式模式 API 失敗時不會偷偷混入 fixture。一般訪客與登入者的需求引導式流程都已串上伺服器端 AI 需求解析與推薦理由，介面會標示 OpenAI／規則備援來源；直接瀏覽資料庫則不耗用模型。帳號註冊／登入與個人清單狀態已寫入 D1，Team 交易式資料仍是下一階段。
+目前展示以可操作前端與 PWA 為主；catalog 資料層已具備 D1 `DB` binding、本機自動 bootstrap，以及會回退官方 snapshot 的 API。主搜尋 UI 已用 `POST /api/catalog/search` 取得資料，切換分類、距離或所選時刻會重新查詢；D1 無法查詢時明確回退官方 snapshot。DEMO 固定情境與真實模式完全分流，正式模式 API 失敗時不會偷偷混入 fixture。一般訪客與登入者的需求引導式流程都已串上伺服器端 AI 需求解析與推薦理由，介面會標示 OpenAI／規則備援來源；直接瀏覽資料庫則不耗用模型。帳號註冊／登入與個人清單狀態已寫入 D1，並以 revision、`409` 衝突回應及序列化 autosave 防止靜默覆寫；邀請制 Team API 與獨立 `/team` Hub 亦已完成本機實作。
 
 ALL IN LIFE 是一個以「限制優先、證據可追溯、成本不造假」為原則的圓山生活決策 App。使用者可匿名直接搜尋，收藏與清單先保留在目前瀏覽器；登入生活帳號後會安全合併並同步清單、收藏、預算與個人設定。文字與語音都會進入同一份可編輯的結構化需求，再比較餐飲、日用、育樂與交通選項。
 
-目前版本是可操作的手機 App 型前端，共 16 個主要畫面：首次設定、首頁、搜尋、結果、詳情、清單、揪團、設定、個人檔案、篩選、通知、消費分析、歷史、回報與地圖等。它包含頁面轉場、語音／文字輸入、分階段搜尋回饋、收藏與到期提醒、標記已買、預算統計、分享及成團成本比較。catalog API、本機 D1、帳號驗證與個人狀態持久化均已接上；Team／交易式後端與本分支 production D1 migration／重新部署尚未完成。Demo 入口使用與正式帳號分離的固定情境，不在操作畫面重複鋪陳模擬聲明；只有 evidence 支撐的欄位才顯示驗證勾勾。真實來源沒有價格時仍顯示「價格待確認」，不會推算成零元或虛構 CP 分數。
+目前版本是可操作的手機 App 型前端，共 16 個主要畫面：首次設定、首頁、搜尋、結果、詳情、清單、揪團、設定、個人檔案、篩選、通知、消費分析、歷史、回報與地圖等，另提供獨立 `/team` Hub。它包含頁面轉場、語音／文字輸入、分階段搜尋回饋、收藏與到期提醒、標記已買、預算統計、分享及成團成本比較。catalog API、本機 D1、帳號驗證、個人狀態併發控制，以及 Team 邀請、意願活動、承諾／撤回與門檻進度均已接上本機 runtime；本分支 production D1 migration、部署與真實 D1 併發 smoke 尚未完成。Demo 入口使用與正式帳號分離的固定情境，不在操作畫面重複鋪陳模擬聲明；只有 evidence 支撐的欄位才顯示驗證勾勾。真實來源沒有價格時仍顯示「價格待確認」，不會推算成零元或虛構 CP 分數。
 
 ## 問題與目標
 
@@ -80,7 +80,7 @@ ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的�
 - Evidence Gate：缺少必要證據、違反硬限制或資料覆蓋不足時，不產生可比較分數。
 - 可追溯結果：顯示來源、查核時間、適用條件、可信度與評分原因。
 - 圖片可信原則：只有可確認來源與使用權的真實照片才顯示；沒有真實圖片時，以類別色塊與圖示呈現，不使用示意照冒充店家或商品實景。
-- Team 揪團：呈現餐點內容、成團門檻、單獨／成團人均、承諾人數、分享與門檻前取消。
+- Team 揪團：登入者可在 `/team` 建立團隊，以限次邀請加入，從公開 catalog 建立未定價意願活動，並承諾／撤回數量及查看門檻進度；不付款、不代訂，也不保證履約。
 - 個人中心：可修改匿名暱稱與頭像，查看通知、收藏到期提醒、歷史與消費分析。
 - 地圖與清單：內嵌 Google Maps 搜尋結果，並提供外部地圖連結；目前不提供導航。
 - 語音輸入：在支援 Web Speech API 的瀏覽器中，可用繁體中文輸入需求。
@@ -95,9 +95,9 @@ ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的�
 | 官方來源資料        | D1／API 可查詢              | 14 個官方來源可重建；catalog API 優先查 D1，未配置或失敗時回退官方 snapshot                                |
 | Google 地圖         | Demo                        | 使用公開 embed/search URL，尚未串 Places API 或儲存 Place ID                                               |
 | 搜尋流程            | API 已接 UI                 | 真實模式以 POST 查 catalog；活動查所選時刻起 7 天，分類、距離、時刻與模式改變會重查；DEMO 使用完整固定範例 |
-| Team 多人協作       | 設計／Demo                  | 帳號登入已可用；Team UI 與 D1 schema 已備妥，尚無邀請與交易式後端                                         |
+| Team 多人協作       | 本機端到端可用              | 邀請制 Team API 與 `/team` Hub 已完成；支援建團、邀請兌換、意願活動、承諾／撤回及門檻進度，不含付款／下單／履約 |
 | Cloudflare D1       | binding／本機 runtime ready | hosting config 已使用 `DB`；`predev`／`prestart` 會自動套 migration 並同步最新 seed 至本機 D1              |
-| 帳號與個人資料      | 本機端到端可用              | 匿名收藏本機還原、登入聯集合併、30 分鐘 session、D1 持久化與登出後 401 均已通過                            |
+| 帳號與個人資料      | 本機端到端可用              | 匿名收藏還原、登入聯集合併、30 分鐘 session、D1 持久化、revision／409 衝突偵測與序列化 autosave 已落地       |
 | AI 安全層           | API、訪客 SOP 與 fallback 已落地 | strict schema、伺服器端 key、D1 限流、來源標示與無 key／逾時／錯誤安全回退；AI 不改寫價格、資格或 CP 分數 |
 | PWA                 | 公開基準版已驗收            | HTTPS、manifest、192/512 icons、service worker、Chrome installability 與離線 app-shell fallback 已驗證     |
 
@@ -105,7 +105,7 @@ ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的�
 
 ![ALL IN LIFE 系統架構](docs/architecture/all-in-life-architecture.visual-check.1440x900.light.png)
 
-目前可執行路徑包含 Vinext / React 前端、Worker route handlers、CP Value Engine、Google Maps embed、D1-backed catalog 與帳號 API，以及伺服器端 AI 條件解析／推薦說明；版本庫內 Demo 是獨立固定情境，不作正式模式的隱性 fallback。D1 失敗時只回退同批官方 snapshot；AI 失敗時保留手動條件與確定性規則。Team 交易、R2 evidence upload 與 Google Places 仍屬下一階段；詳細資料表、API contract、freshness 與 evidence 規則請參考 [`docs/SPEC-team-cp-zero-cost-v1.md`](docs/SPEC-team-cp-zero-cost-v1.md)。
+目前可執行路徑包含 Vinext / React 前端、Worker route handlers、CP Value Engine、Google Maps embed、D1-backed catalog、帳號與 Team API，以及伺服器端 AI 條件解析／推薦說明；版本庫內 Demo 是獨立固定情境，不作正式模式的隱性 fallback。D1 失敗時只回退同批官方 snapshot；AI 失敗時保留手動條件與確定性規則。Team 目前只處理意願與承諾，不付款、不代替下單、不保證履約；R2 evidence upload 與 Google Places 仍屬下一階段。詳細資料表、API contract、freshness 與 evidence 規則請參考 [`docs/SPEC-team-cp-zero-cost-v1.md`](docs/SPEC-team-cp-zero-cost-v1.md)。
 
 資料處理原則：
 
@@ -139,11 +139,11 @@ ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的�
 | 評分         | 自製 CP Value Engine                           | 五維加權、可靠度修正、證據與覆蓋率守門                                                                  |
 | 語音         | Web Speech API                                 | 瀏覽器端 `zh-TW` 語音辨識；不支援時回退文字輸入                                                         |
 | 地圖         | Google Maps embed / search URL                 | Demo 地圖與外部查詢；尚未使用付費 Places API                                                            |
-| 後端         | Cloudflare Workers                             | catalog、`/api/auth/*` 與 `/api/me/data` 已實作；Team 交易式寫入 API 尚待完成                            |
-| 資料庫       | Cloudflare D1 / SQLite                         | `DB` binding、catalog／帳號 migrations、14-source importer、本機自動 bootstrap、SQLite／seed／snapshot 已完成 |
+| 後端         | Cloudflare Workers                             | catalog、`/api/auth/*`、`/api/me/data` 與邀請制 Team API 已實作；身分一律由 bearer session 推導          |
+| 資料庫       | Cloudflare D1 / SQLite                         | `DB` binding、catalog／帳號 revision migrations、Team schema、14-source importer 與本機 bootstrap 已完成 |
 | 物件儲存目標 | Cloudflare R2                                  | 規劃存放證據照片與收據；目前未啟用                                                                      |
-| 部署         | OpenAI Sites + Cloudflare toolchain            | 公開基準版可直接開啟；本分支帳號 migration 與 UI 更新待重新部署／驗證                                   |
-| AI 模型      | OpenAI Responses API（預設 `gpt-5.6-luna`）    | 只在伺服器解析條件、選擇有事實支持的理由代碼；缺 key／逾時／錯誤時回退手動與規則流程                    |
+| 部署         | OpenAI Sites + Cloudflare toolchain            | 公開基準版可直接開啟；本分支帳號 migrations 與 Team API／UI 待重新部署及 production smoke               |
+| AI 模型      | Google Gemini API（`gemini-2.5-pro`）          | 只在伺服器解析條件、選擇有事實支持的理由代碼；缺 key／逾時／錯誤時回退手動與規則流程                    |
 
 ## 專案結構
 
@@ -159,13 +159,13 @@ ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的�
 │  ├─ AI-integration-plan.md         # Responses API 安全邊界與驗收
 │  └─ architecture/                  # 可驗證原始 JSON、互動 HTML 與視覺檢查 PNG
 └─ mvp/
-   ├─ app/                           # Vinext 頁面、manifest 與 9 個 API route handlers
+   ├─ app/                           # Vinext 頁面、獨立 Team Hub、manifest 與 18 個 API route handlers
    ├─ components/ui/                 # UI 元件
    ├─ data/                          # 官方資料 seed、精簡快照與使用說明
    ├─ db/schema.ts                   # Domain type 與資料表名稱
-   ├─ drizzle/                       # D1 / SQLite 核心、資料、AI 限流與帳號 migrations
-   ├─ lib/                           # CP engine、catalog、AI 與帳號契約／伺服器邏輯
-   ├─ e2e/                           # Playwright 主要流程、帳號與音樂測試
+   ├─ drizzle/                       # D1 / SQLite 核心、資料、AI 限流、帳號與 revision migrations
+   ├─ lib/                           # CP engine、catalog、AI、帳號與 Team 契約／伺服器邏輯
+   ├─ e2e/                           # Playwright 主要流程、帳號、Team 與音樂測試
    ├─ tests/                         # Node 單元／契約測試
    ├─ scripts/                       # 官方資料匯入與本機資料庫驗證
    └─ public/                        # PWA icon、service worker、架構頁
@@ -194,7 +194,7 @@ npm run dev
 npm run dev:lan
 ```
 
-`npm run dev`、`npm run dev:lan` 與 `npm run start` 會透過 npm 的 pre-script 自動執行 `npm run data:bootstrap:local`：首次建立本機 D1 時依序套用核心 migration、同步目前 snapshot 對應的 seed，並補上 AI 限流與帳號 migration；資料已是相同 `runId` 時不會重複灌入。本機狀態保存在 `mvp/.wrangler/state`。
+`npm run dev`、`npm run dev:lan` 與 `npm run start` 會透過 npm 的 pre-script 自動執行 `npm run data:bootstrap:local`：首次建立本機 D1 時依序套用核心 migration、同步目前 snapshot 對應的 seed，並補上 AI 限流、帳號與 account revision migrations；資料已是相同 `runId` 時不會重複灌入。本機狀態保存在 `mvp/.wrangler/state`。
 
 接著用手機開啟電腦的區網 IP 與終端機顯示的 port。Windows 防火牆可能會要求允許 Node.js 的私人網路連線。
 
@@ -218,7 +218,7 @@ npm run start
 
 Windows 上的 Node 24 目前可能在 Vinext 已完成輸出後觸發 libuv `UV_HANDLE_CLOSING` assertion；請使用 Node 22 LTS，以免成功建置被回報為非零結束碼。
 
-Demo 不需要 `.env` 或 API key。真實模式若要啟用 AI，請在本機忽略的 `mvp/.dev.vars` 或 Sites 環境變數設定 `OPENAI_API_KEY` 與 `OPENAI_MODEL`；金鑰只能放在 server-side secret，絕對不要提交到 Git 或使用 `NEXT_PUBLIC_*`。
+Demo 不需要 `.env` 或 API key。真實模式若要啟用 AI，請在本機忽略的 `mvp/.dev.vars` 或 Sites 環境變數設定 `GEMINI_API_KEY` 與 `GEMINI_MODEL=gemini-2.5-pro`；金鑰只能放在 server-side secret，絕對不要提交到 Git 或使用 `NEXT_PUBLIC_*`。
 
 ### 官方資料庫快照
 
@@ -231,15 +231,15 @@ npm run db:verify
 npm run data:bootstrap:local
 ```
 
-詳見 [`mvp/data/README.md`](mvp/data/README.md)。產生的 SQLite 不進 Git；seed 是本機 D1 的 bootstrap，snapshot 同時是 catalog API 在 binding 未配置或查詢失敗時的 fallback。bootstrap 會核對 seed 與 snapshot 的 `runId`，API 也只回傳最新一筆 `COMPLETED` import run 中標為 `IMPORTED` 的項目。hosting config 已宣告 D1 `DB`；公開基準版已部署，但本分支的帳號 migration 仍需在 production 套用並驗證。日用品結果只納入臺北市官方藥局；友善店家清冊仍會抓取及稽核，但因不能證明零售業態，不再建立為零售／日用品候選。
+詳見 [`mvp/data/README.md`](mvp/data/README.md)。產生的 SQLite 不進 Git；seed 是本機 D1 的 bootstrap，snapshot 同時是 catalog API 在 binding 未配置或查詢失敗時的 fallback。bootstrap 會核對 seed 與 snapshot 的 `runId`，API 也只回傳最新一筆 `COMPLETED` import run 中標為 `IMPORTED` 的項目。hosting config 已宣告 D1 `DB`；公開基準版已部署，但本分支的帳號 revision migration 與 Team API／UI 仍需在 production 套用、部署並驗證。日用品結果只納入臺北市官方藥局；友善店家清冊仍會抓取及稽核，但因不能證明零售業態，不再建立為零售／日用品候選。
 
 ### API 與 D1 runtime
 
-`mvp/drizzle/0001_p0_core.sql` 定義核心資料模型，`0002_product_flow.sql` 補上搜尋需求、清單、通知、購買紀錄與揪團品項，`0003_open_data_ingestion.sql` 加入來源資源與匯入稽核，`0006_ai_rate_limits.sql` 提供不保存原始 IP 的 AI 原子限流，`0007_auth_accounts.sql` 則加入密碼雜湊、30 分鐘工作階段與帳號狀態。本機啟動前會自動執行 `data:bootstrap:local`。主搜尋使用 `POST /api/catalog/search`，避免把精確位置放在 URL；`GET` 仍保留供手動檢查，`GET /api/catalog/categories` 提供類別摘要。查詢優先讀取 D1 最新完成匯入，失敗時改讀官方 snapshot；活動預設回傳所選時刻起 7 天內仍有效或即將開始的項目，並區分 `CURRENT`／`UPCOMING`。完整 API 順序、資料契約、匿名轉登入與外部服務策略請見 [`docs/API-integration-plan.md`](docs/API-integration-plan.md)。
+`mvp/drizzle/0001_p0_core.sql` 定義包含 Team 在內的核心資料模型，`0002_product_flow.sql` 補上搜尋需求、清單、通知、購買紀錄與揪團品項，`0003_open_data_ingestion.sql` 加入來源資源與匯入稽核，`0006_ai_rate_limits.sql` 提供不保存原始 IP 的 AI 原子限流，`0007_auth_accounts.sql` 加入密碼雜湊、30 分鐘工作階段與帳號狀態，`0008`／`0009` 再補帳號正規化與 revision。本機啟動前會自動執行 `data:bootstrap:local`；正式 build 將來源 migration 整理成 8 份部署檔。主搜尋使用 `POST /api/catalog/search`，避免把精確位置放在 URL；`GET` 仍保留供手動檢查，`GET /api/catalog/categories` 提供類別摘要。查詢優先讀取 D1 最新完成匯入，失敗時改讀官方 snapshot；活動預設回傳所選時刻起 7 天內仍有效或即將開始的項目，並區分 `CURRENT`／`UPCOMING`。完整 API 順序、資料契約、匿名轉登入與外部服務策略請見 [`docs/API-integration-plan.md`](docs/API-integration-plan.md)。
 
 ## 作品展示
 
-- 公開展示網址：[https://all-in-life-ail.chiehlun.chatgpt.site](https://all-in-life-ail.chiehlun.chatgpt.site)（公開基準版可直接開啟；本分支帳號更新待再部署）
+- 公開展示網址：[https://all-in-life-ail.chiehlun.chatgpt.site](https://all-in-life-ail.chiehlun.chatgpt.site)（公開基準版可直接開啟；本分支帳號與 Team 更新待再部署）
 - 評選影片：待上傳後補上（需不超過 2:00，且設為知道連結即可觀看）
 - 本機展示：依上方「安裝與執行」使用 `npm run dev`
 
@@ -248,16 +248,17 @@ npm run data:bootstrap:local
 ## 限制與未來工作
 
 - 主搜尋已讀取 catalog API；D1 失敗時會標示 snapshot fallback，整個 API 無法連線時正式模式顯示錯誤，不會自動混入 DEMO。資料不代表即時價格、庫存或成團承諾；未知價格會顯示待確認，使用前仍須回原始來源查核。
-- 已有帳號登入與個人狀態持久化，但仍沒有真實 Team 邀請、承諾交易或併發控制。
-- 已有受控的 14-source 官方資料 importer、catalog／帳號 API、D1 `DB` binding 與伺服器端 AI 解析／推薦說明，但沒有店家即時菜單／庫存來源、Team 交易 API 或 R2 evidence upload。
-- 本機 D1 seed／bootstrap 已完成；公開基準版已部署，但本分支的帳號 migration 與畫面更新仍待 production 套用／驗證，增量撤站、活動下架與過期 reconciliation 也尚未實作。
+- 帳號登入、個人狀態持久化、revision／409 衝突偵測與序列化 autosave 已落地；系統會拒絕過期寫入，但不會自動合併兩台裝置的衝突內容。
+- 邀請制 Team API 與 `/team` Hub 已落地，但只保存意願與承諾，不含付款、代訂、訂單或履約保證；只有 `pricingVerified && progress.thresholdMet` 時才可顯示「驗證價格的意願門檻已達成」，仍須向來源確認，且不得暗示已成交或取得。
+- 已有受控的 14-source 官方資料 importer、catalog／帳號／Team API、D1 `DB` binding 與伺服器端 AI 解析／推薦說明，但沒有店家即時菜單／庫存來源或 R2 evidence upload。
+- 本機 D1 seed／bootstrap 已完成；公開基準版已部署，但本分支的 8 份 deployment migrations、畫面更新與真實 D1 併發 smoke 仍待 production 套用／驗證，增量撤站、活動下架與過期 reconciliation 也尚未實作。
 - 官方資料 importer 有 2 km 直線距離篩選；Google 地圖介面仍採 embed/search URL，沒有 Places attribution pipeline 或路線導航。
 - 語音辨識依賴瀏覽器能力，結果不會上傳至本專案後端，但瀏覽器供應商可能依其政策處理語音。
 - Chrome 已確認觸發 PWA installability，service worker 與離線 app-shell fallback 亦已驗證；正式送件前仍建議在目標 Android／iOS 實機各完成一次安裝與飛航模式重載。
 - CP 分數使用 Demo 維度值；正式上線需加入 cohort normalization、policy version、freshness 與 score audit。
 - Community report、食安事件與商家合作需先完成 moderation、隱私、濫用防護及法務規則。
 
-下一步優先順序為：套用並驗證 production 帳號 migration → 完成 Team transaction → Google Places 合規整合 → Android／iOS 實機 PWA 與 accessibility 驗收 → 正式監控。
+下一步優先順序為：備份 production D1、套用並驗證 8 份 deployment migrations → 部署本分支並完成帳號與 Team 的真實 D1 併發 smoke → Google Places 合規整合 → Android／iOS 實機 PWA 與 accessibility 驗收 → 正式監控。
 
 ## 第三方服務、資料與素材
 
