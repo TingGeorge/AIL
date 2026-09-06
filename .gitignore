@@ -2,3 +2,7 @@ node_modules
 dist
 .env
 .DS_Store
+
+# Local competition submission materials; keep personal data out of the public repo.
+basic_info.md
+submission-assets/

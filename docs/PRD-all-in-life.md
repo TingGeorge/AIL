@@ -334,7 +334,7 @@ ALL in life 協助使用者在固定的圓山區生活圈內，依照預算、�
 
 - 匿名使用者可完成需求解析與搜尋；登入不是搜尋前置條件。
 - 註冊需要全站唯一、不分大小寫的 username、至少 12 字元的 password，以及可選 nickname；nickname 預設等於 username，之後可修改。
-- 登入、登出與修改密碼使用 Auth API；忘記密碼按鈕只顯示 `SUPPORT_EMAIL=xuanweilin805@gmail.com`，不提供 App 內自動 reset。
+- 登入、登出與修改密碼使用 Auth API；忘記密碼按鈕只顯示 `SUPPORT_EMAIL=team@example.com`，不提供 App 內自動 reset。
 - Server 只保存 password hash；Browser 不保存 username／password。登入成功後只將隨機 opaque session token 保存到 `sessionStorage`。
 - session token 建立後固定 30 分鐘到期，不因請求自動延長；登出立即撤銷 token。
 - 已登入帳號保存清單、收藏與設定；音檔、逐字稿、需求與限制、搜尋歷史不保存到帳號資料。
@@ -565,7 +565,7 @@ group_offer_memberships    # 團購加入：candidate_id、user_id、joined_at�
 
 - **Case Auth-D：忘記密碼**
   - Given：使用者點擊忘記密碼。
-  - Then：只顯示 `xuanweilin805@gmail.com`，不在 App 內自動重設，也不要求寄送明文 password。
+  - Then：只顯示 `team@example.com`，不在 App 內自動重設，也不要求寄送明文 password。
 
 - **Case Group-A：加入與進度**
   - Given：一筆容量 5 人的有效團體優惠目前無人加入，A 與 B 均已登入。
