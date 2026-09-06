@@ -3,21 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=22.13.0 <24"
   },
   "scripts": {
+    "predev": "npm run data:bootstrap:local",
     "dev": "vinext dev",
+    "predev:lan": "npm run data:bootstrap:local",
     "dev:lan": "vinext dev --host 0.0.0.0",
-    "build": "vinext build",
-    "start": "wrangler dev --config dist/server/wrangler.json",
+    "build": "node scripts/build-sites-deployment-migrations.mjs && vinext build && node scripts/verify-sites-build-artifact.mjs",
+    "prestart": "npm run data:bootstrap:local",
+    "start": "node scripts/start-local.mjs",
+    "music:generate": "node scripts/generate-background-music.mjs",
+    "data:refresh": "node scripts/import-yuanshan-open-data.mjs",
+    "data:bootstrap:local": "node scripts/bootstrap-local-d1.mjs",
+    "db:verify": "node scripts/verify-yuanshan-db.mjs",
+    "test:unit": "node --test tests/*.test.mjs",
+    "test:e2e": "playwright test",
     "lint": "oxlint",
     "format": "oxfmt"
   },
   "dependencies": {
-    "react": "19.2.6",
-    "react-dom": "19.2.6",
-    "react-server-dom-webpack": "19.2.6",
-    "vinext": "1.0.0-beta.5",
     "@base-ui/react": "1.7.0",
     "@shadcn/react": "0.3.0",
     "class-variance-authority": "0.7.1",
@@ -28,17 +33,22 @@
     "input-otp": "1.4.2",
     "lucide-react": "1.31.0",
     "qrcode.react": "^4.2.0",
+    "react": "19.2.6",
     "react-day-picker": "9.8.1",
+    "react-dom": "19.2.6",
     "react-resizable-panels": "4.5.8",
+    "react-server-dom-webpack": "19.2.6",
     "recharts": "3.8.0",
     "shadcn": "4.18.0",
     "tailwind-merge": "3.6.0",
-    "tw-animate-css": "1.4.0"
+    "tw-animate-css": "1.4.0",
+    "vinext": "1.0.0-beta.5"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.37.1",
     "@cloudflare/workers-types": "4.20260515.1",
     "@openai/sites-vite-plugin": "0.2.0",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",

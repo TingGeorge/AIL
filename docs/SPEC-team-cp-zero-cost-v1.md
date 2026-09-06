@@ -356,7 +356,7 @@ Google Places 的 `place_id` 可長期保存；其他 Places content 不應任�
 | 欄位 | 說明 |
 |---|---|
 | `id` | assertion id |
-| `subject_type`, `subject_id` | PLACE / MENU_ITEM / OFFER / OPPORTUNITY / REPORT |
+| `subject_type`, `subject_id` | AREA / PLACE / MENU_ITEM / OFFER / OPPORTUNITY / REPORT |
 | `field_key` | 例如 `base_price_twd`, `min_people`, `food_provided` |
 | `claimed_value_json` | 當下宣稱值 |
 | `source_snapshot_id` | 支持來源 |

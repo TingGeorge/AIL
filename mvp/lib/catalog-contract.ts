@@ -31,32 +31,15 @@ export const catalogCategories = [
   },
 ] as const;
 
+export const DEFAULT_EVENT_WINDOW_DAYS = 7;
+export const MAX_EVENT_WINDOW_DAYS = 30;
+
 export type CatalogCategoryKey = (typeof catalogCategories)[number]['key'];
 export type CatalogCategoryLabel = (typeof catalogCategories)[number]['label'];
-export type CatalogPlaceKind =
-  (typeof catalogCategories)[number]['placeKinds'][number];
 
 export const categoryLabels = catalogCategories.map(
   (category) => category.label,
 ) as CatalogCategoryLabel[];
-
-export const placeKindToCategory = Object.fromEntries(
-  catalogCategories.flatMap((category) =>
-    category.placeKinds.map((kind) => [kind, category.key]),
-  ),
-) as Record<CatalogPlaceKind, CatalogCategoryKey>;
-
-export const opportunityCategoryToCategory: Record<
-  string,
-  CatalogCategoryKey
-> = {
-  EVENT: 'EVENT',
-  CULTURE: 'EVENT',
-  PUBLIC_RESOURCE: 'FREE_RESOURCE',
-  FREE_RESOURCE: 'FREE_RESOURCE',
-  TRANSPORT: 'TRANSPORT',
-  FOOD: 'FOOD',
-};
 
 export type CatalogCategorySummary = {
   key: CatalogCategoryKey;
@@ -64,8 +47,107 @@ export type CatalogCategorySummary = {
   count: number;
 };
 
+export type CatalogDataSource =
+  | 'd1'
+  | 'snapshot'
+  | 'unconfigured'
+  | 'error';
+
 export type CatalogSummaryResponse = {
-  source: 'd1' | 'unconfigured' | 'error';
+  source: CatalogDataSource;
   categories: CatalogCategorySummary[];
   syncedAt: string | null;
+  eventWindow: CatalogEventWindow;
+};
+
+export type CatalogEventWindow = {
+  startsAt: string;
+  endsAt: string;
+  days: number;
+};
+
+export type CatalogCost =
+  | {
+      state: 'FREE';
+      amountTwd: 0;
+      reason: string;
+    }
+  | {
+      state: 'KNOWN';
+      amountTwd: number;
+      reason: string;
+    }
+  | {
+      state: 'UNKNOWN';
+      amountTwd: null;
+      reason: string;
+    };
+
+export type CatalogAvailability = {
+  state: 'CURRENT' | 'UPCOMING' | 'UNKNOWN';
+  startsAt: string | null;
+  endsAt: string | null;
+  text: string;
+};
+
+export type CatalogVerifiedField =
+  | 'identity'
+  | 'location'
+  | 'schedule'
+  | 'cost'
+  | 'realtimeAvailability';
+
+export type CatalogVerification = {
+  status: 'VERIFIED' | 'PARTIAL';
+  label: string;
+  fields: CatalogVerifiedField[];
+};
+
+export type CatalogItem = {
+  id: string;
+  subjectType: 'PLACE' | 'OPPORTUNITY';
+  categoryKey: CatalogCategoryKey;
+  categoryLabel: CatalogCategoryLabel;
+  kind: string;
+  title: string;
+  provider: string;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  distanceM: number | null;
+  cost: CatalogCost;
+  availability: CatalogAvailability;
+  verification: CatalogVerification;
+  condition: string;
+  source: {
+    title: string;
+    publisher: string;
+    url: string | null;
+    verifiedAt: string | null;
+  };
+  evidenceQuote: string;
+  actionUrl: string | null;
+  tags: string[];
+  realtime: {
+    availableRentBikes: number | null;
+    availableReturnBikes: number | null;
+    observedAt: string | null;
+    validUntil: string | null;
+    fresh: boolean;
+    appliesToSelectedTime: boolean;
+  } | null;
+};
+
+export type CatalogSearchResponse = {
+  source: CatalogDataSource;
+  fallback: boolean;
+  syncedAt: string | null;
+  eventWindow: CatalogEventWindow;
+  coverage: {
+    center: { latitude: number; longitude: number };
+    radiusM: number;
+  };
+  items: CatalogItem[];
+  facets: CatalogCategorySummary[];
+  warnings: string[];
 };

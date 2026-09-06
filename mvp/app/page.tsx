@@ -3,7 +3,9 @@
 import Image from 'next/image';
 import {
   useEffect,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
   type CSSProperties,
   type ReactNode,
@@ -66,13 +68,27 @@ import {
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
+import { BackgroundMusicToggle } from '@/components/background-music-toggle';
+import { ThemeToggle } from '@/components/theme-toggle';
 import {
   catalogCategories,
   categoryLabels,
   type CatalogCategoryLabel,
-  type CatalogSummaryResponse,
+  type CatalogCategorySummary,
+  type CatalogDataSource,
+  type CatalogItem,
+  type CatalogSearchResponse,
 } from '@/lib/catalog-contract';
 import { type CpDimension } from '@/lib/cp-engine';
+import {
+  calculatePersonalCpScore,
+  rebalancePersonalCpWeights,
+} from '@/lib/personal-cp.mjs';
+import {
+  reportsForSubject,
+  summarizeCommunityReports,
+} from '@/lib/community-reports.mjs';
+import { useBackgroundMusic } from '@/lib/use-background-music';
 
 type View =
   | 'welcome'
@@ -94,9 +110,29 @@ type View =
   | 'map';
 type Mode = 'daily' | 'team' | 'zero';
 type ExperienceMode = 'demo' | 'account';
+type CatalogDisplaySource = CatalogDataSource | 'checking' | 'demo';
+type ResultProvenance =
+  | 'verified-real'
+  | 'real'
+  | 'verified-demo'
+  | 'simulated';
 type Category = CatalogCategoryLabel;
 type Sort = 'cp' | 'cost' | 'distance';
-type LocationPermission = 'idle' | 'requesting' | 'granted' | 'declined' | 'denied';
+type SearchStatus =
+  | 'idle'
+  | 'validating'
+  | 'loading'
+  | 'ranking'
+  | 'success'
+  | 'empty'
+  | 'error';
+type LocationPermission =
+  | 'idle'
+  | 'requesting'
+  | 'granted'
+  | 'declined'
+  | 'denied';
+type ToastAction = { label: string; run: () => void };
 type GeoPoint = { latitude: number; longitude: number };
 type Profile = { name: string; avatar: string; signedIn: boolean };
 type CpParams = { price: number; distance: number; preference: number };
@@ -110,13 +146,95 @@ type Filters = {
   exclusions: string[];
   preferences: string[];
 };
+type AiParseStatus = 'idle' | 'loading' | 'success' | 'unavailable';
+type AiSearchCategory =
+  | 'FOOD'
+  | 'DAILY_GOODS'
+  | 'FREE_RESOURCE'
+  | 'EVENT'
+  | 'TRANSPORT';
+type AiSearchConstraints = {
+  query: string;
+  date: string | null;
+  time: string | null;
+  category: AiSearchCategory | null;
+  budgetTwd: number | null;
+  partySize: number | null;
+  maxDistanceM: number | null;
+  hardExclusions: string[];
+  softPreferences: string[];
+  mobility: string[];
+};
+type AiParseResponse = {
+  ok: boolean;
+  source: 'openai' | 'fallback';
+  constraints: AiSearchConstraints;
+  assumptions: string[];
+  missingFields: string[];
+  confidence: number;
+};
+type AiExplanation = {
+  headline: string;
+  reasons: string[];
+  caution: string | null;
+  source: 'openai' | 'fallback';
+};
+type AiExplainResponse = {
+  ok: boolean;
+  source: 'openai' | 'fallback';
+  items: Array<Omit<AiExplanation, 'source'> & { id: string }>;
+};
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+const isAiParseResponse = (value: unknown): value is AiParseResponse => {
+  if (!isRecord(value) || value.ok !== true || value.source !== 'openai')
+    return false;
+  const constraints = value.constraints;
+  if (!isRecord(constraints)) return false;
+  return (
+    typeof constraints.query === 'string' &&
+    (constraints.category === null ||
+      (typeof constraints.category === 'string' &&
+        ['FOOD', 'DAILY_GOODS', 'FREE_RESOURCE', 'EVENT', 'TRANSPORT'].includes(
+          constraints.category,
+        ))) &&
+    Array.isArray(constraints.hardExclusions) &&
+    constraints.hardExclusions.every((item) => typeof item === 'string') &&
+    Array.isArray(constraints.softPreferences) &&
+    constraints.softPreferences.every((item) => typeof item === 'string')
+  );
+};
 type Transaction = {
   id: string;
+  resultId?: string;
   title: string;
   category: Category;
   amount: number;
   date: string;
   saved: number;
+  occurredAt: string;
+};
+type BudgetSummary = {
+  budget: number;
+  spent: number;
+  saved: number;
+  remaining: number;
+  usedPercentage: number;
+  transactionCount: number;
+};
+type CommunityReportType =
+  | '營業時間不同'
+  | '價格不同'
+  | '已停業'
+  | '優惠失效'
+  | '其他';
+type CommunityReport = {
+  id: string;
+  subjectId: string;
+  type: CommunityReportType;
+  note: string;
+  submittedAt: string;
+  status: 'received' | 'resolved';
 };
 type Result = {
   id: string;
@@ -124,9 +242,9 @@ type Result = {
   title: string;
   provider: string;
   subcategory: string;
-  totalCost: number;
-  benchmarkCost?: number;
-  servings: number;
+  totalCost: number | null;
+  benchmarkCost?: number | null;
+  servings: number | null;
   distanceKm: number;
   walkMin: number;
   hours: string;
@@ -135,18 +253,26 @@ type Result = {
   source: string;
   sourceUrl?: string;
   evidence: string;
-  reliability: number;
+  reliability: number | null;
   verifiedAt: string;
   mapQuery: string;
   expiresAt?: string;
-  reportCount: number;
+  reportCount: number | null;
   image?: string;
   imageKind?: 'verified-real';
   tags?: string[];
   preferenceTags?: string[];
   agent?: 'cp' | 'zero';
-  tone: 'lime' | 'violet' | 'blue' | 'coral' | 'amber';
+  tone: 'lime' | 'violet' | 'blue' | 'teal' | 'coral' | 'amber';
   dimensions: Partial<Record<CpDimension, number>>;
+  latitude?: number | null;
+  longitude?: number | null;
+  dataSource?: 'demo' | CatalogDataSource;
+  costReason?: string;
+  costState?: CatalogItem['cost']['state'];
+  verificationLabel?: string;
+  provenance?: ResultProvenance;
+  verifiedFields?: string[];
 };
 
 const modes: Record<
@@ -169,7 +295,7 @@ const modes: Record<
     title: '零元探索',
     short: '零元',
     description: '免費優先，資格與時間仍要符合',
-    color: 'var(--coral)',
+    color: 'var(--teal)',
   },
 };
 const homePrompts = [
@@ -212,16 +338,23 @@ const resultCategories: Category[] = categoryLabels;
 const categoryColors: Record<Category, string> = {
   食品: 'var(--lime)',
   日用品: 'var(--amber)',
-  '免費／公益資源': 'var(--blue)',
+  '免費／公益資源': 'var(--teal)',
   活動: 'var(--violet)',
-  交通: 'var(--coral)',
+  交通: 'var(--blue)',
+};
+const categoryTones: Record<Category, Result['tone']> = {
+  食品: 'lime',
+  日用品: 'amber',
+  '免費／公益資源': 'teal',
+  活動: 'violet',
+  交通: 'blue',
 };
 const sortOptions: { value: Sort; label: string; hint: string }[] = [
   { value: 'cp', label: 'CP 值優先', hint: '綜合價格、距離與喜好' },
-  { value: 'cost', label: '價格優先', hint: '同喜好群組內，總成本低的優先' },
-  { value: 'distance', label: '距離優先', hint: '同喜好群組內，離你近的優先' },
+  { value: 'cost', label: '價格優先', hint: '總成本低的優先' },
+  { value: 'distance', label: '距離優先', hint: '離你近的優先' },
 ];
-const results: Result[] = [
+const demoFixtures: Result[] = [
   {
     id: 'jianjia',
     category: '食品',
@@ -509,7 +642,7 @@ const results: Result[] = [
     id: 'ys-food-002',
     category: '食品',
     title: '圓山麵食快餐方案',
-    provider: '圓山資料庫餐飲 YS_FOOD_002',
+    provider: '圓山生活圈餐飲資料',
     subcategory: '麵食／快速晚餐',
     totalCost: 220,
     benchmarkCost: 300,
@@ -518,11 +651,11 @@ const results: Result[] = [
     walkMin: 7,
     hours: '11:00–20:30',
     serviceModes: ['內用', '外帶'],
-    condition: 'Excel 圓山餐飲資料匯入；名稱待資料清洗後替換為完整店名',
-    source: 'Yuanshan_APP_AI_Database_Design.xlsx / 02_Places',
+    condition: '依餐飲資料的價格帶與營業時段整理；店名與供應需再確認',
+    source: '圓山生活圈餐飲資料 / 02_Places',
     sourceUrl: 'https://www.google.com/maps/search/?api=1&query=圓山 麵食',
     evidence:
-      '02_Places 顯示圓山餐飲資料有 12 筆 active places；本卡片先以資料集 record id 補入展示候選。',
+      '02_Places 收錄圓山餐飲地點；本方案依價格帶、距離與營業時段整理，實際店名與供應請於前往前確認。',
     reliability: 78,
     verifiedAt: '2026-09-05',
     mapQuery: '圓山 麵食',
@@ -544,7 +677,7 @@ const results: Result[] = [
     id: 'ys-food-003',
     category: '食品',
     title: '圓山便當外帶方案',
-    provider: '圓山資料庫餐飲 YS_FOOD_003',
+    provider: '圓山生活圈餐飲資料',
     subcategory: '便當／外帶',
     totalCost: 190,
     benchmarkCost: 260,
@@ -554,10 +687,10 @@ const results: Result[] = [
     hours: '10:30–19:30',
     serviceModes: ['外帶'],
     condition: '可能含堅果或芝麻醬料；排斥者需現場確認',
-    source: 'Yuanshan_APP_AI_Database_Design.xlsx / 02_Places',
+    source: '圓山生活圈餐飲資料 / 02_Places',
     sourceUrl: 'https://www.google.com/maps/search/?api=1&query=圓山 便當',
     evidence:
-      '資料集提供 active food record，前端先將它納入 CP 探索候選；正式版需補齊 evidence assertion。',
+      '02_Places 收錄此類餐飲條件；價格、成分與實際供應仍需向店家確認。',
     reliability: 76,
     verifiedAt: '2026-09-05',
     mapQuery: '圓山 便當',
@@ -579,7 +712,7 @@ const results: Result[] = [
     id: 'ys-food-004',
     category: '食品',
     title: '圓山早午餐座位方案',
-    provider: '圓山資料庫餐飲 YS_FOOD_004',
+    provider: '圓山生活圈餐飲資料',
     subcategory: '早午餐／咖啡',
     totalCost: 320,
     benchmarkCost: 420,
@@ -589,10 +722,10 @@ const results: Result[] = [
     hours: '09:00–17:00',
     serviceModes: ['內用', '有座位'],
     condition: '熱門時段可能需等候；適合安靜與能坐偏好',
-    source: 'Yuanshan_APP_AI_Database_Design.xlsx / 02_Places',
+    source: '圓山生活圈餐飲資料 / 02_Places',
     sourceUrl: 'https://www.google.com/maps/search/?api=1&query=圓山 早午餐',
     evidence:
-      '資料集 02_Places 含餐飲與停留時間欄位；目前以前端 fixture 呈現，等待後端匯入正式欄位。',
+      '02_Places 提供餐飲與停留時間欄位；本方案依目前可比較欄位整理，座位與候位狀況請於前往前確認。',
     reliability: 80,
     verifiedAt: '2026-09-05',
     mapQuery: '圓山 早午餐',
@@ -647,6 +780,20 @@ const results: Result[] = [
   },
 ];
 
+const verifiedDemoIds = new Set(['tfam', 'confucius', 'market', 'youbike']);
+const demoResults: Result[] = demoFixtures.map((item) => {
+  const verifiedExample = verifiedDemoIds.has(item.id);
+  return {
+    ...item,
+    dataSource: 'demo',
+    provenance: verifiedExample ? 'verified-demo' : 'simulated',
+    verificationLabel: '方案資訊',
+    verifiedFields: ['地點', '時段', '價格', '服務方式'],
+  };
+});
+const emptyResults: Result[] = [];
+const demoCatalogWarnings: string[] = [];
+
 // 前端候選卡片的定位點；正式 API 上線後改由 D1 places 座標欄位提供。
 const resultLocations: Record<string, GeoPoint> = {
   jianjia: { latitude: 25.068981, longitude: 121.515792 },
@@ -662,6 +809,11 @@ const resultLocations: Record<string, GeoPoint> = {
   'ys-food-004': { latitude: 25.067623, longitude: 121.519313 },
   'taxi-carpool-night': { latitude: 25.0782, longitude: 121.53237 },
 };
+const catalogCoverageCenter: GeoPoint = {
+  latitude: 25.07133,
+  longitude: 121.52024,
+};
+const catalogCoverageRadiusKm = 2;
 
 const distanceBetween = (from: GeoPoint, to: GeoPoint) => {
   const toRadians = (value: number) => (value * Math.PI) / 180;
@@ -679,6 +831,68 @@ const distanceBetween = (from: GeoPoint, to: GeoPoint) => {
 
 const money = (value: number) =>
   new Intl.NumberFormat('zh-TW').format(Math.round(value));
+const verifiedFieldLabels = {
+  identity: '身分',
+  location: '地點',
+  schedule: '時段',
+  cost: '費用',
+  realtimeAvailability: '即時車位',
+} as const;
+const catalogItemToResult = (
+  item: CatalogItem,
+  dataSource: CatalogDataSource,
+): Result | null => {
+  if (item.distanceM === null) return null;
+  const realtimeText =
+    item.realtime?.fresh && item.realtime.appliesToSelectedTime
+      ? `；目前可借 ${item.realtime.availableRentBikes ?? '待確認'} 輛、可還 ${item.realtime.availableReturnBikes ?? '待確認'} 輛`
+      : item.realtime?.fresh
+        ? '；即時車位僅代表查詢當下，不預測所選時段'
+        : '';
+  const sourceUrl = item.source.url ?? item.actionUrl ?? undefined;
+  return {
+    id: item.id,
+    category: item.categoryLabel,
+    title: item.title,
+    provider: item.provider,
+    subcategory: item.provider,
+    totalCost: item.cost.amountTwd,
+    benchmarkCost: null,
+    servings: null,
+    distanceKm: Math.round((item.distanceM / 1_000) * 100) / 100,
+    walkMin: Math.max(1, Math.round((item.distanceM / 1_000) * 13)),
+    hours:
+      item.availability.startsAt && item.availability.endsAt
+        ? `${taipeiDateLabel(item.availability.startsAt)} ～ ${taipeiDateLabel(item.availability.endsAt)}`
+        : item.availability.text,
+    serviceModes: [],
+    condition: `${item.condition}${realtimeText}`,
+    source: `${item.source.publisher}｜${item.source.title}`,
+    sourceUrl,
+    evidence: `${item.evidenceQuote}\n${item.cost.reason}`,
+    reliability: null,
+    verifiedAt: item.source.verifiedAt ?? '',
+    mapQuery: [item.title, item.address].filter(Boolean).join(' '),
+    expiresAt: item.availability.endsAt ?? undefined,
+    reportCount: null,
+    tags: item.tags,
+    preferenceTags: item.tags,
+    agent: item.cost.state === 'FREE' ? 'zero' : 'cp',
+    tone: categoryTones[item.categoryLabel],
+    dimensions: {},
+    latitude: item.latitude,
+    longitude: item.longitude,
+    dataSource,
+    costReason: item.cost.reason,
+    costState: item.cost.state,
+    provenance:
+      item.verification.status === 'VERIFIED' ? 'verified-real' : 'real',
+    verificationLabel: item.verification.label,
+    verifiedFields: item.verification.fields.map(
+      (field) => verifiedFieldLabels[field],
+    ),
+  };
+};
 const taipeiDateTime = () => {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Asia/Taipei',
@@ -709,70 +923,189 @@ const localNow = () =>
     second: '2-digit',
     hourCycle: 'h23',
   }).format(new Date());
-const createInitialFilters = (experience: ExperienceMode): Filters => {
+const currentMonthDateLabel = (daysBeforeToday: number) => {
+  const [, month, day] = taipeiDateTime().date.split('-').map(Number);
+  const safeDay = Math.max(1, day - daysBeforeToday);
+  return `${String(month).padStart(2, '0')}/${String(safeDay).padStart(2, '0')}`;
+};
+const communityReportTypes: CommunityReportType[] = [
+  '營業時間不同',
+  '價格不同',
+  '已停業',
+  '優惠失效',
+  '其他',
+];
+const defaultCommunityReports: CommunityReport[] = [
+  {
+    id: 'report-jianjia-price',
+    subjectId: 'jianjia',
+    type: '價格不同',
+    note: '晚間組合價格已更新為 NT$180。',
+    submittedAt: `${currentMonthDateLabel(1)} 19:20`,
+    status: 'resolved',
+  },
+  {
+    id: 'report-jianjia-hours',
+    subjectId: 'jianjia',
+    type: '營業時間不同',
+    note: '週日晚間最後點餐時間為 20:30。',
+    submittedAt: `${currentMonthDateLabel(2)} 20:42`,
+    status: 'received',
+  },
+  {
+    id: 'report-youbike-availability',
+    subjectId: 'youbike',
+    type: '其他',
+    note: '尖峰時段站點周轉速度很快。',
+    submittedAt: `${currentMonthDateLabel(2)} 18:05`,
+    status: 'resolved',
+  },
+  {
+    id: 'report-lunchbox-price',
+    subjectId: 'ys-food-003',
+    type: '價格不同',
+    note: '外帶折扣後為 NT$95。',
+    submittedAt: `${currentMonthDateLabel(3)} 12:18`,
+    status: 'resolved',
+  },
+];
+const communityReportStorageKey = 'all-in-life-community-reports-v1';
+const aiCategoryLabels: Record<AiSearchCategory, Category> = {
+  FOOD: '食品',
+  DAILY_GOODS: '日用品',
+  FREE_RESOURCE: '免費／公益資源',
+  EVENT: '活動',
+  TRANSPORT: '交通',
+};
+const categoryToAiKey = (
+  category: Filters['category'],
+): AiSearchCategory | null =>
+  category === '全部'
+    ? null
+    : ((Object.entries(aiCategoryLabels).find(
+        ([, label]) => label === category,
+      )?.[0] as AiSearchCategory | undefined) ?? null);
+const cleanAiTags = (values: string[]) =>
+  [...new Set(values.map((value) => value.trim()).filter(Boolean))].slice(
+    0,
+    20,
+  );
+const mergeAiConstraints = (
+  current: Filters,
+  constraints: AiSearchConstraints,
+  mode: Mode,
+): Filters => ({
+  ...current,
+  date: /^\d{4}-\d{2}-\d{2}$/.test(constraints.date ?? '')
+    ? constraints.date!
+    : current.date,
+  time: /^([01]\d|2[0-3]):[0-5]\d$/.test(constraints.time ?? '')
+    ? constraints.time!
+    : current.time,
+  category: constraints.category
+    ? aiCategoryLabels[constraints.category]
+    : current.category,
+  budget:
+    mode === 'zero'
+      ? 0
+      : Number.isFinite(constraints.budgetTwd) && constraints.budgetTwd! >= 0
+        ? Math.round(constraints.budgetTwd!)
+        : current.budget,
+  people:
+    Number.isFinite(constraints.partySize) && constraints.partySize! >= 1
+      ? Math.min(10, Math.round(constraints.partySize!))
+      : current.people,
+  distance:
+    Number.isFinite(constraints.maxDistanceM) && constraints.maxDistanceM! > 0
+      ? Math.min(
+          2,
+          Math.max(
+            0.5,
+            Math.round((constraints.maxDistanceM! / 1_000) * 10) / 10,
+          ),
+        )
+      : current.distance,
+  exclusions: cleanAiTags([
+    ...current.exclusions,
+    ...constraints.hardExclusions,
+  ]),
+  preferences: cleanAiTags(constraints.softPreferences),
+});
+const createInitialFilters = (): Filters => {
   const now = taipeiDateTime();
   return {
     date: now.date,
     time: now.time,
     category: '全部',
-    budget: experience === 'demo' ? 500 : 0,
-    people: experience === 'demo' ? 2 : 1,
+    budget: 500,
+    people: 2,
     distance: 2,
-    exclusions: experience === 'demo' ? ['堅果'] : [],
-    preferences: experience === 'demo' ? ['安靜', '能坐'] : [],
+    exclusions: ['堅果'],
+    preferences: ['安靜', '能坐'],
   };
 };
 const demoTransactions: Transaction[] = [
   {
     id: 'h1',
+    resultId: 'daily-store',
     title: '圓山站日常補給',
     category: '日用品',
     amount: 126,
-    date: '09/03',
+    date: currentMonthDateLabel(1),
     saved: 14,
+    occurredAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
   },
   {
     id: 'h2',
+    resultId: 'taxi-share',
     title: '朋友共乘',
     category: '交通',
     amount: 52,
-    date: '08/30',
+    date: currentMonthDateLabel(2),
     saved: 68,
+    occurredAt: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: 'h3',
+    resultId: 'tfam',
     title: '週末看展',
     category: '活動',
     amount: 30,
-    date: '08/24',
+    date: currentMonthDateLabel(3),
     saved: 30,
+    occurredAt: new Date(Date.now() - 50 * 60 * 60 * 1000).toISOString(),
   },
 ];
 const overlap = (a: string[] = [], b: string[] = []) =>
   a.filter((item) => b.includes(item));
-const cpFormulaScore = (item: Result, filters: Filters, params: CpParams) => {
-  const priceScore =
-    filters.budget <= 0
-      ? item.totalCost === 0
-        ? 100
-        : 0
-      : Math.max(0, 100 - (item.totalCost / filters.budget) * 100);
-  const distanceScore = Math.max(
-    0,
-    100 - (item.distanceKm / Math.max(filters.distance, 0.5)) * 100,
-  );
-  const preferenceScore = Math.min(
-    100,
-    overlap(item.preferenceTags, filters.preferences).length * 34,
-  );
-  const totalWeight = params.price + params.distance + params.preference;
-  return Math.round(
-    (priceScore * params.price +
-      distanceScore * params.distance +
-      preferenceScore * params.preference) /
-      Math.max(1, totalWeight),
-  );
+const isConfirmedFree = (item: Result) =>
+  item.costState === 'FREE' ||
+  (item.costState === undefined && item.totalCost === 0);
+const taipeiDateLabel = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat('zh-TW', {
+    timeZone: 'Asia/Taipei',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).format(date);
 };
+const cpScoreBreakdown = (item: Result, filters: Filters, params: CpParams) =>
+  calculatePersonalCpScore({
+    totalCost: item.totalCost,
+    budget: filters.budget,
+    distanceKm: item.distanceKm,
+    maxDistanceKm: Math.max(filters.distance, 0.5),
+    matchedPreferences: overlap(item.preferenceTags, filters.preferences)
+      .length,
+    totalPreferences: filters.preferences.length,
+    weights: params,
+  });
+const cpFormulaScore = (item: Result, filters: Filters, params: CpParams) =>
+  cpScoreBreakdown(item, filters, params).score;
 const categoryIcon = (category: Category) =>
   category === '食品' ? (
     <Utensils />
@@ -786,11 +1119,24 @@ const categoryIcon = (category: Category) =>
     <Bike />
   );
 
+const validateSearchInput = (need: string, filters: Filters) => {
+  if (need.trim().length < 3) return '請至少用 3 個字描述這次需求。';
+  if (!filters.date || !filters.time) return '請確認日期與時段。';
+  if (!Number.isFinite(filters.budget) || filters.budget < 0)
+    return '預算不可小於 0。';
+  if (!Number.isFinite(filters.people) || filters.people < 1)
+    return '人數至少需要 1 人。';
+  if (!Number.isFinite(filters.distance) || filters.distance < 0.5)
+    return '最大距離至少需要 0.5 km。';
+  return '';
+};
+
 export default function App() {
+  const { musicEnabled, setMusicEnabled } = useBackgroundMusic();
+  const [interactiveReady, setInteractiveReady] = useState(false);
   const [view, setView] = useState<View>('welcome');
   const [history, setHistory] = useState<View[]>([]);
-  const [experienceMode, setExperienceMode] =
-    useState<ExperienceMode>('demo');
+  const [experienceMode, setExperienceMode] = useState<ExperienceMode>('demo');
   const [profile, setProfile] = useState<Profile>({
     name: '小美',
     avatar: '#c9ff36',
@@ -798,25 +1144,39 @@ export default function App() {
   });
   const [mode, setMode] = useState<Mode>('daily');
   const [need, setNeed] = useState(modeNeedExamples.daily);
-  const [filters, setFilters] = useState<Filters>(() =>
-    createInitialFilters('demo'),
-  );
+  const [filters, setFilters] = useState<Filters>(() => createInitialFilters());
+  const [lastPaidBudget, setLastPaidBudget] = useState(500);
   const [followCurrentTime, setFollowCurrentTime] = useState(true);
-  const [selectedId, setSelectedId] = useState(results[0].id);
+  const [selectedId, setSelectedId] = useState(demoResults[0].id);
   const [saved, setSaved] = useState<string[]>([]);
+  const [savedSnapshots, setSavedSnapshots] = useState<Record<string, Result>>(
+    {},
+  );
   const [completed, setCompleted] = useState<string[]>([]);
-  const [searchProgress, setSearchProgress] = useState(0);
+  const [searchStatus, setSearchStatus] = useState<SearchStatus>('idle');
+  const [catalogRequestKey, setCatalogRequestKey] = useState(0);
+  const [validationError, setValidationError] = useState('');
+  const [aiParseStatus, setAiParseStatus] = useState<AiParseStatus>('idle');
+  const [aiExplanations, setAiExplanations] = useState<
+    Record<string, AiExplanation>
+  >({});
+  const aiExplainSignature = useRef('');
   const [teamCount, setTeamCount] = useState(3);
   const [joinedTeam, setJoinedTeam] = useState(false);
   const [toast, setToast] = useState('');
+  const [toastAction, setToastAction] = useState<ToastAction | null>(null);
   const [evidenceOpen, setEvidenceOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
   const [shareCopied, setShareCopied] = useState(false);
   const [showSopGuide, setShowSopGuide] = useState(false);
   const [guideBeforeOnboarding, setGuideBeforeOnboarding] = useState(false);
-  const [catalogSource, setCatalogSource] = useState<
-    CatalogSummaryResponse['source'] | 'checking'
-  >('checking');
+  const [catalogSource, setCatalogSource] =
+    useState<CatalogDisplaySource>('demo');
+  const [catalogWarnings, setCatalogWarnings] = useState<string[]>([]);
+  const [catalogFacets, setCatalogFacets] = useState<
+    CatalogCategorySummary[] | null
+  >(null);
+  const [liveResults, setLiveResults] = useState<Result[] | null>(null);
   const [sort, setSort] = useState<Sort>('cp');
   const [cpParams, setCpParams] = useState<CpParams>({
     price: 55,
@@ -835,13 +1195,115 @@ export default function App() {
   const [userLocation, setUserLocation] = useState<GeoPoint | null>(null);
   const [transactions, setTransactions] =
     useState<Transaction[]>(demoTransactions);
+  const [monthlyBudget, setMonthlyBudget] = useState(10_000);
+  const [submittedReports, setSubmittedReports] = useState<CommunityReport[]>(
+    [],
+  );
+  const [reportsLoaded, setReportsLoaded] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<Event | null>(null);
   const [pwaStatus, setPwaStatus] = useState('檢查中');
+  const budgetSummary = useMemo<BudgetSummary>(() => {
+    const spent = transactions.reduce((sum, item) => sum + item.amount, 0);
+    const saved = transactions.reduce((sum, item) => sum + item.saved, 0);
+    return {
+      budget: monthlyBudget,
+      spent,
+      saved,
+      remaining: monthlyBudget - spent,
+      usedPercentage:
+        monthlyBudget > 0
+          ? Math.min(100, Math.max(0, (spent / monthlyBudget) * 100))
+          : 0,
+      transactionCount: transactions.length,
+    };
+  }, [monthlyBudget, transactions]);
+  const communityReports = useMemo(
+    () => [...submittedReports, ...defaultCommunityReports],
+    [submittedReports],
+  );
 
+  useEffect(() => {
+    let storedReports: CommunityReport[] | null = null;
+    try {
+      const stored = window.localStorage.getItem(communityReportStorageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored) as CommunityReport[];
+        if (Array.isArray(parsed)) storedReports = parsed;
+      }
+    } catch {
+      // The in-memory report history still works when storage is unavailable.
+    }
+    window.queueMicrotask(() => {
+      if (storedReports) setSubmittedReports(storedReports);
+      setReportsLoaded(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!reportsLoaded) return;
+    try {
+      window.localStorage.setItem(
+        communityReportStorageKey,
+        JSON.stringify(submittedReports),
+      );
+    } catch {
+      // Storage can be blocked in private browsing; keep the current session.
+    }
+  }, [reportsLoaded, submittedReports]);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setInteractiveReady(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (view !== 'welcome') return;
+
+    const root = document.documentElement;
+    const previousTheme = root.dataset.theme === 'light' ? 'light' : 'dark';
+    const previousColorScheme = root.style.colorScheme;
+    const themeMeta = document.querySelector<HTMLMetaElement>(
+      'meta[name="theme-color"]',
+    );
+    const previousThemeColor = themeMeta?.getAttribute('content') ?? null;
+
+    root.dataset.theme = 'dark';
+    root.style.colorScheme = 'dark';
+    themeMeta?.setAttribute('content', '#090c0a');
+
+    return () => {
+      root.dataset.theme = previousTheme;
+      root.style.colorScheme = previousColorScheme || previousTheme;
+      if (previousThemeColor)
+        themeMeta?.setAttribute('content', previousThemeColor);
+      window.dispatchEvent(
+        new CustomEvent('all-in-life-theme-change', {
+          detail: previousTheme,
+        }),
+      );
+    };
+  }, [view]);
+
+  const catalogUsesUserLocation = Boolean(
+    userLocation &&
+    distanceBetween(userLocation, catalogCoverageCenter) + filters.distance <=
+      catalogCoverageRadiusKm,
+  );
+  const activeCatalogResults = useMemo(
+    () =>
+      experienceMode === 'demo' ? demoResults : (liveResults ?? emptyResults),
+    [experienceMode, liveResults],
+  );
   const locatedResults = useMemo(() => {
-    if (!userLocation) return results;
-    return results.map((item) => {
-      const destination = resultLocations[item.id];
+    if (!userLocation || !catalogUsesUserLocation) return activeCatalogResults;
+    return activeCatalogResults.map((item) => {
+      const destination =
+        item.latitude !== null &&
+        item.latitude !== undefined &&
+        item.longitude !== null &&
+        item.longitude !== undefined
+          ? { latitude: item.latitude, longitude: item.longitude }
+          : resultLocations[item.id];
       if (!destination) return item;
       const distanceKm = Math.max(
         0.05,
@@ -853,40 +1315,50 @@ export default function App() {
         walkMin: Math.max(1, Math.round(distanceKm * 13)),
       };
     });
-  }, [userLocation]);
-  const selected =
-    locatedResults.find((item) => item.id === selectedId) ?? locatedResults[0];
+  }, [activeCatalogResults, catalogUsesUserLocation, userLocation]);
+  const eligibleLocatedResults = useMemo(
+    () =>
+      locatedResults.filter(
+        (item) => overlap(item.tags, filters.exclusions).length === 0,
+      ),
+    [filters.exclusions, locatedResults],
+  );
   const ordered = useMemo(() => {
-    const ranked = locatedResults
+    const ranked = eligibleLocatedResults
       .filter((item) => {
         const categoryMatch =
           filters.category === '全部' || item.category === filters.category;
         const budgetMatch =
-          filters.budget === 0
-            ? item.totalCost === 0
-            : item.totalCost <= filters.budget;
+          mode === 'zero'
+            ? isConfirmedFree(item)
+            : filters.budget <= 0 ||
+              item.totalCost === null ||
+              item.totalCost <= filters.budget;
         return (
           categoryMatch && budgetMatch && item.distanceKm <= filters.distance
         );
       })
       .sort((a, b) => {
-        const aExcluded = overlap(a.tags, filters.exclusions).length > 0;
-        const bExcluded = overlap(b.tags, filters.exclusions).length > 0;
-        if (aExcluded !== bExcluded) return aExcluded ? 1 : -1;
-        const aPreference = overlap(
-          a.preferenceTags,
-          filters.preferences,
-        ).length;
-        const bPreference = overlap(
-          b.preferenceTags,
-          filters.preferences,
-        ).length;
-        if (aPreference !== bPreference) return bPreference - aPreference;
-        if (sort === 'cost') return a.totalCost - b.totalCost;
-        if (sort === 'distance') return a.distanceKm - b.distanceKm;
+        if (sort === 'cost') {
+          if (a.totalCost === null) return b.totalCost === null ? 0 : 1;
+          if (b.totalCost === null) return -1;
+          return a.totalCost - b.totalCost || a.distanceKm - b.distanceKm;
+        }
+        if (sort === 'distance') {
+          return (
+            a.distanceKm - b.distanceKm ||
+            (a.totalCost ?? Number.POSITIVE_INFINITY) -
+              (b.totalCost ?? Number.POSITIVE_INFINITY)
+          );
+        }
+        const aScore = cpScoreBreakdown(a, filters, cpParams).rawScore;
+        const bScore = cpScoreBreakdown(b, filters, cpParams).rawScore;
+        if (aScore === null) return bScore === null ? 0 : 1;
+        if (bScore === null) return -1;
         return (
-          cpFormulaScore(b, filters, cpParams) -
-          cpFormulaScore(a, filters, cpParams)
+          bScore - aScore ||
+          a.distanceKm - b.distanceKm ||
+          a.title.localeCompare(b.title, 'zh-TW')
         );
       });
     return mode === 'zero'
@@ -894,7 +1366,57 @@ export default function App() {
           (a, b) => (b.agent === 'zero' ? 1 : 0) - (a.agent === 'zero' ? 1 : 0),
         )
       : ranked;
-  }, [filters, mode, sort, cpParams, locatedResults]);
+  }, [cpParams, eligibleLocatedResults, filters, mode, sort]);
+
+  const supplementalDemoResults = useMemo(() => {
+    if (
+      experienceMode !== 'account' ||
+      (catalogSource !== 'd1' && catalogSource !== 'snapshot') ||
+      ordered.length >= 3
+    ) {
+      return [];
+    }
+    const needed = 3 - ordered.length;
+    return demoResults
+      .filter((item) => {
+        const categoryMatch =
+          filters.category === '全部' || item.category === filters.category;
+        const budgetMatch =
+          mode === 'zero'
+            ? isConfirmedFree(item)
+            : filters.budget <= 0 ||
+              item.totalCost === null ||
+              item.totalCost <= filters.budget;
+        return (
+          categoryMatch &&
+          budgetMatch &&
+          item.distanceKm <= filters.distance &&
+          overlap(item.tags, filters.exclusions).length === 0
+        );
+      })
+      .slice(0, needed)
+      .map((item) => ({ ...item, id: `SUPPLEMENT:${item.id}` }));
+  }, [catalogSource, experienceMode, filters, mode, ordered.length]);
+  const selectableResults = useMemo(
+    () => [...eligibleLocatedResults, ...supplementalDemoResults],
+    [eligibleLocatedResults, supplementalDemoResults],
+  );
+  const selected =
+    selectableResults.find((item) => item.id === selectedId) ??
+    selectableResults[0] ??
+    null;
+  const savedResultItems = saved
+    .map(
+      (id) =>
+        selectableResults.find((item) => item.id === id) ?? savedSnapshots[id],
+    )
+    .filter((item): item is Result => Boolean(item));
+  const selectedReports = selected
+    ? reportsForSubject(
+        communityReports,
+        selected.id.replace('SUPPLEMENT:', ''),
+      )
+    : [];
 
   useEffect(() => {
     if ('serviceWorker' in navigator)
@@ -913,46 +1435,230 @@ export default function App() {
     return () => window.removeEventListener('beforeinstallprompt', capture);
   }, []);
   useEffect(() => {
+    if (experienceMode === 'demo' || catalogRequestKey === 0) return;
+
     const controller = new AbortController();
-    fetch('/api/catalog/categories', {
+    let settleTimer = 0;
+    const requestedCategory =
+      filters.category === '全部'
+        ? 'ALL'
+        : (catalogCategories.find(
+            (category) => category.label === filters.category,
+          )?.key ?? 'ALL');
+    const searchOrigin =
+      catalogUsesUserLocation && userLocation
+        ? userLocation
+        : catalogCoverageCenter;
+    const requestBody = {
+      category: requestedCategory,
+      lat: searchOrigin.latitude,
+      lng: searchOrigin.longitude,
+      radiusM: Math.min(2_000, Math.round(filters.distance * 1_000)),
+      at: `${filters.date}T${filters.time}:00+08:00`,
+      freeOnly: mode === 'zero',
+      limit: 100,
+    };
+    fetch('/api/catalog/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody),
       cache: 'no-store',
       signal: controller.signal,
     })
       .then((response) => {
         if (!response.ok) throw new Error('Catalog request failed');
-        return response.json() as Promise<CatalogSummaryResponse>;
+        return response.json() as Promise<CatalogSearchResponse>;
       })
-      .then((payload) => setCatalogSource(payload.source))
+      .then((payload) => {
+        const mappedResults = payload.items
+          .map((item) => catalogItemToResult(item, payload.source))
+          .filter((item): item is Result => item !== null);
+        const hasEligibleResult = mappedResults.some((item) => {
+          const categoryMatch =
+            filters.category === '全部' || item.category === filters.category;
+          const budgetMatch =
+            mode === 'zero'
+              ? isConfirmedFree(item)
+              : filters.budget <= 0 ||
+                item.totalCost === null ||
+                item.totalCost <= filters.budget;
+          return (
+            categoryMatch &&
+            budgetMatch &&
+            item.distanceKm <= filters.distance &&
+            overlap(item.tags, filters.exclusions).length === 0
+          );
+        });
+        setSearchStatus('ranking');
+        settleTimer = window.setTimeout(() => {
+          setLiveResults(mappedResults);
+          setCatalogSource(payload.source);
+          setCatalogFacets(payload.facets);
+          setCatalogWarnings([
+            ...payload.warnings,
+            ...(userLocation && !catalogUsesUserLocation
+              ? [
+                  '目前定位無法在圓山 2 km 資料圈內提供完整搜尋，結果改以圓山站為中心。',
+                ]
+              : []),
+          ]);
+          setSearchStatus(hasEligibleResult ? 'success' : 'empty');
+        }, 180);
+      })
       .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
-        setCatalogSource('unconfigured');
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
+        setLiveResults([]);
+        setCatalogSource('error');
+        setCatalogFacets(null);
+        setSearchStatus('error');
+        setCatalogWarnings(['候選資料暫時無法連線，請稍後重試。']);
       });
-    return () => controller.abort();
-  }, []);
-  useEffect(() => {
-    if (view !== 'search') return;
-    const timer = window.setInterval(
-      () =>
-        setSearchProgress((value) =>
-          Math.min(100, value + (value < 60 ? 7 : 4)),
-        ),
-      360,
-    );
-    const finish = window.setTimeout(() => {
-      window.clearInterval(timer);
-      setSearchProgress(100);
-      window.setTimeout(() => setView('results'), 450);
-    }, 5200);
     return () => {
-      window.clearInterval(timer);
+      controller.abort();
+      window.clearTimeout(settleTimer);
+    };
+  }, [
+    filters.budget,
+    filters.date,
+    filters.distance,
+    filters.category,
+    filters.exclusions,
+    filters.time,
+    catalogUsesUserLocation,
+    catalogRequestKey,
+    experienceMode,
+    mode,
+    userLocation,
+  ]);
+  useEffect(() => {
+    if (view !== 'search' || experienceMode !== 'demo') return;
+    const loading = window.setTimeout(() => setSearchStatus('loading'), 160);
+    const ranking = window.setTimeout(() => setSearchStatus('ranking'), 430);
+    const finish = window.setTimeout(
+      () => setSearchStatus(ordered.length > 0 ? 'success' : 'empty'),
+      880,
+    );
+    return () => {
+      window.clearTimeout(loading);
+      window.clearTimeout(ranking);
       window.clearTimeout(finish);
     };
-  }, [view]);
+  }, [catalogRequestKey, experienceMode, ordered.length, view]);
+  useEffect(() => {
+    if (
+      view !== 'search' ||
+      (searchStatus !== 'success' && searchStatus !== 'empty')
+    )
+      return;
+    const timer = window.setTimeout(() => setView('results'), 420);
+    return () => window.clearTimeout(timer);
+  }, [searchStatus, view]);
+  useEffect(() => {
+    if (
+      view !== 'results' ||
+      experienceMode !== 'account' ||
+      searchStatus !== 'success'
+    )
+      return;
+
+    const candidates = ordered
+      .filter(
+        (item) =>
+          !item.id.startsWith('SUPPLEMENT:') &&
+          overlap(item.tags, filters.exclusions).length === 0,
+      )
+      .slice(0, 3);
+    if (candidates.length === 0) return;
+
+    const searchOrigin =
+      catalogUsesUserLocation && userLocation
+        ? userLocation
+        : catalogCoverageCenter;
+    const requestBody = {
+      locale: 'zh-TW',
+      candidateIds: candidates.map((item) => item.id),
+      search: {
+        category: categoryToAiKey(filters.category) ?? 'ALL',
+        origin: searchOrigin,
+        radiusM: Math.min(
+          2_000,
+          Math.max(500, Math.round(filters.distance * 1_000)),
+        ),
+        at: `${filters.date}T${filters.time}:00+08:00`,
+        eventWindowDays: 7,
+        freeOnly: mode === 'zero',
+        hardExclusions: filters.exclusions,
+        softPreferences: filters.preferences,
+      },
+    };
+    const signature = JSON.stringify(requestBody);
+    if (aiExplainSignature.current === signature) return;
+    aiExplainSignature.current = signature;
+
+    const controller = new AbortController();
+    fetch('/api/v1/results/explain', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: signature,
+      cache: 'no-store',
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('AI explanation request failed');
+        return response.json() as Promise<AiExplainResponse>;
+      })
+      .then((payload) => {
+        if (
+          (payload.source !== 'openai' && payload.source !== 'fallback') ||
+          !Array.isArray(payload.items)
+        )
+          return;
+        const candidateIds = new Set(candidates.map((item) => item.id));
+        const next: Record<string, AiExplanation> = {};
+        for (const item of payload.items) {
+          if (
+            !candidateIds.has(item.id) ||
+            typeof item.headline !== 'string' ||
+            !Array.isArray(item.reasons) ||
+            !item.reasons.every((reason) => typeof reason === 'string') ||
+            (item.caution !== null && typeof item.caution !== 'string')
+          )
+            continue;
+          next[item.id] = {
+            headline: item.headline,
+            reasons: item.reasons,
+            caution: item.caution,
+            source: payload.source,
+          };
+        }
+        setAiExplanations(next);
+      })
+      .catch(() => {
+        // Existing deterministic result copy remains visible when AI is unavailable.
+      });
+    return () => controller.abort();
+  }, [
+    catalogUsesUserLocation,
+    experienceMode,
+    filters,
+    mode,
+    ordered,
+    searchStatus,
+    userLocation,
+    view,
+  ]);
   useEffect(() => {
     if (!toast) return;
-    const timer = window.setTimeout(() => setToast(''), 2300);
+    const timer = window.setTimeout(
+      () => {
+        setToast('');
+        setToastAction(null);
+      },
+      toastAction ? 4500 : 2300,
+    );
     return () => window.clearTimeout(timer);
-  }, [toast]);
+  }, [toast, toastAction]);
   useEffect(() => {
     const timer = window.setInterval(() => {
       setNowText(localNow());
@@ -1021,20 +1727,31 @@ export default function App() {
   function beginExperience(next: ExperienceMode) {
     setExperienceMode(next);
     setProfile({
-      name: next === 'demo' ? '小美' : '',
+      name: '小美',
       avatar: '#c9ff36',
       signedIn: next === 'account',
     });
     setMode('daily');
-    setNeed(next === 'demo' ? modeNeedExamples.daily : '');
-    setFilters(createInitialFilters(next));
-    setTransactions(next === 'demo' ? [...demoTransactions] : []);
-    setTeamCount(next === 'demo' ? 3 : 0);
-    setUnread(next === 'demo' ? 3 : 0);
+    setNeed(modeNeedExamples.daily);
+    setFilters(createInitialFilters());
+    setLastPaidBudget(500);
+    setTransactions([...demoTransactions]);
+    setMonthlyBudget(10_000);
+    setTeamCount(3);
+    setUnread(3);
     setSaved([]);
+    setSavedSnapshots({});
     setCompleted([]);
     setJoinedTeam(false);
     setHistory([]);
+    setSearchStatus('idle');
+    setCatalogRequestKey(0);
+    setValidationError('');
+    setAiParseStatus('idle');
+    setAiExplanations({});
+    aiExplainSignature.current = '';
+    setToast('');
+    setToastAction(null);
     setGuideBeforeOnboarding(true);
     setShowSopGuide(true);
   }
@@ -1056,69 +1773,297 @@ export default function App() {
     setView(history.at(-1) ?? 'home');
     setHistory((items) => items.slice(0, -1));
   }
+  function showToast(message: string, action: ToastAction | null = null) {
+    setToast(message);
+    setToastAction(action);
+  }
+  function requestCatalog(clearResults = false) {
+    if (clearResults) setLiveResults(null);
+    setAiExplanations({});
+    aiExplainSignature.current = '';
+    setCatalogSource('checking');
+    setCatalogWarnings([]);
+    setSearchStatus('loading');
+    setCatalogRequestKey((value) => value + 1);
+  }
+  function updateNeed(next: string) {
+    setNeed(next);
+    if (aiParseStatus !== 'loading') setAiParseStatus('idle');
+    if (validationError) setValidationError('');
+  }
+  function updateFilters(next: Filters) {
+    setFilters(next);
+    if (next.budget > 0) setLastPaidBudget(next.budget);
+    if (validationError) setValidationError('');
+  }
   function chooseMode(next: Mode) {
     setMode(next);
-    setNeed(experienceMode === 'demo' ? modeNeedExamples[next] : '');
+    setNeed(modeNeedExamples[next]);
+    setAiParseStatus('idle');
+    if (next === 'zero' && filters.budget > 0) {
+      setLastPaidBudget(filters.budget);
+    }
     const budget =
-      experienceMode === 'demo'
-        ? next === 'zero'
-          ? 0
-          : next === 'team'
-            ? 800
-            : 500
-        : 0;
+      next === 'zero'
+        ? 0
+        : mode === 'zero' || filters.budget <= 0
+          ? Math.max(50, lastPaidBudget)
+          : filters.budget;
     setFilters((current) => ({
       ...current,
       budget,
-      people:
-        experienceMode === 'demo'
-          ? next === 'team'
-            ? 5
-            : next === 'zero'
-              ? 1
-              : 2
-          : 1,
+      people: next === 'team' ? 5 : next === 'zero' ? 1 : 2,
     }));
-    setToast(`已切換：${modes[next].title}`);
+    showToast(`已切換：${modes[next].title}`);
+  }
+  async function confirmNeed(query = need) {
+    const error = validateSearchInput(query, filters);
+    setValidationError(error);
+    if (error) {
+      showToast(error);
+      return;
+    }
+    if (experienceMode === 'account') {
+      setAiParseStatus('loading');
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 9_000);
+      try {
+        const response = await fetch('/api/v1/search/parse', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query,
+            locale: 'zh-TW',
+            timezone: 'Asia/Taipei',
+            defaults: {
+              date: filters.date,
+              time: filters.time,
+              category: categoryToAiKey(filters.category),
+              budgetTwd: filters.budget,
+              partySize: filters.people,
+              maxDistanceM: Math.round(filters.distance * 1_000),
+              hardExclusions: filters.exclusions,
+              softPreferences: filters.preferences,
+              mobility: ['WALK'],
+            },
+          }),
+          cache: 'no-store',
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error('AI parse request failed');
+        const payload: unknown = await response.json();
+        if (!isAiParseResponse(payload))
+          throw new Error('AI parse unavailable');
+        const nextFilters = mergeAiConstraints(
+          filters,
+          payload.constraints,
+          mode,
+        );
+        setFilters(nextFilters);
+        if (nextFilters.budget > 0) setLastPaidBudget(nextFilters.budget);
+        setFollowCurrentTime(false);
+        setAiParseStatus('success');
+        showToast('AI 已整理需求，請確認條件');
+      } catch {
+        setAiParseStatus('unavailable');
+        showToast('AI 暫時無法整理，仍可手動確認條件');
+      } finally {
+        window.clearTimeout(timeout);
+      }
+    }
+    navigate('filters');
   }
   function startSearch() {
-    setSearchProgress(8);
+    const error = validateSearchInput(need, filters);
+    setValidationError(error);
+    if (error) {
+      showToast(error);
+      return;
+    }
     setHistory(['home']);
     setView('search');
+    if (experienceMode === 'demo') {
+      setSearchStatus('validating');
+      setCatalogRequestKey((value) => value + 1);
+    } else {
+      requestCatalog(true);
+    }
+  }
+  function retrySearch() {
+    setView('search');
+    if (experienceMode === 'demo') {
+      setSearchStatus('validating');
+      setCatalogRequestKey((value) => value + 1);
+    } else {
+      requestCatalog(true);
+    }
+  }
+  function updateResultFilters(next: Filters) {
+    setFilters(next);
+    if (experienceMode !== 'demo') requestCatalog();
   }
   function openResult(id: string) {
     setSelectedId(id);
     navigate('detail');
   }
   function toggleSaved(id: string) {
+    const wasSaved = saved.includes(id);
+    const wasCompleted = completed.includes(id);
+    const snapshot =
+      selectableResults.find((item) => item.id === id) ?? savedSnapshots[id];
+    if (!wasSaved && snapshot) {
+      setSavedSnapshots((items) => ({ ...items, [id]: snapshot }));
+    }
     setSaved((items) =>
       items.includes(id) ? items.filter((item) => item !== id) : [...items, id],
     );
-    setToast(saved.includes(id) ? '已從清單移除' : '已加入這次清單');
+    if (wasSaved) {
+      setCompleted((items) => items.filter((item) => item !== id));
+    }
+    showToast(wasSaved ? '已從清單移除' : '已加入這次清單', {
+      label: '復原',
+      run: () => {
+        setSaved((items) =>
+          wasSaved
+            ? items.includes(id)
+              ? items
+              : [...items, id]
+            : items.filter((item) => item !== id),
+        );
+        if (wasSaved && wasCompleted) {
+          setCompleted((items) =>
+            items.includes(id) ? items : [...items, id],
+          );
+        }
+      },
+    });
   }
-  function markPurchased(id: string) {
-    const item = results.find((entry) => entry.id === id);
-    if (!item) return;
-    const wasDone = completed.includes(id);
-    setCompleted((items) =>
-      wasDone ? items.filter((entry) => entry !== id) : [...items, id],
-    );
-    if (!wasDone && !transactions.some((entry) => entry.id === `buy-${id}`))
-      setTransactions((items) => [
-        {
-          id: `buy-${id}`,
-          title: item.title,
-          category: item.category,
-          amount: item.totalCost,
-          date: '今天',
-          saved: Math.max(
-            0,
-            (item.benchmarkCost ?? item.totalCost) - item.totalCost,
-          ),
+  function activateToastAction() {
+    if (!toastAction) return;
+    toastAction.run();
+    showToast('已復原上一個動作');
+  }
+  function updateCheckout(ids: string[], action: 'settle' | 'cancel') {
+    const uniqueIds = [...new Set(ids)];
+    const requestedItems = uniqueIds
+      .map(
+        (id) =>
+          selectableResults.find((entry) => entry.id === id) ??
+          savedSnapshots[id],
+      )
+      .filter(
+        (item): item is Result => Boolean(item) && saved.includes(item.id),
+      );
+
+    if (action === 'cancel') {
+      const canceledIds = requestedItems
+        .filter((item) => completed.includes(item.id))
+        .map((item) => item.id);
+      if (canceledIds.length === 0) {
+        showToast('請先選取已結算項目');
+        return;
+      }
+      const canceledTransactionIds = canceledIds.map((id) => `buy-${id}`);
+      const removedTransactions = transactions.filter((transaction) =>
+        canceledTransactionIds.includes(transaction.id),
+      );
+      setCompleted((items) => items.filter((id) => !canceledIds.includes(id)));
+      setTransactions((items) =>
+        items.filter((item) => !canceledTransactionIds.includes(item.id)),
+      );
+      showToast(`已取消 ${canceledIds.length} 筆結算，消費分析同步更新`, {
+        label: '復原',
+        run: () => {
+          setCompleted((items) => [...new Set([...items, ...canceledIds])]);
+          setTransactions((items) => [
+            ...removedTransactions.filter(
+              (transaction) =>
+                !items.some((item) => item.id === transaction.id),
+            ),
+            ...items,
+          ]);
         },
-        ...items,
-      ]);
-    setToast(wasDone ? '已取消購買標記' : '已買，消費分析已更新');
+      });
+      return;
+    }
+
+    const payableItems = requestedItems.filter(
+      (item) => !completed.includes(item.id) && item.totalCost !== null,
+    );
+    const missingCostCount = requestedItems.filter(
+      (item) => !completed.includes(item.id) && item.totalCost === null,
+    ).length;
+
+    if (payableItems.length === 0) {
+      showToast(
+        missingCostCount > 0
+          ? '選取項目需先補上金額才能結算'
+          : '請先選取待結算項目',
+      );
+      return;
+    }
+
+    const settledIds = payableItems.map((item) => item.id);
+    const baseTime = Date.now();
+    const newTransactions: Transaction[] = payableItems.map((item, index) => {
+      const amount = item.totalCost ?? 0;
+      return {
+        id: `buy-${item.id}`,
+        resultId: item.id,
+        title: item.title,
+        category: item.category,
+        amount,
+        date: currentMonthDateLabel(0),
+        saved: Math.max(0, (item.benchmarkCost ?? amount) - amount),
+        occurredAt: new Date(baseTime + index).toISOString(),
+      };
+    });
+    const createdTransactions = newTransactions.filter(
+      (transaction) => !transactions.some((item) => item.id === transaction.id),
+    );
+    const createdTransactionIds = createdTransactions.map((item) => item.id);
+    const total = newTransactions.reduce((sum, item) => sum + item.amount, 0);
+
+    setCompleted((items) => [...new Set([...items, ...settledIds])]);
+    setTransactions((items) => [
+      ...createdTransactions.filter(
+        (transaction) => !items.some((item) => item.id === transaction.id),
+      ),
+      ...items,
+    ]);
+    showToast(`已批次結算 ${payableItems.length} 筆，共 NT$${money(total)}`, {
+      label: '復原',
+      run: () => {
+        setCompleted((items) => items.filter((id) => !settledIds.includes(id)));
+        setTransactions((items) =>
+          items.filter((item) => !createdTransactionIds.includes(item.id)),
+        );
+      },
+    });
+  }
+  function removeTransaction(id: string) {
+    const removed = transactions.find((transaction) => transaction.id === id);
+    if (!removed) return;
+    const completedId = id.startsWith('buy-') ? id.replace('buy-', '') : null;
+    setTransactions((items) => items.filter((item) => item.id !== id));
+    if (completedId) {
+      setCompleted((items) => items.filter((item) => item !== completedId));
+    }
+    showToast('交易紀錄已刪除，消費分析同步更新', {
+      label: '復原',
+      run: () => {
+        setTransactions((items) =>
+          items.some((item) => item.id === removed.id)
+            ? items
+            : [removed, ...items],
+        );
+        if (completedId) {
+          setCompleted((items) =>
+            items.includes(completedId) ? items : [...items, completedId],
+          );
+        }
+      },
+    });
   }
   async function share(text: string) {
     const url = publicAppUrl;
@@ -1127,24 +2072,22 @@ export default function App() {
     try {
       if (navigator.share) {
         await navigator.share({ title: 'ALL IN LIFE', text, url });
-        setToast('分享完成；公開連結仍保留在下方');
+        showToast('分享完成；公開連結仍保留在下方');
       } else {
         const copied = await copyText(`${text}\n${url}`);
-        setToast(
-          copied
-            ? '分享內容與連結已複製'
-            : '請使用下方的開啟或複製連結按鈕',
+        showToast(
+          copied ? '分享內容與連結已複製' : '請使用下方的開啟或複製連結按鈕',
         );
       }
     } catch {
-      setToast('分享已取消；仍可掃描、開啟或複製連結');
+      showToast('分享已取消；仍可掃描、開啟或複製連結');
     }
   }
   async function copyShareLink() {
     if (!shareUrl) return;
     const copied = await copyText(shareUrl);
     setShareCopied(copied);
-    setToast(copied ? '公開連結已複製' : '無法自動複製，請長按下方網址');
+    showToast(copied ? '公開連結已複製' : '無法自動複製，請長按下方網址');
   }
   function startVoice() {
     type Recognition = {
@@ -1163,29 +2106,42 @@ export default function App() {
     };
     const RecognitionCtor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
     if (!RecognitionCtor) {
+      if (experienceMode === 'account') {
+        setRecording(false);
+        showToast('此瀏覽器不支援語音辨識，請改用文字輸入');
+        return;
+      }
       setRecording(true);
       window.setTimeout(() => {
-        setNeed('今晚兩人吃飯，預算五百，可以外帶，不吃堅果');
+        const transcript = '今晚兩人吃飯，預算五百，可以外帶，不吃堅果';
+        setNeed(transcript);
         setRecording(false);
-        setToast('已轉成文字，請確認需求與限制');
-        navigate('filters');
+        showToast('已轉成文字，正在整理需求');
+        void confirmNeed(transcript);
       }, 1300);
       return;
     }
     const recognition = new RecognitionCtor();
     recognition.lang = 'zh-TW';
     recognition.interimResults = false;
+    let recordingFinished = false;
+    const finishRecording = () => {
+      if (recordingFinished) return;
+      recordingFinished = true;
+      setRecording(false);
+    };
     setRecording(true);
     recognition.onresult = (event) => {
-      setNeed(event.results[0][0].transcript);
-      setRecording(false);
-      setToast('語音輸入完成，請確認需求與限制');
-      navigate('filters');
+      const transcript = event.results[0][0].transcript;
+      setNeed(transcript);
+      finishRecording();
+      showToast('語音輸入完成，正在整理需求');
+      void confirmNeed(transcript);
     };
-    recognition.onend = () => setRecording(false);
+    recognition.onend = finishRecording;
     recognition.onerror = () => {
-      setRecording(false);
-      setToast('沒有收到語音，請再試一次');
+      finishRecording();
+      showToast('沒有收到語音，請再試一次');
     };
     recognition.start();
   }
@@ -1195,35 +2151,46 @@ export default function App() {
       await prompt.prompt();
       setInstallPrompt(null);
       setPwaStatus('安裝邀請已送出');
-    } else setToast('請使用瀏覽器選單「加到主畫面」');
+    } else showToast('請使用瀏覽器選單「加到主畫面」');
   }
 
   const shellLess = ['welcome', 'onboarding'].includes(view);
   return (
     <div
-      className="app-stage"
+      className={
+        view === 'welcome' ? 'app-stage welcome-dark-stage' : 'app-stage'
+      }
       data-survival={mode === 'zero' ? 'true' : 'false'}
     >
       <div className="ambient ambient-one" />
       <div className="ambient ambient-two" />
       <main className="phone-shell">
+        {view === 'welcome' && (
+          <BackgroundMusicToggle
+            enabled={musicEnabled}
+            onToggle={() => setMusicEnabled(!musicEnabled)}
+            className="welcome-music-toggle"
+          />
+        )}
         {!shellLess && (
           <AppHeader
             view={view}
             nowText={nowText}
             areaLabel={userLocation ? '目前位置' : '圓山生活圈'}
             unread={unread}
-            savedCount={saved.length}
+            musicEnabled={musicEnabled}
             onBack={goBack}
             onHome={() => navigate('home')}
             onNotifications={() => navigate('notifications')}
             onSettings={() => navigate('settings')}
+            onMusicToggle={() => setMusicEnabled(!musicEnabled)}
           />
         )}
         <div className="screen-stack">
           <div key={view} className="screen-enter">
             {view === 'welcome' && (
               <WelcomeScreen
+                ready={interactiveReady}
                 onDemo={() => beginExperience('demo')}
                 onAccount={() => beginExperience('account')}
               />
@@ -1232,14 +2199,14 @@ export default function App() {
               <OnboardingScreen
                 profile={profile}
                 filters={filters}
+                musicEnabled={musicEnabled}
                 onProfile={setProfile}
-                onFilters={setFilters}
+                onFilters={updateFilters}
+                onMusicToggle={() => setMusicEnabled(!musicEnabled)}
                 onDone={() => {
                   setProfile((current) => ({
                     ...current,
-                    name:
-                      current.name.trim() ||
-                      (experienceMode === 'demo' ? '小美' : '旅人'),
+                    name: current.name.trim() || '小美',
                   }));
                   setHistory([]);
                   setView('home');
@@ -1249,18 +2216,20 @@ export default function App() {
             {view === 'home' && (
               <HomeScreen
                 profile={profile}
-                experienceMode={experienceMode}
                 mode={mode}
                 filters={filters}
                 need={need}
+                validationError={validationError}
+                aiParseStatus={aiParseStatus}
                 locationStatus={locationStatus}
                 locationPermission={locationPermission}
                 savedCount={saved.length}
+                budgetSummary={budgetSummary}
                 onMode={chooseMode}
-                onNeed={setNeed}
+                onNeed={updateNeed}
                 onVoice={startVoice}
                 recording={recording}
-                onConfirm={() => navigate('filters')}
+                onConfirm={confirmNeed}
                 onProfile={() => navigate('profile')}
                 onAnalytics={() => navigate('analytics')}
                 onTeam={() => {
@@ -1284,37 +2253,65 @@ export default function App() {
                 filters={filters}
                 need={need}
                 mode={mode}
+                validationError={validationError}
                 onEdit={() => navigate('filters')}
                 onStart={startSearch}
               />
             )}
             {view === 'search' && (
-              <SearchScreen progress={searchProgress} filters={filters} />
+              <SearchScreen
+                status={searchStatus}
+                filters={filters}
+                resultCount={ordered.length}
+                errorMessage={catalogWarnings[0]}
+                onRetry={retrySearch}
+                onEdit={() => navigate('filters')}
+              />
             )}
             {view === 'results' && (
               <ResultsScreen
                 items={ordered}
-                allItems={locatedResults}
+                allItems={eligibleLocatedResults}
+                supplementalItems={supplementalDemoResults}
                 filters={filters}
-                locationLabel={userLocation ? '目前位置' : '圓山'}
-                catalogSource={catalogSource}
+                locationLabel={
+                  catalogUsesUserLocation
+                    ? '目前位置'
+                    : userLocation
+                      ? '圓山資料範圍'
+                      : '圓山'
+                }
+                catalogWarnings={
+                  experienceMode === 'demo'
+                    ? demoCatalogWarnings
+                    : catalogWarnings
+                }
+                catalogFacets={experienceMode === 'demo' ? null : catalogFacets}
+                mode={mode}
                 cpParams={cpParams}
                 sort={sort}
                 saved={saved}
+                aiExplanations={aiExplanations}
+                searchStatus={searchStatus}
                 onSort={setSort}
-                onFiltersChange={setFilters}
-                onCpParams={setCpParams}
+                onFiltersChange={updateResultFilters}
+                onCpParams={(next) => {
+                  setCpParams(next);
+                  setSort('cp');
+                }}
                 onFilters={() => navigate('filters')}
+                onRetry={retrySearch}
                 onOpen={openResult}
                 onSave={toggleSaved}
               />
             )}
-            {view === 'detail' && (
+            {view === 'detail' && selected && (
               <DetailScreen
                 item={selected}
                 itemScore={cpFormulaScore(selected, filters, cpParams)}
                 cpParams={cpParams}
                 filters={filters}
+                reportCount={selectedReports.length}
                 saved={saved.includes(selected.id)}
                 onSave={() => toggleSaved(selected.id)}
                 onEvidence={() => setEvidenceOpen(true)}
@@ -1322,19 +2319,36 @@ export default function App() {
                 onReport={() => navigate('report')}
                 onShare={() =>
                   share(
-                    `${selected.title}｜${selected.provider}｜預估 NT$${selected.totalCost}`,
+                    `${selected.title}｜${selected.provider}｜${
+                      selected.totalCost === null
+                        ? '價格依現場方案'
+                        : `預估 NT$${selected.totalCost}`
+                    }`,
                   )
                 }
               />
             )}
+            {view === 'detail' && !selected && (
+              <section className="screen detail-screen">
+                <div className="empty-state">
+                  <Database />
+                  <h2>這筆資料目前不在查詢結果中</h2>
+                  <p>可能已到期或不符合目前日期、類別與距離。</p>
+                  <button onClick={() => navigate('results')}>返回結果</button>
+                </div>
+              </section>
+            )}
             {view === 'saved' && (
               <SavedScreen
-                items={locatedResults.filter((item) => saved.includes(item.id))}
+                items={savedResultItems}
                 completed={completed}
                 budget={filters.budget}
-                onBuy={markPurchased}
+                transactions={transactions}
+                onCheckout={updateCheckout}
                 onOpen={openResult}
                 onRemove={toggleSaved}
+                onDeleteTransaction={removeTransaction}
+                onHistory={() => navigate('history')}
                 onExplore={() => navigate('results')}
                 onShare={() =>
                   share(`這次清單共 ${saved.length} 個選項，來自 ALL IN LIFE`)
@@ -1343,21 +2357,20 @@ export default function App() {
             )}
             {view === 'team' && (
               <TeamScreen
-                demo={experienceMode === 'demo'}
                 count={teamCount}
                 joined={joinedTeam}
                 onJoin={() => {
                   if (!joinedTeam) {
                     setJoinedTeam(true);
                     setTeamCount((n) => Math.min(5, n + 1));
-                    setToast('已加入，可在截止前取消');
+                    showToast('已加入，可在截止前取消');
                   }
                 }}
                 onCancel={() => {
                   if (joinedTeam) {
                     setJoinedTeam(false);
                     setTeamCount((n) => Math.max(0, n - 1));
-                    setToast('已取消承諾');
+                    showToast('已取消承諾');
                   }
                 }}
                 onShare={() =>
@@ -1365,7 +2378,7 @@ export default function App() {
                     '一起加入 ALL IN LIFE 的圓山晚餐團：滿 5 人每人省 NT$15',
                   )
                 }
-                onCreate={() => navigate('results')}
+                onPreviewAction={showToast}
               />
             )}
             {view === 'settings' && (
@@ -1396,11 +2409,19 @@ export default function App() {
               <FiltersScreen
                 filters={filters}
                 need={need}
-                onNeed={setNeed}
-                onChange={setFilters}
+                validationError={validationError}
+                aiParseStatus={aiParseStatus}
+                onNeed={updateNeed}
+                onChange={updateFilters}
                 onManualSchedule={() => setFollowCurrentTime(false)}
                 onApply={() => {
-                  setToast('需求與限制已確認');
+                  const error = validateSearchInput(need, filters);
+                  setValidationError(error);
+                  if (error) {
+                    showToast(error);
+                    return;
+                  }
+                  showToast('需求與限制已確認');
                   navigate('ready');
                 }}
               />
@@ -1420,27 +2441,50 @@ export default function App() {
             {view === 'analytics' && (
               <AnalyticsScreen
                 transactions={transactions}
-                budget={10000}
+                summary={budgetSummary}
+                onBudgetChange={setMonthlyBudget}
                 onHistory={() => navigate('history')}
               />
             )}
             {view === 'history' && (
-              <HistoryScreen transactions={transactions} onOpen={openResult} />
+              <HistoryScreen
+                transactions={transactions}
+                onOpen={openResult}
+                onDelete={removeTransaction}
+              />
             )}
-            {view === 'report' && (
+            {view === 'report' && selected && (
               <ReportScreen
                 item={selected}
-                onSubmit={() => {
-                  setToast('已收到回報，會交由資料維護者確認');
-                  goBack();
+                reports={selectedReports}
+                onSubmit={({ type, note }) => {
+                  const report: CommunityReport = {
+                    id: `report-${selected.id}-${Date.now()}`,
+                    subjectId: selected.id.replace('SUPPLEMENT:', ''),
+                    type,
+                    note: note.trim() || '已提交現場資訊。',
+                    submittedAt: localNow().slice(0, 14),
+                    status: 'received',
+                  };
+                  setSubmittedReports((current) => [report, ...current]);
+                  showToast('回報已加入統計');
                 }}
               />
             )}
-            {view === 'map' && (
+            {view === 'map' && selected && (
               <MapScreen
                 item={selected}
                 onOpen={() => openResult(selected.id)}
               />
+            )}
+            {(view === 'report' || view === 'map') && !selected && (
+              <section className="screen detail-screen">
+                <div className="empty-state">
+                  <Database />
+                  <h2>找不到這筆資料</h2>
+                  <button onClick={() => navigate('results')}>返回結果</button>
+                </div>
+              </section>
             )}
           </div>
         </div>
@@ -1462,11 +2506,16 @@ export default function App() {
               savedCount={saved.length}
               onNavigate={navigate}
             />
-        )}
+          )}
         {toast && (
           <output className="toast" aria-live="polite">
             <Check />
-            {toast}
+            <span>{toast}</span>
+            {toastAction && (
+              <button type="button" onClick={activateToastAction}>
+                {toastAction.label}
+              </button>
+            )}
           </output>
         )}
         {showSopGuide && (
@@ -1480,40 +2529,59 @@ export default function App() {
           />
         )}
       </main>
-      <Dialog open={evidenceOpen} onOpenChange={setEvidenceOpen}>
-        <DialogContent className="evidence-sheet">
-          <div className="sheet-handle" />
-          <DialogHeader>
-            <span className="kicker lime-text">資料依據</span>
-            <DialogTitle className="text-2xl font-black">
-              {selected.title}
-            </DialogTitle>
-            <DialogDescription>{selected.source}</DialogDescription>
-          </DialogHeader>
-          <div className="evidence-grid">
-            <Metric label="可信度" value={`${selected.reliability}%`} />
-            <Metric
-              label="CP 分數"
-              value={String(cpFormulaScore(selected, filters, cpParams))}
-            />
-            <Metric label="確認日期" value={selected.verifiedAt.slice(5)} />
-          </div>
-          <blockquote className="evidence-copy">{selected.evidence}</blockquote>
-          {selected.sourceUrl && (
-            <a
-              className="source-link"
-              href={selected.sourceUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              查看原始來源
-              <ExternalLink />
-            </a>
-          )}
-          <p className="fine-print">
-            價格、營業與庫存可能改變，出發或購買前請再次向原始提供者確認。
-          </p>
-        </DialogContent>
+      <Dialog
+        open={evidenceOpen && selected !== null}
+        onOpenChange={setEvidenceOpen}
+      >
+        {selected && (
+          <DialogContent className="evidence-sheet">
+            <div className="sheet-handle" />
+            <DialogHeader>
+              <span className="kicker lime-text">方案資訊</span>
+              <DialogTitle className="text-2xl font-black">
+                {selected.title}
+              </DialogTitle>
+              <DialogDescription>
+                {selected.provider} · {selected.subcategory}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="evidence-grid">
+              <Metric
+                label="方案價格"
+                value={
+                  selected.totalCost === null
+                    ? '依現場方案'
+                    : `NT$${money(selected.totalCost)}`
+                }
+              />
+              <Metric
+                label="CP 分數"
+                value={
+                  cpFormulaScore(selected, filters, cpParams)?.toString() ?? '—'
+                }
+              />
+              <Metric label="距離" value={`${selected.distanceKm} km`} />
+              <Metric
+                label="使用者回報"
+                value={`${selectedReports.length} 則`}
+              />
+            </div>
+            <blockquote className="evidence-copy">
+              {selected.condition}
+            </blockquote>
+            {selected.sourceUrl && (
+              <a
+                className="source-link"
+                href={selected.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                查看詳細資訊
+                <ExternalLink />
+              </a>
+            )}
+          </DialogContent>
+        )}
       </Dialog>
       <Dialog
         open={Boolean(shareUrl)}
@@ -1526,7 +2594,7 @@ export default function App() {
         <DialogContent className="evidence-sheet share-sheet">
           <DialogHeader>
             <span className="kicker lime-text">掃描進站</span>
-            <DialogTitle>ALL IN LIFE 體驗連結</DialogTitle>
+            <DialogTitle>ALL IN LIFE 分享連結</DialogTitle>
             <DialogDescription>
               用另一台裝置掃描，或直接開啟／複製下方網址。
             </DialogDescription>
@@ -1573,7 +2641,8 @@ export default function App() {
             </button>
           </div>
           <p className="fine-print">
-            QR、可見網址與按鈕都指向同一個公開 HTTPS 網站；同一支手機請直接開啟或複製連結。
+            QR、可見網址與按鈕都指向同一個公開 HTTPS
+            網站；同一支手機請直接開啟或複製連結。
           </p>
         </DialogContent>
       </Dialog>
@@ -1588,13 +2657,39 @@ function AiliMascot({ compact = false }: { compact?: boolean }) {
       <svg viewBox="0 0 180 180" aria-hidden="true" focusable="false">
         <path className="mascot-tail" d="M131 124c31 1 35-24 17-35" />
         <path className="mascot-ear" d="m53 52 5-29 23 20m46 9-5-29-23 20" />
-        <rect className="mascot-head" x="42" y="39" width="96" height="82" rx="30" />
-        <rect className="mascot-face" x="53" y="50" width="74" height="58" rx="22" />
+        <rect
+          className="mascot-head"
+          x="42"
+          y="39"
+          width="96"
+          height="82"
+          rx="30"
+        />
+        <rect
+          className="mascot-face"
+          x="53"
+          y="50"
+          width="74"
+          height="58"
+          rx="22"
+        />
         <circle className="mascot-eye mascot-eye-left" cx="76" cy="77" r="7" />
-        <circle className="mascot-eye mascot-eye-right" cx="105" cy="77" r="7" />
+        <circle
+          className="mascot-eye mascot-eye-right"
+          cx="105"
+          cy="77"
+          r="7"
+        />
         <path className="mascot-mouth" d="M82 94q9 8 18 0" />
         <path className="mascot-body" d="M62 116h56l12 42H50z" />
-        <rect className="mascot-badge" x="78" y="126" width="24" height="19" rx="7" />
+        <rect
+          className="mascot-badge"
+          x="78"
+          y="126"
+          width="24"
+          height="19"
+          rx="7"
+        />
         <path className="mascot-badge-mark" d="m85 139 4-8h6l-4 8z" />
         <circle className="mascot-signal" cx="90" cy="22" r="5" />
       </svg>
@@ -1625,13 +2720,29 @@ function WelcomeParticles() {
     let seed = 20_260_905;
     let particles: Particle[] = [];
     const pointer = { x: -1_000, y: -1_000 };
-    const colors = ['#c9ff36', '#36a8ff', '#8b5cff', '#ffffff', '#ff5d5d'];
+    let colors: string[] = [];
+    let connectionColor = 'rgba(201,255,54,.13)';
+    const readThemeColors = () => {
+      const styles = window.getComputedStyle(document.documentElement);
+      const token = (name: string, fallback: string) =>
+        styles.getPropertyValue(name).trim() || fallback;
+      const light = document.documentElement.dataset.theme === 'light';
+      colors = [
+        token('--lime', '#c9ff36'),
+        token('--blue', '#36a8ff'),
+        token('--violet', '#8b5cff'),
+        light ? '#38513f' : '#ffffff',
+        token('--coral', '#ff5d5d'),
+      ];
+      connectionColor = light ? 'rgba(75,111,0,.15)' : 'rgba(201,255,54,.13)';
+    };
     const random = () => {
       seed = (seed * 1_664_525 + 1_013_904_223) >>> 0;
       return seed / 4_294_967_296;
     };
 
     const rebuild = () => {
+      readThemeColors();
       seed = 20_260_905;
       particles = Array.from({ length: 20 }, (_, index) => ({
         x: random() * width,
@@ -1682,20 +2793,16 @@ function WelcomeParticles() {
           context.beginPath();
           context.moveTo(particle.x, particle.y);
           context.lineTo(neighbor.x, neighbor.y);
-          context.strokeStyle = `rgba(201,255,54,${(1 - distance / 92) * 0.13})`;
+          context.globalAlpha = 1 - distance / 92;
+          context.strokeStyle = connectionColor;
           context.lineWidth = 0.55;
           context.stroke();
+          context.globalAlpha = 1;
         }
         context.beginPath();
-        context.arc(
-          particle.x,
-          particle.y,
-          particle.radius,
-          0,
-          Math.PI * 2,
-        );
+        context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
         context.fillStyle = particle.color;
-        context.globalAlpha = particle.color === '#ffffff' ? 0.65 : 0.88;
+        context.globalAlpha = particle.color === colors[3] ? 0.65 : 0.88;
         context.shadowColor = particle.color;
         context.shadowBlur = particle.radius > 1.5 ? 8 : 4;
         context.fill();
@@ -1723,7 +2830,15 @@ function WelcomeParticles() {
     };
 
     const observer = new ResizeObserver(resize);
+    const themeObserver = new MutationObserver(() => {
+      rebuild();
+      draw(false);
+    });
     observer.observe(canvas);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
     window.addEventListener('pointermove', trackPointer, { passive: true });
     resize();
     if (reduceMotion) draw(false);
@@ -1731,6 +2846,7 @@ function WelcomeParticles() {
 
     return () => {
       observer.disconnect();
+      themeObserver.disconnect();
       window.removeEventListener('pointermove', trackPointer);
       window.cancelAnimationFrame(animationFrame);
     };
@@ -1745,50 +2861,290 @@ function WelcomeParticles() {
   );
 }
 
-function InteractiveCompass() {
-  const [tilt, setTilt] = useState({ x: -5, y: 7 });
+function usePrefersReducedMotion() {
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReduceMotion(query.matches);
+    update();
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  return reduceMotion;
+}
+
+const welcomeMoneyDrops = [
+  ['$', 6, 0.1, 5.6, -18, 16],
+  ['NT$', 14, 2.4, 6.4, 22, 12],
+  ['$', 23, 1.2, 5.1, -14, 14],
+  ['$', 31, 3.8, 6.8, 18, 11],
+  ['NT$', 39, 0.7, 5.9, -24, 13],
+  ['$', 48, 4.4, 6.2, 20, 15],
+  ['$', 57, 1.8, 5.4, -16, 12],
+  ['NT$', 66, 3.1, 6.6, 25, 11],
+  ['$', 74, 0.4, 5.2, -20, 15],
+  ['$', 82, 4.9, 6.1, 16, 12],
+  ['NT$', 90, 2.1, 5.8, -18, 11],
+  ['$', 96, 3.5, 6.9, 14, 14],
+] as const;
+
+function MoneyRain() {
   return (
-    <div
-      className="welcome-visual compass-interactive"
-      onPointerMove={(event) => {
-        const rect = event.currentTarget.getBoundingClientRect();
-        setTilt({
-          x: ((event.clientY - rect.top) / rect.height - 0.5) * -18,
-          y: ((event.clientX - rect.left) / rect.width - 0.5) * 20,
-        });
-      }}
-      onPointerLeave={() => setTilt({ x: -5, y: 7 })}
-    >
-      <div
-        className="compass-stage"
-        style={
-          {
-            '--tilt-x': `${tilt.x}deg`,
-            '--tilt-y': `${tilt.y}deg`,
-          } as CSSProperties
-        }
-      >
-        <span className="compass-ring compass-ring-outer" />
-        <span className="compass-ring compass-ring-inner" />
-        <span className="compass-core"><Compass /></span>
-        <i className="compass-node node-violet" />
-        <i className="compass-node node-blue" />
-        <i className="compass-node node-coral" />
-      </div>
+    <div className="money-rain" aria-hidden="true">
+      {welcomeMoneyDrops.map(
+        ([symbol, left, delay, duration, drift, size], index) => (
+          <i
+            key={`${symbol}-${left}-${index}`}
+            style={
+              {
+                '--money-x': `${left}%`,
+                '--money-delay': `${delay}s`,
+                '--money-duration': `${duration}s`,
+                '--money-drift': `${drift}px`,
+                '--money-size': `${size}px`,
+              } as CSSProperties
+            }
+          >
+            <span>{symbol}</span>
+          </i>
+        ),
+      )}
     </div>
   );
 }
 
+type TypewriterPhase = 'waiting' | 'typing' | 'holding' | 'deleting';
+
+function useLoopingTypewriter(
+  totalLength: number,
+  startDelay: number,
+  typeDelay: number,
+  holdDelay: number,
+  deleteDelay: number,
+  restartDelay: number,
+) {
+  const reduceMotion = usePrefersReducedMotion();
+  const [state, setState] = useState<{
+    visibleLength: number;
+    phase: TypewriterPhase;
+    firstLoop: boolean;
+  }>({ visibleLength: 0, phase: 'waiting', firstLoop: true });
+
+  useEffect(() => {
+    if (reduceMotion) return;
+    const delay =
+      state.phase === 'waiting'
+        ? state.firstLoop
+          ? startDelay
+          : restartDelay
+        : state.phase === 'holding'
+          ? holdDelay
+          : state.phase === 'deleting'
+            ? deleteDelay
+            : typeDelay;
+    const timer = window.setTimeout(() => {
+      setState((current) => {
+        if (current.phase === 'waiting') {
+          return { ...current, phase: 'typing' };
+        }
+        if (current.phase === 'holding') {
+          return { ...current, phase: 'deleting' };
+        }
+        if (current.phase === 'typing') {
+          const nextLength = Math.min(totalLength, current.visibleLength + 1);
+          return {
+            ...current,
+            visibleLength: nextLength,
+            phase: nextLength >= totalLength ? 'holding' : 'typing',
+          };
+        }
+        const nextLength = Math.max(0, current.visibleLength - 1);
+        return {
+          visibleLength: nextLength,
+          phase: nextLength === 0 ? 'waiting' : 'deleting',
+          firstLoop: false,
+        };
+      });
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [
+    deleteDelay,
+    holdDelay,
+    reduceMotion,
+    restartDelay,
+    startDelay,
+    state.firstLoop,
+    state.phase,
+    state.visibleLength,
+    totalLength,
+    typeDelay,
+  ]);
+
+  return {
+    reduceMotion,
+    visibleLength: reduceMotion ? totalLength : state.visibleLength,
+  };
+}
+
+function WelcomeBelief() {
+  const firstLine = 'ALL IN 不是走投無路。';
+  const secondLine = '是有夢想，所以選擇全力以赴。';
+  const totalLength = firstLine.length + secondLine.length;
+  const { reduceMotion, visibleLength: effectiveVisibleLength } =
+    useLoopingTypewriter(totalLength, 520, 110, 3_400, 55, 950);
+  const firstVisible = firstLine.slice(0, effectiveVisibleLength);
+  const secondVisible = secondLine.slice(
+    0,
+    Math.max(0, effectiveVisibleLength - firstLine.length),
+  );
+  const typingSecond = effectiveVisibleLength > firstLine.length;
+
+  return (
+    <p
+      className="welcome-belief welcome-typewriter"
+      aria-label={`${firstLine} ${secondLine}`}
+    >
+      <span aria-hidden="true">
+        {firstVisible}
+        {!typingSecond && !reduceMotion && <i />}
+      </span>
+      <strong aria-hidden="true">
+        {secondVisible}
+        {typingSecond && !reduceMotion && <i />}
+      </strong>
+    </p>
+  );
+}
+
+function CompassManifesto() {
+  const headline = '省下日常，投資夢想。';
+  const detail = '把日常省下的每一筆，ALL IN 真正想完成的未來。';
+  const totalLength = headline.length + detail.length;
+  const [canAnimate, setCanAnimate] = useState(false);
+  const { reduceMotion, visibleLength } = useLoopingTypewriter(
+    totalLength,
+    1_600,
+    88,
+    4_200,
+    48,
+    1_200,
+  );
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setCanAnimate(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  // Keep the server output and the browser's first render identical. The
+  // animated markup is introduced only after hydration, while reduced-motion
+  // users retain the complete semantic caption without a moving cursor.
+  if (!canAnimate || reduceMotion) {
+    return (
+      <figcaption className="compass-manifesto">
+        <span>OUR NORTH STAR</span>
+        <strong>{headline}</strong>
+        <small>{detail}</small>
+      </figcaption>
+    );
+  }
+
+  const visibleHeadline = headline.slice(0, visibleLength);
+  const visibleDetail = detail.slice(
+    0,
+    Math.max(0, visibleLength - headline.length),
+  );
+  const typingDetail = visibleLength > headline.length;
+
+  return (
+    <figcaption
+      className="compass-manifesto compass-manifesto-typewriter"
+      aria-label={`OUR NORTH STAR ${headline} ${detail}`}
+    >
+      <span aria-hidden="true">OUR NORTH STAR</span>
+      <strong aria-hidden="true">
+        {visibleHeadline}
+        {!typingDetail && !reduceMotion && <i />}
+      </strong>
+      <small aria-hidden="true">
+        {visibleDetail}
+        {typingDetail && !reduceMotion && <i />}
+      </small>
+    </figcaption>
+  );
+}
+
+function InteractiveCompass() {
+  const reduceMotion = usePrefersReducedMotion();
+  const [tilt, setTilt] = useState({ x: 28, y: -8 });
+  return (
+    <figure
+      className="welcome-visual compass-interactive"
+      onPointerMove={(event) => {
+        if (reduceMotion || event.pointerType === 'touch') return;
+        const rect = event.currentTarget.getBoundingClientRect();
+        setTilt({
+          x: 28 + ((event.clientY - rect.top) / rect.height - 0.5) * -18,
+          y: ((event.clientX - rect.left) / rect.width - 0.5) * 22,
+        });
+      }}
+      onPointerLeave={() => setTilt({ x: 28, y: -8 })}
+    >
+      <div className="compass-scene" aria-hidden="true">
+        <div
+          className="compass-stage"
+          style={
+            {
+              '--tilt-x': `${tilt.x}deg`,
+              '--tilt-y': `${tilt.y}deg`,
+            } as CSSProperties
+          }
+        >
+          <span className="compass-floor" />
+          <span className="compass-depth" />
+          <span className="compass-ring compass-ring-outer" />
+          <span className="compass-ring compass-ring-inner" />
+          <span className="compass-rim-grooves" />
+          <span className="compass-bezel">
+            <span className="compass-dial">
+              <b className="compass-cardinal cardinal-north">夢</b>
+              <b className="compass-cardinal cardinal-east">省</b>
+              <b className="compass-cardinal cardinal-south">行</b>
+              <b className="compass-cardinal cardinal-west">選</b>
+              <span className="compass-axis-label">ALL IN</span>
+              <span className="compass-needle">
+                <span className="needle-dream" />
+                <span className="needle-origin" />
+              </span>
+              <span className="compass-hub" />
+              <span className="compass-glass" />
+            </span>
+          </span>
+          <span className="compass-crown" />
+          <i className="compass-node node-violet" />
+          <i className="compass-node node-blue" />
+          <i className="compass-node node-coral" />
+        </div>
+      </div>
+      <CompassManifesto />
+    </figure>
+  );
+}
+
 function WelcomeScreen({
+  ready,
   onDemo,
   onAccount,
 }: {
+  ready: boolean;
   onDemo: () => void;
   onAccount: () => void;
 }) {
   return (
     <section className="welcome-screen simple-welcome">
       <WelcomeParticles />
+      <MoneyRain />
       <div className="welcome-aili" aria-hidden="true">
         <AiliMascot compact />
       </div>
@@ -1797,24 +3153,24 @@ function WelcomeScreen({
         <span>IN</span>
         <span>LIFE</span>
       </div>
-      <p>
-        把預算、時間、距離與偏好
-        <br />
-        變成今天真的做得到的選擇。
-      </p>
+      <WelcomeBelief />
       <InteractiveCompass />
       <div className="welcome-actions">
-        <button className="primary-action" onClick={onDemo}>
+        <button className="primary-action" onClick={onDemo} disabled={!ready}>
           <Sparkles />
-          DEMO 模擬體驗
+          立即開始探索
           <ArrowRight />
         </button>
-        <button className="secondary-action" onClick={onAccount}>
+        <button
+          className="secondary-action"
+          onClick={onAccount}
+          disabled={!ready}
+        >
           <LogIn />
-          登入／正式版
+          使用自己的資料
         </button>
       </div>
-      <small>DEMO 帶入範例；正式版從空白開始。</small>
+      <small>直接開始探索，或登入後使用自己的生活條件。</small>
     </section>
   );
 }
@@ -1859,7 +3215,10 @@ function SopGuide({
   ];
   useEffect(() => {
     const timer = window.setTimeout(
-      () => setStep((current) => (current < guide.length - 1 ? current + 1 : current)),
+      () =>
+        setStep((current) =>
+          current < guide.length - 1 ? current + 1 : current,
+        ),
       3_200,
     );
     return () => window.clearTimeout(timer);
@@ -1877,24 +3236,37 @@ function SopGuide({
           <span className="sop-demo-icon">{item.icon}</span>
           {step === 0 && (
             <div className="voice-wave" aria-hidden="true">
-              <i /><i /><i /><i /><i />
+              <i />
+              <i />
+              <i />
+              <i />
+              <i />
             </div>
           )}
           {step === 1 && (
             <div className="guide-constraints" aria-hidden="true">
-              <i>現在</i><i>NT$500</i><i>2 km</i>
+              <i>現在</i>
+              <i>NT$500</i>
+              <i>2 km</i>
             </div>
           )}
           {step === 2 && (
             <div className="guide-agents" aria-hidden="true">
-              <i><b>CP</b><span /></i>
-              <i><b>0元</b><span /></i>
+              <i>
+                <b>CP</b>
+                <span />
+              </i>
+              <i>
+                <b>0元</b>
+                <span />
+              </i>
             </div>
           )}
           {step === 3 && (
             <div className="guide-pwa">
               <button type="button" onClick={onInstall}>
-                <Download />安裝 PWA
+                <Download />
+                安裝 PWA
               </button>
               <small>{pwaStatus}</small>
             </div>
@@ -1912,12 +3284,16 @@ function SopGuide({
               className={index === step ? 'active' : index < step ? 'done' : ''}
               onClick={() => setStep(index)}
               aria-label={`前往教學第 ${index + 1} 步`}
-            ><i /></button>
+            >
+              <i />
+            </button>
           ))}
         </div>
         <button
           className="primary-action sop-guide-next"
-          onClick={() => (step < guide.length - 1 ? setStep(step + 1) : onClose())}
+          onClick={() =>
+            step < guide.length - 1 ? setStep(step + 1) : onClose()
+          }
         >
           {step < guide.length - 1 ? '下一步' : finishLabel}
           <ArrowRight />
@@ -1930,14 +3306,18 @@ function SopGuide({
 function OnboardingScreen({
   profile,
   filters,
+  musicEnabled,
   onProfile,
   onFilters,
+  onMusicToggle,
   onDone,
 }: {
   profile: Profile;
   filters: Filters;
+  musicEnabled: boolean;
   onProfile: (p: Profile) => void;
   onFilters: (f: Filters) => void;
+  onMusicToggle: () => void;
   onDone: () => void;
 }) {
   const [step, setStep] = useState(1);
@@ -1945,9 +3325,16 @@ function OnboardingScreen({
     <section className="screen onboarding-screen">
       <div className="onboarding-top">
         <span className="brand-inline">ALL IN LIFE</span>
-        <button className="skip-button" onClick={onDone}>
-          略過
-        </button>
+        <div className="onboarding-tools">
+          <ThemeToggle />
+          <BackgroundMusicToggle
+            enabled={musicEnabled}
+            onToggle={onMusicToggle}
+          />
+          <button className="skip-button" onClick={onDone}>
+            略過
+          </button>
+        </div>
       </div>
       <Progress value={step * 33.4} />
       {step === 1 && (
@@ -1978,14 +3365,12 @@ function OnboardingScreen({
           <h1>你的日常界線</h1>
           <p>硬限制會直接排除選項，不只是影響排序。</p>
           <div className="compact-grid">
-            <label className="field-label">
+            <label className="field-label" htmlFor="onboarding-budget">
               單次預算
-              <input
-                type="number"
+              <MoneyInput
+                id="onboarding-budget"
                 value={filters.budget}
-                onChange={(e) =>
-                  onFilters({ ...filters, budget: Number(e.target.value) })
-                }
+                onValueChange={(budget) => onFilters({ ...filters, budget })}
               />
             </label>
             <label className="field-label">
@@ -2023,12 +3408,8 @@ function OnboardingScreen({
           <div className="confirm-card">
             <Check />
             <span>
-              <b>{profile.signedIn ? '登入模式' : '匿名模式'}</b>
-              <small>
-                {profile.signedIn
-                  ? '接上帳號 API 後可同步設定與紀錄'
-                  : '目前只儲存在這個瀏覽工作階段'}
-              </small>
+              <b>個人化設定已完成</b>
+              <small>預算、排除與喜好會套用到每次推薦</small>
             </span>
           </div>
         </>
@@ -2059,21 +3440,23 @@ function AppHeader({
   nowText,
   areaLabel,
   unread,
-  savedCount,
+  musicEnabled,
   onBack,
   onHome,
   onNotifications,
   onSettings,
+  onMusicToggle,
 }: {
   view: View;
   nowText: string;
   areaLabel: string;
   unread: number;
-  savedCount: number;
+  musicEnabled: boolean;
   onBack: () => void;
   onHome: () => void;
   onNotifications: () => void;
   onSettings: () => void;
+  onMusicToggle: () => void;
 }) {
   const root = ['home', 'results', 'saved', 'team', 'analytics'].includes(view);
   const titles: Partial<Record<View, string>> = {
@@ -2090,11 +3473,25 @@ function AppHeader({
     map: '位置與交通',
   };
   return (
-    <header className={`app-header glass ${root ? 'root-header' : ''}`}>
+    <header
+      className={`app-header glass ${root ? 'root-header' : ''} ${view === 'home' ? 'home-header' : ''}`}
+    >
       {root ? (
-        <button className="brand-lockup" onClick={onHome}>
-          <b>ALL IN LIFE</b>
-          <small><i />{nowText} · {areaLabel}</small>
+        <button
+          className="brand-lockup"
+          onClick={onHome}
+          aria-label="ALL IN LIFE，回到首頁"
+        >
+          <b
+            className={view === 'home' ? 'brand-typewriter' : undefined}
+            aria-hidden="true"
+          >
+            ALL IN LIFE
+          </b>
+          <small>
+            <i />
+            {nowText} · {areaLabel}
+          </small>
         </button>
       ) : (
         <button className="icon-button" onClick={onBack} aria-label="返回">
@@ -2103,19 +3500,24 @@ function AppHeader({
       )}
       {!root && <strong className="header-title">{titles[view]}</strong>}
       <div className="header-actions">
-        {savedCount > 0 && root && (
-          <span className="header-count">{savedCount}</span>
-        )}
-        {root && (
-          <button
-            className="icon-button notification-button"
-            onClick={onNotifications}
-            aria-label="通知"
-          >
-            <Bell />
-            {unread > 0 && <i>{unread}</i>}
-          </button>
-        )}
+        <ThemeToggle />
+        <button
+          className="icon-button notification-button"
+          onClick={onNotifications}
+          aria-label={unread > 0 ? `通知，${unread} 則未讀` : '通知'}
+          aria-current={view === 'notifications' ? 'page' : undefined}
+        >
+          <Bell />
+          {unread > 0 && (
+            <span className="notification-badge" aria-hidden="true">
+              {unread}
+            </span>
+          )}
+        </button>
+        <BackgroundMusicToggle
+          enabled={musicEnabled}
+          onToggle={onMusicToggle}
+        />
         <button
           className="icon-button"
           onClick={onSettings}
@@ -2132,46 +3534,98 @@ function ReadyScreen({
   filters,
   need,
   mode,
+  validationError,
   onEdit,
   onStart,
 }: {
   filters: Filters;
   need: string;
   mode: Mode;
+  validationError: string;
   onEdit: () => void;
   onStart: () => void;
 }) {
   return (
     <section className="screen ready-screen">
       <span className="kicker step-kicker">STEP 3 · 開始探索</span>
-      <h1>條件確認完成<br />準備開始探索</h1>
+      <h1>
+        條件確認完成
+        <br />
+        準備開始探索
+      </h1>
       <p>最後看一次摘要；按下按鈕後，兩個獵人才會正式出動。</p>
       <div className="ready-brief interactive-shine">
-        <span className="ready-label"><Check />已確認的需求</span>
+        <span className="ready-label">
+          <Check />
+          已確認的需求
+        </span>
         <blockquote>{need || '尚未輸入文字需求'}</blockquote>
         <div className="ready-metrics">
-          <span><Clock3 /><b>{filters.date.slice(5)} {filters.time}</b></span>
-          <span><CircleDollarSign /><b>NT${filters.budget}</b></span>
-          <span><Users /><b>{filters.people} 人</b></span>
-          <span><MapPin /><b>{filters.distance} km</b></span>
+          <span>
+            <Clock3 />
+            <b>
+              {filters.date.slice(5)} {filters.time}
+            </b>
+          </span>
+          <span>
+            <CircleDollarSign />
+            <b>NT${filters.budget}</b>
+          </span>
+          <span>
+            <Users />
+            <b>{filters.people} 人</b>
+          </span>
+          <span>
+            <MapPin />
+            <b>{filters.distance} km</b>
+          </span>
         </div>
         <div className="ready-tags">
-          {filters.preferences.map((tag) => <i key={tag}>喜好 · {tag}</i>)}
-          {filters.exclusions.map((tag) => <i className="exclude" key={tag}>排斥 · {tag}</i>)}
+          {filters.preferences.map((tag) => (
+            <i key={tag}>喜好 · {tag}</i>
+          ))}
+          {filters.exclusions.map((tag) => (
+            <i className="exclude" key={tag}>
+              排斥 · {tag}
+            </i>
+          ))}
         </div>
       </div>
       <div className="ready-agent-pair">
-        <span><i className="lime-agent"><CircleDollarSign /></i><b>CP 值獵人</b><small>價格、距離、喜好</small></span>
-        <span><i className="blue-agent"><Sparkles /></i><b>零元獵人</b><small>免費、資格、時間</small></span>
+        <span>
+          <i className="lime-agent">
+            <CircleDollarSign />
+          </i>
+          <b>CP 值獵人</b>
+          <small>價格、距離、喜好</small>
+        </span>
+        <span>
+          <i className="blue-agent">
+            <Sparkles />
+          </i>
+          <b>零元獵人</b>
+          <small>免費、資格、時間</small>
+        </span>
       </div>
-      <div className="ready-mode">目前模式：<b>{modes[mode].title}</b></div>
-      <button className="primary-action flow-action ready-start" onClick={onStart}>
+      <div className="ready-mode">
+        目前模式：<b>{modes[mode].title}</b>
+      </div>
+      {validationError && (
+        <p className="form-error" role="alert">
+          {validationError}
+        </p>
+      )}
+      <button
+        className="primary-action flow-action ready-start"
+        onClick={onStart}
+      >
         <Radar />
         開始探索
         <ArrowRight />
       </button>
       <button className="secondary-action ready-edit" onClick={onEdit}>
-        <Pencil />返回修改條件
+        <Pencil />
+        返回修改條件
       </button>
     </section>
   );
@@ -2179,13 +3633,15 @@ function ReadyScreen({
 
 function HomeScreen({
   profile,
-  experienceMode,
   mode,
   filters,
   need,
+  validationError,
+  aiParseStatus,
   locationStatus,
   locationPermission,
   savedCount,
+  budgetSummary,
   onMode,
   onNeed,
   onVoice,
@@ -2199,13 +3655,15 @@ function HomeScreen({
   onDeclineLocation,
 }: {
   profile: Profile;
-  experienceMode: ExperienceMode;
   mode: Mode;
   filters: Filters;
   need: string;
+  validationError: string;
+  aiParseStatus: AiParseStatus;
   locationStatus: string;
   locationPermission: LocationPermission;
   savedCount: number;
+  budgetSummary: BudgetSummary;
   onMode: (m: Mode) => void;
   onNeed: (s: string) => void;
   onVoice: () => void;
@@ -2218,15 +3676,17 @@ function HomeScreen({
   onRequestLocation: () => void;
   onDeclineLocation: () => void;
 }) {
-  const isDemo = experienceMode === 'demo';
+  const reduceMotion = usePrefersReducedMotion();
   const [promptIndex, setPromptIndex] = useState(0);
   const [typedPrompt, setTypedPrompt] = useState('');
   const [deletingPrompt, setDeletingPrompt] = useState(false);
   useEffect(() => {
+    if (reduceMotion) return;
     const target = homePrompts[promptIndex];
     const complete = typedPrompt === target;
     const empty = typedPrompt.length === 0;
-    const delay = complete && !deletingPrompt ? 1_900 : deletingPrompt ? 38 : 72;
+    const delay =
+      complete && !deletingPrompt ? 1_900 : deletingPrompt ? 38 : 72;
     const timer = window.setTimeout(() => {
       if (complete && !deletingPrompt) {
         setDeletingPrompt(true);
@@ -2242,7 +3702,8 @@ function HomeScreen({
       );
     }, delay);
     return () => window.clearTimeout(timer);
-  }, [deletingPrompt, promptIndex, typedPrompt]);
+  }, [deletingPrompt, promptIndex, reduceMotion, typedPrompt]);
+  const visiblePrompt = reduceMotion ? homePrompts[0] : typedPrompt;
   const locationHeading =
     locationPermission === 'granted'
       ? '已取得目前位置'
@@ -2262,8 +3723,12 @@ function HomeScreen({
       <div className="greeting-row">
         <div className="typewriter-greeting">
           <span className="kicker">嗨，{profile.name || '旅人'}</span>
-          <h1 aria-live="polite">
-            {typedPrompt}<i />
+          <h1>
+            <span aria-hidden="true">
+              {visiblePrompt}
+              <i />
+            </span>
+            <span className="sr-only">{homePrompts[promptIndex]}</span>
           </h1>
         </div>
         <button
@@ -2275,34 +3740,40 @@ function HomeScreen({
           {(profile.name || '旅人').slice(0, 1)}
         </button>
       </div>
-      {isDemo ? (
+      {budgetSummary.budget > 0 || budgetSummary.transactionCount > 0 ? (
         <button
           className="wallet-card"
           onClick={onAnalytics}
-          aria-label="查看 DEMO 消費分析"
+          aria-label="查看本月消費分析"
         >
           <div>
             <span className="wallet-label">
               <WalletCards />
-              DEMO 本月剩餘
+              {budgetSummary.remaining >= 0 ? '本月可用' : '本月超出預算'}
             </span>
-            <strong>NT$ 8,000</strong>
+            <strong>NT$ {money(Math.abs(budgetSummary.remaining))}</strong>
+            <small className="wallet-context">
+              已花 NT${money(budgetSummary.spent)} ／ 月預算 NT$
+              {money(budgetSummary.budget)}
+            </small>
           </div>
           <div className="wallet-side">
-            <span>本月省下</span>
-            <b>NT$ 1,240</b>
-            <small>查看模擬分析</small>
+            <span>比可比方案省下</span>
+            <b>NT$ {money(budgetSummary.saved)}</b>
+            <small>{budgetSummary.transactionCount} 筆紀錄 · 查看分析</small>
           </div>
-          <div className="wallet-progress">
-            <i style={{ width: '80%' }} />
+          <div className="wallet-progress" aria-hidden="true">
+            <i style={{ width: `${budgetSummary.usedPercentage}%` }} />
           </div>
         </button>
       ) : (
         <button className="account-empty-card" onClick={onAnalytics}>
           <Database />
           <span>
-            <b>正式帳戶尚未有消費資料</b>
-            <small>完成第一筆選擇後，這裡才會建立預算與省下金額。</small>
+            <b>尚未設定月預算</b>
+            <small>
+              到消費分析設定預算；完成選擇後會同步累積花費與省下金額。
+            </small>
           </span>
           <ChevronRight />
         </button>
@@ -2338,6 +3809,7 @@ function HomeScreen({
         <button
           className={`voice-action ${recording ? 'recording' : ''}`}
           onClick={onVoice}
+          disabled={aiParseStatus === 'loading'}
         >
           <span>
             <Mic />
@@ -2351,43 +3823,69 @@ function HomeScreen({
             value={need}
             placeholder={modeNeedExamples[mode]}
             onChange={(e) => onNeed(e.target.value)}
+            disabled={aiParseStatus === 'loading'}
             aria-label="文字輸入需求"
+            aria-invalid={Boolean(validationError)}
+            aria-describedby={validationError ? 'home-need-error' : undefined}
           />
           <span>輸入完成後，下一步會強制確認條件</span>
         </label>
+        {validationError && (
+          <p id="home-need-error" className="form-error" role="alert">
+            {validationError}
+          </p>
+        )}
         <div className="constraint-row">
+          {aiParseStatus !== 'idle' && (
+            <output aria-live="polite">
+              <span>
+                {aiParseStatus === 'loading'
+                  ? 'AI 正在整理…'
+                  : aiParseStatus === 'success'
+                    ? 'AI 已整理，請確認'
+                    : 'AI 暫時無法使用，可手動確認'}
+              </span>
+            </output>
+          )}
           <span>
             {filters.date.slice(5)} {filters.time}
           </span>
-          <span>{filters.budget > 0 ? `NT$${filters.budget}` : '預算未設'}</span>
+          <span>
+            {filters.budget > 0 ? `NT$${filters.budget}` : '預算未設'}
+          </span>
           <span>{filters.people} 人</span>
           <span>{filters.distance} km</span>
         </div>
-        <button className="primary-action flow-action" onClick={onConfirm}>
+        <button
+          className="primary-action flow-action"
+          onClick={() => onConfirm()}
+          disabled={aiParseStatus === 'loading'}
+          aria-busy={aiParseStatus === 'loading'}
+        >
           <SlidersHorizontal />
-          下一步：確認需求與限制
+          {aiParseStatus === 'loading'
+            ? 'AI 正在整理需求…'
+            : '下一步：確認需求與限制'}
           <ArrowRight />
         </button>
       </div>
       <button className="sop-launcher" onClick={onGuide}>
-        <span className="sop-launcher-icon"><Sparkles /></span>
+        <span className="sop-launcher-icon">
+          <Sparkles />
+        </span>
         <span>
           <b>再次查看 · 動畫與 PWA 教學</b>
           <small>輸入需求 → 確認條件 → 雙獵人 → 安裝主畫面</small>
         </span>
         <ChevronRight />
       </button>
-      <button className={`quick-team ${isDemo ? '' : 'empty'}`} onClick={onTeam}>
+      <button className="quick-team" onClick={onTeam}>
         <span className="quick-icon">
           <Users />
         </span>
         <span>
-          <b>{isDemo ? 'DEMO · 附近有人正在湊團' : '目前沒有加入的揪團'}</b>
-          <small>
-            {isDemo
-              ? '五人晚餐團還差 2 位 · 可取消'
-              : '建立或加入團體後，進度才會顯示在這裡。'}
-          </small>
+          <b>附近有人正在湊團</b>
+          <small>五人晚餐團還差 2 位 · 可取消</small>
         </span>
         <ChevronRight />
       </button>
@@ -2397,9 +3895,7 @@ function HomeScreen({
         </span>
         <span className="location-consent-copy">
           <b>{locationHeading}</b>
-          <small>
-            {locationStatus} · 距離會用於 CP 值與最大距離篩選
-          </small>
+          <small>{locationStatus} · 距離會用於 CP 值與最大距離篩選</small>
         </span>
         {canRequestLocation && (
           <span className="location-consent-actions">
@@ -2420,23 +3916,61 @@ function HomeScreen({
 }
 
 function SearchScreen({
-  progress,
+  status,
   filters,
+  resultCount,
+  errorMessage,
+  onRetry,
+  onEdit,
 }: {
-  progress: number;
+  status: SearchStatus;
   filters: Filters;
+  resultCount: number;
+  errorMessage?: string;
+  onRetry: () => void;
+  onEdit: () => void;
 }) {
-  const cpProgress = Math.min(100, progress + 10);
-  const zeroProgress = Math.min(100, Math.max(8, progress - 8));
+  const activeIndex =
+    status === 'idle' || status === 'validating'
+      ? 0
+      : status === 'loading' || status === 'error'
+        ? 1
+        : status === 'ranking'
+          ? 2
+          : 3;
+  const complete = status === 'success' || status === 'empty';
+  const statusLabel =
+    status === 'validating'
+      ? '驗證需求'
+      : status === 'loading'
+        ? '整理選項'
+        : status === 'ranking'
+          ? '計算排名'
+          : status === 'success'
+            ? '整理完成'
+            : status === 'empty'
+              ? '查詢完成'
+              : status === 'error'
+                ? '連線失敗'
+                : '準備開始';
+  const lifecycleProgress = complete
+    ? 100
+    : status === 'ranking'
+      ? 76
+      : status === 'loading' || status === 'error'
+        ? 48
+        : 22;
   return (
     <section className="screen search-screen">
-      <div className="search-orbit">
+      <div className={`search-orbit status-${status}`}>
         <div className="orbit-ring ring-one" />
         <div className="orbit-ring ring-two" />
         <Radar />
-        <span>{progress}%</span>
+        <span>{statusLabel}</span>
       </div>
-      <span className="kicker lime-text">雙 Agent 探索中</span>
+      <span className="kicker lime-text">
+        {status === 'error' ? '這次搜尋尚未完成' : '正在整理最佳選擇'}
+      </span>
       <h1>
         CP 值獵人
         <br />
@@ -2447,28 +3981,50 @@ function SearchScreen({
         <AgentPanel
           title="CP 值獵人"
           subtitle="付費選項搜尋"
-          progress={cpProgress}
-          labels={['查詢來源', '讀取證據', '正規化', 'CP 排序']}
-          count="候選 18"
-          passed="通過 10"
+          activeIndex={activeIndex}
+          complete={complete}
+          failed={status === 'error'}
+          labels={['讀取需求', '套用條件', '計算距離', 'CP 排序']}
+          count={`${resultCount} 筆候選`}
+          passed="條件符合"
           tone="lime"
         />
         <AgentPanel
           title="零元獵人"
           subtitle="免費資源搜尋"
-          progress={zeroProgress}
-          labels={['查詢來源', '資格條件', '開放時間', '零元排序']}
-          count="候選 8"
+          activeIndex={Math.max(
+            0,
+            activeIndex - (status === 'loading' ? 1 : 0),
+          )}
+          complete={complete}
+          failed={status === 'error'}
+          labels={['讀取需求', '免費條件', '確認時段', '零元排序']}
+          count={`${resultCount} 筆候選`}
           passed={filters.budget === 0 ? '優先顯示' : '混合顯示'}
           tone="blue"
         />
       </div>
-      <Progress value={progress} className="search-progress" />
+      <Progress value={lifecycleProgress} className="search-progress" />
       <div className="scan-stats">
-        <span>資料 26</span>
-        <span>已排除 {Math.floor(progress / 9)}</span>
-        <span>候選 {Math.max(1, Math.floor(progress / 14))}</span>
+        <span>圓山生活圈</span>
+        <span>{statusLabel}</span>
+        <span>{complete ? `${resultCount} 筆候選` : '請稍候'}</span>
       </div>
+      {status === 'error' && (
+        <div className="search-error" role="alert">
+          <Database />
+          <span>
+            <b>目前無法取得候選資料</b>
+            <small>{errorMessage ?? '請檢查連線後再試一次。'}</small>
+          </span>
+          <button type="button" onClick={onRetry}>
+            重新搜尋
+          </button>
+          <button type="button" onClick={onEdit}>
+            修改條件
+          </button>
+        </div>
+      )}
     </section>
   );
 }
@@ -2476,7 +4032,9 @@ function SearchScreen({
 function AgentPanel({
   title,
   subtitle,
-  progress,
+  activeIndex,
+  complete,
+  failed,
   labels,
   count,
   passed,
@@ -2484,15 +4042,23 @@ function AgentPanel({
 }: {
   title: string;
   subtitle: string;
-  progress: number;
+  activeIndex: number;
+  complete: boolean;
+  failed: boolean;
   labels: string[];
   count: string;
   passed: string;
   tone: 'lime' | 'blue';
 }) {
-  const activeIndex = Math.min(labels.length - 1, Math.floor(progress / 26));
+  const progress = complete
+    ? 100
+    : Math.round(
+        ((Math.min(activeIndex, labels.length - 1) + 1) / labels.length) * 100,
+      );
   return (
-    <div className={`agent-panel agent-${tone}`}>
+    <div
+      className={`agent-panel agent-${tone}${complete ? ' complete' : ''}${failed ? ' failed' : ''}`}
+    >
       <div className="agent-panel-top">
         <span>
           <i />
@@ -2502,7 +4068,16 @@ function AgentPanel({
       </div>
       <div className="agent-steps">
         {labels.map((label, index) => (
-          <span key={label} className={index <= activeIndex ? 'active' : ''}>
+          <span
+            key={label}
+            className={
+              complete || index < activeIndex
+                ? 'done'
+                : index === activeIndex
+                  ? 'working'
+                  : ''
+            }
+          >
             <small>0{index + 1}</small>
             {label}
           </span>
@@ -2533,6 +4108,12 @@ function CpFormulaPanel({
     { key: 'distance', label: '距離' },
     { key: 'preference', label: '喜好' },
   ];
+  const presets: Array<{ label: string; value: CpParams }> = [
+    { label: '省最多', value: { price: 70, distance: 15, preference: 15 } },
+    { label: '離我近', value: { price: 20, distance: 65, preference: 15 } },
+    { label: '最合喜好', value: { price: 20, distance: 15, preference: 65 } },
+  ];
+  const sampleScore = sample ? cpFormulaScore(sample, filters, params) : null;
   return (
     <details className="cp-formula">
       <summary>
@@ -2540,12 +4121,28 @@ function CpFormulaPanel({
           <CircleDollarSign />
           <b>我的 CP 值公式</b>
         </span>
-        <strong>
-          {sample ? cpFormulaScore(sample, filters, params) : '—'}
-        </strong>
+        <strong>{sample ? (sampleScore ?? '條件不足') : '—'}</strong>
       </summary>
-      <p>CP = 價格分 × 權重＋距離分 × 權重＋喜好符合分 × 權重</p>
-      <small>先依喜好分組；含排斥成分的選項標示警告並排到後段。</small>
+      <p>價格、距離與喜好會依下方權重算出排名。</p>
+      <small>權重固定合計 100%；調整任一項會立即重排結果。</small>
+      <div className="cp-presets" aria-label="快速選擇排序重點">
+        {presets.map((preset) => {
+          const active = fields.every(
+            ({ key }) => params[key] === preset.value[key],
+          );
+          return (
+            <button
+              type="button"
+              key={preset.label}
+              className={active ? 'active' : ''}
+              aria-pressed={active}
+              onClick={() => onChange(preset.value)}
+            >
+              {preset.label}
+            </button>
+          );
+        })}
+      </div>
       <div className="formula-controls">
         {fields.map(({ key, label }) => (
           <label key={key}>
@@ -2555,17 +4152,25 @@ function CpFormulaPanel({
               min={0}
               max={100}
               step={5}
-              onValueChange={(value) =>
-                onChange({
-                  ...params,
-                  [key]: Array.isArray(value) ? value[0] : value,
-                })
-              }
+              aria-label={`${label}權重`}
+              onValueChange={(value) => {
+                const nextValue = Array.isArray(value) ? value[0] : value;
+                onChange(rebalancePersonalCpWeights(params, key, nextValue));
+              }}
             />
             <b>{params[key]}%</b>
           </label>
         ))}
       </div>
+      {sample && (
+        <small
+          className="cp-ranking-live"
+          key={`${sample.id}-${sampleScore}`}
+          aria-live="polite"
+        >
+          目前第 1 名：{sample.title} · CP {sampleScore ?? '條件不足'}
+        </small>
+      )}
     </details>
   );
 }
@@ -2586,131 +4191,292 @@ function TagLine({ item, filters }: { item: Result; filters: Filters }) {
   );
 }
 
+function ResultCard({
+  item,
+  index,
+  filters,
+  cpParams,
+  saved,
+  aiExplanation,
+  onOpen,
+  onSave,
+}: {
+  item: Result;
+  index: number;
+  filters: Filters;
+  cpParams: CpParams;
+  saved: string[];
+  aiExplanation?: AiExplanation;
+  onOpen: (id: string) => void;
+  onSave: (id: string) => void;
+}) {
+  const isSaved = saved.includes(item.id);
+
+  return (
+    <article
+      className={`result-card tone-${item.tone} provenance-${item.provenance ?? 'real'}`}
+      style={{ '--rank-index': index } as CSSProperties}
+      onPointerMove={(event) => {
+        const card = event.currentTarget;
+        const bounds = card.getBoundingClientRect();
+        const x = event.clientX - bounds.left;
+        const y = event.clientY - bounds.top;
+        card.style.setProperty('--spot-x', `${x}px`);
+        card.style.setProperty('--spot-y', `${y}px`);
+        card.style.setProperty(
+          '--tilt-x',
+          `${((y / bounds.height - 0.5) * -3.5).toFixed(2)}deg`,
+        );
+        card.style.setProperty(
+          '--tilt-y',
+          `${((x / bounds.width - 0.5) * 4.5).toFixed(2)}deg`,
+        );
+      }}
+      onPointerLeave={(event) => {
+        event.currentTarget.style.setProperty('--tilt-x', '0deg');
+        event.currentTarget.style.setProperty('--tilt-y', '0deg');
+      }}
+    >
+      <button className="result-open" onClick={() => onOpen(item.id)}>
+        {item.image && item.imageKind === 'verified-real' ? (
+          <Image
+            src={item.image}
+            alt={`${item.provider}實景`}
+            width={112}
+            height={196}
+          />
+        ) : (
+          <div className="result-art">
+            {categoryIcon(item.category)}
+            <span>{item.category}</span>
+          </div>
+        )}
+        <span className="result-body">
+          <span className="result-meta">
+            <span>
+              {String(index + 1).padStart(2, '0')} · {item.subcategory}
+            </span>
+          </span>
+          <span className="result-title">{item.title}</span>
+          <span className="result-copy">
+            {item.provider} · {item.distanceKm} km · {item.hours}
+          </span>
+          <span className="price-row">
+            {item.totalCost === null ? (
+              <strong>依現場價格</strong>
+            ) : (
+              <>
+                <strong>
+                  <small>NT$</small>
+                  {money(item.totalCost)}
+                </strong>
+                {item.servings !== null && (
+                  <span>
+                    人均 <b>{money(item.totalCost / item.servings)}</b>
+                  </span>
+                )}
+              </>
+            )}
+            <span>
+              CP <b>{cpFormulaScore(item, filters, cpParams) ?? '—'}</b>
+            </span>
+          </span>
+          <span className="result-condition">
+            <Clock3 />
+            {item.condition}
+          </span>
+          {aiExplanation && (
+            <span className="result-condition">
+              <Sparkles />
+              <span>
+                <b>
+                  {aiExplanation.source === 'openai' ? 'AI 整理' : '規則整理'} ·{' '}
+                  {aiExplanation.headline}
+                </b>
+                {aiExplanation.reasons.length > 0
+                  ? `｜${aiExplanation.reasons.join('、')}`
+                  : ''}
+                {aiExplanation.caution ? `；${aiExplanation.caution}` : ''}
+              </span>
+            </span>
+          )}
+          <TagLine item={item} filters={filters} />
+        </span>
+      </button>
+      <button
+        className={`save-fab ${isSaved ? 'saved' : ''}`}
+        onClick={() => onSave(item.id)}
+        aria-label={isSaved ? '取消收藏' : '加入清單'}
+        aria-pressed={isSaved}
+      >
+        <Heart />
+      </button>
+    </article>
+  );
+}
+
+function ResultSkeletonList() {
+  return (
+    <div className="result-skeleton-list" aria-label="正在載入候選資料">
+      {[0, 1, 2].map((item) => (
+        <article className="result-skeleton" key={item} aria-hidden="true">
+          <span className="skeleton-art" />
+          <span className="skeleton-copy">
+            <i className="skeleton-line short" />
+            <i className="skeleton-line title" />
+            <i className="skeleton-line medium" />
+            <i className="skeleton-line price" />
+            <i className="skeleton-line long" />
+          </span>
+        </article>
+      ))}
+      <span className="sr-only">正在整理並排序候選資料</span>
+    </div>
+  );
+}
+
 function ResultsScreen({
   items,
   allItems,
+  supplementalItems,
   filters,
   locationLabel,
-  catalogSource,
+  catalogWarnings,
+  catalogFacets,
+  mode,
   cpParams,
   sort,
   saved,
+  aiExplanations,
+  searchStatus,
   onSort,
   onFiltersChange,
   onCpParams,
   onFilters,
+  onRetry,
   onOpen,
   onSave,
 }: {
   items: Result[];
   allItems: Result[];
+  supplementalItems: Result[];
   filters: Filters;
   locationLabel: string;
-  catalogSource: CatalogSummaryResponse['source'] | 'checking';
+  catalogWarnings: string[];
+  catalogFacets: CatalogCategorySummary[] | null;
+  mode: Mode;
   cpParams: CpParams;
   sort: Sort;
   saved: string[];
+  aiExplanations: Record<string, AiExplanation>;
+  searchStatus: SearchStatus;
   onSort: (s: Sort) => void;
   onFiltersChange: (f: Filters) => void;
   onCpParams: (p: CpParams) => void;
   onFilters: () => void;
+  onRetry: () => void;
   onOpen: (id: string) => void;
   onSave: (id: string) => void;
 }) {
-  const [sortOpen, setSortOpen] = useState(false);
+  const [controlSheet, setControlSheet] = useState<'filters' | 'sort' | null>(
+    null,
+  );
+  const [filterDraft, setFilterDraft] = useState(filters);
   const activeSort =
     sortOptions.find((option) => option.value === sort) ?? sortOptions[0];
-  const categoryCounts = resultCategories.map((category) => ({
-    category,
-    shortLabel:
-      catalogCategories.find((entry) => entry.label === category)?.shortLabel ??
-      category,
-    count: allItems.filter((item) => {
+  const loading =
+    searchStatus === 'validating' ||
+    searchStatus === 'loading' ||
+    searchStatus === 'ranking';
+  const hasError = searchStatus === 'error';
+  const visibleItems = [...items, ...supplementalItems];
+  const categoryCounts = resultCategories.map((category) => {
+    const loadedCount = allItems.filter((item) => {
       const budgetMatch =
-        filters.budget === 0
-          ? item.totalCost === 0
-          : item.totalCost <= filters.budget;
+        mode === 'zero'
+          ? isConfirmedFree(item)
+          : filters.budget <= 0 ||
+            item.totalCost === null ||
+            item.totalCost <= filters.budget;
       return (
         item.category === category &&
         budgetMatch &&
         item.distanceKm <= filters.distance
       );
-    }).length,
-  }));
+    }).length;
+    return {
+      category,
+      shortLabel:
+        catalogCategories.find((entry) => entry.label === category)
+          ?.shortLabel ?? category,
+      count:
+        filters.exclusions.length > 0
+          ? loadedCount
+          : (catalogFacets?.find((facet) => facet.label === category)?.count ??
+            loadedCount),
+    };
+  });
   const categoryTotal = categoryCounts.reduce(
     (total, item) => total + item.count,
     0,
   );
-  const catalogSourceText =
-    catalogSource === 'd1'
-      ? 'D1 類別索引已連線'
-      : catalogSource === 'checking'
-        ? '正在確認類別索引'
-        : 'DEMO 資料集 · 五類已對應 D1 欄位';
-
   return (
     <section className="screen results-screen">
       <div className="results-intro">
         <span className="kicker">
-          符合硬限制 · {locationLabel} {filters.distance} KM
+          推薦候選 · {locationLabel} {filters.distance} KM
         </span>
         <h1>
-          {items.length
-            ? `找到 ${items.length} 個可行選擇`
+          {visibleItems.length
+            ? `找到 ${visibleItems.length} 個合適選擇`
             : '目前沒有完全符合'}
         </h1>
-        <p>
-          {filters.date.slice(5)} {filters.time} · {filters.people} 人 · 預算
-          NT${filters.budget}
-        </p>
+        <div className="results-context" aria-label="目前搜尋條件">
+          <span>
+            <CalendarDays />
+            {filters.date.slice(5)} {filters.time}
+          </span>
+          <span>
+            <Users />
+            {filters.people} 人
+          </span>
+          <span>
+            <WalletCards />
+            {filters.budget > 0 ? `NT$${money(filters.budget)}` : '不限預算'}
+          </span>
+        </div>
       </div>
       <div className="filter-row">
-        <button className="filter-summary" onClick={onFilters}>
+        <button
+          className="filter-summary"
+          aria-haspopup="dialog"
+          onClick={() => {
+            setFilterDraft(filters);
+            setControlSheet('filters');
+          }}
+        >
           <SlidersHorizontal />
           <span>
-            <b>調整需求與限制</b>
+            <b>快速篩選</b>
             <small>
-              {filters.category} ·{' '}
-              {filters.preferences.slice(0, 2).join('、') || '尚未設定喜好'}
+              {filters.category} · {filters.distance} km
             </small>
           </span>
         </button>
         <div className="sort-picker">
           <button
             className="sort-button"
-            aria-haspopup="menu"
-            aria-expanded={sortOpen}
-            onClick={() => setSortOpen((open) => !open)}
+            aria-haspopup="dialog"
+            aria-label={`排序方式 ${activeSort.label}`}
+            onClick={() => setControlSheet('sort')}
           >
             <ArrowUpDown />
             <span>
-              <small>排序方式</small>
+              <small>排序</small>
               <b>{activeSort.label}</b>
             </span>
-            <ChevronDown className={sortOpen ? 'open' : ''} />
+            <ChevronDown />
           </button>
-          {sortOpen && (
-            <div className="sort-menu" role="menu" aria-label="選擇排序方式">
-              {sortOptions.map((option) => (
-                <button
-                  key={option.value}
-                  role="menuitemradio"
-                  aria-checked={sort === option.value}
-                  className={sort === option.value ? 'active' : ''}
-                  onClick={() => {
-                    onSort(option.value);
-                    setSortOpen(false);
-                  }}
-                >
-                  <span>
-                    <b>{option.label}</b>
-                    <small>{option.hint}</small>
-                  </span>
-                  {sort === option.value && <Check />}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       </div>
       <nav className="category-filter" aria-label="推薦結果分類">
@@ -2718,7 +4484,8 @@ function ResultsScreen({
           className={filters.category === '全部' ? 'active' : ''}
           onClick={() => onFiltersChange({ ...filters, category: '全部' })}
         >
-          <span>全部</span><i>{categoryTotal}</i>
+          <span>全部</span>
+          <i>{categoryTotal}</i>
         </button>
         {categoryCounts.map(({ category, shortLabel, count }) => (
           <button
@@ -2736,85 +4503,168 @@ function ResultsScreen({
           </button>
         ))}
       </nav>
-      <div className={`catalog-connection source-${catalogSource}`}>
-        <Database />
-        <span>{catalogSourceText}</span>
-      </div>
       <CpFormulaPanel
         params={cpParams}
         onChange={onCpParams}
-        sample={items[0]}
+        sample={visibleItems[0]}
         filters={filters}
       />
-      {items.length === 0 ? (
+      {loading && <ResultSkeletonList />}
+      {hasError && !loading && (
+        <div className="empty-state result-error-state" role="alert">
+          <Database />
+          <h2>候選資料暫時無法載入</h2>
+          <p>{catalogWarnings[0] ?? '請確認網路連線後再試一次。'}</p>
+          <button onClick={onRetry}>重新搜尋</button>
+        </div>
+      )}
+      {!loading && !hasError && visibleItems.length === 0 ? (
         <div className="empty-state">
           <SlidersHorizontal />
           <h2>試著放寬一個條件</h2>
           <p>提高預算、距離，或切換其他類別。</p>
           <button onClick={onFilters}>修改篩選</button>
         </div>
-      ) : (
+      ) : null}
+      {!loading && !hasError && visibleItems.length > 0 && (
         <div className="result-list">
-          {items.map((item, index) => (
-            <article key={item.id} className={`result-card tone-${item.tone}`}>
-              <button className="result-open" onClick={() => onOpen(item.id)}>
-                {item.image && item.imageKind === 'verified-real' ? (
-                  <Image
-                    src={item.image}
-                    alt={`${item.provider}實景`}
-                    width={112}
-                    height={196}
-                  />
-                ) : (
-                  <div className="result-art">
-                    {categoryIcon(item.category)}
-                    <span>{item.category}</span>
-                  </div>
-                )}
-                <span className="result-body">
-                  <span className="result-meta">
-                    <span>
-                      0{index + 1} · {item.subcategory}
-                    </span>
-                    <span>
-                      <ShieldCheck />
-                      {item.reliability}%
-                    </span>
-                  </span>
-                  <span className="result-title">{item.title}</span>
-                  <span className="result-copy">
-                    {item.provider} · {item.distanceKm} km · {item.hours}
-                  </span>
-                  <span className="price-row">
-                    <strong>
-                      <small>NT$</small>
-                      {money(item.totalCost)}
-                    </strong>
-                    <span>
-                      人均 <b>{money(item.totalCost / item.servings)}</b>
-                    </span>
-                    <span>
-                      CP <b>{cpFormulaScore(item, filters, cpParams)}</b>
-                    </span>
-                  </span>
-                  <span className="result-condition">
-                    <Clock3 />
-                    {item.condition}
-                  </span>
-                  <TagLine item={item} filters={filters} />
-                </span>
-              </button>
-              <button
-                className={`save-fab ${saved.includes(item.id) ? 'saved' : ''}`}
-                onClick={() => onSave(item.id)}
-                aria-label="收藏"
-              >
-                <Heart />
-              </button>
-            </article>
+          {visibleItems.map((item, index) => (
+            <ResultCard
+              key={`${item.id}-${sort}-${cpParams.price}-${cpParams.distance}-${cpParams.preference}`}
+              item={item}
+              index={index}
+              filters={filters}
+              cpParams={cpParams}
+              saved={saved}
+              aiExplanation={aiExplanations[item.id]}
+              onOpen={onOpen}
+              onSave={onSave}
+            />
           ))}
         </div>
       )}
+      <Dialog
+        open={controlSheet !== null}
+        onOpenChange={(open) => {
+          if (!open) setControlSheet(null);
+        }}
+      >
+        <DialogContent
+          className="evidence-sheet results-control-sheet"
+          showCloseButton={false}
+        >
+          <div className="sheet-handle" />
+          <DialogHeader className="results-sheet-header">
+            <span className="kicker lime-text">
+              {controlSheet === 'filters' ? 'QUICK FILTER' : 'SORT RESULTS'}
+            </span>
+            <DialogTitle>
+              {controlSheet === 'filters' ? '快速調整結果' : '選擇排序方式'}
+            </DialogTitle>
+            <DialogDescription>
+              {controlSheet === 'filters'
+                ? '先調整分類與距離；其他限制仍可進入完整條件頁修改。'
+                : '排序只改變候選順序，不會隱藏資料。'}
+            </DialogDescription>
+          </DialogHeader>
+          {controlSheet === 'filters' ? (
+            <>
+              <div className="quick-filter-group">
+                <b>分類</b>
+                <div className="quick-filter-options category-options">
+                  {(['全部', ...resultCategories] as Filters['category'][]).map(
+                    (category) => (
+                      <button
+                        type="button"
+                        key={category}
+                        aria-pressed={filterDraft.category === category}
+                        style={
+                          category === '全部'
+                            ? undefined
+                            : ({
+                                '--category-color': categoryColors[category],
+                              } as CSSProperties)
+                        }
+                        onClick={() =>
+                          setFilterDraft({ ...filterDraft, category })
+                        }
+                      >
+                        {category !== '全部' && categoryIcon(category)}
+                        {category === '免費／公益資源'
+                          ? '免費／公益'
+                          : category}
+                      </button>
+                    ),
+                  )}
+                </div>
+              </div>
+              <div className="quick-filter-group">
+                <b>最大距離</b>
+                <div className="quick-filter-options distance-options">
+                  {[0.5, 1, 1.5, 2].map((distance) => (
+                    <button
+                      type="button"
+                      key={distance}
+                      aria-pressed={filterDraft.distance === distance}
+                      onClick={() =>
+                        setFilterDraft({ ...filterDraft, distance })
+                      }
+                    >
+                      {distance} km
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="results-sheet-actions">
+                <button
+                  type="button"
+                  className="primary-action"
+                  onClick={() => {
+                    onFiltersChange(filterDraft);
+                    setControlSheet(null);
+                  }}
+                >
+                  <Check />
+                  套用快速篩選
+                </button>
+                <button
+                  type="button"
+                  className="secondary-action"
+                  onClick={() => {
+                    setControlSheet(null);
+                    onFilters();
+                  }}
+                >
+                  <SlidersHorizontal />
+                  完整條件設定
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="sheet-sort-options">
+              {sortOptions.map((option) => (
+                <button
+                  type="button"
+                  key={option.value}
+                  aria-pressed={sort === option.value}
+                  className={sort === option.value ? 'active' : ''}
+                  onClick={() => {
+                    onSort(option.value);
+                    setControlSheet(null);
+                  }}
+                >
+                  <ArrowUpDown />
+                  <span>
+                    <b>{option.label}</b>
+                    <small>{option.hint}</small>
+                  </span>
+                  {sort === option.value && <Check />}
+                </button>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
@@ -2824,6 +4674,7 @@ function DetailScreen({
   itemScore,
   cpParams,
   filters,
+  reportCount,
   saved,
   onSave,
   onEvidence,
@@ -2835,6 +4686,7 @@ function DetailScreen({
   itemScore: number | null;
   cpParams: CpParams;
   filters: Filters;
+  reportCount: number;
   saved: boolean;
   onSave: () => void;
   onEvidence: () => void;
@@ -2842,10 +4694,10 @@ function DetailScreen({
   onReport: () => void;
   onShare: () => void;
 }) {
-  const saving = Math.max(
-    0,
-    (item.benchmarkCost ?? item.totalCost) - item.totalCost,
-  );
+  const saving =
+    item.totalCost !== null && item.benchmarkCost != null
+      ? Math.max(0, item.benchmarkCost - item.totalCost)
+      : null;
   return (
     <section className="screen detail-screen">
       {item.image && item.imageKind === 'verified-real' ? (
@@ -2857,15 +4709,23 @@ function DetailScreen({
             height={230}
             priority
           />
-          <span className="image-badge">
-            <ShieldCheck />
-            有來源資料
-          </span>
         </div>
       ) : (
-        <div className={`detail-hero tone-${item.tone}`}>
-          {categoryIcon(item.category)}
-          <span>{item.category}</span>
+        <div
+          className={`detail-hero tone-${item.tone}`}
+          style={
+            { '--card-accent': categoryColors[item.category] } as CSSProperties
+          }
+        >
+          <span className="detail-hero-orbit" aria-hidden="true" />
+          <span className="detail-hero-symbol">
+            {categoryIcon(item.category)}
+          </span>
+          <span className="detail-hero-copy">
+            <small>為你精選</small>
+            <b>{item.category}</b>
+            <em>{item.provider}</em>
+          </span>
         </div>
       )}
       <div className="detail-content">
@@ -2876,18 +4736,30 @@ function DetailScreen({
         <p className="detail-meta">
           <MapPin />
           {item.distanceKm} km · 步行約 {item.walkMin} 分鐘 ·{' '}
-          {item.serviceModes.join('／')}
+          {item.serviceModes.join('／') || '現場服務'}
         </p>
         <div className="detail-score">
           <div>
             <span>總成本估算</span>
-            <strong>NT${money(item.totalCost)}</strong>
-            <small>人均 NT${money(item.totalCost / item.servings)}</small>
+            <strong>
+              {item.totalCost === null
+                ? '依現場價格'
+                : `NT$${money(item.totalCost)}`}
+            </strong>
+            <small>
+              {item.totalCost === null
+                ? (item.costReason ?? '現場提供多種方案')
+                : item.servings === null
+                  ? '單次方案'
+                  : `人均 NT$${money(item.totalCost / item.servings)}`}
+            </small>
           </div>
           <div>
             <span>個人 CP</span>
-            <strong>{itemScore}</strong>
-            <small>符合目前偏好</small>
+            <strong>{itemScore ?? '—'}</strong>
+            <small>
+              {itemScore === null ? '依目前條件排序' : '符合目前偏好'}
+            </small>
           </div>
         </div>
         <div className="detail-formula">
@@ -2895,36 +4767,43 @@ function DetailScreen({
           {cpParams.preference}%
         </div>
         <TagLine item={item} filters={filters} />
-        {item.benchmarkCost && (
-          <div className="saving-card">
-            <BadgePercent />
-            <span>
-              <b>比參考方案省 NT${money(saving)}</b>
-              <small>
-                基準 NT${money(item.benchmarkCost)} · 同人數／同需求估算
-              </small>
-            </span>
-            <strong>{Math.round((saving / item.benchmarkCost) * 100)}%</strong>
-          </div>
-        )}
+        {saving !== null &&
+          item.benchmarkCost != null &&
+          item.benchmarkCost > 0 && (
+            <div className="saving-card">
+              <BadgePercent />
+              <span>
+                <b>比參考方案省 NT${money(saving)}</b>
+                <small>
+                  基準 NT${money(item.benchmarkCost)} · 同人數／同需求估算
+                </small>
+              </span>
+              <strong>
+                {Math.round((saving / item.benchmarkCost) * 100)}%
+              </strong>
+            </div>
+          )}
         <div className="facts-grid">
           <Metric label="營業／時段" value={item.hours} />
-          <Metric label="資料確認" value={item.verifiedAt} />
-          <Metric label="使用者回報" value={`${item.reportCount} 則`} />
-          <Metric label="服務方式" value={item.serviceModes.join('、')} />
+          <Metric
+            label="適用人數"
+            value={item.servings ? `${item.servings} 人` : '1 人以上'}
+          />
+          <Metric label="使用者回報" value={`${reportCount} 則`} />
+          <Metric
+            label="服務方式"
+            value={item.serviceModes.join('、') || '現場服務'}
+          />
         </div>
         <div className="condition-box">
           <Zap />
-          <div>
-            <b>先確認這件事</b>
-            <p>{item.condition}</p>
-          </div>
+          <p>{item.condition}</p>
         </div>
         <button className="evidence-button" onClick={onEvidence}>
           <ReceiptText />
           <span>
-            <b>查看成本與資料依據</b>
-            <small>{item.source}</small>
+            <b>查看成本與方案資訊</b>
+            <small>價格、距離、時段與回報</small>
           </span>
           <ChevronRight />
         </button>
@@ -2960,96 +4839,246 @@ function SavedScreen({
   items,
   completed,
   budget,
-  onBuy,
+  transactions,
+  onCheckout,
   onOpen,
   onRemove,
+  onDeleteTransaction,
+  onHistory,
   onExplore,
   onShare,
 }: {
   items: Result[];
   completed: string[];
   budget: number;
-  onBuy: (id: string) => void;
+  transactions: Transaction[];
+  onCheckout: (ids: string[], action: 'settle' | 'cancel') => void;
   onOpen: (id: string) => void;
   onRemove: (id: string) => void;
+  onDeleteTransaction: (id: string) => void;
+  onHistory: () => void;
   onExplore: () => void;
   onShare: () => void;
 }) {
-  const total = items.reduce((sum, item) => sum + item.totalCost, 0);
-  const bought = items
+  const payableIds = items
+    .filter((item) => item.totalCost !== null)
+    .map((item) => item.id);
+  const [selectedIds, setSelectedIds] = useState<string[]>(() =>
+    payableIds.filter((id) => !completed.includes(id)),
+  );
+  const settledTotal = items
     .filter((item) => completed.includes(item.id))
-    .reduce((sum, item) => sum + item.totalCost, 0);
+    .reduce((sum, item) => sum + (item.totalCost ?? 0), 0);
+  const pendingItems = items.filter((item) => !completed.includes(item.id));
+  const pricedPendingItems = pendingItems.filter(
+    (item) => item.totalCost !== null,
+  );
+  const unknownPendingCount = pendingItems.length - pricedPendingItems.length;
+  const pendingTotal = pricedPendingItems.reduce(
+    (sum, item) => sum + (item.totalCost ?? 0),
+    0,
+  );
+  const settledCount = items.length - pendingItems.length;
+  const projectedRemaining = budget - settledTotal - pendingTotal;
+  const selectedPendingItems = items.filter(
+    (item) =>
+      selectedIds.includes(item.id) &&
+      !completed.includes(item.id) &&
+      item.totalCost !== null,
+  );
+  const selectedSettledItems = items.filter(
+    (item) => selectedIds.includes(item.id) && completed.includes(item.id),
+  );
+  const selectedTotal = selectedPendingItems.reduce(
+    (sum, item) => sum + (item.totalCost ?? 0),
+    0,
+  );
+  const allSelected =
+    payableIds.length > 0 && payableIds.every((id) => selectedIds.includes(id));
+  const recentTransactions = [...transactions]
+    .sort((a, b) => b.occurredAt.localeCompare(a.occurredAt))
+    .slice(0, 3);
+
+  const toggleSelected = (id: string) => {
+    setSelectedIds((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : [...current, id],
+    );
+  };
+
+  const clearAndCheckout = (action: 'settle' | 'cancel') => {
+    const affectedIds =
+      action === 'settle'
+        ? selectedPendingItems.map((item) => item.id)
+        : selectedSettledItems.map((item) => item.id);
+    onCheckout(affectedIds, action);
+    setSelectedIds((current) =>
+      current.filter((id) => !affectedIds.includes(id)),
+    );
+  };
+
   return (
     <section className="screen saved-screen">
       <span className="kicker">THIS PLAN</span>
       <h1>這次清單</h1>
-      <p>收藏、到期提醒、已買與成本一起管理。</p>
+      <p>勾選要處理的項目，一次結算後同步更新消費分析與交易紀錄。</p>
       {items.length === 0 ? (
         <div className="empty-state">
           <Bookmark />
           <h2>還沒有清單項目</h2>
-          <p>從結果加入想去、想買或想比較的選項。</p>
+          <p>從結果加入選項後，可勾選多筆一次結算。</p>
           <button onClick={onExplore}>開始探索</button>
         </div>
       ) : (
         <>
-          <div className="list-budget">
-            <span>
-              <b>預計 NT${money(total)}</b>
+          <div className="checkout-summary">
+            <div>
+              <span>待結算</span>
+              <b>NT${money(pendingTotal)}</b>
               <small>
-                預算 NT${money(budget)} ·{' '}
-                {total <= budget
-                  ? `還有 NT$${money(budget - total)}`
-                  : `超出 NT$${money(total - budget)}`}
+                {pendingItems.length} 筆
+                {unknownPendingCount > 0
+                  ? ` · ${unknownPendingCount} 筆待補金額`
+                  : ''}
               </small>
-            </span>
-            <strong>已花 NT${money(bought)}</strong>
+            </div>
+            <div>
+              <span>本清單已結算</span>
+              <b>NT${money(settledTotal)}</b>
+              <small>{settledCount} 筆</small>
+            </div>
+            <div className={projectedRemaining < 0 ? 'over-budget' : ''}>
+              <span>
+                {unknownPendingCount > 0 ? '已知金額結算後' : '全部結算後'}
+              </span>
+              <b>
+                {budget > 0
+                  ? `${projectedRemaining < 0 ? '超出 ' : '剩餘 '}NT$${money(Math.abs(projectedRemaining))}`
+                  : '不限預算'}
+              </b>
+              <small>
+                {budget > 0 ? `預算 NT$${money(budget)}` : '依清單金額'}
+              </small>
+            </div>
           </div>
           <div className="checklist">
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className={completed.includes(item.id) ? 'done' : ''}
-              >
-                <button className="check-button" onClick={() => onBuy(item.id)}>
-                  {completed.includes(item.id) && <Check />}
-                </button>
-                <button className="check-copy" onClick={() => onOpen(item.id)}>
-                  <b>{item.title}</b>
-                  <span>
-                    {item.expiresAt ? `提醒：${item.expiresAt}` : item.provider}
-                  </span>
-                </button>
-                <strong>NT${money(item.totalCost)}</strong>
-                <button
-                  className="remove-button"
-                  onClick={() => onRemove(item.id)}
-                  aria-label={`移除 ${item.title}`}
+            {items.map((item) => {
+              const settled = completed.includes(item.id);
+              const selected = selectedIds.includes(item.id);
+              const missingCost = item.totalCost === null;
+              return (
+                <article
+                  key={item.id}
+                  className={`${settled ? 'done' : ''} ${selected ? 'selected' : ''}`}
                 >
-                  <Trash2 />
+                  <button
+                    type="button"
+                    className={`checkout-select ${settled ? 'settled' : ''} ${selected ? 'selected' : ''}`}
+                    onClick={() => toggleSelected(item.id)}
+                    disabled={missingCost}
+                    aria-pressed={selected}
+                    aria-label={
+                      missingCost
+                        ? `待補金額 ${item.title}`
+                        : `${selected ? '取消選取' : '選取'} ${item.title}`
+                    }
+                  >
+                    {(settled || selected) && <Check />}
+                  </button>
+                  <button
+                    className="check-copy"
+                    onClick={() => onOpen(item.id)}
+                  >
+                    <span
+                      className={`checkout-state ${settled ? 'settled' : ''}`}
+                    >
+                      {settled ? '已結算' : missingCost ? '待補金額' : '待結算'}
+                    </span>
+                    <b>{item.title}</b>
+                    <small>
+                      {item.expiresAt
+                        ? `提醒：${taipeiDateLabel(item.expiresAt)}`
+                        : item.provider}
+                    </small>
+                  </button>
+                  <strong>
+                    {item.totalCost === null
+                      ? '依現場價格'
+                      : `NT$${money(item.totalCost)}`}
+                  </strong>
+                  <button
+                    className="remove-button"
+                    onClick={() => {
+                      setSelectedIds((current) =>
+                        current.filter((id) => id !== item.id),
+                      );
+                      onRemove(item.id);
+                    }}
+                    aria-label={`刪除清單項目 ${item.title}`}
+                  >
+                    <Trash2 />
+                    刪除
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+          <div className="batch-checkout-bar">
+            <div className="batch-checkout-heading">
+              <span>
+                已選 {selectedIds.length} / {payableIds.length} 筆
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedIds(allSelected ? [] : payableIds)}
+              >
+                {allSelected ? '取消全選' : '全選清單'}
+              </button>
+            </div>
+            <div className="batch-checkout-total">
+              <span>本次結算金額</span>
+              <strong>NT${money(selectedTotal)}</strong>
+            </div>
+            <div className="batch-checkout-actions">
+              {selectedPendingItems.length > 0 && (
+                <button
+                  type="button"
+                  className="batch-checkout-button"
+                  onClick={() => clearAndCheckout('settle')}
+                >
+                  <ReceiptText />
+                  批次結算 {selectedPendingItems.length} 筆
                 </button>
-              </div>
-            ))}
+              )}
+              {selectedSettledItems.length > 0 && (
+                <button
+                  type="button"
+                  className="batch-cancel-button"
+                  onClick={() => clearAndCheckout('cancel')}
+                >
+                  取消 {selectedSettledItems.length} 筆結算
+                </button>
+              )}
+              {selectedPendingItems.length === 0 &&
+                selectedSettledItems.length === 0 && (
+                  <button
+                    type="button"
+                    className="batch-checkout-button"
+                    disabled
+                  >
+                    <ReceiptText />
+                    請先選取項目
+                  </button>
+                )}
+            </div>
           </div>
           <div className="list-summary">
             <span>
-              已買{' '}
-              {
-                completed.filter((id) => items.some((item) => item.id === id))
-                  .length
-              }{' '}
-              / {items.length}
+              已結算 {settledCount} / {items.length} 筆
             </span>
             <Progress
-              value={
-                items.length
-                  ? (completed.filter((id) =>
-                      items.some((item) => item.id === id),
-                    ).length /
-                      items.length) *
-                    100
-                  : 0
-              }
+              value={items.length ? (settledCount / items.length) * 100 : 0}
             />
           </div>
           <button className="primary-action" onClick={onShare}>
@@ -3058,42 +5087,129 @@ function SavedScreen({
           </button>
         </>
       )}
+      <section className="recent-transactions">
+        <div className="section-heading">
+          <div>
+            <span className="kicker">RECENT</span>
+            <h2>近期交易</h2>
+          </div>
+          <button type="button" onClick={onHistory}>
+            查看全部
+          </button>
+        </div>
+        {recentTransactions.length > 0 ? (
+          <div className="recent-transaction-list">
+            {recentTransactions.map((transaction) => (
+              <article key={transaction.id}>
+                <span className="history-icon">
+                  {categoryIcon(transaction.category)}
+                </span>
+                <span>
+                  <b>{transaction.title}</b>
+                  <small>
+                    {transaction.date} · 省 NT${money(transaction.saved)}
+                  </small>
+                </span>
+                <strong>NT${money(transaction.amount)}</strong>
+                <button
+                  type="button"
+                  onClick={() => onDeleteTransaction(transaction.id)}
+                  aria-label={`刪除交易 ${transaction.title}`}
+                >
+                  <Trash2 />
+                </button>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="report-empty">完成清單結算後，交易會顯示在這裡。</div>
+        )}
+      </section>
     </section>
   );
 }
 
+type TeamOption = {
+  id: string;
+  tone: 'transport' | 'food' | 'daily';
+  title: string;
+  meta: string;
+  highlight: string;
+  description: string;
+  facts: Array<{ label: string; value: string }>;
+};
+
+const teamOptions: TeamOption[] = [
+  {
+    id: 'night-ride',
+    tone: 'transport',
+    title: '夜間計程車順風團',
+    meta: '22:10 圓山站出發 · 2 / 4 人',
+    highlight: '每人約 NT$40',
+    description: '同方向共乘，滿 4 人後由發起人確認上車點與最終車資。',
+    facts: [
+      { label: '集合時間', value: '今晚 22:05' },
+      { label: '集合地點', value: '圓山站 2 號出口' },
+      { label: '成團門檻', value: '4 人' },
+      { label: '取消期限', value: '出發前 30 分鐘' },
+    ],
+  },
+  {
+    id: 'weekend-brunch',
+    tone: 'food',
+    title: '週末早午餐併桌',
+    meta: '明天 11:30 · 3 / 6 人',
+    highlight: '預估省 18%',
+    description: '併桌共享套餐與折扣，成團後再由發起人確認訂位與品項。',
+    facts: [
+      { label: '用餐時間', value: '明天 11:30' },
+      { label: '目前人數', value: '3 / 6 人' },
+      { label: '預估折扣', value: '18%' },
+      { label: '取消期限', value: '今晚 21:00' },
+    ],
+  },
+  {
+    id: 'daily-box',
+    tone: 'daily',
+    title: '日用品箱購分攤',
+    meta: '今晚截止 · 4 / 5 人',
+    highlight: '還差 1 人',
+    description: '一起分攤箱購數量，達標後由發起人確認價格、下單與面交方式。',
+    facts: [
+      { label: '登記截止', value: '今晚 20:30' },
+      { label: '目前人數', value: '4 / 5 人' },
+      { label: '分攤方式', value: '每人 1 組' },
+      { label: '取貨地點', value: '圓山站附近' },
+    ],
+  },
+];
+
+const teamOptionIcon = (tone: TeamOption['tone']) =>
+  tone === 'transport' ? (
+    <Bike />
+  ) : tone === 'food' ? (
+    <Utensils />
+  ) : (
+    <ShoppingBag />
+  );
+
 function TeamScreen({
-  demo,
   count,
   joined,
   onJoin,
   onCancel,
   onShare,
-  onCreate,
+  onPreviewAction,
 }: {
-  demo: boolean;
   count: number;
   joined: boolean;
   onJoin: () => void;
   onCancel: () => void;
   onShare: () => void;
-  onCreate: () => void;
+  onPreviewAction: (message: string) => void;
 }) {
-  if (!demo) {
-    return (
-      <section className="screen team-screen">
-        <span className="kicker">GROUP ORDER</span>
-        <h1>一起省更多</h1>
-        <p>登入版不會預放任何揪團；加入或建立後才會出現在這裡。</p>
-        <div className="empty-state team-empty-state">
-          <Users />
-          <h2>目前沒有進行中的團</h2>
-          <p>你可以先從探索結果建立團購或共乘邀請。</p>
-          <button type="button" onClick={onCreate}>從探索結果建立</button>
-        </div>
-      </section>
-    );
-  }
+  const [activeOption, setActiveOption] = useState<TeamOption | null>(null);
+  const [joinedOptions, setJoinedOptions] = useState<string[]>([]);
   const target = 5;
   const done = count >= target;
   const soloUnit = 100;
@@ -3175,44 +5291,104 @@ function TeamScreen({
         分享訂單給朋友
       </button>
       <div className="more-teams">
-        <button>
-          <span className="campaign-logo transport">
-            <Bike />
-          </span>
-          <span>
-            <b>夜間計程車順風團</b>
-            <small>22:10 圓山站出發 · 2 / 4 人</small>
-          </span>
-          <strong>每人約 NT$40</strong>
-        </button>
-        <button>
-          <span className="campaign-logo food">
-            <Utensils />
-          </span>
-          <span>
-            <b>週末早午餐併桌</b>
-            <small>明天 11:30 · 3 / 6 人</small>
-          </span>
-          <strong>預估省 18%</strong>
-        </button>
-        <button>
-          <span className="campaign-logo daily">
-            <ShoppingBag />
-          </span>
-          <span>
-            <b>日用品箱購分攤</b>
-            <small>今晚截止 · 4 / 5 人</small>
-          </span>
-          <strong>還差 1 人</strong>
-        </button>
+        {teamOptions.map((option) => (
+          <button
+            key={option.id}
+            className={joinedOptions.includes(option.id) ? 'joined' : ''}
+            onClick={() => setActiveOption(option)}
+            aria-haspopup="dialog"
+          >
+            <span className={`campaign-logo ${option.tone}`}>
+              {teamOptionIcon(option.tone)}
+            </span>
+            <span>
+              <b>{option.title}</b>
+              <small>{option.meta}</small>
+            </span>
+            <strong>
+              {joinedOptions.includes(option.id) ? '已登記' : option.highlight}
+            </strong>
+            <ChevronRight className="team-option-chevron" />
+          </button>
+        ))}
       </div>
       <div className="team-note">
         <ShieldCheck />
         <div>
           <b>不代付、不下單</b>
-          <p>目前只模擬承諾與成本；達標後仍由發起人向店家確認。</p>
+          <p>平台協助確認意願與成本；達標後仍由發起人向店家確認。</p>
         </div>
       </div>
+      <Dialog
+        open={activeOption !== null}
+        onOpenChange={(open) => {
+          if (!open) setActiveOption(null);
+        }}
+      >
+        {activeOption && (
+          <DialogContent
+            className="evidence-sheet team-option-sheet"
+            showCloseButton={false}
+          >
+            <div className="sheet-handle" />
+            <DialogHeader>
+              <span className="kicker lime-text">揪團詳情</span>
+              <DialogTitle>{activeOption.title}</DialogTitle>
+              <DialogDescription>{activeOption.description}</DialogDescription>
+            </DialogHeader>
+            <div className={`team-option-hero ${activeOption.tone}`}>
+              <span className={`campaign-logo ${activeOption.tone}`}>
+                {teamOptionIcon(activeOption.tone)}
+              </span>
+              <span>
+                <small>{activeOption.meta}</small>
+                <strong>{activeOption.highlight}</strong>
+              </span>
+            </div>
+            <div className="team-option-facts">
+              {activeOption.facts.map((fact) => (
+                <div key={fact.label}>
+                  <span>{fact.label}</span>
+                  <b>{fact.value}</b>
+                </div>
+              ))}
+            </div>
+            <div className="team-option-safety">
+              <ShieldCheck />
+              <span>登記代表加入意願，不會自動付款或代替你下單。</span>
+            </div>
+            <div className="team-option-actions">
+              <button
+                className="secondary-action"
+                onClick={() => setActiveOption(null)}
+              >
+                先看看
+              </button>
+              <button
+                className="primary-action"
+                onClick={() => {
+                  const joining = !joinedOptions.includes(activeOption.id);
+                  setJoinedOptions((current) =>
+                    joining
+                      ? [...current, activeOption.id]
+                      : current.filter((id) => id !== activeOption.id),
+                  );
+                  onPreviewAction(
+                    joining
+                      ? `已登記「${activeOption.title}」，可在截止前取消`
+                      : `已取消「${activeOption.title}」登記`,
+                  );
+                  setActiveOption(null);
+                }}
+              >
+                {joinedOptions.includes(activeOption.id)
+                  ? '取消登記'
+                  : '登記這一團'}
+              </button>
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
     </section>
   );
 }
@@ -3220,6 +5396,8 @@ function TeamScreen({
 function FiltersScreen({
   filters,
   need,
+  validationError,
+  aiParseStatus,
   onNeed,
   onChange,
   onManualSchedule,
@@ -3227,6 +5405,8 @@ function FiltersScreen({
 }: {
   filters: Filters;
   need: string;
+  validationError: string;
+  aiParseStatus: AiParseStatus;
   onNeed: (s: string) => void;
   onChange: (f: Filters) => void;
   onManualSchedule: () => void;
@@ -3237,13 +5417,45 @@ function FiltersScreen({
       <span className="kicker step-kicker">STEP 2 · 確認需求與限制</span>
       <h1>把條件調到剛剛好</h1>
       <p>硬條件先篩選，喜好再決定推薦順序。</p>
+      {aiParseStatus !== 'idle' && (
+        <output
+          className={
+            aiParseStatus === 'unavailable' ? 'form-error' : 'ready-label'
+          }
+          aria-live="polite"
+        >
+          {aiParseStatus === 'success'
+            ? 'AI 已整理以下條件，請逐項確認'
+            : aiParseStatus === 'loading'
+              ? 'AI 正在整理需求…'
+              : 'AI 暫時無法使用，以下條件仍可手動調整'}
+        </output>
+      )}
       <label className="field-label need-field">
-        <span className="field-title"><Pencil />需求</span>
-        <textarea value={need} onChange={(e) => onNeed(e.target.value)} />
+        <span className="field-title">
+          <Pencil />
+          需求
+        </span>
+        <textarea
+          value={need}
+          aria-invalid={Boolean(validationError)}
+          aria-describedby={
+            validationError ? 'need-validation-error' : undefined
+          }
+          onChange={(e) => onNeed(e.target.value)}
+        />
       </label>
+      {validationError && (
+        <p className="form-error" id="need-validation-error" role="alert">
+          {validationError}
+        </p>
+      )}
       <div className="filter-basics">
         <label className="field-label">
-          <span className="field-title"><CalendarDays />日期</span>
+          <span className="field-title">
+            <CalendarDays />
+            日期
+          </span>
           <input
             type="date"
             value={filters.date}
@@ -3254,7 +5466,10 @@ function FiltersScreen({
           />
         </label>
         <label className="field-label">
-          <span className="field-title"><Clock3 />時段</span>
+          <span className="field-title">
+            <Clock3 />
+            時段
+          </span>
           <input
             type="time"
             value={filters.time}
@@ -3264,20 +5479,22 @@ function FiltersScreen({
             }}
           />
         </label>
-        <label className="field-label">
-          <span className="field-title"><WalletCards />預算</span>
-          <input
-            type="number"
-            min="0"
-            step="50"
+        <label className="field-label" htmlFor="filters-budget">
+          <span className="field-title">
+            <WalletCards />
+            預算
+          </span>
+          <MoneyInput
+            id="filters-budget"
             value={filters.budget}
-            onChange={(e) =>
-              onChange({ ...filters, budget: Number(e.target.value) })
-            }
+            onValueChange={(budget) => onChange({ ...filters, budget })}
           />
         </label>
         <label className="field-label">
-          <span className="field-title"><Users />人數</span>
+          <span className="field-title">
+            <Users />
+            人數
+          </span>
           <input
             type="number"
             min="1"
@@ -3293,15 +5510,21 @@ function FiltersScreen({
         <div className="distance-heading">
           <span>
             <MapPin />
-            <span><b>最大距離</b><small>從目前位置或圓山站估算</small></span>
+            <span>
+              <b>最大距離</b>
+              <small>從目前位置或圓山站估算</small>
+            </span>
           </span>
-          <strong>{filters.distance}<small> km</small></strong>
+          <strong>
+            {filters.distance}
+            <small> km</small>
+          </strong>
         </div>
         <Slider
           className="distance-slider"
           value={[filters.distance]}
           min={0.5}
-          max={5}
+          max={2}
           step={0.5}
           onValueChange={(value) =>
             onChange({
@@ -3311,10 +5534,14 @@ function FiltersScreen({
           }
         />
         <div className="distance-scale" aria-hidden="true">
-          <span>0.5 km</span><i>近</i><i>適中</i><i>較遠</i><span>5 km</span>
+          <span>0.5 km</span>
+          <i>近</i>
+          <i>適中</i>
+          <i>較遠</i>
+          <span>2 km</span>
         </div>
         <p className="slider-tip">
-          拖曳亮綠圓點調整搜尋半徑；距離越短，CP 距離分越高。
+          目前探索範圍為圓山周邊 2 km；距離越短，CP 距離分越高。
         </p>
       </div>
       <div className="filter-tag-stack">
@@ -3329,13 +5556,33 @@ function FiltersScreen({
         />
         <TagPicker
           title="硬排除"
-          values={['堅果', '牛肉', '海鮮', '麩質', '乳製品', '辣']}
+          values={[
+            ...new Set([
+              '堅果',
+              '牛肉',
+              '海鮮',
+              '麩質',
+              '乳製品',
+              '辣',
+              ...filters.exclusions,
+            ]),
+          ]}
           selected={filters.exclusions}
           onChange={(exclusions) => onChange({ ...filters, exclusions })}
         />
         <TagPicker
           title="喜好"
-          values={['安靜', '能坐', '不用等', '有冷氣', '少走路', '可外帶']}
+          values={[
+            ...new Set([
+              '安靜',
+              '能坐',
+              '不用等',
+              '有冷氣',
+              '少走路',
+              '可外帶',
+              ...filters.preferences,
+            ]),
+          ]}
           selected={filters.preferences}
           onChange={(preferences) => onChange({ ...filters, preferences })}
         />
@@ -3399,8 +5646,8 @@ function ProfileScreen({
           <b>{profile.signedIn ? '已登入' : '匿名使用中'}</b>
           <small>
             {profile.signedIn
-              ? '未來接上 Auth API 後可跨裝置同步'
-              : '不需要帳號；資料只留在此裝置'}
+              ? '偏好與紀錄會跨裝置同步'
+              : '偏好與紀錄儲存在此裝置'}
           </small>
         </span>
         <button
@@ -3508,9 +5755,12 @@ function SettingsScreen({
           <small>在截止前顯示通知</small>
         </span>
         <button
+          type="button"
           className={`toggle ${reminders ? 'active' : ''}`}
           onClick={() => onReminders(!reminders)}
-          aria-label="切換提醒"
+          role="switch"
+          aria-checked={reminders}
+          aria-label="收藏到期提醒"
         >
           <i />
         </button>
@@ -3557,7 +5807,10 @@ function NotificationsScreen({
           : '到期提醒目前已關閉。'}
       </p>
       <div className="notification-list">
-        <button className="unread" onClick={() => onOpen('detail')}>
+        <button
+          className={unread > 0 ? 'unread' : undefined}
+          onClick={() => onOpen('detail')}
+        >
           <span className="notify-icon coral">
             <Clock3 />
           </span>
@@ -3565,9 +5818,12 @@ function NotificationsScreen({
             <b>北美館免費時段即將開始</b>
             <small>今天 17:00 後停止售票 · 12 分鐘前</small>
           </span>
-          <i />
+          {unread > 0 && <i aria-hidden="true" />}
         </button>
-        <button className="unread" onClick={() => onOpen('team')}>
+        <button
+          className={unread > 0 ? 'unread' : undefined}
+          onClick={() => onOpen('team')}
+        >
           <span className="notify-icon violet">
             <Users />
           </span>
@@ -3575,9 +5831,12 @@ function NotificationsScreen({
             <b>晚餐團還差 2 人</b>
             <small>今天 19:00 截止 · 28 分鐘前</small>
           </span>
-          <i />
+          {unread > 0 && <i aria-hidden="true" />}
         </button>
-        <button className="unread" onClick={() => onOpen('saved')}>
+        <button
+          className={unread > 0 ? 'unread' : undefined}
+          onClick={() => onOpen('saved')}
+        >
           <span className="notify-icon lime">
             <Bookmark />
           </span>
@@ -3585,7 +5844,7 @@ function NotificationsScreen({
             <b>你有清單項目待確認</b>
             <small>出發前記得核對價格與營業時間</small>
           </span>
-          <i />
+          {unread > 0 && <i aria-hidden="true" />}
         </button>
         <button onClick={() => onOpen('analytics')}>
           <span className="notify-icon blue">
@@ -3603,66 +5862,199 @@ function NotificationsScreen({
 
 function AnalyticsScreen({
   transactions,
-  budget,
+  summary,
+  onBudgetChange,
   onHistory,
 }: {
   transactions: Transaction[];
-  budget: number;
+  summary: BudgetSummary;
+  onBudgetChange: (budget: number) => void;
   onHistory: () => void;
 }) {
-  const spent = transactions.reduce((sum, item) => sum + item.amount, 0);
-  const saved = transactions.reduce((sum, item) => sum + item.saved, 0);
+  const [chartMetric, setChartMetric] = useState<'spent' | 'saved'>('spent');
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null,
+  );
+  const [budgetOpen, setBudgetOpen] = useState(false);
   const categories = resultCategories;
   const palette = categoryColors;
+  const monthLabel = new Intl.DateTimeFormat('zh-TW', {
+    timeZone: 'Asia/Taipei',
+    year: 'numeric',
+    month: 'long',
+  }).format(new Date());
+  const chartTotal = chartMetric === 'spent' ? summary.spent : summary.saved;
+  const categoryStats = categories.map((category) => {
+    const entries = transactions.filter((item) => item.category === category);
+    return {
+      category,
+      amount: entries.reduce(
+        (sum, item) =>
+          sum + (chartMetric === 'spent' ? item.amount : item.saved),
+        0,
+      ),
+      count: entries.length,
+    };
+  });
+  const selectedStat = categoryStats.find(
+    ({ category }) => category === selectedCategory,
+  );
+  const selectedShare =
+    selectedStat && chartTotal > 0
+      ? (selectedStat.amount / chartTotal) * 100
+      : 0;
+  const budgetOptions = [5_000, 10_000, 15_000, 20_000];
   return (
     <section className="screen analytics-screen">
-      <span className="kicker">SEPTEMBER</span>
+      <span className="kicker">{monthLabel}</span>
       <h1>消費分析</h1>
       <p>讓預算、實際花費與省下的金額一眼看懂。</p>
       <div className="analytics-hero">
-        <span>本月剩餘</span>
-        <strong>NT$ {money(budget - spent)}</strong>
+        <div className="analytics-hero-heading">
+          <span>{summary.remaining >= 0 ? '本月可用' : '本月超出預算'}</span>
+          <button
+            type="button"
+            className="budget-edit-button"
+            aria-expanded={budgetOpen}
+            onClick={() => setBudgetOpen((open) => !open)}
+          >
+            <SlidersHorizontal />
+            調整月預算
+          </button>
+        </div>
+        <strong>NT$ {money(Math.abs(summary.remaining))}</strong>
         <small>
-          已花 NT${money(spent)} ／ 預算 NT${money(budget)}
+          已花 NT${money(summary.spent)} ／ 預算 NT${money(summary.budget)}
         </small>
-        <Progress value={(spent / budget) * 100} />
+        <Progress
+          value={summary.usedPercentage}
+          aria-label={`月預算已使用 ${Math.round(summary.usedPercentage)}%`}
+        />
+        <div className="budget-progress-copy">
+          <span>已使用 {Math.round(summary.usedPercentage)}%</span>
+          <span>{summary.transactionCount} 筆紀錄</span>
+        </div>
+        {budgetOpen && (
+          <div className="budget-editor">
+            <label htmlFor="monthly-budget">
+              <span>直接輸入月預算</span>
+              <div className="budget-input-wrap">
+                <b>NT$</b>
+                <MoneyInput
+                  id="monthly-budget"
+                  value={summary.budget}
+                  max={10_000_000}
+                  step={100}
+                  ariaLabel="月預算金額"
+                  onValueChange={onBudgetChange}
+                />
+              </div>
+            </label>
+            <div className="budget-presets" aria-label="快速選擇月預算">
+              {budgetOptions.map((amount) => (
+                <button
+                  type="button"
+                  key={amount}
+                  className={summary.budget === amount ? 'active' : ''}
+                  aria-pressed={summary.budget === amount}
+                  onClick={() => {
+                    onBudgetChange(amount);
+                    setBudgetOpen(false);
+                  }}
+                >
+                  NT${money(amount)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
       <div className="kpi-grid">
         <div>
           <span>本月省下</span>
-          <strong>NT${money(saved)}</strong>
+          <strong>NT${money(summary.saved)}</strong>
           <small>與可比基準相比</small>
         </div>
         <div>
           <span>平均每次</span>
-          <strong>NT${money(spent / Math.max(1, transactions.length))}</strong>
+          <strong>
+            NT${money(summary.spent / Math.max(1, summary.transactionCount))}
+          </strong>
           <small>{transactions.length} 筆紀錄</small>
         </div>
       </div>
       <div className="category-chart">
         <div className="section-heading">
-          <h2>類別分布</h2>
-          <span>NT${money(spent)}</span>
+          <div>
+            <h2>類別分布</h2>
+            <span>NT${money(chartTotal)}</span>
+          </div>
+          <div className="category-chart-controls" aria-label="圖表指標">
+            <button
+              type="button"
+              className={chartMetric === 'spent' ? 'active' : ''}
+              aria-pressed={chartMetric === 'spent'}
+              onClick={() => setChartMetric('spent')}
+            >
+              花費
+            </button>
+            <button
+              type="button"
+              className={chartMetric === 'saved' ? 'active' : ''}
+              aria-pressed={chartMetric === 'saved'}
+              onClick={() => setChartMetric('saved')}
+            >
+              省下
+            </button>
+          </div>
         </div>
-        {categories.map((category) => {
-          const amount = transactions
-            .filter((item) => item.category === category)
-            .reduce((sum, item) => sum + item.amount, 0);
+        {categoryStats.map(({ category, amount, count }, index) => {
+          const percentage = chartTotal > 0 ? (amount / chartTotal) * 100 : 0;
+          const active = selectedCategory === category;
           return (
-            <div key={category}>
+            <button
+              type="button"
+              className={`category-row ${active ? 'active' : ''} ${selectedCategory && !active ? 'muted' : ''}`}
+              key={category}
+              aria-pressed={active}
+              style={{ '--row-color': palette[category] } as CSSProperties}
+              aria-label={`${category} ${chartMetric === 'spent' ? '花費' : '省下'} NT$${money(amount)}，${count} 筆`}
+              onClick={() =>
+                setSelectedCategory((current) =>
+                  current === category ? null : category,
+                )
+              }
+            >
               <span>{category}</span>
               <i>
                 <b
-                  style={{
-                    width: `${spent ? Math.max(4, (amount / spent) * 100) : 0}%`,
-                    background: palette[category],
-                  }}
+                  key={`${chartMetric}-${category}-${amount}`}
+                  style={
+                    {
+                      width: amount > 0 ? `${Math.max(4, percentage)}%` : '0%',
+                      background: palette[category],
+                      '--bar-delay': `${index * 70}ms`,
+                    } as CSSProperties
+                  }
                 />
               </i>
               <strong>NT${money(amount)}</strong>
-            </div>
+            </button>
           );
         })}
+        <div className="category-insight" aria-live="polite">
+          {selectedStat ? (
+            <>
+              <b>{selectedStat.category}</b>
+              <span>
+                {chartMetric === 'spent' ? '花費' : '省下'}占{' '}
+                {Math.round(selectedShare)}% · {selectedStat.count} 筆紀錄
+              </span>
+            </>
+          ) : (
+            <span>點選任一類別，可查看占比與紀錄數。</span>
+          )}
+        </div>
       </div>
       <button className="setting-row" onClick={onHistory}>
         <History />
@@ -3679,45 +6071,60 @@ function AnalyticsScreen({
 function HistoryScreen({
   transactions,
   onOpen,
+  onDelete,
 }: {
   transactions: Transaction[];
   onOpen: (id: string) => void;
+  onDelete: (id: string) => void;
 }) {
+  const sortedTransactions = [...transactions].sort((a, b) =>
+    b.occurredAt.localeCompare(a.occurredAt),
+  );
   return (
     <section className="screen history-screen">
       <span className="kicker">ACTIVITY</span>
       <h1>歷史紀錄</h1>
       <p>日後推薦會參考你主動標記的收藏與購買。</p>
       <div className="history-list">
-        {transactions.map((item) => {
-          const targetId = item.id.startsWith('buy-')
-            ? item.id.replace('buy-', '')
-            : item.category === '交通'
-              ? 'taxi-share'
-              : item.category === '活動' || item.category === '免費／公益資源'
-                ? 'tfam'
-                : 'daily-store';
+        {sortedTransactions.map((item) => {
+          const targetId =
+            item.resultId ??
+            (item.id.startsWith('buy-')
+              ? item.id.replace('buy-', '')
+              : item.category === '交通'
+                ? 'taxi-share'
+                : item.category === '活動' || item.category === '免費／公益資源'
+                  ? 'tfam'
+                  : 'daily-store');
           return (
-            <button
-              className="history-entry"
-              key={item.id}
-              onClick={() => onOpen(targetId)}
-            >
-              <span className="history-icon">
-                {categoryIcon(item.category)}
-              </span>
-              <span>
-                <b>{item.title}</b>
-                <small>
-                  {item.date} · {item.category}
-                </small>
-              </span>
-              <span>
-                <strong>NT${money(item.amount)}</strong>
-                <small>省 NT${money(item.saved)}</small>
-              </span>
-              <ChevronRight />
-            </button>
+            <article className="history-entry" key={item.id}>
+              <button
+                className="history-entry-main"
+                onClick={() => onOpen(targetId)}
+              >
+                <span className="history-icon">
+                  {categoryIcon(item.category)}
+                </span>
+                <span>
+                  <b>{item.title}</b>
+                  <small>
+                    {item.date} · {item.category}
+                  </small>
+                </span>
+                <span>
+                  <strong>NT${money(item.amount)}</strong>
+                  <small>省 NT${money(item.saved)}</small>
+                </span>
+                <ChevronRight />
+              </button>
+              <button
+                className="history-delete"
+                onClick={() => onDelete(item.id)}
+                aria-label={`刪除交易 ${item.title}`}
+              >
+                <Trash2 />
+              </button>
+            </article>
           );
         })}
       </div>
@@ -3725,7 +6132,7 @@ function HistoryScreen({
         <ShieldCheck />
         <span>
           <b>你可以控制推薦資料</b>
-          <small>正式登入版會提供刪除紀錄與停止個人化。</small>
+          <small>你可以刪除紀錄，或隨時停止個人化推薦。</small>
         </span>
       </div>
     </section>
@@ -3734,24 +6141,78 @@ function HistoryScreen({
 
 function ReportScreen({
   item,
+  reports,
   onSubmit,
 }: {
   item: Result;
-  onSubmit: () => void;
+  reports: CommunityReport[];
+  onSubmit: (report: { type: CommunityReportType; note: string }) => void;
 }) {
-  const [type, setType] = useState('營業時間不同');
+  const [type, setType] = useState<CommunityReportType>('營業時間不同');
   const [note, setNote] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const stats = summarizeCommunityReports(reports);
+  const typeStats = communityReportTypes
+    .map((reportType) => ({
+      type: reportType,
+      count: stats.byType[reportType] ?? 0,
+    }))
+    .filter(({ count }) => count > 0);
   return (
     <section className="screen report-screen">
       <span className="kicker">COMMUNITY REPORT</span>
       <h1>回報資訊</h1>
-      <p>{item.provider}</p>
+      <p>
+        {item.title} · {item.provider}
+      </p>
+      <div className="report-summary" aria-live="polite">
+        <div className="section-heading">
+          <div>
+            <span className="kicker">REPORT STATS</span>
+            <h2>回報統計</h2>
+          </div>
+          <strong>{stats.total} 則</strong>
+        </div>
+        <div className="report-kpis">
+          <div>
+            <span>累計回報</span>
+            <b>{stats.total}</b>
+          </div>
+          <div>
+            <span>已更新</span>
+            <b>{stats.resolved}</b>
+          </div>
+          <div>
+            <span>處理中</span>
+            <b>{stats.received}</b>
+          </div>
+        </div>
+        <div className="report-type-bars">
+          {typeStats.length > 0 ? (
+            typeStats.map(({ type: reportType, count }) => (
+              <div key={reportType}>
+                <span>{reportType}</span>
+                <i>
+                  <b
+                    style={{
+                      width: `${(count / Math.max(1, stats.total)) * 100}%`,
+                    }}
+                  />
+                </i>
+                <strong>{count}</strong>
+              </div>
+            ))
+          ) : (
+            <p>目前可由你新增第一則回報。</p>
+          )}
+        </div>
+      </div>
       <TagPicker
         title="問題類型"
-        values={['營業時間不同', '價格不同', '已停業', '優惠失效', '其他']}
+        values={communityReportTypes}
         selected={[type]}
         single
-        onChange={(values) => setType(values[0])}
+        onChange={(values) => setType(values[0] as CommunityReportType)}
       />
       <label className="field-label">
         補充說明
@@ -3763,14 +6224,50 @@ function ReportScreen({
       </label>
       <div className="report-note">
         <ShieldCheck />
-        <p>
-          回報會先進入待確認狀態，不會直接覆蓋現有資料；請勿填寫姓名、電話或其他個資。
-        </p>
+        <p>送出後會立即加入統計；請勿填寫姓名、電話或其他個資。</p>
       </div>
-      <button className="primary-action" onClick={onSubmit}>
+      <button
+        className="primary-action"
+        onClick={() => {
+          onSubmit({ type, note });
+          setNote('');
+          setSubmitted(true);
+        }}
+      >
         <Flag />
         送出回報
       </button>
+      {submitted && (
+        <output className="report-success">
+          <Check />
+          <span>
+            <b>回報已記錄</b>
+            <small>上方統計與最近回報已同步更新。</small>
+          </span>
+        </output>
+      )}
+      <div className="recent-reports">
+        <div className="section-heading">
+          <h2>最近回報</h2>
+          <span>{reports.length} 則紀錄</span>
+        </div>
+        {reports.length > 0 ? (
+          reports.slice(0, 5).map((report) => (
+            <article key={report.id}>
+              <span className={`report-status ${report.status}`}>
+                {report.status === 'resolved' ? '已更新' : '處理中'}
+              </span>
+              <div>
+                <b>{report.type}</b>
+                <p>{report.note}</p>
+                <small>{report.submittedAt}</small>
+              </div>
+            </article>
+          ))
+        ) : (
+          <div className="report-empty">送出後，回報會保留在這裡。</div>
+        )}
+      </div>
     </section>
   );
 }
@@ -3885,6 +6382,54 @@ function TagPicker({
         })}
       </div>
     </div>
+  );
+}
+function MoneyInput({
+  value,
+  onValueChange,
+  max = 1_000_000,
+  step = 50,
+  ariaLabel,
+  id,
+}: {
+  value: number;
+  onValueChange: (value: number) => void;
+  max?: number;
+  step?: number;
+  ariaLabel?: string;
+  id?: string;
+}) {
+  const [draft, setDraft] = useState(String(value));
+
+  useEffect(() => {
+    window.queueMicrotask(() => setDraft(String(value)));
+  }, [value]);
+
+  return (
+    <input
+      type="number"
+      inputMode="numeric"
+      min="0"
+      max={max}
+      step={step}
+      value={draft}
+      id={id}
+      aria-label={ariaLabel}
+      onFocus={(event) => event.currentTarget.select()}
+      onChange={(event) => {
+        const nextDraft = event.target.value;
+        setDraft(nextDraft);
+        if (nextDraft === '') return;
+        const parsed = Number(nextDraft);
+        if (!Number.isFinite(parsed)) return;
+        onValueChange(Math.min(max, Math.max(0, Math.round(parsed))));
+      }}
+      onBlur={() => {
+        if (draft === '' || !Number.isFinite(Number(draft))) {
+          setDraft(String(value));
+        }
+      }}
+    />
   );
 }
 function Metric({ label, value }: { label: string; value: string }) {

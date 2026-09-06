@@ -1,4 +1,4 @@
-const CACHE_NAME = 'all-in-life-shell-v5';
+const CACHE_NAME = 'all-in-life-shell-v12';
 const APP_SHELL = [
   '/',
   '/manifest.webmanifest',
@@ -12,6 +12,7 @@ const APP_SHELL = [
   '/images/leisure-grid.svg',
   '/images/transport-grid.svg',
   '/images/daily-grid.svg',
+  '/audio/all-in-life-light-theme.wav',
 ];
 
 self.addEventListener('install', (event) => {
@@ -53,7 +54,9 @@ self.addEventListener('fetch', (event) => {
         if (response.ok && response.type === 'basic') {
           const copy = response.clone();
           event.waitUntil(
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy)),
+            caches
+              .open(CACHE_NAME)
+              .then((cache) => cache.put(event.request, copy)),
           );
         }
         return response;

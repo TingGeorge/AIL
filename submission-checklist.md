@@ -18,6 +18,36 @@
 - [ ] 第三方套件、模型、資料與素材的來源及授權已揭露
 - [ ] 儲存庫內沒有 API Key、Token、密碼或個人資料
 
+## 資料與展示一致性
+
+- [x] 本機 D1 可查到食品、日用品、免費／公益資源、活動與交通
+- [x] 活動顯示所選時間起 7 天內的 `CURRENT`／`UPCOMING`，不再只算當下瞬間
+- [x] DEMO 固定情境與真實 D1／snapshot 結果分流
+- [x] Sites 候選 Version 6 已儲存（未公開部署；ID `appgprj_6a9a81d00660819185d201a8d683db7e~appgver_54bd4f7a32f08191baca2622e6c518ca`），D1 0001–0005 已在全新 SQLite 驗證
+- [x] 未驗證活動不再顯示「已由來源交叉確認」；真實未驗證資料改顯示擷取日期與「尚無已驗證欄位」
+- [x] YouBike 以 60 秒快取、活動以 10 分鐘快取進行請求時更新；來源失敗時保留 D1／snapshot 備援
+- [x] 舊版 `0004` migration 已凍結不改寫；最新完整 seed 改放 `0005`，並通過全新資料庫與舊版升級路徑驗證
+- [x] 前端、Worker API 與 D1 查詢已對接；lint、TypeScript、56 項單元測試、D1 完整性及 3 項 E2E 均通過
+- [x] Version 6 本機候選包已重新 build 並通過 PWA／API／D1 打包稽核（SHA-256 `4536279C99CF3F5AF6AB8BB78C23323913F2ACDE5D375A2DF8A040D48349CA88`）
+- [x] AI 需求解析與推薦說明 API 已接上 OpenAI Responses API；金鑰只在伺服器端讀取，DEMO 不呼叫 AI
+- [x] AI 推薦說明只接受候選 ID；價格、距離、驗證狀態與排除條件均由伺服器重新查詢並驗證
+- [x] D1 `0006_ai_rate_limits.sql` 已加入 AI 共用限流；無 D1、逾時或供應商錯誤時安全退回規則／手動流程
+- [x] Version 8 本機候選包已完成 build、機密掃描及 PWA／API／D1 打包檢查（SHA-256 `A89924EB0D3216AD09BC3968C253D458C5370B8A92370EBB17F1679EA03270A2`）
+- [x] DEMO 模擬項目使用完整範例值，不顯示「價格待確認」或「CP 待價格」
+- [x] 驗證勾勾只顯示在有 evidence 的欄位，並清楚標示驗證範圍
+- [x] 真實候選不足時，DEMO 補充使用獨立區塊且不計入真實筆數
+- [x] Version 8 已儲存為未部署的 Sites Version 7 候選（ID `appgprj_6a9a81d00660819185d201a8d683db7e~appgver_ca2011eb3ba88191b1c02d5124b3bf09`；commit `b208ddeadfbe82b508180f98ef535f1e6ff31304`）
+- [ ] Version 7 已以僅擁有者／工作區管理員可見方式部署，並用 Sites 環境變數完成真實 GPT 回應測試
+- [ ] 線上候選的 catalog API 已確認 `source=d1`，production D1 已套用 `0006`
+- [ ] 正式展示站已部署本次 UI，並完成 production D1 migration／seed 驗證
+
+## 視覺與品牌
+
+- [x] 亮色模式已使用一致的品牌綠、紫、藍、青綠與語意色，篩選標籤對比清楚
+- [x] 入口指南針改為多層 3D 結構，並呈現「省下日常，投資未來」理念
+- [x] 首頁左上 `ALL IN LIFE` 使用打字動畫，並支援減少動態偏好
+- [ ] 正式展示裝置已完成亮／暗色與窄螢幕巡覽
+
 ## 作品展示與影片
 
 - [ ] 若有提供作品展示網址，已用無痕視窗確認可直接開啟

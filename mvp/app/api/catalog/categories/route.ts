@@ -1,106 +1,63 @@
 import { env } from 'cloudflare:workers';
 import {
-  catalogCategories,
-  opportunityCategoryToCategory,
-  placeKindToCategory,
-  type CatalogCategoryKey,
+  DEFAULT_EVENT_WINDOW_DAYS,
   type CatalogSummaryResponse,
 } from '@/lib/catalog-contract';
+import {
+  loadCatalogFromD1,
+  loadCatalogFromSnapshot,
+  YUANSHAN_COVERAGE,
+  type D1DatabaseLike,
+} from '@/lib/catalog-server';
+import { loadLiveCatalogOverlay } from '@/lib/catalog-live-refresh.mjs';
 
 export const dynamic = 'force-dynamic';
 
-type CountRow = { kind: string; count: number };
-type OpportunityCountRow = { category: string; count: number };
-type D1Like = {
-  prepare: (query: string) => {
-    all: <T>() => Promise<{ results?: T[] }>;
-  };
-};
-
-const findDatabase = () =>
-  Object.values(env as unknown as Record<string, unknown>).find(
-    (binding): binding is D1Like =>
-      Boolean(
-        binding &&
-          typeof binding === 'object' &&
-          'prepare' in binding &&
-          typeof (binding as D1Like).prepare === 'function',
-      ),
-  );
-
-const emptyCategories = () =>
-  catalogCategories.map((category) => ({
-    key: category.key,
-    label: category.label,
-    count: 0,
-  }));
+function databaseBinding() {
+  const candidate = (env as unknown as { DB?: unknown }).DB;
+  if (
+    candidate &&
+    typeof candidate === 'object' &&
+    'prepare' in candidate &&
+    typeof (candidate as D1DatabaseLike).prepare === 'function'
+  ) {
+    return candidate as D1DatabaseLike;
+  }
+  return null;
+}
 
 export async function GET() {
-  const database = findDatabase();
+  const serverNow = new Date();
+  const options = {
+    category: 'ALL' as const,
+    origin: YUANSHAN_COVERAGE.center,
+    radiusM: YUANSHAN_COVERAGE.radiusM,
+    at: serverNow,
+    serverNow,
+    eventWindowDays: DEFAULT_EVENT_WINDOW_DAYS,
+    freeOnly: false,
+    limit: 1,
+  };
+  const database = databaseBinding();
+  const liveOverlay = await loadLiveCatalogOverlay(options);
+  let catalog;
   if (!database) {
-    return Response.json(
-      {
-        source: 'unconfigured',
-        categories: emptyCategories(),
-        syncedAt: null,
-      } satisfies CatalogSummaryResponse,
-      { headers: { 'Cache-Control': 'no-store' } },
-    );
+    catalog = await loadCatalogFromSnapshot(options, undefined, liveOverlay);
+  } else {
+    try {
+      catalog = await loadCatalogFromD1(database, options, liveOverlay);
+    } catch {
+      catalog = await loadCatalogFromSnapshot(options, undefined, liveOverlay);
+    }
   }
 
-  try {
-    const [placeResult, opportunityResult] = await Promise.all([
-      database
-        .prepare(
-          `SELECT kind, COUNT(*) AS count
-           FROM places
-           WHERE status <> 'PERM_CLOSED'
-           GROUP BY kind`,
-        )
-        .all<CountRow>(),
-      database
-        .prepare(
-          `SELECT category, COUNT(*) AS count
-           FROM opportunities
-           WHERE verification_status NOT IN ('REJECTED', 'EXPIRED')
-           GROUP BY category`,
-        )
-        .all<OpportunityCountRow>(),
-    ]);
-
-    const counts = Object.fromEntries(
-      catalogCategories.map((category) => [category.key, 0]),
-    ) as Record<CatalogCategoryKey, number>;
-
-    for (const row of placeResult.results ?? []) {
-      const key = placeKindToCategory[row.kind as keyof typeof placeKindToCategory];
-      if (key) counts[key] += Number(row.count) || 0;
-    }
-    for (const row of opportunityResult.results ?? []) {
-      const key = opportunityCategoryToCategory[row.category];
-      if (key) counts[key] += Number(row.count) || 0;
-    }
-
-    return Response.json(
-      {
-        source: 'd1',
-        categories: catalogCategories.map((category) => ({
-          key: category.key,
-          label: category.label,
-          count: counts[category.key],
-        })),
-        syncedAt: new Date().toISOString(),
-      } satisfies CatalogSummaryResponse,
-      { headers: { 'Cache-Control': 'no-store' } },
-    );
-  } catch {
-    return Response.json(
-      {
-        source: 'error',
-        categories: emptyCategories(),
-        syncedAt: null,
-      } satisfies CatalogSummaryResponse,
-      { headers: { 'Cache-Control': 'no-store' } },
-    );
-  }
+  return Response.json(
+    {
+      source: catalog.source,
+      categories: catalog.facets,
+      syncedAt: catalog.syncedAt,
+      eventWindow: catalog.eventWindow,
+    } satisfies CatalogSummaryResponse,
+    { headers: { 'Cache-Control': 'public, max-age=60' } },
+  );
 }

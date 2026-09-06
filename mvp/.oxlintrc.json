@@ -22,6 +22,60 @@
     "typeAware": true,
     "typeCheck": true
   },
+  "overrides": [
+    {
+      "files": ["components/ui/input-group.tsx"],
+      "rules": {
+        "jsx-a11y/prefer-tag-over-role": "off",
+        "jsx-a11y/click-events-have-key-events": "off",
+        "jsx-a11y/no-noninteractive-element-interactions": "off"
+      }
+    },
+    {
+      "files": [
+        "components/ui/spinner.tsx",
+        "components/ui/item.tsx",
+        "components/ui/button-group.tsx",
+        "components/ui/breadcrumb.tsx",
+        "components/ui/input-otp.tsx",
+        "components/ui/field.tsx"
+      ],
+      "rules": {
+        "jsx-a11y/prefer-tag-over-role": "off"
+      }
+    },
+    {
+      "files": ["components/ui/label.tsx"],
+      "rules": {
+        "jsx-a11y/label-has-associated-control": "off"
+      }
+    },
+    {
+      "files": ["components/ui/pagination.tsx"],
+      "rules": {
+        "jsx-a11y/anchor-has-content": "off"
+      }
+    },
+    {
+      "files": ["components/ui/chart.tsx"],
+      "rules": {
+        "typescript/restrict-template-expressions": "off"
+      }
+    },
+    {
+      "files": ["components/ui/carousel.tsx"],
+      "rules": {
+        "react/react-compiler": "off",
+        "jsx-a11y/prefer-tag-over-role": "off"
+      }
+    },
+    {
+      "files": ["hooks/use-mobile.ts"],
+      "rules": {
+        "react/react-compiler": "off"
+      }
+    }
+  ],
   "ignorePatterns": [
     ".next/**",
     ".vinext/**",

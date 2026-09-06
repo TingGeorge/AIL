@@ -1,3 +1,6 @@
 prototype/
 /.mvp-sites-git/
 /mvp-site.tar.gz
+/old_version/
+/mvp/*.zip
+/mvp/wrangler.local.jsonc
