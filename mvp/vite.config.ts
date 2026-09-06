@@ -40,6 +40,10 @@ function sitesDeploymentMigrations() {
             'drizzle/0008_auth_username_binary_check.sql',
             '0007_auth_username_binary_check.sql',
           ],
+          [
+            'drizzle/0009_account_state_revision.sql',
+            '0008_account_state_revision.sql',
+          ],
         ] as const) {
           await cp(resolve(source), resolve(target, destination));
         }
@@ -88,9 +92,14 @@ export default defineConfig(async () => {
       // send() before the websocket exists and recursively flood the overlay.
       // Normal browser console output and Vite's compile-error overlay remain.
       forwardConsole: false,
-      ...(isCodexSeatbeltSandbox
-        ? { watch: { useFsEvents: false, usePolling: true } }
-        : {}),
+      watch: {
+        // Release bundles can be written while the preview is running. Watching
+        // a ZIP on Windows raises EBUSY and takes down the whole dev server.
+        ignored: ['**/*.zip', '**/.release/**', '**/test-results*/**'],
+        ...(isCodexSeatbeltSandbox
+          ? { useFsEvents: false, usePolling: true }
+          : {}),
+      },
     },
     plugins: [
       vinext(),

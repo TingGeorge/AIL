@@ -16,7 +16,7 @@ import { consumeAiRateLimit } from '@/lib/ai-rate-limit';
 type D1Statement = {
   bind: (...values: unknown[]) => D1Statement;
   first: <T>() => Promise<T | null>;
-  run: () => Promise<unknown>;
+  run: () => Promise<{ meta?: { changes?: number } }>;
 };
 
 export type AccountDatabase = {
@@ -43,7 +43,7 @@ type SessionRow = {
   expires_at: string;
 };
 
-type StateRow = { state_json: string; updated_at: string };
+type StateRow = { state_json: string; revision: number; updated_at: string };
 
 const encoder = new TextEncoder();
 const passwordIterations = 210_000;
@@ -343,11 +343,12 @@ function toUser(
 async function readAccountData(db: AccountDatabase, userId: string) {
   const row = await db
     .prepare(
-      'SELECT state_json, updated_at FROM account_state WHERE user_id = ?',
+      'SELECT state_json, revision, updated_at FROM account_state WHERE user_id = ?',
     )
     .bind(userId)
     .first<StateRow>();
-  if (!row) return { state: {}, updatedAt: null } satisfies AccountDataEnvelope;
+  if (!row)
+    return { state: {}, revision: 0, updatedAt: null } satisfies AccountDataEnvelope;
   try {
     const state = JSON.parse(row.state_json) as unknown;
     return {
@@ -355,11 +356,13 @@ async function readAccountData(db: AccountDatabase, userId: string) {
         state && typeof state === 'object' && !Array.isArray(state)
           ? (state as Record<string, unknown>)
           : {},
+      revision: row.revision,
       updatedAt: row.updated_at,
     } satisfies AccountDataEnvelope;
   } catch {
     return {
       state: {},
+      revision: row.revision,
       updatedAt: row.updated_at,
     } satisfies AccountDataEnvelope;
   }
@@ -536,21 +539,39 @@ export async function writeAccountData(
   db: AccountDatabase,
   request: Request,
   state: unknown,
+  expectedRevision: unknown,
 ) {
   const session = await authorizeAccount(db, request);
-  return writeAccountDataForUser(db, session.user.id, state);
+  return writeAccountDataForUser(
+    db,
+    session.user.id,
+    state,
+    expectedRevision,
+  );
 }
 
 export async function writeAccountDataForUser(
   db: AccountDatabase,
   userId: string,
   state: unknown,
+  expectedRevision: unknown,
 ) {
   if (!state || typeof state !== 'object' || Array.isArray(state)) {
     throw new AccountServerError(
       400,
       'invalid_account_data',
       '帳號資料格式不正確。',
+    );
+  }
+  if (
+    typeof expectedRevision !== 'number' ||
+    !Number.isSafeInteger(expectedRevision) ||
+    expectedRevision < 0
+  ) {
+    throw new AccountServerError(
+      400,
+      'invalid_account_revision',
+      '帳號資料版本不正確，請重新載入後再試。',
     );
   }
   const stateJson = JSON.stringify(state);
@@ -562,16 +583,26 @@ export async function writeAccountDataForUser(
     );
   }
   const now = new Date().toISOString();
-  await db
+  const result = await db
     .prepare(
-      `INSERT INTO account_state (user_id, state_json, updated_at)
-       VALUES (?, ?, ?)
-       ON CONFLICT(user_id) DO UPDATE SET state_json = excluded.state_json,
-         updated_at = excluded.updated_at`,
+      `UPDATE account_state
+          SET state_json = ?, updated_at = ?, revision = revision + 1
+        WHERE user_id = ? AND revision = ?`,
     )
-    .bind(userId, stateJson, now)
+    .bind(stateJson, now, userId, expectedRevision)
     .run();
-  return { state: state as Record<string, unknown>, updatedAt: now };
+  if (result.meta?.changes !== 1) {
+    throw new AccountServerError(
+      409,
+      'account_data_conflict',
+      '其他分頁或裝置已更新帳號資料；請載入最新版本後再儲存。',
+    );
+  }
+  return {
+    state: state as Record<string, unknown>,
+    revision: expectedRevision + 1,
+    updatedAt: now,
+  } satisfies AccountDataEnvelope;
 }
 
 export function accountErrorResponse(error: unknown) {

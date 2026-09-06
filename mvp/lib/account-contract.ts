@@ -32,6 +32,7 @@ export type AccountUser = {
 
 export type AccountDataEnvelope = {
   state: Record<string, unknown>;
+  revision: number;
   updatedAt: string | null;
 };
 

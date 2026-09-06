@@ -41,6 +41,11 @@ const accountUsernameCheckMigrationPath = path.join(
   'drizzle',
   '0008_auth_username_binary_check.sql',
 );
+const accountRevisionMigrationPath = path.join(
+  mvpDirectory,
+  'drizzle',
+  '0009_account_state_revision.sql',
+);
 
 for (const requiredPath of [
   wranglerEntry,
@@ -51,6 +56,7 @@ for (const requiredPath of [
   aiRateLimitMigrationPath,
   accountMigrationPath,
   accountUsernameCheckMigrationPath,
+  accountRevisionMigrationPath,
 ]) {
   if (!existsSync(requiredPath)) {
     throw new Error(`Missing required local D1 input: ${requiredPath}`);
@@ -217,6 +223,22 @@ const upgradedCredentialsSql =
   )[0]?.sql ?? '';
 if (!upgradedCredentialsSql.includes('username COLLATE BINARY = lower(username)')) {
   throw new Error('Local D1 auth_credentials is missing the binary lowercase check.');
+}
+
+let accountStateColumns = new Set(
+  query(`PRAGMA table_info('account_state')`).map((row) => row.name),
+);
+if (!accountStateColumns.has('revision')) {
+  process.stdout.write(
+    `Applying ${path.basename(accountRevisionMigrationPath)}...\n`,
+  );
+  runWrangler(['--file', accountRevisionMigrationPath], { silent: true });
+  accountStateColumns = new Set(
+    query(`PRAGMA table_info('account_state')`).map((row) => row.name),
+  );
+}
+if (!accountStateColumns.has('revision')) {
+  throw new Error('Local D1 account_state is missing the revision column.');
 }
 
 const expectedCounts = snapshot?.meta?.counts;

@@ -157,3 +157,10 @@ export type CatalogSearchResponse = {
   facets: CatalogCategorySummary[];
   warnings: string[];
 };
+
+export type CatalogItemsResponse = Pick<
+  CatalogSearchResponse,
+  'source' | 'fallback' | 'syncedAt' | 'items' | 'warnings'
+> & {
+  missingIds: string[];
+};

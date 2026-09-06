@@ -101,10 +101,11 @@ export async function endAccountSession(token: string | null) {
 export async function saveAccountData(
   token: string,
   state: Record<string, unknown>,
+  revision: number,
 ) {
   return accountRequest<AccountDataEnvelope>(
     '/api/me/data',
-    { method: 'PUT', body: JSON.stringify({ state }) },
+    { method: 'PUT', body: JSON.stringify({ state, revision }) },
     token,
   );
 }

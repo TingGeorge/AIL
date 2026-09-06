@@ -43,9 +43,14 @@ export async function PUT(request: Request) {
         { status: 400, headers: { 'Cache-Control': 'no-store' } },
       );
     }
-    const body = input as { state?: unknown };
+    const body = input as { state?: unknown; revision?: unknown };
     return Response.json(
-      await writeAccountDataForUser(database, session.user.id, body.state),
+      await writeAccountDataForUser(
+        database,
+        session.user.id,
+        body.state,
+        body.revision,
+      ),
       {
         headers: { 'Cache-Control': 'no-store' },
       },
