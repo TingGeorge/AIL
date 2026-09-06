@@ -304,6 +304,9 @@ type StoredAccountState = {
   reminders: boolean;
   profile: { name: string; avatar: string };
 };
+type GuestSavedState = Pick<StoredAccountState, 'saved' | 'savedSnapshots'> & {
+  version: 1;
+};
 
 const modes: Record<
   Mode,
@@ -671,8 +674,8 @@ const demoFixtures: Result[] = [
   {
     id: 'ys-food-002',
     category: '食品',
-    title: '圓山麵食快餐方案',
-    provider: '圓山生活圈餐飲資料',
+    title: '麵食快餐方案',
+    provider: '店家待確認',
     subcategory: '麵食／快速晚餐',
     totalCost: 220,
     benchmarkCost: 300,
@@ -681,7 +684,7 @@ const demoFixtures: Result[] = [
     walkMin: 7,
     hours: '11:00–20:30',
     serviceModes: ['內用', '外帶'],
-    condition: '依餐飲資料的價格帶與營業時段整理；店名與供應需再確認',
+    condition: '兩人預算估算；實際店名、價格與供應請於前往前確認',
     source: '圓山生活圈餐飲資料 / 02_Places',
     sourceUrl: 'https://www.google.com/maps/search/?api=1&query=圓山 麵食',
     evidence:
@@ -706,8 +709,8 @@ const demoFixtures: Result[] = [
   {
     id: 'ys-food-003',
     category: '食品',
-    title: '圓山便當外帶方案',
-    provider: '圓山生活圈餐飲資料',
+    title: '便當外帶方案',
+    provider: '店家待確認',
     subcategory: '便當／外帶',
     totalCost: 190,
     benchmarkCost: 260,
@@ -741,8 +744,8 @@ const demoFixtures: Result[] = [
   {
     id: 'ys-food-004',
     category: '食品',
-    title: '圓山早午餐座位方案',
-    provider: '圓山生活圈餐飲資料',
+    title: '早午餐座位方案',
+    provider: '店家待確認',
     subcategory: '早午餐／咖啡',
     totalCost: 320,
     benchmarkCost: 420,
@@ -1000,6 +1003,93 @@ const defaultCommunityReports: CommunityReport[] = [
   },
 ];
 const communityReportStorageKey = 'all-in-life-community-reports-v1';
+const guestSavedStorageKey = 'all-in-life:guest-saved-v1';
+const emptyGuestSavedState = (): GuestSavedState => ({
+  version: 1,
+  saved: [],
+  savedSnapshots: {},
+});
+const readGuestSavedState = (): GuestSavedState => {
+  try {
+    const stored = window.localStorage.getItem(guestSavedStorageKey);
+    if (!stored) return emptyGuestSavedState();
+    const parsed: unknown = JSON.parse(stored);
+    if (!isRecord(parsed)) return emptyGuestSavedState();
+    const saved = Array.isArray(parsed.saved)
+      ? [
+          ...new Set(
+            parsed.saved.filter(
+              (id): id is string => typeof id === 'string' && id.length > 0,
+            ),
+          ),
+        ].slice(0, 100)
+      : [];
+    const storedSnapshots = isRecord(parsed.savedSnapshots)
+      ? parsed.savedSnapshots
+      : {};
+    const savedSnapshots = Object.fromEntries(
+      saved.flatMap((id) => {
+        const snapshot = storedSnapshots[id];
+        return isRecord(snapshot) && snapshot.id === id
+          ? [[id, snapshot as Result] as const]
+          : [];
+      }),
+    );
+    return { version: 1, saved, savedSnapshots };
+  } catch {
+    return emptyGuestSavedState();
+  }
+};
+const writeGuestSavedState = (
+  saved: string[],
+  savedSnapshots: Record<string, Result>,
+) => {
+  try {
+    const compactSnapshots = Object.fromEntries(
+      saved.flatMap((id) =>
+        savedSnapshots[id] ? [[id, savedSnapshots[id]] as const] : [],
+      ),
+    );
+    window.localStorage.setItem(
+      guestSavedStorageKey,
+      JSON.stringify({ version: 1, saved, savedSnapshots: compactSnapshots }),
+    );
+  } catch {
+    // Private browsing may block local storage; the current session still works.
+  }
+};
+const clearGuestSavedState = () => {
+  try {
+    window.localStorage.removeItem(guestSavedStorageKey);
+  } catch {
+    // Keep the account copy even when local storage cannot be cleared.
+  }
+};
+const mergeGuestSavedState = (
+  envelope: AccountDataEnvelope,
+  guest: GuestSavedState,
+) => {
+  if (guest.saved.length === 0) return envelope;
+  const accountSaved = Array.isArray(envelope.state.saved)
+    ? envelope.state.saved.filter(
+        (id): id is string => typeof id === 'string' && id.length > 0,
+      )
+    : [];
+  const accountSnapshots = isRecord(envelope.state.savedSnapshots)
+    ? (envelope.state.savedSnapshots as Record<string, Result>)
+    : {};
+  return {
+    ...envelope,
+    state: {
+      ...envelope.state,
+      saved: [...new Set([...accountSaved, ...guest.saved])],
+      savedSnapshots: {
+        ...guest.savedSnapshots,
+        ...accountSnapshots,
+      },
+    },
+  };
+};
 const aiCategoryLabels: Record<AiSearchCategory, Category> = {
   FOOD: '食品',
   DAILY_GOODS: '日用品',
@@ -1190,6 +1280,7 @@ export default function App() {
   const [savedSnapshots, setSavedSnapshots] = useState<Record<string, Result>>(
     {},
   );
+  const [guestSavedReady, setGuestSavedReady] = useState(false);
   const [completed, setCompleted] = useState<string[]>([]);
   const [searchStatus, setSearchStatus] = useState<SearchStatus>('idle');
   const [catalogRequestKey, setCatalogRequestKey] = useState(0);
@@ -1245,6 +1336,13 @@ export default function App() {
   const [reportsLoaded, setReportsLoaded] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<Event | null>(null);
   const [pwaStatus, setPwaStatus] = useState('檢查中');
+  const pendingGuestMergeRef = useRef(false);
+  const loadGuestSavedData = useCallback(() => {
+    const guest = readGuestSavedState();
+    setSaved(guest.saved);
+    setSavedSnapshots(guest.savedSnapshots);
+    return guest;
+  }, []);
   const applyAccountData = useCallback(
     (user: AccountUser, envelope: AccountDataEnvelope) => {
       const state = envelope.state as Partial<StoredAccountState>;
@@ -1320,6 +1418,14 @@ export default function App() {
   );
 
   useEffect(() => {
+    if (readAccountToken()) return;
+    window.queueMicrotask(() => {
+      loadGuestSavedData();
+      setGuestSavedReady(true);
+    });
+  }, [loadGuestSavedData]);
+
+  useEffect(() => {
     let storedReports: CommunityReport[] | null = null;
     try {
       const stored = window.localStorage.getItem(communityReportStorageKey);
@@ -1347,6 +1453,11 @@ export default function App() {
       // Storage can be blocked in private browsing; keep the current session.
     }
   }, [reportsLoaded, submittedReports]);
+
+  useEffect(() => {
+    if (!guestSavedReady || profile.signedIn) return;
+    writeGuestSavedState(saved, savedSnapshots);
+  }, [guestSavedReady, profile.signedIn, saved, savedSnapshots]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => setInteractiveReady(true));
@@ -1383,17 +1494,23 @@ export default function App() {
     if (!token) return;
     restoreAccountSession(token)
       .then((session) => {
+        const guest = readGuestSavedState();
+        const data = mergeGuestSavedState(session.data, guest);
+        pendingGuestMergeRef.current = guest.saved.length > 0;
         setAccountToken(token);
         setAccountUser(session.user);
-        applyAccountData(session.user, session.data);
+        applyAccountData(session.user, data);
+        setGuestSavedReady(true);
       })
       .catch(() => {
         clearAccountToken();
         setAccountToken(null);
         setAccountUser(null);
         setAccountDataReady(false);
+        loadGuestSavedData();
+        setGuestSavedReady(true);
       });
-  }, [applyAccountData]);
+  }, [applyAccountData, loadGuestSavedData]);
 
   useEffect(() => {
     if (!profile.signedIn || !accountToken || !accountDataReady) return;
@@ -1412,7 +1529,13 @@ export default function App() {
         profile: { name: profile.name, avatar: profile.avatar },
       };
       saveAccountData(accountToken, state)
-        .then(() => setAccountSyncStatus('saved'))
+        .then(() => {
+          setAccountSyncStatus('saved');
+          if (pendingGuestMergeRef.current) {
+            clearGuestSavedState();
+            pendingGuestMergeRef.current = false;
+          }
+        })
         .catch((error: unknown) => {
           if (error instanceof AccountClientError && error.status === 401) {
             clearAccountToken();
@@ -1420,6 +1543,8 @@ export default function App() {
             setAccountUser(null);
             setAccountDataReady(false);
             setProfile((current) => ({ ...current, signedIn: false }));
+            pendingGuestMergeRef.current = false;
+            loadGuestSavedData();
             showToast('登入已逾時，請重新登入後再儲存');
           }
           setAccountSyncStatus('error');
@@ -1440,6 +1565,7 @@ export default function App() {
     savedSnapshots,
     teamCount,
     transactions,
+    loadGuestSavedData,
   ]);
 
   useLayoutEffect(() => {
@@ -1916,13 +2042,16 @@ export default function App() {
   ) {
     try {
       const session = await authenticateAccount(authMode, credentials);
+      const guest = readGuestSavedState();
+      const data = mergeGuestSavedState(session.data, guest);
+      pendingGuestMergeRef.current = guest.saved.length > 0;
       setAccountToken(session.sessionToken);
       setAccountUser(session.user);
       if (experienceMode !== 'demo' || authReturnView === 'home') {
         setExperienceMode('account');
       }
       setAllowGuestDemoActions(false);
-      applyAccountData(session.user, session.data);
+      applyAccountData(session.user, data);
       setHistory([]);
       setView(authReturnView === 'welcome' ? 'home' : authReturnView);
       showToast(
@@ -1956,15 +2085,15 @@ export default function App() {
     setAccountSyncStatus('idle');
     setAllowGuestDemoActions(false);
     setProfile({ name: '旅人', avatar: '#c9ff36', signedIn: false });
-    setSaved([]);
-    setSavedSnapshots({});
+    pendingGuestMergeRef.current = false;
+    loadGuestSavedData();
     setCompleted([]);
     setTransactions([]);
     setMonthlyBudget(0);
     setJoinedTeam(false);
     setTeamCount(3);
     await endAccountSession(token);
-    showToast('已登出；搜尋仍可使用，個人資料已從本分頁移除');
+    showToast('已登出；新的收藏會儲存在這個瀏覽器');
     setHistory([]);
     setView('home');
   }
@@ -1984,8 +2113,6 @@ export default function App() {
       setTransactions(next === 'demo' ? [...demoTransactions] : []);
       setMonthlyBudget(next === 'demo' ? 10_000 : 0);
       setTeamCount(3);
-      setSaved([]);
-      setSavedSnapshots({});
       setCompleted([]);
       setJoinedTeam(false);
     }
@@ -2154,10 +2281,6 @@ export default function App() {
     navigate('detail');
   }
   function toggleSaved(id: string) {
-    if (!profile.signedIn && !allowGuestDemoActions) {
-      requireAccount('登入後才能儲存清單與收藏');
-      return;
-    }
     const wasSaved = saved.includes(id);
     const wasCompleted = completed.includes(id);
     const snapshot =
@@ -2171,23 +2294,30 @@ export default function App() {
     if (wasSaved) {
       setCompleted((items) => items.filter((item) => item !== id));
     }
-    showToast(wasSaved ? '已從清單移除' : '已加入這次清單', {
-      label: '復原',
-      run: () => {
-        setSaved((items) =>
-          wasSaved
-            ? items.includes(id)
-              ? items
-              : [...items, id]
-            : items.filter((item) => item !== id),
-        );
-        if (wasSaved && wasCompleted) {
-          setCompleted((items) =>
-            items.includes(id) ? items : [...items, id],
+    showToast(
+      wasSaved
+        ? '已從清單移除'
+        : profile.signedIn
+          ? '已加入這次清單'
+          : '已收藏在這個瀏覽器',
+      {
+        label: '復原',
+        run: () => {
+          setSaved((items) =>
+            wasSaved
+              ? items.includes(id)
+                ? items
+                : [...items, id]
+              : items.filter((item) => item !== id),
           );
-        }
+          if (wasSaved && wasCompleted) {
+            setCompleted((items) =>
+              items.includes(id) ? items : [...items, id],
+            );
+          }
+        },
       },
-    });
+    );
   }
   function activateToastAction() {
     if (!toastAction) return;
@@ -2799,11 +2929,7 @@ export default function App() {
             <BottomNav
               view={view}
               savedCount={saved.length}
-              signedIn={profile.signedIn || allowGuestDemoActions}
               onNavigate={navigate}
-              onRequireAccount={() =>
-                requireAccount('登入後才能查看與儲存清單', 'saved')
-              }
             />
           )}
         {toast && (
@@ -3466,10 +3592,10 @@ function WelcomeScreen({
           disabled={!ready}
         >
           <LogIn />
-          登入後儲存清單
+          登入同步收藏
         </button>
       </div>
-      <small>不登入也能搜尋；登入後才能儲存清單與收藏。</small>
+      <small>不登入也能搜尋與收藏；登入後可跨裝置同步清單。</small>
     </section>
   );
 }
@@ -3562,7 +3688,7 @@ function AccountScreen({
     <section className="screen account-screen">
       <span className="kicker">ACCOUNT</span>
       <h1>登入生活帳號</h1>
-      <p>不登入也能搜尋；登入後才能儲存清單與收藏。</p>
+      <p>訪客收藏會保留在這個瀏覽器；登入後可跨裝置同步清單。</p>
       <div className="account-tabs" role="tablist" aria-label="帳號方式">
         <button
           type="button"
@@ -4281,7 +4407,7 @@ function CatalogCoverageCard({
           onClick={onAccount}
         >
           <LogIn />
-          登入後可儲存清單與收藏
+          登入同步收藏與清單
           <ChevronRight />
         </button>
       )}
@@ -4884,14 +5010,16 @@ function VerificationMark({
     ? `已驗證：${item.verifiedFields.join('、')}`
     : '核心資料已驗證';
   return (
-    <span
-      className={`verification-mark ${className}`.trim()}
-      role="img"
-      aria-label={label}
-      title={label}
-    >
-      <ShieldCheck />
-    </span>
+    <>
+      <span
+        className={`verification-mark ${className}`.trim()}
+        aria-hidden="true"
+        title={label}
+      >
+        <ShieldCheck />
+      </span>
+      <span className="sr-only">{label}</span>
+    </>
   );
 }
 
@@ -7021,15 +7149,11 @@ function MapScreen({ item, onOpen }: { item: Result; onOpen: () => void }) {
 function BottomNav({
   view,
   savedCount,
-  signedIn,
   onNavigate,
-  onRequireAccount,
 }: {
   view: View;
   savedCount: number;
-  signedIn: boolean;
   onNavigate: (v: View) => void;
-  onRequireAccount: () => void;
 }) {
   const items: Array<{ view: View; label: string; icon: ReactNode }> = [
     { view: 'home', label: '首頁', icon: <Home /> },
@@ -7044,13 +7168,7 @@ function BottomNav({
         <button
           key={item.view}
           className={view === item.view ? 'active' : ''}
-          onClick={() => {
-            if (item.view === 'saved' && !signedIn) {
-              onRequireAccount();
-              return;
-            }
-            onNavigate(item.view);
-          }}
+          onClick={() => onNavigate(item.view)}
         >
           {item.icon}
           <span>{item.label}</span>

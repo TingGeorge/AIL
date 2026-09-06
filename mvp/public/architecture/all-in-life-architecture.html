@@ -5034,17 +5034,19 @@
 
         <!-- Connection paths (before components for correct z-order) -->
         <path data-edge-from="people" data-edge-to="pwa" data-edge-label="HTTPS / localhost" data-edge-key="0" data-edge-id="people-pwa" data-composition-points="218,148;301,148" d="M 218 148 L 301 148" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="pwa" data-edge-to="api" data-edge-label="API" data-edge-key="1" data-edge-id="pwa-api" data-composition-points="481,148;564,148" d="M 481 148 L 564 148" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="api" data-edge-to="catalog" data-edge-key="2" data-edge-id="api-catalog" data-composition-points="654,180;654,368" d="M 654 180 L 654 368" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="catalog" data-edge-to="decision" data-edge-key="3" data-edge-id="catalog-decision" data-composition-points="744,407;827,407" d="M 744 407 L 827 407" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="api" data-edge-to="auth" data-edge-label="auth" data-edge-key="4" data-edge-id="api-auth" data-composition-points="744,148;827,148" d="M 744 148 L 827 148" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="auth" data-edge-to="d1" data-edge-key="5" data-edge-id="auth-d1" data-composition-points="917,180;917,242" d="M 917 180 L 917 242" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="catalog" data-edge-to="d1" data-edge-label="SQL" data-edge-key="6" data-edge-id="catalog-d1" data-composition-points="744,393;785.5,393;785.5,274;827,274" d="M 744 393 L 777.5 393 Q 785.5 393 785.5 385 L 785.5 282 Q 785.5 274 793.5 274 L 827 274" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="official" data-edge-to="snapshot" data-edge-label="import" data-edge-key="7" data-edge-id="official-snapshot" data-composition-points="218,400;301,400" d="M 218 400 L 301 400" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="snapshot" data-edge-to="catalog" data-edge-label="fallback" data-edge-key="8" data-edge-id="snapshot-catalog" data-composition-points="481,400;564,400" d="M 481 400 L 564 400" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="catalog" data-edge-to="ai" data-edge-label="optional" data-edge-key="9" data-edge-id="catalog-ai" data-composition-points="654,432;654,494" d="M 654 432 L 654 494" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="ai" data-edge-to="openai" data-edge-label="Responses" data-edge-key="10" data-edge-id="ai-openai" data-composition-points="744,526;827,526" d="M 744 526 L 827 526" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="maps" data-edge-to="pwa" data-edge-label="map links" data-edge-key="11" data-edge-id="maps-pwa" data-composition-points="218,274;259.5,274;259.5,148;301,148" d="M 218 274 L 251.5 274 Q 259.5 274 259.5 266 L 259.5 156 Q 259.5 148 267.5 148 L 301 148" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="pwa" data-edge-to="api" data-edge-label="API" data-edge-key="1" data-edge-id="pwa-api" data-composition-points="481,141;564,141" d="M 481 141 L 564 141" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="pwa" data-edge-to="guest" data-edge-label="匿名收藏" data-edge-key="2" data-edge-id="pwa-guest" data-composition-points="391,180;391,242" d="M 391 180 L 391 242" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="guest" data-edge-to="api" data-edge-label="登入聯集合併" data-edge-key="3" data-edge-id="guest-api" data-composition-points="481,274;522.5,274;522.5,155;564,155" d="M 481 274 L 514.5 274 Q 522.5 274 522.5 266 L 522.5 163 Q 522.5 155 530.5 155 L 564 155" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="api" data-edge-to="catalog" data-edge-key="4" data-edge-id="api-catalog" data-composition-points="654,180;654,368" d="M 654 180 L 654 368" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="catalog" data-edge-to="decision" data-edge-key="5" data-edge-id="catalog-decision" data-composition-points="744,407;827,407" d="M 744 407 L 827 407" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="api" data-edge-to="auth" data-edge-label="auth" data-edge-key="6" data-edge-id="api-auth" data-composition-points="744,148;827,148" d="M 744 148 L 827 148" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="auth" data-edge-to="d1" data-edge-key="7" data-edge-id="auth-d1" data-composition-points="917,180;917,242" d="M 917 180 L 917 242" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="catalog" data-edge-to="d1" data-edge-label="SQL" data-edge-key="8" data-edge-id="catalog-d1" data-composition-points="744,393;785.5,393;785.5,274;827,274" d="M 744 393 L 777.5 393 Q 785.5 393 785.5 385 L 785.5 282 Q 785.5 274 793.5 274 L 827 274" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="official" data-edge-to="snapshot" data-edge-label="import" data-edge-key="9" data-edge-id="official-snapshot" data-composition-points="218,400;301,400" d="M 218 400 L 301 400" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="snapshot" data-edge-to="catalog" data-edge-label="fallback" data-edge-key="10" data-edge-id="snapshot-catalog" data-composition-points="481,400;564,400" d="M 481 400 L 564 400" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="catalog" data-edge-to="ai" data-edge-label="optional" data-edge-key="11" data-edge-id="catalog-ai" data-composition-points="654,432;654,494" d="M 654 432 L 654 494" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="ai" data-edge-to="openai" data-edge-label="Responses" data-edge-key="12" data-edge-id="ai-openai" data-composition-points="744,526;827,526" d="M 744 526 L 827 526" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="maps" data-edge-to="pwa" data-edge-label="map links" data-edge-key="13" data-edge-id="maps-pwa" data-composition-points="218,274;259.5,274;259.5,148;301,148" d="M 218 274 L 251.5 274 Q 259.5 274 259.5 266 L 259.5 156 Q 259.5 148 267.5 148 L 301 148" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 
         <!-- Components -->
         <g id="node-people" data-node-id="people" data-node-label="使用者／評審" tabindex="0" role="button" aria-label="Focus 使用者／評審, Guest · Account · Demo, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="Guest · Account · Demo" data-node-context="Architecture component">
@@ -5137,6 +5139,19 @@
         <text data-detail="fine" x="917" y="298" class="t-database" font-size="7" text-anchor="middle">DB binding</text>
         </g>
 
+        <g id="node-guest" data-node-id="guest" data-node-label="Guest Local State" tabindex="0" role="button" aria-label="Focus Guest Local State, 收藏 ID · 結果快照, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="收藏 ID · 結果快照" data-node-tag="localStorage · 單一瀏覽器" data-node-context="Architecture component">
+          <title>Guest Local State · 收藏 ID · 結果快照 · Architecture component · localStorage · 單一瀏覽器</title>
+          <rect x="301" y="242" width="180" height="64" rx="6" class="c-mask"/>
+          <rect x="301" y="242" width="180" height="64" rx="6" class="c-database" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(307 248) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="391" y="272" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Guest Local State</text>
+        <text data-detail="context" x="391" y="288" class="t-muted" font-size="9" text-anchor="middle">收藏 ID · 結果快照</text>
+        <text data-detail="fine" x="391" y="298" class="t-database" font-size="7" text-anchor="middle">localStorage · 單一瀏覽器</text>
+        </g>
+
         <g id="node-official" data-node-id="official" data-node-label="官方與公開來源" tabindex="0" role="button" aria-label="Focus 官方與公開來源, 臺北開放資料 · 場館頁面, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="臺北開放資料 · 場館頁面" data-node-tag="14 sources" data-node-context="Architecture component">
           <title>官方與公開來源 · 臺北開放資料 · 場館頁面 · Architecture component · 14 sources</title>
           <rect x="38" y="368" width="180" height="64" rx="6" class="c-mask"/>
@@ -5201,41 +5216,49 @@
 
         <!-- Connection labels -->
         <g data-detail="context" data-edge-from="people" data-edge-to="pwa" data-edge-label="HTTPS / localhost" data-edge-key="0" data-edge-id="people-pwa">
-          <rect x="314.2" y="184" width="91.6" height="14" rx="3" class="c-mask"/>
-          <text x="360" y="194" class="t-backend" font-size="8" text-anchor="middle">HTTPS / localhost</text>
+          <rect x="214.2" y="92" width="91.6" height="14" rx="3" class="c-mask"/>
+          <text x="260" y="102" class="t-backend" font-size="8" text-anchor="middle">HTTPS / localhost</text>
         </g>
         <g data-detail="context" data-edge-from="pwa" data-edge-to="api" data-edge-label="API" data-edge-key="1" data-edge-id="pwa-api">
-          <rect x="507.5" y="128" width="30" height="14" rx="3" class="c-mask"/>
-          <text x="522.5" y="138" class="t-backend" font-size="8" text-anchor="middle">API</text>
+          <rect x="507.5" y="121" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="522.5" y="131" class="t-backend" font-size="8" text-anchor="middle">API</text>
+        </g>
+        <g data-detail="context" data-edge-from="pwa" data-edge-to="guest" data-edge-label="匿名收藏" data-edge-key="2" data-edge-id="pwa-guest">
+          <rect x="415.8" y="202" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="440" y="212" class="t-muted" font-size="8" text-anchor="middle">匿名收藏</text>
+        </g>
+        <g data-detail="context" data-edge-from="guest" data-edge-to="api" data-edge-label="登入聯集合併" data-edge-key="3" data-edge-id="guest-api">
+          <rect x="488.7" y="194.5" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="522.5" y="204.5" class="t-messagebus" font-size="8" text-anchor="middle">登入聯集合併</text>
         </g>
 
 
-        <g data-detail="context" data-edge-from="api" data-edge-to="auth" data-edge-label="auth" data-edge-key="4" data-edge-id="api-auth">
+        <g data-detail="context" data-edge-from="api" data-edge-to="auth" data-edge-label="auth" data-edge-key="6" data-edge-id="api-auth">
           <rect x="770.5" y="128" width="30" height="14" rx="3" class="c-mask"/>
           <text x="785.5" y="138" class="t-security" font-size="8" text-anchor="middle">auth</text>
         </g>
 
-        <g data-detail="context" data-edge-from="catalog" data-edge-to="d1" data-edge-label="SQL" data-edge-key="6" data-edge-id="catalog-d1">
+        <g data-detail="context" data-edge-from="catalog" data-edge-to="d1" data-edge-label="SQL" data-edge-key="8" data-edge-id="catalog-d1">
           <rect x="770.5" y="313.5" width="30" height="14" rx="3" class="c-mask"/>
           <text x="785.5" y="323.5" class="t-muted" font-size="8" text-anchor="middle">SQL</text>
         </g>
-        <g data-detail="context" data-edge-from="official" data-edge-to="snapshot" data-edge-label="import" data-edge-key="7" data-edge-id="official-snapshot">
+        <g data-detail="context" data-edge-from="official" data-edge-to="snapshot" data-edge-label="import" data-edge-key="9" data-edge-id="official-snapshot">
           <rect x="240.1" y="380" width="38.8" height="14" rx="3" class="c-mask"/>
           <text x="259.5" y="390" class="t-muted" font-size="8" text-anchor="middle">import</text>
         </g>
-        <g data-detail="context" data-edge-from="snapshot" data-edge-to="catalog" data-edge-label="fallback" data-edge-key="8" data-edge-id="snapshot-catalog">
+        <g data-detail="context" data-edge-from="snapshot" data-edge-to="catalog" data-edge-label="fallback" data-edge-key="10" data-edge-id="snapshot-catalog">
           <rect x="498.3" y="380" width="48.4" height="14" rx="3" class="c-mask"/>
           <text x="522.5" y="390" class="t-messagebus" font-size="8" text-anchor="middle">fallback</text>
         </g>
-        <g data-detail="context" data-edge-from="catalog" data-edge-to="ai" data-edge-label="optional" data-edge-key="9" data-edge-id="catalog-ai">
+        <g data-detail="context" data-edge-from="catalog" data-edge-to="ai" data-edge-label="optional" data-edge-key="11" data-edge-id="catalog-ai">
           <rect x="629.8" y="436" width="48.4" height="14" rx="3" class="c-mask"/>
           <text x="654" y="446" class="t-messagebus" font-size="8" text-anchor="middle">optional</text>
         </g>
-        <g data-detail="context" data-edge-from="ai" data-edge-to="openai" data-edge-label="Responses" data-edge-key="10" data-edge-id="ai-openai">
+        <g data-detail="context" data-edge-from="ai" data-edge-to="openai" data-edge-label="Responses" data-edge-key="12" data-edge-id="ai-openai">
           <rect x="758.9" y="506" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
           <text x="785.5" y="516" class="t-messagebus" font-size="8" text-anchor="middle">Responses</text>
         </g>
-        <g data-detail="context" data-edge-from="maps" data-edge-to="pwa" data-edge-label="map links" data-edge-key="11" data-edge-id="maps-pwa">
+        <g data-detail="context" data-edge-from="maps" data-edge-to="pwa" data-edge-label="map links" data-edge-key="13" data-edge-id="maps-pwa">
           <rect x="232.9" y="191" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
           <text x="259.5" y="201" class="t-muted" font-size="8" text-anchor="middle">map links</text>
         </g>
@@ -5461,7 +5484,7 @@
         <ul>
           <li>&bull; PWA、Catalog、AI fallback、帳號與 D1 可在本機完整運作</li>
           <li>&bull; 正式 build 產出 9 個 route 與 6 份部署 migration</li>
-          <li>&bull; 登入資料可同步，登出後 session 立即失效</li>
+          <li>&bull; 訪客收藏可還原並於登入後合併；登出後 session 立即失效</li>
         </ul>
       </div>
 

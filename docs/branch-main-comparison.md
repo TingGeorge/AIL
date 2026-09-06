@@ -39,7 +39,7 @@
 | 個人功能 | 收藏、清單、預算、支出、團體 membership、回報 | 清單、收藏、預算、歷史以 account state envelope 保存 | main 的領域資料表較細；分支適合快速展示 |
 | Team | 已保存必要 membership record；不付款、不代訂 | UI／schema／成本比較，尚無交易式後端 | 正式產品優先沿用 main 的明確 membership 邊界 |
 | PWA／視覺 | manifest、service worker、精簡正式 UI | 16 畫面、3D 首頁、分類 rail、PWA、離線音樂、深淺主題 | 可從分支移植品牌與 interaction，不搬整個 runtime |
-| 測試 | README 記錄 269 pass、30 skip、4 fail | 58 unit／contract + 21 Playwright E2E，全綠 | main 需先修 4 個契約差異；分支保留 E2E coverage |
+| 測試 | README 記錄 269 pass、30 skip、4 fail | 58 unit／contract + 23 Playwright E2E，全綠 | main 需先修 4 個契約差異；分支保留 E2E coverage |
 | 部署 | 主線目前以本機／ngrok 說明為主 | Sites 公開基準版；本分支帳號 migration 待再部署 | 公開 URL 必須標示實際對應 commit／runtime |
 | License／notices | MIT + `THIRD_PARTY_NOTICES.md`（Gemini／`prototype-v1`） | 同一份 MIT；第三方服務、資料與素材逐項揭露於 README | 合併時依最終 runtime 整理同一份 notice，不可把 Gemini 說明直接套到 OpenAI 實作 |
 

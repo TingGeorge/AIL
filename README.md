@@ -18,6 +18,7 @@ ALL IN LIFE 是為預算有限者打造的日常決策助手。使用者以自�
 | 官方作品繳交檢查表 | [`submission-checklist.md`](submission-checklist.md)                                                     |
 | 系統架構           | [互動式架構圖](docs/architecture/all-in-life-architecture.html)                                          |
 | 產品流程           | [互動式流程圖](docs/architecture/all-in-life-product-flow.html)                                          |
+| 本機備援截圖       | 390×844 手機結果頁：[淺色](docs/screenshots/result-card-mobile.png)／[深色](docs/screenshots/result-card-mobile-dark.png) |
 | 評選影片           | 待上傳；需不超過 2:00 並設為「知道連結即可觀看」                                                         |
 
 ## BUILDMODE 2026 作品繳交檢查表
@@ -59,7 +60,7 @@ ALL IN LIFE 是為預算有限者打造的日常決策助手。使用者以自�
 
 目前展示以可操作前端與 PWA 為主；catalog 資料層已具備 D1 `DB` binding、本機自動 bootstrap，以及會回退官方 snapshot 的 API。主搜尋 UI 已用 `POST /api/catalog/search` 取得資料，切換分類、距離或所選時刻會重新查詢；D1 無法查詢時明確回退官方 snapshot。DEMO 固定情境與真實模式完全分流，正式模式 API 失敗時不會偷偷混入 fixture。新版候選已加入伺服器端 AI 需求解析與推薦理由；帳號註冊／登入與個人清單狀態已寫入 D1，Team 交易式資料仍是下一階段。
 
-ALL IN LIFE 是一個以「限制優先、證據可追溯、成本不造假」為原則的圓山生活決策 App。使用者可匿名直接搜尋，登入後則能用生活帳號保存清單、收藏、預算與個人設定；文字與語音都會進入同一份可編輯的結構化需求，再比較餐飲、日用、育樂與交通選項。
+ALL IN LIFE 是一個以「限制優先、證據可追溯、成本不造假」為原則的圓山生活決策 App。使用者可匿名直接搜尋，收藏與清單先保留在目前瀏覽器；登入生活帳號後會安全合併並同步清單、收藏、預算與個人設定。文字與語音都會進入同一份可編輯的結構化需求，再比較餐飲、日用、育樂與交通選項。
 
 目前版本是可操作的手機 App 型前端，共 16 個主要畫面：首次設定、首頁、搜尋、結果、詳情、清單、揪團、設定、個人檔案、篩選、通知、消費分析、歷史、回報與地圖等。它包含頁面轉場、語音／文字輸入、分階段搜尋回饋、收藏與到期提醒、標記已買、預算統計、分享及成團成本比較。catalog API、本機 D1、帳號驗證與個人狀態持久化均已接上；Team／交易式後端與本分支 production D1 migration／重新部署尚未完成。Demo 入口使用與正式帳號分離的固定情境，不在操作畫面重複鋪陳模擬聲明；只有 evidence 支撐的欄位才顯示驗證勾勾。真實來源沒有價格時仍顯示「價格待確認」，不會推算成零元或虛構 CP 分數。
 
@@ -71,7 +72,7 @@ ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的�
 
 ## 核心功能
 
-- 首次設定 SOP：匿名可直接使用，登入後可保存；先設定暱稱、頭像、預算、硬限制與偏好。
+- 首次設定 SOP：匿名可直接使用與收藏；訪客清單保留在目前瀏覽器，登入後聯集合併至帳號；先設定暱稱、頭像、預算、硬限制與偏好。
 - 統一需求編輯器：語音和文字共用日期、時段、類別、預算、人數、距離、排除與偏好欄位。
 - 五類任務結果：食品、日用品、免費／公益資源、活動、交通，支援成本、距離、營業時間與服務方式比較。
 - 分階段搜尋回饋：逐步顯示來源、限制、成本與證據檢查，不把動畫進度冒充後端真實百分比。
@@ -96,7 +97,7 @@ ALL IN LIFE 的目標使用者是學生、剛進入職場者、精打細算的�
 | 搜尋流程            | API 已接 UI                 | 真實模式以 POST 查 catalog；活動查所選時刻起 7 天，分類、距離、時刻與模式改變會重查；DEMO 使用完整固定範例 |
 | Team 多人協作       | 設計／Demo                  | 帳號登入已可用；Team UI 與 D1 schema 已備妥，尚無邀請與交易式後端                                         |
 | Cloudflare D1       | binding／本機 runtime ready | hosting config 已使用 `DB`；`predev`／`prestart` 會自動套 migration 並同步最新 seed 至本機 D1              |
-| 帳號與個人資料      | 本機端到端可用              | 註冊、登入、登出、30 分鐘 session、清單／收藏／預算／歷史 D1 持久化與 401 失效檢查均已通過                  |
+| 帳號與個人資料      | 本機端到端可用              | 匿名收藏本機還原、登入聯集合併、30 分鐘 session、D1 持久化與登出後 401 均已通過                            |
 | AI 安全層           | API 與 fallback 已落地      | strict schema、伺服器端 key、D1 限流與無 key／逾時／錯誤安全回退；AI 不改寫價格、資格或 CP 分數            |
 | PWA                 | 公開基準版已驗收            | HTTPS、manifest、192/512 icons、service worker、Chrome installability 與離線 app-shell fallback 已驗證     |
 

@@ -22,7 +22,7 @@
         "id": "account-data",
         "label": "帳號與資料",
         "focus": ["choose", "account", "results", "persist"],
-        "note": "登入後才把清單、預算、收藏與歷史存入 D1；匿名與 Demo 不會混入正式帳號資料。"
+        "note": "匿名收藏先留在目前瀏覽器；登入後聯集合併至 D1，Demo 固定資料不直接灌入帳號。"
       }
     ],
     "legend": { "mode": "auto" }
@@ -61,8 +61,8 @@
     { "id": "catalog", "lane": "data", "col": 3, "type": "database", "label": "查詢五類候選", "sublabel": "D1 優先 · 快照備援" },
     { "id": "evidence", "lane": "data", "col": 4, "type": "security", "label": "證據閘門", "sublabel": "來源 · 時效 · 預算" },
     { "id": "score", "lane": "data", "col": 5, "type": "backend", "label": "CP Score 排序", "sublabel": "固定規則 · 可解釋拆分" },
-    { "id": "results", "lane": "experience", "col": 5, "type": "frontend", "label": "比較並採取行動", "sublabel": "成本 · 距離 · 證據" },
-    { "id": "persist", "lane": "worker", "col": 5, "type": "database", "label": "保存個人狀態", "sublabel": "清單 · 收藏 · 歷史", "tag": "登入限定" }
+    { "id": "results", "lane": "experience", "col": 5, "type": "frontend", "label": "比較並採取行動", "sublabel": "成本 · 距離 · 證據", "tag": "匿名收藏留本機" },
+    { "id": "persist", "lane": "worker", "col": 5, "type": "database", "label": "帳號同步", "sublabel": "聯集合併 · D1", "tag": "登入" }
   ],
   "edges": [
     { "from": "welcome", "to": "choose", "variant": "emphasis", "role": "main" },
@@ -76,13 +76,13 @@
     { "from": "catalog", "to": "evidence", "role": "main" },
     { "from": "evidence", "to": "score", "label": "eligible", "variant": "emphasis", "role": "main" },
     { "from": "score", "to": "results", "label": "ranked", "variant": "emphasis", "role": "main" },
-    { "from": "results", "to": "persist", "label": "signed in", "variant": "dashed", "role": "branch" }
+    { "from": "results", "to": "persist", "label": "登入後聯集合併", "variant": "dashed", "role": "branch" }
   ],
   "cards": [
     {
       "dot": "cyan",
       "title": "三種入口、資料不混用",
-      "items": ["匿名模式不要求帳號", "登入模式從空白個人資料開始", "Demo 只提供評審可操作的固定情境"]
+      "items": ["匿名收藏只保存在目前瀏覽器", "登入時以聯集合併且成功後清除本機副本", "Demo 固定情境不直接灌入正式帳號"]
     },
     {
       "dot": "emerald",

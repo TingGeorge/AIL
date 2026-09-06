@@ -27,8 +27,8 @@
 
 | 入口 | 初始資料 | 保存方式 | 用途 |
 | --- | --- | --- | --- |
-| 匿名 | 無帳號預設資料 | 僅裝置端暫時狀態 | 立即探索，不要求註冊 |
-| 登入 | 新帳號從空白個人狀態開始 | D1 `account_state`，由 authenticated user 綁定 | 跨重新整理保存清單、預算、收藏與歷史 |
+| 匿名 | 無帳號預設資料 | 收藏 ID 與必要結果快照保存在目前瀏覽器 `localStorage` | 立即探索與收藏；不宣稱跨裝置同步 |
+| 登入 | 新帳號沒有 Demo 預設資料；若同瀏覽器有訪客收藏則做聯集合併 | D1 `account_state`，由 authenticated user 綁定；同步成功後清除已合併的本機副本 | 跨重新整理／裝置保存清單、預算、收藏與歷史 |
 | Demo | 固定評審情境 | 與真實帳號及 catalog 資料分離 | 讓評審穩定操作完整情境；畫面不重複鋪陳模擬聲明 |
 
 正式模式整個 API request 失敗時顯示錯誤，不偷偷混入 Demo fixture。真實候選少於門檻時，若顯示 Demo 補充，也必須放在獨立區塊且不計入真實筆數。
@@ -56,6 +56,7 @@
 - 密碼使用 PBKDF2-SHA256、隨機 salt 與 210,000 次迭代；版本庫不保存明文密碼。
 - session token 使用 32-byte 隨機值，只在 D1 保存 SHA-256 雜湊，30 分鐘後過期；登出立即標記 revoked。
 - 瀏覽器只在 `sessionStorage` 保存 session token；所有個人資料 API 都從 bearer token 推導 owner，不接受前端指定 `user_id`。
+- 未登入時只在 `localStorage` 保存收藏 ID 與必要結果快照；登入時不覆寫既有帳號資料，而是做 ID 聯集合併，且只在 D1 寫入成功後清除本機副本。
 - 單一帳號狀態最多 750 KB；格式錯誤或過大請求會被拒絕。
 - `OPENAI_API_KEY` 只由 server-side secret 讀取，不進 React bundle、Git、URL 或 API 回應。
 - AI 不產生店名、價格、距離、庫存、資格或 CP 分數；這些欄位由 catalog、Evidence Gate 與確定性規則決定。
@@ -74,7 +75,7 @@
 1. 從首頁說明「省下日常，投資未來」，選擇 Demo 入口。
 2. 輸入「今晚兩人、預算 500、圓山附近、不要辣」，展示 AI 條件整理與可編輯確認。
 3. 切換五類橫向分類，打開結果詳情查看總成本、距離、證據、查核時間與 CP 理由。
-4. 展示登入後收藏／預算可在重新整理後還原，再登出確認 session 失效。
+4. 展示匿名收藏可在同一瀏覽器重新整理後還原，再登入合併至帳號；登出後確認 session 失效且訪客收藏仍可使用。
 5. 展示 Team UI 時明確說明目前是意願登記，不會自動付款或代替下單。
 6. 最後示範 PWA 安裝入口、背景音樂開關與離線 app shell。
 
@@ -92,7 +93,7 @@
 ## 9. 交付驗收
 
 - `npm ci` 後可執行 `npm run lint`、`npx tsc --noEmit`、`npm run test:unit`、`npm run db:verify`、`npm run test:e2e` 與 `npm run build`。
-- 核心 E2E 涵蓋匿名主流程、真實／Demo 資料分流、帳號註冊與持久化、登出失效、背景音樂與窄螢幕 coverage。
+- 核心 E2E 涵蓋匿名主流程、訪客收藏還原與登入合併、真實／Demo 資料分流、帳號持久化、登出失效、背景音樂與窄螢幕 coverage。
 - 互動式架構圖與流程圖通過 `showcase` 幾何檢查，以及 1440×900 至 2048×1320 的深／淺色視覺檢查。
 - push 前必須完成 tracked-file 機密、Email、私鑰與 diff whitespace 掃描。
 

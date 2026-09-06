@@ -23,7 +23,7 @@ async function reachDemoResults(page: Page) {
   ).toBeVisible({ timeout: 7_000 });
 }
 
-test('公開首頁顯示來源、串接與驗證統計，訪客清單會要求登入', async ({
+test('公開首頁顯示來源、串接與驗證統計，訪客可直接查看清單', async ({
   page,
 }) => {
   await skipIntoHome(page);
@@ -47,12 +47,8 @@ test('公開首頁顯示來源、串接與驗證統計，訪客清單會要求�
     .locator('.bottom-nav')
     .getByRole('button', { name: '清單', exact: true })
     .click();
-  await expect(
-    page.getByRole('heading', { name: '登入生活帳號' }),
-  ).toBeVisible();
-  await expect(
-    page.getByText('不登入也能搜尋；登入後才能儲存清單與收藏。'),
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: '這次清單' })).toBeVisible();
+  await expect(page.getByText('還沒有清單項目')).toBeVisible();
 });
 
 test('手機探索卡片完整顯示分類視覺，且只替已驗證項目顯示勾勾', async ({
@@ -65,10 +61,9 @@ test('手機探索卡片完整顯示分類視覺，且只替已驗證項目顯�
     .locator('.result-card.provenance-verified-demo')
     .first();
   await expect(verifiedCard).toBeVisible();
-  await expect(verifiedCard.locator('.result-verification-mark')).toHaveAttribute(
-    'aria-label',
-    /已驗證/,
-  );
+  await expect(
+    verifiedCard.locator('.result-verification-mark'),
+  ).toHaveAttribute('title', /已驗證/);
   await expect(
     page
       .locator('.result-card.provenance-simulated')
@@ -91,7 +86,7 @@ test('手機探索卡片完整顯示分類視覺，且只替已驗證項目顯�
 
   await verifiedCard.locator('.result-open').click();
   await expect(page.locator('.detail-verification-mark')).toHaveAttribute(
-    'aria-label',
+    'title',
     /已驗證/,
   );
 });
@@ -113,6 +108,52 @@ test('立即開始探索會帶入完整展示數據與候選', async ({ page }) 
     .click();
   await reachDemoResults(page);
   await expect(page.locator('.result-card')).not.toHaveCount(0);
+  const compactFoodCard = page
+    .locator('.result-card')
+    .filter({ hasText: '麵食快餐方案' });
+  await expect(compactFoodCard).toBeVisible();
+  await expect(compactFoodCard.locator('.result-copy')).toContainText(
+    '店家待確認',
+  );
+  await expect(compactFoodCard).not.toContainText('圓山生活圈餐飲資料');
+});
+
+test('未登入收藏會保存在目前瀏覽器並於重新整理後還原', async ({ page }) => {
+  await skipIntoHome(page);
+  await reachDemoResults(page);
+
+  const firstCard = page.locator('.result-card').first();
+  const savedTitle = (
+    await firstCard.locator('.result-title').innerText()
+  ).trim();
+  await firstCard.getByRole('button', { name: '加入清單' }).click();
+  await expect(page.getByText('已收藏在這個瀏覽器')).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const stored = window.localStorage.getItem(
+          'all-in-life:guest-saved-v1',
+        );
+        if (!stored) return 0;
+        const parsed = JSON.parse(stored) as { saved?: unknown[] };
+        return Array.isArray(parsed.saved) ? parsed.saved.length : 0;
+      }),
+    )
+    .toBe(1);
+
+  await page.reload();
+  await page.getByRole('button', { name: '立即開始探索' }).click();
+  const tutorial = page.getByRole('dialog', { name: '使用教學' });
+  if (await tutorial.isVisible()) {
+    await tutorial.getByRole('button', { name: '略過教學' }).click();
+  }
+  const skip = page.getByRole('button', { name: '略過', exact: true });
+  if (await skip.isVisible()) await skip.click();
+  await page
+    .locator('.bottom-nav')
+    .getByRole('button', { name: /清單/ })
+    .click();
+  await expect(page.getByText(savedTitle, { exact: true })).toBeVisible();
 });
 
 test('登入後收藏會寫入帳號並在重新整理後還原', async ({ page }) => {
@@ -121,7 +162,7 @@ test('登入後收藏會寫入帳號並在重新整理後還原', async ({ page 
   const password = 'AllInLife!2026';
 
   await page.goto('/');
-  await page.getByRole('button', { name: '登入後儲存清單' }).click();
+  await page.getByRole('button', { name: '登入同步收藏' }).click();
   await page.getByRole('tab', { name: '註冊' }).click();
   await page.getByPlaceholder('顯示名稱（選填）').fill('儲存測試');
   await page.getByPlaceholder('3–30 個英數字、_ 或 -').fill(username);
@@ -158,7 +199,7 @@ test('登入後收藏會寫入帳號並在重新整理後還原', async ({ page 
   );
   await page.reload();
   await reloaded;
-  await page.getByRole('button', { name: '登入後儲存清單' }).click();
+  await page.getByRole('button', { name: '登入同步收藏' }).click();
   await expect(page.getByText(`@${username}`)).toBeVisible();
   await page.getByRole('button', { name: '繼續探索' }).click();
   await page

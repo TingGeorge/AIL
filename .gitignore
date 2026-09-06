@@ -11,3 +11,4 @@ prototype/
 
 # Local SVG render used for visual QA; source asset lives under mvp/public/images.
 /leisure-grid-preview.png
+/test-results*/

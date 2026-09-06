@@ -41,7 +41,7 @@
 | --- | --- |
 | 公開入口 | GitHub repository 與 HTTPS 展示站皆以未登入 HTTP 請求回應 200 |
 | 程式品質 | `oxlint`、TypeScript、58 項 Node 單元／契約測試通過 |
-| 使用者流程 | 21 項 Playwright E2E 涵蓋核心旅程、帳號持久化、資料 coverage、背景音樂與三種 viewport 對話框 |
+| 使用者流程 | 23 項 Playwright E2E 涵蓋核心旅程、匿名／帳號收藏持久化、手機驗證標記、資料 coverage、背景音樂與三種 viewport 對話框 |
 | 正式建置 | Vinext production build 通過；產出首頁、9 個 API route handlers 與 6 份部署 migration |
 | 帳號資料 | 註冊、登入、`me`、寫入／讀回個人狀態、登出及登出後 401 均通過；PBKDF2-SHA256 210,000 次、session 30 分鐘 |
 | D1 完整性 | 外鍵錯誤 0；2,984 地點、2,247 餐館、434 公共資源、183 交通、181 機會、9,317 evidence assertions |

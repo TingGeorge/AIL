@@ -34,6 +34,9 @@
       "id": "d1", "type": "database", "label": "Cloudflare D1", "sublabel": "Catalog · Auth · State", "tag": "DB binding", "row": 1, "col": 3, "size": [180, 64]
     },
     {
+      "id": "guest", "type": "database", "label": "Guest Local State", "sublabel": "收藏 ID · 結果快照", "tag": "localStorage · 單一瀏覽器", "row": 1, "col": 1, "size": [180, 64]
+    },
+    {
       "id": "official", "type": "external", "label": "官方與公開來源", "sublabel": "臺北開放資料 · 場館頁面", "tag": "14 sources", "row": 2, "col": 0, "size": [180, 64]
     },
     {
@@ -50,8 +53,10 @@
     }
   ],
   "connections": [
-    { "id": "people-pwa", "from": "people", "to": "pwa", "label": "HTTPS / localhost", "labelAt": [360, 194], "variant": "emphasis" },
+    { "id": "people-pwa", "from": "people", "to": "pwa", "label": "HTTPS / localhost", "labelAt": [260, 102], "variant": "emphasis" },
     { "id": "pwa-api", "from": "pwa", "to": "api", "label": "API", "variant": "emphasis" },
+    { "id": "pwa-guest", "from": "pwa", "to": "guest", "label": "匿名收藏", "labelAt": [440, 212] },
+    { "id": "guest-api", "from": "guest", "to": "api", "label": "登入聯集合併", "variant": "dashed" },
     { "id": "api-catalog", "from": "api", "to": "catalog" },
     { "id": "catalog-decision", "from": "catalog", "to": "decision", "variant": "emphasis" },
     { "id": "api-auth", "from": "api", "to": "auth", "label": "auth", "variant": "security" },
@@ -64,7 +69,7 @@
     { "id": "maps-pwa", "from": "maps", "to": "pwa", "label": "map links" }
   ],
   "cards": [
-    { "dot": "emerald", "title": "目前已驗證", "items": ["PWA、Catalog、AI fallback、帳號與 D1 可在本機完整運作", "正式 build 產出 9 個 route 與 6 份部署 migration", "登入資料可同步，登出後 session 立即失效"] },
+    { "dot": "emerald", "title": "目前已驗證", "items": ["PWA、Catalog、AI fallback、帳號與 D1 可在本機完整運作", "正式 build 產出 9 個 route 與 6 份部署 migration", "訪客收藏可還原並於登入後合併；登出後 session 立即失效"] },
     { "dot": "amber", "title": "安全回退", "items": ["OpenAI 未設定或失敗時回到手動條件與確定性規則", "D1 查詢失敗時明確標示並使用官方 snapshot", "DEMO fixture 與真實模式分流，不作隱性 fallback"] },
     { "dot": "violet", "title": "仍屬下一階段", "items": ["Team 目前是可操作 Demo，尚非交易式協作後端", "R2 evidence upload、Google Places 與付款未啟用", "production D1 migration／seed 仍需部署驗證"] }
   ]
