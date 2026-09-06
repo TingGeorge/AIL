@@ -20,7 +20,9 @@ export function NeedEditor({need,onChange}:{need:Need;onChange:(next:Need)=>void
   <div className="field-grid">
    <label className="field">總預算（新台幣）<input aria-label="總預算（新台幣）" type="number" min="0" max="100000000" value={need.budget_total_twd??""} onChange={e=>set("budget_total_twd",number(e.target.value))} placeholder="未指定"/></label>
    <label className="field">人數／餐點份數<input type="number" min="1" max="1000" value={need.people_or_servings??""} onChange={e=>set("people_or_servings",number(e.target.value))} placeholder="未指定"/><small className="field-help">餐點可填份數；活動與交通請填人數。</small></label>
-   <label className="field">日期<input type="date" value={need.date??""} onChange={e=>set("date",e.target.value||null)}/></label>
+  </div>
+  <div className="field-grid schedule-grid">
+   <label className="field">日期<span className="date-input-shell"><input type="date" value={need.date??""} onChange={e=>set("date",e.target.value||null)}/></span></label>
    <label className="field">時段<input maxLength={200} value={need.time_window??""} onChange={e=>set("time_window",e.target.value||null)} placeholder="未指定"/></label>
   </div>
   <label className="check-row"><input type="checkbox" checked={need.free_only} onChange={e=>set("free_only",e.target.checked)}/>只看免費選項（預估總費用為 0）</label>

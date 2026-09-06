@@ -1,151 +1,206 @@
-# ALL IN LIFE — 前後端整合版
+# ALL IN LIFE
 
-保留 **All in Life MVP 的深色／螢光綠 UI**，接到 **main 的 Bun + Hono + PostgreSQL 後端**。找生活選項、核對來源與成本，登入後儲存收藏、清單及設定。
+ALL IN LIFE 是一個以來源證據、真實成本與明確限制協助使用者尋找生活選項的 Web App。目前應用提供語音／文字需求輸入、五類資料搜尋、結果與詳情、帳號、收藏、清單、預算、回報和團體優惠參與功能。
 
-> **預設使用 `data/live` 的五類第一手來源資料：139 筆公開、136 筆可比較、3 筆待確認；其中 7 筆含官方團體優惠。** 這是有限範圍的研究快照，不是全網資料或即時庫存。舊 10 筆虛構 fixture 只用於測試、預設不公開。詳見 [來源研究、涵蓋與限制](docs/research/README.md)。
+## 目前版本
 
-## 這個分支結合了什麼？
+- 目前正式分支：`main`
+- 清理前完整備份：`main-copy`
+- 唯一可執行應用：`prototype-v1/`
+- 技術堆疊：Bun、Hono、React、Vite、PostgreSQL、Zod
+- AI provider：Google Gemini native Interactions API
+- 目前真實資料快照：139 筆公開資料，136 筆可比較，3 筆待確認
 
-- 分支：`codex/integrate-mvp-ui-main-backend`
-- UI 來源：`codex/all-in-life-mvp`，commit `39148e9`。
-- 後端基礎：本機 `main`，commit `cd1767c`；保留其較 `origin/main` `45f57ed` 多出的搜尋 SSE／候選 API／PWA 實作。
-- **單一可執行套件：`prototype-v1/`**。沒有同時啟動 Vinext、Cloudflare 與 Bun 三套 runtime，也不使用巢狀資料夾內的舊快照。
-- [串接方式、API 表格與差異處理](docs/INTEGRATION.md)
-- [HTML 串接圖與功能對照](docs/integration-canvas.html)（下載／以瀏覽器開啟；GitHub 檔案頁不直接執行 HTML）
+`main-copy` 保留本次儲存庫清理前、commit `6be730d` 的完整內容。舊應用、舊 UI 快照與歷史交付物不再放在 `main` 內作為第二套 runtime。
 
-## 已接通的功能
+## 儲存庫結構
 
-| 畫面 | 真實行為 |
+```text
+prototype-v1/
+├── src/client/       # 目前 React UI
+├── src/server/       # Hono API、PostgreSQL、Gemini 與業務邏輯
+├── src/shared/       # Client/server 共用 schema、types 與規則
+├── data/live/        # 目前真實來源資料
+├── data/食品.json     # 測試／demo fixture
+├── scripts/          # 開發、匯入、驗證與 smoke test 工具
+├── tests/            # Bun tests
+├── public/           # PWA manifest、service worker 與正式 icons
+├── package.json
+└── bun.lock
+
+docs/                 # 產品、規格、ADR 與研究說明
+.scratch/             # 研究溯源與本地 issue 工件；不是應用 runtime
+.claude/、.cursor/     # 開發與 Agent workflow 設定；不是應用 runtime
+```
+
+## 已實作功能
+
+| 範圍 | 目前行為 |
 |---|---|
-| 首頁、需求確認 | 語音 → Gemini 一次回傳 `{transcript,need}` → 人工確認；文字／修正仍走 `/api/parse`；無 key 可手動填寫 |
-| 未設定需求時瀏覽 | 直接開啟「結果」即可瀏覽全部五類，依總可比成本由低到高；待確認後置，不呼叫 AI |
-| 搜尋、五類結果 | PostgreSQL 候選 → 證據與限制篩選 → 付費／免費分組排序 → SSE；食品份量與預設備援排序皆為 deterministic |
-| 詳情、優惠 | 真實欄位、來源摘錄、成本與團購條件；公開顯示共享名額進度，登入後可加入／退出，團員才能看 nickname／username；仍不代訂或付款 |
-| 帳號 | username/password、Argon2id、30 分鐘 opaque token、登出撤銷、改密碼撤銷所有 session |
-| 收藏、清單 | 愛心寫入清單、書籤寫入收藏；兩者登入後獨立保存到 PostgreSQL，重整從 API 還原 |
-| 設定、支出 | 月預算、手動支出、明確「標記已買」累計、跨月處理、生存模式、排除與偏好；不是付款服務 |
-| 回報 | 七類原因與公開註記，需登入；使用者陳述不自動變成已驗證資料 |
-| PWA | 主畫面安裝／公開介面快取；API、帳號內容與搜尋結果不快取 |
+| 需求輸入 | 語音經 Gemini 轉成 `{transcript, need}`；文字與人工修正使用 `/api/parse` |
+| 搜尋 | PostgreSQL 候選、確定性硬限制、食品份量規則、AI 排序與 SSE 輸出 |
+| 未輸入需求時瀏覽 | 可直接瀏覽全部五類資料，不呼叫 AI |
+| 結果與詳情 | 顯示價格、條件、資料狀態、來源證據、地區與團體優惠 |
+| 帳號 | Username/password、Argon2id、opaque session token、登出與改密碼 |
+| 收藏與清單 | 登入後分別儲存至 PostgreSQL；兩者是獨立狀態 |
+| 預算與支出 | 月預算、手動支出、標記已買、生存模式、偏好與排除條件 |
+| 團體優惠 | 顯示公開名額狀態；登入後可加入或退出，系統儲存必要 membership record |
+| 回報 | 登入後提交資料問題與公開備註；回報不會自動變成已驗證資料 |
+| PWA | Manifest、service worker 與公開頁面靜態資源快取；API 和帳號內容不快取 |
 
 ## 本機啟動
 
-需要 **Bun 1.4.0 或以上**與可連線的 **PostgreSQL**。以下指令都在 `prototype-v1/` 執行。
+需要：
+
+- Bun 1.4.0 或以上
+- 可連接的 PostgreSQL
+- Gemini 功能需要有效的 `GEMINI_API_KEY` 與 `GEMINI_MODEL`
+
+所有應用命令都在 `prototype-v1/` 內執行：
 
 ```bash
 cd prototype-v1
 bun install --frozen-lockfile
-# 若已經有 .env，請保留它，只補缺少的欄位。
 cp -n .env.example .env
 ```
 
-1. 建立專用資料庫（例如 `createdb ail`），在 `.env` 設定自己的 `DATABASE_URL`。帳號需能建立表；啟動時套用 `src/server/schema.sql`。
-2. 選擇資料來源：
+在 `.env` 設定資料庫：
 
-```bash
-# 預設匯入 data/live 的五類真實來源資料；先驗證、再原子寫入。
-bun run data:validate
-bun run db:import
-bun run data:check
-
-# 自訂經驗證的來源資料夾：
-DATA_DIR=/absolute/path/to/candidate-json bun run db:import
+```dotenv
+DATABASE_URL=postgres://localhost/ail
+GEMINI_API_KEY=
+GEMINI_MODEL=
+PORT=3000
+SUPPORT_EMAIL=
+ALLOW_DEMO_DATA=0
+DATA_DIR=
 ```
 
-舊示範資料不會刪除，但 API 預設不顯示。只有測試資料庫才使用 `DATA_DIR=./data ALLOW_DEMO_DATA=1 bun run db:import`；啟動時也需明確允許 demo 才會公開顯示。
-
-3. 啟動：
+準備資料並啟動：
 
 ```bash
+bun run data:validate
+bun run db:import
 bun run dev
 ```
 
-開啟終端顯示的 Vite 網址（通常是 `http://localhost:5173`）。Vite 將 `/api` 代理到 Bun，預設 3000；設定 `PORT` 時兩邊會一起調整。Ctrl-C 會停止兩個子程序。
+預設開發網址：
 
-### Production build／同源執行
-
-```bash
-bun run typecheck
-bun run build
-bun run start
+```text
+http://localhost:5173
 ```
 
-Bun 會同時提供 `dist/` 和 `/api/*`。正式部署需 HTTPS、資料庫備份及存取限制。語音／定位需要安全環境與使用者同意。不要把 Vite 開發伺服器當成正式部署。
+Vite 會將 `/api` proxy 到 Bun/Hono server。正式環境流程為先執行 `bun run build`，再執行 `bun run start`。
 
 ### 臨時手機 Demo（ngrok）
 
+先完成上方的 `bun install`、`.env` 與資料庫匯入。接著從 repository 根目錄操作，並在兩個 Terminal 分別啟動 Web App 和 ngrok：
+
 ```bash
-# 第一次使用 ngrok 時執行
+# 只需在首次設定 ngrok 時執行（macOS / Homebrew）
 brew install ngrok
 ngrok config add-authtoken <YOUR_NGROK_AUTHTOKEN>
 
-# Terminal 1
+# Terminal 1：從 repository 根目錄啟動 Web App
 cd prototype-v1
 bun run build
 bun run start
 
-# Terminal 2
-cd prototype-v1
+# Terminal 2：ngrok 可在任何目錄執行
 ngrok http 3000
 
 # Demo 結束：在兩個 Terminal 分別按 Ctrl-C
 ```
 
-### 可選的 AI 語音與排序
+`bun run start` 應在 `http://localhost:3000` 提供 production build；ngrok 會輸出一個臨時 HTTPS URL，可在手機瀏覽器開啟。Demo 使用與本機相同的資料庫和 server 環境變數；不要公開分享長期有效的憑證，也不要把臨時 ngrok URL 當作正式部署網址。
 
-2026-09-05 改用 **Gemini 原生 Interactions API**。錄音停止後只呼叫一次 `/api/voice`，直接取得逐字稿與 Need，進入條件頁供人工確認；不再串接獨立 STT 或自動呼叫文字解析。使用者主動編輯文字／輸入修正時才呼叫 `/api/parse`。API key 僅在 server env，不會嵌入前端。契約與官方文件差異見 [Gemini 查核紀錄](docs/research/gemini-audio-structured.md)。
-
-| 設定 | 用途 |
-|---|---|
-| `DATABASE_URL` | PostgreSQL；搜尋、帳號與回報需要它 |
-| `GEMINI_API_KEY` | server-only Google Gemini API key；語音、文字解析與分組推薦排序共用 |
-| `GEMINI_MODEL` | 部署者選擇且帳號可用、支援音訊及結構化輸出的 `gemini-*` 模型 ID；接受 `models/` 前綴並在呼叫前移除；無預設模型 |
-| `SUPPORT_EMAIL` | 可選；忘記密碼時顯示支援聯絡方式，未設定就不假造支援信箱 |
-| `PORT` | Bun 監聽埠，預設 3000 |
-| `DATA_DIR` / `ALLOW_DEMO_DATA` | 預設 `data/live`；自訂匯入資料夾／明確允許匯入與公開示範資料 |
-| `GOOGLE_MAPS_API_KEY` | 可留空；本批次只提升附官方證據的來源座標，無座標不猜測；未實作需 key 的批次 geocoding |
-
-`GET /api/config` 回傳 `voice`、`parse`、`ranking`、`database`、`support_email`、`area`；這些旗標是設定狀態，不是健康檢查。`voice:false` 不顯示錄音入口；`parse:false` 仍可手動填條件並搜尋（搜尋需 DB）。Google endpoint 固定，沒有可自訂的 AI base URL。
-
-語音入口提示「停止後音訊會傳送給 Gemini 解析」。錄音最多 **30 秒（30,000 ms）**；檔案最多 **5 MiB**，multipart 最多 **6 MiB**。保留實際 WebM／OGG；Safari 的 AAC MP4 容器以 `audio/m4a`、`.m4a` 上傳，不改寫音訊 bytes、不假冒 WAV。後端保留 multipart part 的 Content-Type 並核對基本檔頭；不是完整解碼器，也不以伺服器 timeout 驗證音檔長度。
-
-Session 固定 **1,800 秒**，不是 sliding expiration；舊範本的 `AUTH_SESSION_TTL_SECONDS` 不再列出，避免看似可調但實際未生效。
-
-## 驗證
-
-**資料擴充驗證（2026-09-05 23:52）**：已新增100筆到本機DB，五類原始筆數逐類三倍，合計50→150；原50列不變，100筆與來源檔一致。公開139筆（136可比較／3待確認），含7筆有官方人數門檻的團體優惠。未登入、未搜尋也能直接開啟優惠頁；無官方碼時不提供複製假碼。唯讀HTTP／SSE驗收通過。詳見[入庫與團購驗收](docs/research/expansion-2026-09-05.md)。
-
-**先前模型整合驗證（2026-09-05）**：全套安全測試 **151 pass / 28 skip / 0 fail，942 assertions**；typecheck 與 production build 通過。fixture suite 未觸及真實 DB。另以實際 `gemini-3.5-flash-lite` 通過文字解析、約 5 秒合成中文 WebM → `{transcript,need}`，以及 39 筆真實 catalog 的確認→搜尋→AI 排序 UI smoke；已修復排序 schema 的 `maxItems:500` 造成 HTTP 400。這是有限樣本實測，不代表真機麥克風、其他 codec 或所有語意品質已驗收。
+## 常用命令
 
 ```bash
-# 安全的離線測試；明確覆蓋本機 .env，不連資料庫或真實 Gemini。
-DATABASE_URL= TEST_DATABASE_URL= GEMINI_API_KEY= GEMINI_MODEL= RUN_LIVE_GEMINI_TESTS=0 bun test
-bun run typecheck
-bun run build
-
-# DB 整合測試必須使用獨立測試資料庫；會 upsert fixture，不能指向正式資料庫。
-DATABASE_URL=postgres://USER:PASSWORD@127.0.0.1:55482/ail_test \
-TEST_DATABASE_URL=postgres://USER:PASSWORD@127.0.0.1:55482/ail_test \
-GEMINI_API_KEY= GEMINI_MODEL= RUN_LIVE_GEMINI_TESTS=0 bun test
+bun run dev            # API + Vite development server
+bun run start          # 啟動 Bun/Hono server
+bun run typecheck      # TypeScript 檢查
+bun test               # 執行測試
+bun run build          # Vite production build
+bun run check          # typecheck + test + build
+bun run data:validate  # 驗證 JSON 來源資料
+bun run db:import      # 匯入 PostgreSQL
+bun run data:check     # 檢查資料庫或資料狀態
+bun run data:smoke     # HTTP/live catalog smoke test
+bun run data:manifest  # 更新研究 manifest
 ```
 
-- 沒有 `DATABASE_URL` 時 DB 測試會 skip；設了錯誤連線字串會失敗，不會偽裝測試通過。
-- 實際模型測試須設定有效的 `GEMINI_API_KEY`／`GEMINI_MODEL` 並明確啟用 `RUN_LIVE_GEMINI_TESTS=1`；mock 測試不證明 Gemini 可用性或語音品質。
-- CI 使用隔離 PostgreSQL，安裝鎖定依賴、匯入 fixture、檢查型別、測試、建置，再匯入真實資料做五類 HTTP／SSE 驗收；不使用真實 provider key。
-- 瀏覽器人工驗證與限制詳見整合文件。尚未宣稱已部署到公開網址；Gemini live smoke 範圍與真機／跨瀏覽器待驗項目見 [查核紀錄](docs/research/gemini-audio-structured.md)。
+## 資料模式
 
-## 仍需明確知道的限制
+預設使用：
 
-- 所選類別只決定優先顯示，依規格仍搜尋全部五類；不是類別硬篩選。
-- 只有食品套用人數／份量規則：需求 N 人／份時，明示 1..N 份可成為候選，先排恰好 N，再排最接近的較小份量；明示區間取最大值，超過 N 即排除，即使價格或證據閘門另有未知也不進待確認。份量未知才接在主要推薦後段待確認；不從件數或重量猜份量，也不乘數量或價格。
-- 預算、成分／過敏原、會員、登記、日期、時段、資格與其他硬限制維持既有保守規則。推薦順序在生存模式下先免費、再於其中套用食品份量；使用者手動選擇成本、距離或資料日期時就依該控制排序，pending 永遠位於 main 後面。
-- 結果／預設瀏覽的愛心與詳情的「加入清單」都切換清單；詳情書籤只切換收藏。兩個選取狀態互不連動，不批次搬移既有保存資料；愛心選取時是紅色實心圖示，不是紅色按鈕底。
-- 資料涵蓋臺北及各筆明示的延伸地區、線上商品與全臺服務；與原PRD固定圓山範圍不同，各筆保留地區、配送、資格與時段，不保證全部是步行內選項。
-- 真實資料與測試 fixture 分開；首頁 `/api/catalog` 顯示實際資料庫五類涵蓋。網頁來源是查核快照，不代表即時價格、庫存、名額或完整覆蓋所有圓山商家。
-- 团購是商家優惠資訊與試算，不是成員管理、付款或下單。
-- 帳號 PUT 必須攜帶 `revision`，伺服器以 compare-and-swap 防止過期覆蓋。單分頁序列化；不同欄位與收藏／清單增刪做三方合併，同欄位衝突則保留本機變更並提示重新載入。部署新版時須一併執行冪等 schema migration；舊版 client 不支援新寫入契約。
-- 登入限流是有上限的單程序防護；正式公開部署仍需 edge／反向代理針對註冊、搜尋、語音與回報設置流量／成本限制，多實例需共享限流。
-- 音訊、逐字稿、Need、精確位置不寫入本應用資料庫。語音送往 Gemini，文字／修正與必要候選內容也會送往 Gemini。`store:false` 不保存可供後續取回的 Interaction，**不是整體零保留、不用於訓練或無安全日誌的承諾**；部署者須核對服務層級、地區及 Google 當期條款。精確座標不送到排名模型。
+```text
+prototype-v1/data/live/*.json
+```
 
-### 2026-09-05 全功能驗收
+目前資料類別：
 
-最新修復、隔離資料庫／Gemini 實測、語音品質與未完成的瀏覽器項目，見 [完整驗收報告](docs/testing/full-app-acceptance-2026-09-05.md)。自動測試全綠不等於所有真機、模型品質與部署驗收都完成。
+- 食品：44 筆
+- 日用品：21 筆
+- 免費／公益資源：21 筆
+- 活動：29 筆，其中 3 筆待確認
+- 交通：24 筆
+
+真實資料與虛構 fixture 分開。若明確需要 demo fixture：
+
+```bash
+DATA_DIR=./data ALLOW_DEMO_DATA=1 bun run db:import
+```
+
+不要在正式環境開啓 `ALLOW_DEMO_DATA=1`。
+
+## 目前驗證狀態
+
+2026-09-06 清理後本機復核結果：
+
+```text
+bun run typecheck      PASS
+bun run build          PASS
+bun run data:validate  PASS
+```
+
+安全離線測試命令：
+
+```bash
+DATABASE_URL= TEST_DATABASE_URL= \
+GEMINI_API_KEY= GEMINI_MODEL= \
+RUN_LIVE_GEMINI_TESTS=0 bun test
+```
+
+目前結果：
+
+```text
+269 pass
+30 skip
+4 fail
+303 tests / 36 files
+```
+
+4 個失敗集中在結果 UI 與既有測試契約的差異：食品份量不足警示、pending 原因、資格／條件摘要，以及 demo 資料警告。**因此目前版本尚不能宣稱自動測試全綠。**
+
+資料庫整合測試必須使用獨立測試資料庫；不要將 fixture tests 指向正式資料庫。實際 Gemini 測試也必須顯式設定 `RUN_LIVE_GEMINI_TESTS=1`，且會產生外部 API 請求與費用。
+
+## 重要邊界
+
+- 目前以圓山區作為預設需求語義，但資料也包含台北延伸地區、線上商品與全台公共服務；每筆結果仍須依自己的地區、配送、資格和時段判斷。
+- 資料是日期化研究快照，不代表即時價格、庫存、名額或全市場覆蓋。
+- 系統提供團體優惠資訊、人數進度與 membership 記錄，但不代訂、不付款、不代替商家確認。
+- 音訊、逐字稿、Need 和精確位置不寫入本應用資料庫；語音和必要文字會送往 Gemini。`store:false` 不等於 Google 整體零保留承諾。
+- 精確位置不會送入排名模型；正式部署仍須設定 edge／反向代理限流、秘密管理與資料庫備份。
+
+## 文件
+
+- [領域詞彙與產品邊界](CONTEXT.md)
+- [Backend 規格](docs/SPEC-backend.md)
+- [語音輸入規格](docs/SPEC-voice-input.md)
+- [資料匯入規格](docs/SPEC-ingestion.md)
+- [Geocoding 規格](docs/SPEC-geocoding.md)
+- [資料研究、覆蓋與限制](docs/research/README.md)
+- [Repository audit](docs/repository-audit-2026-09-05.md)
+
+規格檔案目前仍包含部分歷史狀態，後續會另行校正；本 README 以目前 `main` 的實際程式碼與驗證結果為準。
